@@ -18,7 +18,13 @@ class ProjectContext {
   });
 
   /// Load an instance from [file].
-  ProjectContext.fromFile(this.file) : database = AppDatabase(file: file);
+  factory ProjectContext.fromFile(final File file) {
+    final project = Project.fromFile(file);
+    final databaseFile =
+        File(path.join(file.parent.path, project.databaseFilename));
+    final database = AppDatabase(file: databaseFile);
+    return ProjectContext(file: file, database: database);
+  }
 
   /// The file this context was loaded from.
   final File file;

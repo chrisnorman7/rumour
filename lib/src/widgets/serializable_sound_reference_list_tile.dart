@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:backstreets_widgets/extensions.dart';
 import 'package:backstreets_widgets/shortcuts.dart';
 import 'package:backstreets_widgets/widgets.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../constants.dart';
 import '../database/database.dart';
 import '../json/serializable_sound_reference.dart';
 import '../providers.dart';
@@ -55,36 +58,76 @@ class SerializableSoundReferenceListTile extends ConsumerWidget {
           looping: looping,
         ),
         child: Builder(
-          builder: (final builderContext) => PerformableActionsListTile(
-            actions: [
-              PerformableAction(
-                name: 'Delete',
-                activator: deleteShortcut,
-                invoke: () => onChanged(null),
-              ),
-            ],
-            title: Text(title),
-            subtitle: Text(
-              '${reference.path} (${reference.volume.toStringAsFixed(1)})',
-            ),
-            onTap: () {
-              builderContext
-                ..stopPlaySoundSemantics()
-                ..pushWidgetBuilder(
-                  (final context) => SelectSoundScreen(
-                    onChanged: (final value) => onChanged(
-                      SerializableSoundReference(
-                        path: value,
-                        volume: reference.volume,
-                      ),
-                    ),
-                    path: reference.path,
-                    volume: reference.volume,
-                    looping: looping,
+          builder: (final builderContext) {
+            final state = builderContext
+                .findAncestorStateOfType<PlaySoundSemanticsState>();
+            return PerformableActionsListTile(
+              actions: [
+                if (reference.volume < maxVolume)
+                  PerformableAction(
+                    name: 'Increase volume',
+                    activator: moveUpShortcut,
+                    invoke: () {
+                      final volume = min(
+                        maxVolume,
+                        reference.volume + volumeAdjust,
+                      );
+                      onChanged(
+                        SerializableSoundReference(
+                          path: reference.path,
+                          volume: volume,
+                        ),
+                      );
+                      state?.handle?.volume.value = volume;
+                    },
                   ),
-                );
-            },
-          ),
+                if (reference.volume > minVolume)
+                  PerformableAction(
+                    name: 'Decrease volume',
+                    activator: moveDownShortcut,
+                    invoke: () {
+                      final volume = max(
+                        minVolume,
+                        reference.volume - volumeAdjust,
+                      );
+                      onChanged(
+                        SerializableSoundReference(
+                          path: reference.path,
+                          volume: volume,
+                        ),
+                      );
+                      state?.handle?.volume.value = volume;
+                    },
+                  ),
+                PerformableAction(
+                  name: 'Delete',
+                  activator: deleteShortcut,
+                  invoke: () => onChanged(null),
+                ),
+              ],
+              title: Text(title),
+              subtitle: Text(
+                '${reference.path} (${reference.volume.toStringAsFixed(1)})',
+              ),
+              onTap: () {
+                builderContext
+                  ..stopPlaySoundSemantics()
+                  ..pushWidgetBuilder(
+                    (final context) => SelectSoundScreen(
+                      onChanged: (final value) => onChanged(
+                        SerializableSoundReference(
+                          path: value,
+                          volume: reference.volume,
+                        ),
+                      ),
+                      path: reference.path,
+                      volume: reference.volume,
+                      looping: looping,
+                    ),
+                  );
+              },
+            );
+          },
         ),
       );
     }

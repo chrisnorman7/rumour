@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'database/database.dart';
 import 'json/app_preferences.dart';
 import 'json/project.dart';
 import 'project_context.dart';
@@ -59,4 +60,24 @@ ProjectContext projectContext(final Ref ref) {
 Project project(final Ref ref) {
   final projectContext = ref.watch(projectContextProvider);
   return projectContext.project;
+}
+
+/// Provide a singe sound reference.
+@riverpod
+Future<SoundReference> soundReference(final Ref ref, final int id) async {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.soundReferences
+      .filter((final f) => f.id.equals(id))
+      .getSingle();
+}
+
+/// Provide all zones.
+@riverpod
+Future<List<Zone>> zones(final Ref ref) async {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.zones
+      .orderBy(
+        (final o) => o.name.asc(),
+      )
+      .get();
 }

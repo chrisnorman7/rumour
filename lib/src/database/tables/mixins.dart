@@ -17,3 +17,9 @@ mixin CreatedAtMixin on Table {
   /// The created at column.
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
+
+/// Add a [description] column.
+mixin DescriptionMixin on Table {
+  /// The description column.
+  TextColumn get description => text()();
+}

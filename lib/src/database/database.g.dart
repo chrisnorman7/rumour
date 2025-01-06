@@ -241,6 +241,12 @@ class $ZonesTable extends Zones with TableInfo<$ZonesTable, Zone> {
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -259,7 +265,8 @@ class $ZonesTable extends Zones with TableInfo<$ZonesTable, Zone> {
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES sound_references (id)'));
   @override
-  List<GeneratedColumn> get $columns => [id, name, createdAt, musicId];
+  List<GeneratedColumn> get $columns =>
+      [id, name, description, createdAt, musicId];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -278,6 +285,14 @@ class $ZonesTable extends Zones with TableInfo<$ZonesTable, Zone> {
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -302,6 +317,8 @@ class $ZonesTable extends Zones with TableInfo<$ZonesTable, Zone> {
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       musicId: attachedDatabase.typeMapping
@@ -322,6 +339,9 @@ class Zone extends DataClass implements Insertable<Zone> {
   /// The name column.
   final String name;
 
+  /// The description column.
+  final String description;
+
   /// The created at column.
   final DateTime createdAt;
 
@@ -330,6 +350,7 @@ class Zone extends DataClass implements Insertable<Zone> {
   const Zone(
       {required this.id,
       required this.name,
+      required this.description,
       required this.createdAt,
       required this.musicId});
   @override
@@ -337,6 +358,7 @@ class Zone extends DataClass implements Insertable<Zone> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['music_id'] = Variable<int>(musicId);
     return map;
@@ -346,6 +368,7 @@ class Zone extends DataClass implements Insertable<Zone> {
     return ZonesCompanion(
       id: Value(id),
       name: Value(name),
+      description: Value(description),
       createdAt: Value(createdAt),
       musicId: Value(musicId),
     );
@@ -357,6 +380,7 @@ class Zone extends DataClass implements Insertable<Zone> {
     return Zone(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       musicId: serializer.fromJson<int>(json['musicId']),
     );
@@ -367,15 +391,22 @@ class Zone extends DataClass implements Insertable<Zone> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'musicId': serializer.toJson<int>(musicId),
     };
   }
 
-  Zone copyWith({int? id, String? name, DateTime? createdAt, int? musicId}) =>
+  Zone copyWith(
+          {int? id,
+          String? name,
+          String? description,
+          DateTime? createdAt,
+          int? musicId}) =>
       Zone(
         id: id ?? this.id,
         name: name ?? this.name,
+        description: description ?? this.description,
         createdAt: createdAt ?? this.createdAt,
         musicId: musicId ?? this.musicId,
       );
@@ -383,6 +414,8 @@ class Zone extends DataClass implements Insertable<Zone> {
     return Zone(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
+      description:
+          data.description.present ? data.description.value : this.description,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       musicId: data.musicId.present ? data.musicId.value : this.musicId,
     );
@@ -393,6 +426,7 @@ class Zone extends DataClass implements Insertable<Zone> {
     return (StringBuffer('Zone(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('description: $description, ')
           ..write('createdAt: $createdAt, ')
           ..write('musicId: $musicId')
           ..write(')'))
@@ -400,13 +434,14 @@ class Zone extends DataClass implements Insertable<Zone> {
   }
 
   @override
-  int get hashCode => Object.hash(id, name, createdAt, musicId);
+  int get hashCode => Object.hash(id, name, description, createdAt, musicId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Zone &&
           other.id == this.id &&
           other.name == this.name &&
+          other.description == this.description &&
           other.createdAt == this.createdAt &&
           other.musicId == this.musicId);
 }
@@ -414,30 +449,36 @@ class Zone extends DataClass implements Insertable<Zone> {
 class ZonesCompanion extends UpdateCompanion<Zone> {
   final Value<int> id;
   final Value<String> name;
+  final Value<String> description;
   final Value<DateTime> createdAt;
   final Value<int> musicId;
   const ZonesCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
+    this.description = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.musicId = const Value.absent(),
   });
   ZonesCompanion.insert({
     this.id = const Value.absent(),
     required String name,
+    required String description,
     this.createdAt = const Value.absent(),
     required int musicId,
   })  : name = Value(name),
+        description = Value(description),
         musicId = Value(musicId);
   static Insertable<Zone> custom({
     Expression<int>? id,
     Expression<String>? name,
+    Expression<String>? description,
     Expression<DateTime>? createdAt,
     Expression<int>? musicId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      if (description != null) 'description': description,
       if (createdAt != null) 'created_at': createdAt,
       if (musicId != null) 'music_id': musicId,
     });
@@ -446,11 +487,13 @@ class ZonesCompanion extends UpdateCompanion<Zone> {
   ZonesCompanion copyWith(
       {Value<int>? id,
       Value<String>? name,
+      Value<String>? description,
       Value<DateTime>? createdAt,
       Value<int>? musicId}) {
     return ZonesCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
+      description: description ?? this.description,
       createdAt: createdAt ?? this.createdAt,
       musicId: musicId ?? this.musicId,
     );
@@ -464,6 +507,9 @@ class ZonesCompanion extends UpdateCompanion<Zone> {
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -479,6 +525,7 @@ class ZonesCompanion extends UpdateCompanion<Zone> {
     return (StringBuffer('ZonesCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('description: $description, ')
           ..write('createdAt: $createdAt, ')
           ..write('musicId: $musicId')
           ..write(')'))
@@ -1185,12 +1232,14 @@ typedef $$SoundReferencesTableProcessedTableManager = ProcessedTableManager<
 typedef $$ZonesTableCreateCompanionBuilder = ZonesCompanion Function({
   Value<int> id,
   required String name,
+  required String description,
   Value<DateTime> createdAt,
   required int musicId,
 });
 typedef $$ZonesTableUpdateCompanionBuilder = ZonesCompanion Function({
   Value<int> id,
   Value<String> name,
+  Value<String> description,
   Value<DateTime> createdAt,
   Value<int> musicId,
 });
@@ -1241,6 +1290,9 @@ class $$ZonesTableFilterComposer extends Composer<_$AppDatabase, $ZonesTable> {
 
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -1302,6 +1354,9 @@ class $$ZonesTableOrderingComposer
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 
@@ -1340,6 +1395,9 @@ class $$ZonesTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -1411,24 +1469,28 @@ class $$ZonesTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
+            Value<String> description = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<int> musicId = const Value.absent(),
           }) =>
               ZonesCompanion(
             id: id,
             name: name,
+            description: description,
             createdAt: createdAt,
             musicId: musicId,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String name,
+            required String description,
             Value<DateTime> createdAt = const Value.absent(),
             required int musicId,
           }) =>
               ZonesCompanion.insert(
             id: id,
             name: name,
+            description: description,
             createdAt: createdAt,
             musicId: musicId,
           ),
