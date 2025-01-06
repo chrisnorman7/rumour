@@ -44,7 +44,7 @@ final recentFilesProvider = AutoDisposeFutureProvider<List<File>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef RecentFilesRef = AutoDisposeFutureProviderRef<List<File>>;
-String _$projectContextHash() => r'4b7270d53a243c6decdc391fec70f1930984aa00';
+String _$projectContextHash() => r'3584feaeda8d11966e8515024425a196abad2383';
 
 /// Provide the current project context.
 ///

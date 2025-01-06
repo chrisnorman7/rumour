@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:json_annotation/json_annotation.dart';
 
+import 'serializable_sound_reference.dart';
+
 part 'project.g.dart';
 
 /// A project.
@@ -13,6 +15,7 @@ class Project {
     this.name = 'Untitled Project',
     this.databaseFilename = 'db.sqlite3',
     this.soundsDirectoryName = 'sounds',
+    this.mainMenuMusic,
   });
 
   /// Create an instance from a JSON object.
@@ -36,6 +39,9 @@ class Project {
   ///
   /// The [soundsDirectoryName] will be relative to the main project directory.
   final String soundsDirectoryName;
+
+  /// The music to use for the main menu.
+  SerializableSoundReference? mainMenuMusic;
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$ProjectToJson(this);

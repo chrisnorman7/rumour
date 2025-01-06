@@ -48,6 +48,9 @@ ProjectContext projectContext(final Ref ref) {
   if (project == null) {
     throw StateError('No project has been loaded.');
   }
+  if (!project.soundsDirectory.existsSync()) {
+    project.soundsDirectory.createSync(recursive: true);
+  }
   return project;
 }
 

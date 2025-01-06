@@ -6,7 +6,9 @@ import 'package:backstreets_widgets/screens.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
@@ -52,10 +54,32 @@ class ProjectsScreen extends ConsumerWidget {
               itemBuilder: (final context, final index) {
                 final file = files[index];
                 final project = Project.fromFile(file);
-                return ListTile(
-                  autofocus: index == 0,
-                  title: Text(project.name),
-                  onTap: () => _loadProjectFromFile(ref, file),
+                final music = project.mainMenuMusic;
+                return MaybePlaySoundSemantics(
+                  sound: music == null
+                      ? null
+                      : Sound(
+                          path: path.join(
+                            file.parent.path,
+                            project.soundsDirectoryName,
+                            music.path,
+                          ),
+                          soundType: SoundType.file,
+                          destroy: false,
+                          loadMode: LoadMode.disk,
+                          looping: true,
+                          volume: music.volume,
+                        ),
+                  child: Builder(
+                    builder: (final builderContext) => ListTile(
+                      autofocus: index == 0,
+                      title: Text(project.name),
+                      onTap: () {
+                        builderContext.stopPlaySoundSemantics();
+                        _loadProjectFromFile(ref, file);
+                      },
+                    ),
+                  ),
                 );
               },
               itemCount: files.length,
