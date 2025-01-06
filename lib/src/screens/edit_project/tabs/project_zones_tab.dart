@@ -15,9 +15,9 @@ import '../../../widgets/play_sound_reference_semantics.dart';
 import '../../edit_zone/edit_zone_screen.dart';
 
 /// The zones tab.
-class ZonesTab extends ConsumerWidget {
+class ProjectZonesTab extends ConsumerWidget {
   /// Create an instance.
-  const ZonesTab({
+  const ProjectZonesTab({
     super.key,
   });
 

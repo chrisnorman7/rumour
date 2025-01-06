@@ -8,7 +8,7 @@ import '../../providers.dart';
 import '../../widgets/close_project.dart';
 import '../edit_zone/edit_zone_screen.dart';
 import 'tabs/project_settings_tab.dart';
-import 'tabs/zones_tab.dart';
+import 'tabs/project_zones_tab.dart';
 
 /// Edit a project context.
 class EditProjectScreen extends ConsumerWidget {
@@ -32,7 +32,7 @@ class EditProjectScreen extends ConsumerWidget {
               icon: const Text('Share settings between multiple rooms'),
               builder: (final _) => CommonShortcuts(
                 newCallback: () => _createZone(ref),
-                child: const ZonesTab(),
+                child: const ProjectZonesTab(),
               ),
               floatingActionButton: NewButton(
                 onPressed: () => _createZone(ref),

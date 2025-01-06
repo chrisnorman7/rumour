@@ -16,7 +16,7 @@ import '../json/project.dart';
 import '../project_context.dart';
 import '../providers.dart';
 import '../widgets/nothing_to_see.dart';
-import 'editor/edit_project_screen.dart';
+import 'edit_project/edit_project_screen.dart';
 
 /// A screen which shows the most recent project.
 class ProjectsScreen extends ConsumerWidget {
