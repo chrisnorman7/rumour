@@ -28,8 +28,18 @@ class ProjectsScreen extends ConsumerWidget {
     final value = ref.watch(recentFilesProvider);
     return CommonShortcuts(
       newCallback: () => _createProject(ref),
+      openCallback: () => _openProject(ref),
       child: SimpleScaffold(
         title: 'Projects',
+        actions: [
+          ElevatedButton(
+            onPressed: () => _openProject(ref),
+            child: const Icon(
+              Icons.file_open,
+              semanticLabel: 'Open',
+            ),
+          ),
+        ],
         body: value.when(
           data: (final files) {
             if (files.isEmpty) {
@@ -73,7 +83,7 @@ class ProjectsScreen extends ConsumerWidget {
     }
     await ref
         .read(projectContextNotifierProvider.notifier)
-        .setProjectContext(file);
+        .setProjectContext(file.path);
     if (ref.context.mounted) {
       await ref.context.pushWidgetBuilder(
         (final _) => const EditProjectScreen(),
@@ -99,6 +109,29 @@ class ProjectsScreen extends ConsumerWidget {
     }
     final project = Project();
     final file = File(filename)..writeAsStringSync(jsonEncode(project));
+    await _loadProjectFromFile(ref, file);
+  }
+
+  /// Open an existing project.
+  Future<void> _openProject(final WidgetRef ref) async {
+    final directory = Directory(
+      path.join((await getApplicationDocumentsDirectory()).path, 'rumour'),
+    );
+    if (!directory.existsSync()) {
+      directory.createSync(recursive: true);
+    }
+    final result = await FilePicker.platform.pickFiles(
+      dialogTitle: 'Open Project',
+      initialDirectory: directory.path,
+    );
+    if (result == null) {
+      return;
+    }
+    final filename = result.files.single.path;
+    if (filename == null) {
+      return;
+    }
+    final file = File(filename);
     await _loadProjectFromFile(ref, file);
   }
 }

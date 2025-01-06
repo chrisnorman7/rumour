@@ -47,9 +47,10 @@ class ProjectContextNotifier extends _$ProjectContextNotifier {
   @override
   ProjectContext? build() => null;
 
-  /// Load a new value from [file].
-  Future<void> setProjectContext(final File file) async {
+  /// Load a new value from the given [filename].
+  Future<void> setProjectContext(final String filename) async {
     await clear();
+    final file = File(filename);
     final project = Project.fromFile(file);
     final databaseFile = File(
       path.join(file.parent.path, project.databaseFilename),

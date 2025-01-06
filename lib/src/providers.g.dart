@@ -45,7 +45,7 @@ final recentFilesProvider = AutoDisposeFutureProvider<List<File>>.internal(
 // ignore: unused_element
 typedef RecentFilesRef = AutoDisposeFutureProviderRef<List<File>>;
 String _$projectContextNotifierHash() =>
-    r'cb7d357a77c861334549a20a261cea39bf08b878';
+    r'd3d353aaf4f54d18aeb9660c355c37b0f8d53527';
 
 /// Provide a project context.
 ///
