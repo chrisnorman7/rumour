@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../extensions/async_value_x.dart';
 import '../../../providers.dart';
+import '../../../widgets/sound_reference_list_tile.dart';
 
 /// The zone settings tab.
 class ZoneSettingsTab extends ConsumerWidget {
@@ -47,6 +48,15 @@ class ZoneSettingsTab extends ConsumerWidget {
             },
             header: 'Description',
             title: 'Describe Zone',
+          ),
+          SoundReferenceListTile(
+            soundReferenceId: zone.musicId,
+            onChanged: (final id) async {
+              await query.update((final f) => f(musicId: Value(id)));
+              invalidateProviders(ref);
+            },
+            title: 'Music',
+            looping: true,
           ),
         ],
       ),

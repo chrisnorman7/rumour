@@ -10,7 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../constants.dart';
 import '../providers.dart';
-import '../screens/editor/select_sound_screen.dart';
+import '../screens/select_sound_screen.dart';
 import 'unset.dart';
 
 /// A [ListTile] which allows configuring a [soundReference].
@@ -29,7 +29,7 @@ class SoundReferenceListTile extends ConsumerWidget {
   final int? soundReferenceId;
 
   /// The function to call when [soundReference] has changed.
-  final VoidCallback onChanged;
+  final ValueChanged<int?> onChanged;
 
   /// The title of the [ListTile].
   final String title;
@@ -44,6 +44,7 @@ class SoundReferenceListTile extends ConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final projectContext = ref.watch(projectContextProvider);
+    final soundReferences = projectContext.database.managers.soundReferences;
     final id = soundReferenceId;
     if (id == null) {
       return ListTile(
@@ -53,15 +54,18 @@ class SoundReferenceListTile extends ConsumerWidget {
         onTap: () => context.pushWidgetBuilder(
           (final _) => SelectSoundScreen(
             onChanged: (final value) async {
-              await projectContext.database.managers.soundReferences
-                  .createReturning((final f) => f(path: value));
-              onChanged();
+              final reference = await soundReferences.createReturning(
+                (final f) => f(path: value),
+              );
+              onChanged(reference.id);
             },
           ),
         ),
       );
     }
-    final value = ref.watch(soundReferenceProvider(id));
+    final query = soundReferences.filter((final f) => f.id.equals(id));
+    final provider = soundReferenceProvider(id);
+    final value = ref.watch(provider);
     return value.when(
       data: (final reference) => PlaySoundSemantics(
         sound: projectContext.getSound(
@@ -69,6 +73,7 @@ class SoundReferenceListTile extends ConsumerWidget {
           destroy: false,
           looping: looping,
         ),
+        key: ValueKey('${reference.path} (${reference.volume})'),
         child: Builder(
           builder: (final builderContext) {
             final state = builderContext
@@ -84,10 +89,11 @@ class SoundReferenceListTile extends ConsumerWidget {
                         maxVolume,
                         reference.volume + volumeAdjust,
                       );
-                      await projectContext.database.managers.soundReferences
-                          .filter((final f) => f.id.equals(id))
-                          .update((final f) => f(volume: Value(volume)));
-                      onChanged();
+                      ref.invalidate(provider);
+                      await query.update(
+                        (final f) => f(volume: Value(volume)),
+                      );
+                      onChanged(id);
                       state?.handle?.volume.value = volume;
                     },
                   ),
@@ -100,10 +106,11 @@ class SoundReferenceListTile extends ConsumerWidget {
                         minVolume,
                         reference.volume - volumeAdjust,
                       );
-                      await projectContext.database.managers.soundReferences
-                          .filter((final f) => f.id.equals(id))
-                          .update((final f) => f(volume: Value(volume)));
-                      onChanged();
+                      ref.invalidate(provider);
+                      await query.update(
+                        (final f) => f(volume: Value(volume)),
+                      );
+                      onChanged(id);
                       state?.handle?.volume.value = volume;
                     },
                   ),
@@ -111,10 +118,8 @@ class SoundReferenceListTile extends ConsumerWidget {
                   name: 'Delete',
                   activator: deleteShortcut,
                   invoke: () async {
-                    await projectContext.database.managers.soundReferences
-                        .filter((final f) => f.id.equals(id))
-                        .delete();
-                    onChanged();
+                    onChanged(null);
+                    await query.delete();
                   },
                 ),
               ],
@@ -128,11 +133,10 @@ class SoundReferenceListTile extends ConsumerWidget {
                   ..pushWidgetBuilder(
                     (final context) => SelectSoundScreen(
                       onChanged: (final value) async {
-                        await projectContext.database.managers.soundReferences
-                            .update(
+                        await query.update(
                           (final f) => f(path: Value(value)),
                         );
-                        onChanged();
+                        onChanged(id);
                       },
                       path: reference.path,
                       volume: reference.volume,

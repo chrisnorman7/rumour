@@ -11,7 +11,7 @@ import '../constants.dart';
 import '../database/database.dart';
 import '../json/serializable_sound_reference.dart';
 import '../providers.dart';
-import '../screens/editor/select_sound_screen.dart';
+import '../screens/select_sound_screen.dart';
 import 'unset.dart';
 
 /// A [ListTile] which allows editing [soundReference].

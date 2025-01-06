@@ -8,8 +8,8 @@ import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as path;
 
-import '../../constants.dart';
-import '../../providers.dart';
+import '../constants.dart';
+import '../providers.dart';
 
 /// A screen for selecting a new sound [path].
 class SelectSoundScreen extends ConsumerStatefulWidget {
