@@ -1,16 +1,11 @@
-# rumour
+# Rumour
 
 Make audio-first RPG's with no code.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- ☑ Organise collections of rooms into zones.
+- ☑ Rooms can be moved between zones.
+- ⭕ Link rooms together with exits.
+- ⭕ Add multiple player classes.
+- ⭕ Each player class has its own starting room, giving you multiple playing paths.
