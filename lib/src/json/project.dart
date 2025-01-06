@@ -16,6 +16,8 @@ class Project {
     this.databaseFilename = 'db.sqlite3',
     this.soundsDirectoryName = 'sounds',
     this.mainMenuMusic,
+    this.mainMenuMusicFadeIn,
+    this.mainMenuMusicFadeOut,
   });
 
   /// Create an instance from a JSON object.
@@ -42,6 +44,12 @@ class Project {
 
   /// The music to use for the main menu.
   SerializableSoundReference? mainMenuMusic;
+
+  /// The fade in time for [mainMenuMusic].
+  Duration? mainMenuMusicFadeIn;
+
+  /// The fade out time for [mainMenuMusic].
+  Duration? mainMenuMusicFadeOut;
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$ProjectToJson(this);
