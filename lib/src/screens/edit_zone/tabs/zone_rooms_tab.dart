@@ -42,6 +42,7 @@ class ZoneRoomsTab extends ConsumerWidget {
           final query = roomsManager.filter((final f) => f.id.equals(room.id));
           return PlaySoundReferenceSemantics(
             soundReferenceId: room.ambianceId,
+            looping: true,
             child: Builder(
               builder: (final builderContext) => PerformableActionsListTile(
                 actions: [
@@ -79,7 +80,7 @@ class ZoneRoomsTab extends ConsumerWidget {
                   ),
                 ],
                 autofocus: index == 0,
-                title: Text(room.name),
+                title: Text('${room.name} (${room.maxX} x ${room.maxY})'),
                 subtitle: Text(room.description),
                 onTap: () => builderContext
                   ..stopPlaySoundSemantics()
