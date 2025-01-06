@@ -81,12 +81,11 @@ class ProjectsScreen extends ConsumerWidget {
       preferences.recentFiles.add(file.path);
       await preferences.save(ref: ref);
     }
-    ref
-        .read(projectContextFilenameNotifierProvider.notifier)
-        .setFilename(file.path);
     if (ref.context.mounted) {
       await ref.context.pushWidgetBuilder(
-        (final _) => const EditProjectScreen(),
+        (final _) => EditProjectScreen(
+          projectFilename: file.path,
+        ),
       );
     }
   }

@@ -9,13 +9,17 @@ import '../../providers.dart';
 class EditProjectScreen extends ConsumerWidget {
   /// Create an instance.
   const EditProjectScreen({
+    required this.projectFilename,
     super.key,
   });
+
+  /// The filename of the project to use.
+  final String projectFilename;
 
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final projectContext = ref.watch(projectContextProvider);
+    final projectContext = ref.watch(projectContextProvider(projectFilename));
     final project = projectContext.project;
     return SimpleScaffold(
       title: 'Edit Project',
