@@ -4,12 +4,14 @@ import 'package:backstreets_widgets/widgets.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../constants.dart';
 import '../../../extensions/async_value_x.dart';
 import '../../../providers.dart';
 import '../../../widgets/nothing_to_see.dart';
+import '../../../widgets/play_sound_reference_semantics.dart';
 import '../../edit_zone/edit_zone_screen.dart';
 
 /// The zones tab.
@@ -35,48 +37,56 @@ class ZonesTab extends ConsumerWidget {
         itemBuilder: (final context, final index) {
           final zone = zones[index];
           final query = zoneManager.filter((final f) => f.id.equals(zone.id));
-          return PerformableActionsListTile(
-            autofocus: index == 0,
-            actions: [
-              PerformableAction(
-                name: 'Rename',
-                activator:
-                    CrossPlatformSingleActivator(LogicalKeyboardKey.keyR),
-                invoke: () => context.pushWidgetBuilder(
-                  (final getTextContext) => GetText(
-                    onDone: (final value) async {
-                      Navigator.pop(getTextContext);
-                      await query.update(
-                        (final f) => f(name: Value(value)),
-                      );
-                      ref
-                        ..invalidate(zonesProvider)
-                        ..invalidate(zoneProvider(zone.id));
-                    },
-                    labelText: 'Name',
-                    text: zone.name,
-                    title: 'Rename Zone',
+          return PlaySoundReferenceSemantics(
+            soundReferenceId: zone.musicId,
+            looping: true,
+            child: Builder(
+              builder: (final builderContext) => PerformableActionsListTile(
+                autofocus: index == 0,
+                actions: [
+                  PerformableAction(
+                    name: 'Rename',
+                    activator:
+                        CrossPlatformSingleActivator(LogicalKeyboardKey.keyR),
+                    invoke: () => context.pushWidgetBuilder(
+                      (final getTextContext) => GetText(
+                        onDone: (final value) async {
+                          Navigator.pop(getTextContext);
+                          await query.update(
+                            (final f) => f(name: Value(value)),
+                          );
+                          ref
+                            ..invalidate(zonesProvider)
+                            ..invalidate(zoneProvider(zone.id));
+                        },
+                        labelText: 'Name',
+                        text: zone.name,
+                        title: 'Rename Zone',
+                      ),
+                    ),
                   ),
-                ),
+                  PerformableAction(
+                    name: 'Delete',
+                    activator: deleteShortcut,
+                    invoke: () => context.confirm(
+                      message: 'Really delete the ${zone.name} zone?',
+                      title: confirmDeleteTitle,
+                      yesCallback: () async {
+                        Navigator.pop(context);
+                        await query.delete();
+                        ref.invalidate(zonesProvider);
+                      },
+                    ),
+                  ),
+                ],
+                title: Text(zone.name),
+                subtitle: Text(zone.description),
+                onTap: () => builderContext
+                  ..stopPlaySoundSemantics()
+                  ..pushWidgetBuilder(
+                    (final _) => EditZoneScreen(zoneId: zone.id),
+                  ),
               ),
-              PerformableAction(
-                name: 'Delete',
-                activator: deleteShortcut,
-                invoke: () => context.confirm(
-                  message: 'Really delete the ${zone.name} zone?',
-                  title: confirmDeleteTitle,
-                  yesCallback: () async {
-                    Navigator.pop(context);
-                    await query.delete();
-                    ref.invalidate(zonesProvider);
-                  },
-                ),
-              ),
-            ],
-            title: Text(zone.name),
-            subtitle: Text(zone.description),
-            onTap: () => context.pushWidgetBuilder(
-              (final _) => EditZoneScreen(zoneId: zone.id),
             ),
           );
         },

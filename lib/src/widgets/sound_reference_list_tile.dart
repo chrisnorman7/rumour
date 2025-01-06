@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants.dart';
 import '../providers.dart';
 import '../screens/select_sound_screen.dart';
+import 'play_sound_reference_semantics.dart';
 import 'unset.dart';
 
 /// A [ListTile] which allows configuring a [soundReference].
@@ -67,13 +68,8 @@ class SoundReferenceListTile extends ConsumerWidget {
     final provider = soundReferenceProvider(id);
     final value = ref.watch(provider);
     return value.when(
-      data: (final reference) => PlaySoundSemantics(
-        sound: projectContext.getSound(
-          soundReference: reference,
-          destroy: false,
-          looping: looping,
-        ),
-        key: ValueKey('${reference.path} (${reference.volume})'),
+      data: (final reference) => PlaySoundReferenceSemantics(
+        soundReferenceId: id,
         child: Builder(
           builder: (final builderContext) {
             final state = builderContext
