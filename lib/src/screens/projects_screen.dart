@@ -11,6 +11,7 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 import '../json/project.dart';
+import '../project_context.dart';
 import '../providers.dart';
 import '../widgets/nothing_to_see.dart';
 import 'editor/edit_project_screen.dart';
@@ -82,10 +83,9 @@ class ProjectsScreen extends ConsumerWidget {
       await preferences.save(ref: ref);
     }
     if (ref.context.mounted) {
+      currentProjectContext = ProjectContext.fromFile(file);
       await ref.context.pushWidgetBuilder(
-        (final _) => EditProjectScreen(
-          projectFilename: file.path,
-        ),
+        (final _) => const EditProjectScreen(),
       );
     }
   }

@@ -2,11 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart' as path;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'database/database.dart';
 import 'json/app_preferences.dart';
 import 'json/project.dart';
 import 'project_context.dart';
@@ -40,17 +38,22 @@ Future<List<File>> recentFiles(final Ref ref) async {
   return files;
 }
 
+/// The current project context.
+ProjectContext? currentProjectContext;
+
 /// Provide the current project context.
-@Riverpod(keepAlive: true)
-ProjectContext projectContext(final Ref ref, final String filename) {
-  final file = File(filename);
-  final project = Project.fromFile(file);
-  final databaseFilename = path.join(
-    file.parent.path,
-    project.databaseFilename,
-  );
-  final databaseFile = File(databaseFilename);
-  final database = AppDatabase(file: databaseFile);
-  ref.onDispose(database.close);
-  return ProjectContext(file: file, database: database);
+@riverpod
+ProjectContext projectContext(final Ref ref) {
+  final project = currentProjectContext;
+  if (project == null) {
+    throw StateError('No project has been loaded.');
+  }
+  return project;
+}
+
+/// Provide the current project.
+@riverpod
+Project project(final Ref ref) {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.project;
 }

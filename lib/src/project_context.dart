@@ -17,6 +17,9 @@ class ProjectContext {
     required this.database,
   });
 
+  /// Load an instance from [file].
+  ProjectContext.fromFile(this.file) : database = AppDatabase(file: file);
+
   /// The file this context was loaded from.
   final File file;
 
