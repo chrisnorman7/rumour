@@ -81,3 +81,22 @@ Future<List<Zone>> zones(final Ref ref) async {
       )
       .get();
 }
+
+/// Provide a single zone with the given [id].
+@riverpod
+Future<Zone> zone(final Ref ref, final int id) async {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.zones
+      .filter((final f) => f.id.equals(id))
+      .getSingle();
+}
+
+/// Provide all rooms with the given [zoneId].
+@riverpod
+Future<List<Room>> rooms(final Ref ref, final int zoneId) async {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.rooms
+      .filter((final f) => f.zoneId.id.equals(zoneId))
+      .orderBy((final o) => o.name.asc())
+      .get();
+}

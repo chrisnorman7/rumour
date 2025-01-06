@@ -259,9 +259,9 @@ class $ZonesTable extends Zones with TableInfo<$ZonesTable, Zone> {
       const VerificationMeta('musicId');
   @override
   late final GeneratedColumn<int> musicId = GeneratedColumn<int>(
-      'music_id', aliasedName, false,
+      'music_id', aliasedName, true,
       type: DriftSqlType.int,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES sound_references (id)'));
   @override
@@ -301,8 +301,6 @@ class $ZonesTable extends Zones with TableInfo<$ZonesTable, Zone> {
     if (data.containsKey('music_id')) {
       context.handle(_musicIdMeta,
           musicId.isAcceptableOrUnknown(data['music_id']!, _musicIdMeta));
-    } else if (isInserting) {
-      context.missing(_musicIdMeta);
     }
     return context;
   }
@@ -322,7 +320,7 @@ class $ZonesTable extends Zones with TableInfo<$ZonesTable, Zone> {
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       musicId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}music_id'])!,
+          .read(DriftSqlType.int, data['${effectivePrefix}music_id']),
     );
   }
 
@@ -346,13 +344,13 @@ class Zone extends DataClass implements Insertable<Zone> {
   final DateTime createdAt;
 
   /// The ID of the music this zone will play.
-  final int musicId;
+  final int? musicId;
   const Zone(
       {required this.id,
       required this.name,
       required this.description,
       required this.createdAt,
-      required this.musicId});
+      this.musicId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -360,7 +358,9 @@ class Zone extends DataClass implements Insertable<Zone> {
     map['name'] = Variable<String>(name);
     map['description'] = Variable<String>(description);
     map['created_at'] = Variable<DateTime>(createdAt);
-    map['music_id'] = Variable<int>(musicId);
+    if (!nullToAbsent || musicId != null) {
+      map['music_id'] = Variable<int>(musicId);
+    }
     return map;
   }
 
@@ -370,7 +370,9 @@ class Zone extends DataClass implements Insertable<Zone> {
       name: Value(name),
       description: Value(description),
       createdAt: Value(createdAt),
-      musicId: Value(musicId),
+      musicId: musicId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(musicId),
     );
   }
 
@@ -382,7 +384,7 @@ class Zone extends DataClass implements Insertable<Zone> {
       name: serializer.fromJson<String>(json['name']),
       description: serializer.fromJson<String>(json['description']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      musicId: serializer.fromJson<int>(json['musicId']),
+      musicId: serializer.fromJson<int?>(json['musicId']),
     );
   }
   @override
@@ -393,7 +395,7 @@ class Zone extends DataClass implements Insertable<Zone> {
       'name': serializer.toJson<String>(name),
       'description': serializer.toJson<String>(description),
       'createdAt': serializer.toJson<DateTime>(createdAt),
-      'musicId': serializer.toJson<int>(musicId),
+      'musicId': serializer.toJson<int?>(musicId),
     };
   }
 
@@ -402,13 +404,13 @@ class Zone extends DataClass implements Insertable<Zone> {
           String? name,
           String? description,
           DateTime? createdAt,
-          int? musicId}) =>
+          Value<int?> musicId = const Value.absent()}) =>
       Zone(
         id: id ?? this.id,
         name: name ?? this.name,
         description: description ?? this.description,
         createdAt: createdAt ?? this.createdAt,
-        musicId: musicId ?? this.musicId,
+        musicId: musicId.present ? musicId.value : this.musicId,
       );
   Zone copyWithCompanion(ZonesCompanion data) {
     return Zone(
@@ -451,7 +453,7 @@ class ZonesCompanion extends UpdateCompanion<Zone> {
   final Value<String> name;
   final Value<String> description;
   final Value<DateTime> createdAt;
-  final Value<int> musicId;
+  final Value<int?> musicId;
   const ZonesCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -464,10 +466,9 @@ class ZonesCompanion extends UpdateCompanion<Zone> {
     required String name,
     required String description,
     this.createdAt = const Value.absent(),
-    required int musicId,
+    this.musicId = const Value.absent(),
   })  : name = Value(name),
-        description = Value(description),
-        musicId = Value(musicId);
+        description = Value(description);
   static Insertable<Zone> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -489,7 +490,7 @@ class ZonesCompanion extends UpdateCompanion<Zone> {
       Value<String>? name,
       Value<String>? description,
       Value<DateTime>? createdAt,
-      Value<int>? musicId}) {
+      Value<int?>? musicId}) {
     return ZonesCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -1234,14 +1235,14 @@ typedef $$ZonesTableCreateCompanionBuilder = ZonesCompanion Function({
   required String name,
   required String description,
   Value<DateTime> createdAt,
-  required int musicId,
+  Value<int?> musicId,
 });
 typedef $$ZonesTableUpdateCompanionBuilder = ZonesCompanion Function({
   Value<int> id,
   Value<String> name,
   Value<String> description,
   Value<DateTime> createdAt,
-  Value<int> musicId,
+  Value<int?> musicId,
 });
 
 final class $$ZonesTableReferences
@@ -1252,10 +1253,11 @@ final class $$ZonesTableReferences
       db.soundReferences.createAlias(
           $_aliasNameGenerator(db.zones.musicId, db.soundReferences.id));
 
-  $$SoundReferencesTableProcessedTableManager get musicId {
+  $$SoundReferencesTableProcessedTableManager? get musicId {
+    if ($_item.musicId == null) return null;
     final manager =
         $$SoundReferencesTableTableManager($_db, $_db.soundReferences)
-            .filter((f) => f.id($_item.musicId));
+            .filter((f) => f.id($_item.musicId!));
     final item = $_typedResult.readTableOrNull(_musicIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -1471,7 +1473,7 @@ class $$ZonesTableTableManager extends RootTableManager<
             Value<String> name = const Value.absent(),
             Value<String> description = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
-            Value<int> musicId = const Value.absent(),
+            Value<int?> musicId = const Value.absent(),
           }) =>
               ZonesCompanion(
             id: id,
@@ -1485,7 +1487,7 @@ class $$ZonesTableTableManager extends RootTableManager<
             required String name,
             required String description,
             Value<DateTime> createdAt = const Value.absent(),
-            required int musicId,
+            Value<int?> musicId = const Value.absent(),
           }) =>
               ZonesCompanion.insert(
             id: id,

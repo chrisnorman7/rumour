@@ -17,3 +17,6 @@ const volumeAdjust = 0.1;
 
 /// The maximum volume for sounds.
 const maxVolume = 5.0;
+
+/// The title of confirm delete dialogs.
+const confirmDeleteTitle = 'Confirm Delete';

@@ -263,5 +263,284 @@ final zonesProvider = AutoDisposeFutureProvider<List<Zone>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ZonesRef = AutoDisposeFutureProviderRef<List<Zone>>;
+String _$zoneHash() => r'5ba174939d5f33617c94c255f707811a71e77aee';
+
+/// Provide a single zone with the given [id].
+///
+/// Copied from [zone].
+@ProviderFor(zone)
+const zoneProvider = ZoneFamily();
+
+/// Provide a single zone with the given [id].
+///
+/// Copied from [zone].
+class ZoneFamily extends Family<AsyncValue<Zone>> {
+  /// Provide a single zone with the given [id].
+  ///
+  /// Copied from [zone].
+  const ZoneFamily();
+
+  /// Provide a single zone with the given [id].
+  ///
+  /// Copied from [zone].
+  ZoneProvider call(
+    int id,
+  ) {
+    return ZoneProvider(
+      id,
+    );
+  }
+
+  @override
+  ZoneProvider getProviderOverride(
+    covariant ZoneProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'zoneProvider';
+}
+
+/// Provide a single zone with the given [id].
+///
+/// Copied from [zone].
+class ZoneProvider extends AutoDisposeFutureProvider<Zone> {
+  /// Provide a single zone with the given [id].
+  ///
+  /// Copied from [zone].
+  ZoneProvider(
+    int id,
+  ) : this._internal(
+          (ref) => zone(
+            ref as ZoneRef,
+            id,
+          ),
+          from: zoneProvider,
+          name: r'zoneProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product') ? null : _$zoneHash,
+          dependencies: ZoneFamily._dependencies,
+          allTransitiveDependencies: ZoneFamily._allTransitiveDependencies,
+          id: id,
+        );
+
+  ZoneProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
+  final int id;
+
+  @override
+  Override overrideWith(
+    FutureOr<Zone> Function(ZoneRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ZoneProvider._internal(
+        (ref) => create(ref as ZoneRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<Zone> createElement() {
+    return _ZoneProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ZoneProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin ZoneRef on AutoDisposeFutureProviderRef<Zone> {
+  /// The parameter `id` of this provider.
+  int get id;
+}
+
+class _ZoneProviderElement extends AutoDisposeFutureProviderElement<Zone>
+    with ZoneRef {
+  _ZoneProviderElement(super.provider);
+
+  @override
+  int get id => (origin as ZoneProvider).id;
+}
+
+String _$roomsHash() => r'63e18305655b9da537f95adab054b22877456061';
+
+/// Provide all rooms with the given [zoneId].
+///
+/// Copied from [rooms].
+@ProviderFor(rooms)
+const roomsProvider = RoomsFamily();
+
+/// Provide all rooms with the given [zoneId].
+///
+/// Copied from [rooms].
+class RoomsFamily extends Family<AsyncValue<List<Room>>> {
+  /// Provide all rooms with the given [zoneId].
+  ///
+  /// Copied from [rooms].
+  const RoomsFamily();
+
+  /// Provide all rooms with the given [zoneId].
+  ///
+  /// Copied from [rooms].
+  RoomsProvider call(
+    int zoneId,
+  ) {
+    return RoomsProvider(
+      zoneId,
+    );
+  }
+
+  @override
+  RoomsProvider getProviderOverride(
+    covariant RoomsProvider provider,
+  ) {
+    return call(
+      provider.zoneId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'roomsProvider';
+}
+
+/// Provide all rooms with the given [zoneId].
+///
+/// Copied from [rooms].
+class RoomsProvider extends AutoDisposeFutureProvider<List<Room>> {
+  /// Provide all rooms with the given [zoneId].
+  ///
+  /// Copied from [rooms].
+  RoomsProvider(
+    int zoneId,
+  ) : this._internal(
+          (ref) => rooms(
+            ref as RoomsRef,
+            zoneId,
+          ),
+          from: roomsProvider,
+          name: r'roomsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$roomsHash,
+          dependencies: RoomsFamily._dependencies,
+          allTransitiveDependencies: RoomsFamily._allTransitiveDependencies,
+          zoneId: zoneId,
+        );
+
+  RoomsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.zoneId,
+  }) : super.internal();
+
+  final int zoneId;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<Room>> Function(RoomsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: RoomsProvider._internal(
+        (ref) => create(ref as RoomsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        zoneId: zoneId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<Room>> createElement() {
+    return _RoomsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RoomsProvider && other.zoneId == zoneId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, zoneId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin RoomsRef on AutoDisposeFutureProviderRef<List<Room>> {
+  /// The parameter `zoneId` of this provider.
+  int get zoneId;
+}
+
+class _RoomsProviderElement extends AutoDisposeFutureProviderElement<List<Room>>
+    with RoomsRef {
+  _RoomsProviderElement(super.provider);
+
+  @override
+  int get zoneId => (origin as RoomsProvider).zoneId;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
