@@ -58,6 +58,26 @@ class EditProjectScreen extends ConsumerWidget {
               },
               title: 'Main menu music',
             ),
+            DurationListTile(
+              duration: project.mainMenuMusicFadeIn ?? Duration.zero,
+              onChanged: (final value) {
+                project.mainMenuMusicFadeIn =
+                    value == Duration.zero ? null : value;
+                projectContext.save(project);
+                ref.invalidate(projectProvider);
+              },
+              title: 'Music fade in',
+            ),
+            DurationListTile(
+              duration: project.mainMenuMusicFadeOut ?? Duration.zero,
+              onChanged: (final value) {
+                project.mainMenuMusicFadeOut =
+                    value == Duration.zero ? null : value;
+                projectContext.save(project);
+                ref.invalidate(projectProvider);
+              },
+              title: 'Music fade out',
+            ),
           ],
         ),
       ),
