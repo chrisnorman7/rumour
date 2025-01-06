@@ -118,3 +118,12 @@ Future<List<RoomSurface>> roomSurfaces(final Ref ref) {
       .orderBy((final o) => o.name.asc())
       .get();
 }
+
+/// Provide a single room surface by its [id].
+@riverpod
+Future<RoomSurface> roomSurface(final Ref ref, final int id) {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.roomSurfaces
+      .filter((final f) => f.id.equals(id))
+      .getSingle();
+}

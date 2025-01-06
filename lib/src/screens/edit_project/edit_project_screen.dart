@@ -6,7 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers.dart';
 import '../../widgets/close_project.dart';
+import '../edit_room_surface/edit_room_surface_screen.dart';
 import '../edit_zone/edit_zone_screen.dart';
+import 'tabs/project_room_surfaces_tab.dart';
 import 'tabs/project_settings_tab.dart';
 import 'tabs/project_zones_tab.dart';
 
@@ -39,6 +41,18 @@ class EditProjectScreen extends ConsumerWidget {
                 tooltip: 'New zone',
               ),
             ),
+            TabbedScaffoldTab(
+              title: 'Room Surfaces',
+              icon: const Text('Share footstep and wall sounds between rooms.'),
+              builder: (final _) => CommonShortcuts(
+                newCallback: () => _createRoomSurface(ref),
+                child: const ProjectRoomSurfacesTab(),
+              ),
+              floatingActionButton: NewButton(
+                onPressed: () => _createRoomSurface(ref),
+                tooltip: 'New room surface',
+              ),
+            ),
           ],
         ),
       );
@@ -57,6 +71,25 @@ class EditProjectScreen extends ConsumerWidget {
     if (context.mounted) {
       await context
           .pushWidgetBuilder((final _) => EditZoneScreen(zoneId: zone.id));
+    }
+  }
+
+  /// Create a new room surface.
+  Future<void> _createRoomSurface(final WidgetRef ref) async {
+    final projectContext = ref.read(projectContextProvider);
+    final surface =
+        await projectContext.database.managers.roomSurfaces.createReturning(
+      (final f) => f(
+        name: 'Untitled Room Surface',
+        description: 'An unremarkable room surface.',
+      ),
+    );
+    ref.invalidate(roomSurfaceProvider);
+    final context = ref.context;
+    if (context.mounted) {
+      await context.pushWidgetBuilder(
+        (final _) => EditRoomSurfaceScreen(roomSurfaceId: surface.id),
+      );
     }
   }
 }
