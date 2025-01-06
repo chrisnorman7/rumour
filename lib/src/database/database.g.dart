@@ -534,6 +534,334 @@ class ZonesCompanion extends UpdateCompanion<Zone> {
   }
 }
 
+class $RoomSurfacesTable extends RoomSurfaces
+    with TableInfo<$RoomSurfacesTable, RoomSurface> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RoomSurfacesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _footstepSoundIdMeta =
+      const VerificationMeta('footstepSoundId');
+  @override
+  late final GeneratedColumn<int> footstepSoundId = GeneratedColumn<int>(
+      'footstep_sound_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES sound_references (id)'));
+  static const VerificationMeta _wallSoundIMeta =
+      const VerificationMeta('wallSoundI');
+  @override
+  late final GeneratedColumn<int> wallSoundI = GeneratedColumn<int>(
+      'wall_sound_i', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES sound_references (id)'));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, name, description, footstepSoundId, wallSoundI];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'room_surfaces';
+  @override
+  VerificationContext validateIntegrity(Insertable<RoomSurface> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('footstep_sound_id')) {
+      context.handle(
+          _footstepSoundIdMeta,
+          footstepSoundId.isAcceptableOrUnknown(
+              data['footstep_sound_id']!, _footstepSoundIdMeta));
+    }
+    if (data.containsKey('wall_sound_i')) {
+      context.handle(
+          _wallSoundIMeta,
+          wallSoundI.isAcceptableOrUnknown(
+              data['wall_sound_i']!, _wallSoundIMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RoomSurface map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RoomSurface(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+      footstepSoundId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}footstep_sound_id']),
+      wallSoundI: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}wall_sound_i']),
+    );
+  }
+
+  @override
+  $RoomSurfacesTable createAlias(String alias) {
+    return $RoomSurfacesTable(attachedDatabase, alias);
+  }
+}
+
+class RoomSurface extends DataClass implements Insertable<RoomSurface> {
+  /// The primary key field.
+  final int id;
+
+  /// The name column.
+  final String name;
+
+  /// The description column.
+  final String description;
+
+  /// The footstep sound(s) to use.
+  final int? footstepSoundId;
+
+  /// The ID of the wall sound to use.
+  final int? wallSoundI;
+  const RoomSurface(
+      {required this.id,
+      required this.name,
+      required this.description,
+      this.footstepSoundId,
+      this.wallSoundI});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    if (!nullToAbsent || footstepSoundId != null) {
+      map['footstep_sound_id'] = Variable<int>(footstepSoundId);
+    }
+    if (!nullToAbsent || wallSoundI != null) {
+      map['wall_sound_i'] = Variable<int>(wallSoundI);
+    }
+    return map;
+  }
+
+  RoomSurfacesCompanion toCompanion(bool nullToAbsent) {
+    return RoomSurfacesCompanion(
+      id: Value(id),
+      name: Value(name),
+      description: Value(description),
+      footstepSoundId: footstepSoundId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(footstepSoundId),
+      wallSoundI: wallSoundI == null && nullToAbsent
+          ? const Value.absent()
+          : Value(wallSoundI),
+    );
+  }
+
+  factory RoomSurface.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RoomSurface(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      footstepSoundId: serializer.fromJson<int?>(json['footstepSoundId']),
+      wallSoundI: serializer.fromJson<int?>(json['wallSoundI']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'footstepSoundId': serializer.toJson<int?>(footstepSoundId),
+      'wallSoundI': serializer.toJson<int?>(wallSoundI),
+    };
+  }
+
+  RoomSurface copyWith(
+          {int? id,
+          String? name,
+          String? description,
+          Value<int?> footstepSoundId = const Value.absent(),
+          Value<int?> wallSoundI = const Value.absent()}) =>
+      RoomSurface(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description ?? this.description,
+        footstepSoundId: footstepSoundId.present
+            ? footstepSoundId.value
+            : this.footstepSoundId,
+        wallSoundI: wallSoundI.present ? wallSoundI.value : this.wallSoundI,
+      );
+  RoomSurface copyWithCompanion(RoomSurfacesCompanion data) {
+    return RoomSurface(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      description:
+          data.description.present ? data.description.value : this.description,
+      footstepSoundId: data.footstepSoundId.present
+          ? data.footstepSoundId.value
+          : this.footstepSoundId,
+      wallSoundI:
+          data.wallSoundI.present ? data.wallSoundI.value : this.wallSoundI,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoomSurface(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('footstepSoundId: $footstepSoundId, ')
+          ..write('wallSoundI: $wallSoundI')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, description, footstepSoundId, wallSoundI);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RoomSurface &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.footstepSoundId == this.footstepSoundId &&
+          other.wallSoundI == this.wallSoundI);
+}
+
+class RoomSurfacesCompanion extends UpdateCompanion<RoomSurface> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<int?> footstepSoundId;
+  final Value<int?> wallSoundI;
+  const RoomSurfacesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.footstepSoundId = const Value.absent(),
+    this.wallSoundI = const Value.absent(),
+  });
+  RoomSurfacesCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required String description,
+    this.footstepSoundId = const Value.absent(),
+    this.wallSoundI = const Value.absent(),
+  })  : name = Value(name),
+        description = Value(description);
+  static Insertable<RoomSurface> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<int>? footstepSoundId,
+    Expression<int>? wallSoundI,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (footstepSoundId != null) 'footstep_sound_id': footstepSoundId,
+      if (wallSoundI != null) 'wall_sound_i': wallSoundI,
+    });
+  }
+
+  RoomSurfacesCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<String>? description,
+      Value<int?>? footstepSoundId,
+      Value<int?>? wallSoundI}) {
+    return RoomSurfacesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      footstepSoundId: footstepSoundId ?? this.footstepSoundId,
+      wallSoundI: wallSoundI ?? this.wallSoundI,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (footstepSoundId.present) {
+      map['footstep_sound_id'] = Variable<int>(footstepSoundId.value);
+    }
+    if (wallSoundI.present) {
+      map['wall_sound_i'] = Variable<int>(wallSoundI.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoomSurfacesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('footstepSoundId: $footstepSoundId, ')
+          ..write('wallSoundI: $wallSoundI')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $RoomsTable extends Rooms with TableInfo<$RoomsTable, Room> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -552,6 +880,12 @@ class $RoomsTable extends Rooms with TableInfo<$RoomsTable, Room> {
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
@@ -592,9 +926,27 @@ class $RoomsTable extends Rooms with TableInfo<$RoomsTable, Room> {
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(15));
+  static const VerificationMeta _surfaceIdMeta =
+      const VerificationMeta('surfaceId');
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, name, createdAt, zoneId, ambianceId, maxX, maxY];
+  late final GeneratedColumn<int> surfaceId = GeneratedColumn<int>(
+      'surface_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES room_surfaces (id)'));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        description,
+        createdAt,
+        zoneId,
+        ambianceId,
+        maxX,
+        maxY,
+        surfaceId
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -613,6 +965,14 @@ class $RoomsTable extends Rooms with TableInfo<$RoomsTable, Room> {
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -638,6 +998,12 @@ class $RoomsTable extends Rooms with TableInfo<$RoomsTable, Room> {
       context.handle(
           _maxYMeta, maxY.isAcceptableOrUnknown(data['max_y']!, _maxYMeta));
     }
+    if (data.containsKey('surface_id')) {
+      context.handle(_surfaceIdMeta,
+          surfaceId.isAcceptableOrUnknown(data['surface_id']!, _surfaceIdMeta));
+    } else if (isInserting) {
+      context.missing(_surfaceIdMeta);
+    }
     return context;
   }
 
@@ -651,6 +1017,8 @@ class $RoomsTable extends Rooms with TableInfo<$RoomsTable, Room> {
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       zoneId: attachedDatabase.typeMapping
@@ -661,6 +1029,8 @@ class $RoomsTable extends Rooms with TableInfo<$RoomsTable, Room> {
           .read(DriftSqlType.int, data['${effectivePrefix}max_x'])!,
       maxY: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}max_y'])!,
+      surfaceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}surface_id'])!,
     );
   }
 
@@ -677,6 +1047,9 @@ class Room extends DataClass implements Insertable<Room> {
   /// The name column.
   final String name;
 
+  /// The description column.
+  final String description;
+
   /// The created at column.
   final DateTime createdAt;
 
@@ -691,19 +1064,25 @@ class Room extends DataClass implements Insertable<Room> {
 
   /// The maximum y coordinate.
   final int maxY;
+
+  /// The ID of the surface to use.
+  final int surfaceId;
   const Room(
       {required this.id,
       required this.name,
+      required this.description,
       required this.createdAt,
       required this.zoneId,
       this.ambianceId,
       required this.maxX,
-      required this.maxY});
+      required this.maxY,
+      required this.surfaceId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['zone_id'] = Variable<int>(zoneId);
     if (!nullToAbsent || ambianceId != null) {
@@ -711,6 +1090,7 @@ class Room extends DataClass implements Insertable<Room> {
     }
     map['max_x'] = Variable<int>(maxX);
     map['max_y'] = Variable<int>(maxY);
+    map['surface_id'] = Variable<int>(surfaceId);
     return map;
   }
 
@@ -718,6 +1098,7 @@ class Room extends DataClass implements Insertable<Room> {
     return RoomsCompanion(
       id: Value(id),
       name: Value(name),
+      description: Value(description),
       createdAt: Value(createdAt),
       zoneId: Value(zoneId),
       ambianceId: ambianceId == null && nullToAbsent
@@ -725,6 +1106,7 @@ class Room extends DataClass implements Insertable<Room> {
           : Value(ambianceId),
       maxX: Value(maxX),
       maxY: Value(maxY),
+      surfaceId: Value(surfaceId),
     );
   }
 
@@ -734,11 +1116,13 @@ class Room extends DataClass implements Insertable<Room> {
     return Room(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       zoneId: serializer.fromJson<int>(json['zoneId']),
       ambianceId: serializer.fromJson<int?>(json['ambianceId']),
       maxX: serializer.fromJson<int>(json['maxX']),
       maxY: serializer.fromJson<int>(json['maxY']),
+      surfaceId: serializer.fromJson<int>(json['surfaceId']),
     );
   }
   @override
@@ -747,41 +1131,50 @@ class Room extends DataClass implements Insertable<Room> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'zoneId': serializer.toJson<int>(zoneId),
       'ambianceId': serializer.toJson<int?>(ambianceId),
       'maxX': serializer.toJson<int>(maxX),
       'maxY': serializer.toJson<int>(maxY),
+      'surfaceId': serializer.toJson<int>(surfaceId),
     };
   }
 
   Room copyWith(
           {int? id,
           String? name,
+          String? description,
           DateTime? createdAt,
           int? zoneId,
           Value<int?> ambianceId = const Value.absent(),
           int? maxX,
-          int? maxY}) =>
+          int? maxY,
+          int? surfaceId}) =>
       Room(
         id: id ?? this.id,
         name: name ?? this.name,
+        description: description ?? this.description,
         createdAt: createdAt ?? this.createdAt,
         zoneId: zoneId ?? this.zoneId,
         ambianceId: ambianceId.present ? ambianceId.value : this.ambianceId,
         maxX: maxX ?? this.maxX,
         maxY: maxY ?? this.maxY,
+        surfaceId: surfaceId ?? this.surfaceId,
       );
   Room copyWithCompanion(RoomsCompanion data) {
     return Room(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
+      description:
+          data.description.present ? data.description.value : this.description,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       zoneId: data.zoneId.present ? data.zoneId.value : this.zoneId,
       ambianceId:
           data.ambianceId.present ? data.ambianceId.value : this.ambianceId,
       maxX: data.maxX.present ? data.maxX.value : this.maxX,
       maxY: data.maxY.present ? data.maxY.value : this.maxY,
+      surfaceId: data.surfaceId.present ? data.surfaceId.value : this.surfaceId,
     );
   }
 
@@ -790,94 +1183,114 @@ class Room extends DataClass implements Insertable<Room> {
     return (StringBuffer('Room(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('description: $description, ')
           ..write('createdAt: $createdAt, ')
           ..write('zoneId: $zoneId, ')
           ..write('ambianceId: $ambianceId, ')
           ..write('maxX: $maxX, ')
-          ..write('maxY: $maxY')
+          ..write('maxY: $maxY, ')
+          ..write('surfaceId: $surfaceId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, name, createdAt, zoneId, ambianceId, maxX, maxY);
+  int get hashCode => Object.hash(id, name, description, createdAt, zoneId,
+      ambianceId, maxX, maxY, surfaceId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Room &&
           other.id == this.id &&
           other.name == this.name &&
+          other.description == this.description &&
           other.createdAt == this.createdAt &&
           other.zoneId == this.zoneId &&
           other.ambianceId == this.ambianceId &&
           other.maxX == this.maxX &&
-          other.maxY == this.maxY);
+          other.maxY == this.maxY &&
+          other.surfaceId == this.surfaceId);
 }
 
 class RoomsCompanion extends UpdateCompanion<Room> {
   final Value<int> id;
   final Value<String> name;
+  final Value<String> description;
   final Value<DateTime> createdAt;
   final Value<int> zoneId;
   final Value<int?> ambianceId;
   final Value<int> maxX;
   final Value<int> maxY;
+  final Value<int> surfaceId;
   const RoomsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
+    this.description = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.zoneId = const Value.absent(),
     this.ambianceId = const Value.absent(),
     this.maxX = const Value.absent(),
     this.maxY = const Value.absent(),
+    this.surfaceId = const Value.absent(),
   });
   RoomsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
+    required String description,
     this.createdAt = const Value.absent(),
     required int zoneId,
     this.ambianceId = const Value.absent(),
     this.maxX = const Value.absent(),
     this.maxY = const Value.absent(),
+    required int surfaceId,
   })  : name = Value(name),
-        zoneId = Value(zoneId);
+        description = Value(description),
+        zoneId = Value(zoneId),
+        surfaceId = Value(surfaceId);
   static Insertable<Room> custom({
     Expression<int>? id,
     Expression<String>? name,
+    Expression<String>? description,
     Expression<DateTime>? createdAt,
     Expression<int>? zoneId,
     Expression<int>? ambianceId,
     Expression<int>? maxX,
     Expression<int>? maxY,
+    Expression<int>? surfaceId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      if (description != null) 'description': description,
       if (createdAt != null) 'created_at': createdAt,
       if (zoneId != null) 'zone_id': zoneId,
       if (ambianceId != null) 'ambiance_id': ambianceId,
       if (maxX != null) 'max_x': maxX,
       if (maxY != null) 'max_y': maxY,
+      if (surfaceId != null) 'surface_id': surfaceId,
     });
   }
 
   RoomsCompanion copyWith(
       {Value<int>? id,
       Value<String>? name,
+      Value<String>? description,
       Value<DateTime>? createdAt,
       Value<int>? zoneId,
       Value<int?>? ambianceId,
       Value<int>? maxX,
-      Value<int>? maxY}) {
+      Value<int>? maxY,
+      Value<int>? surfaceId}) {
     return RoomsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
+      description: description ?? this.description,
       createdAt: createdAt ?? this.createdAt,
       zoneId: zoneId ?? this.zoneId,
       ambianceId: ambianceId ?? this.ambianceId,
       maxX: maxX ?? this.maxX,
       maxY: maxY ?? this.maxY,
+      surfaceId: surfaceId ?? this.surfaceId,
     );
   }
 
@@ -889,6 +1302,9 @@ class RoomsCompanion extends UpdateCompanion<Room> {
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -905,6 +1321,9 @@ class RoomsCompanion extends UpdateCompanion<Room> {
     if (maxY.present) {
       map['max_y'] = Variable<int>(maxY.value);
     }
+    if (surfaceId.present) {
+      map['surface_id'] = Variable<int>(surfaceId.value);
+    }
     return map;
   }
 
@@ -913,11 +1332,13 @@ class RoomsCompanion extends UpdateCompanion<Room> {
     return (StringBuffer('RoomsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('description: $description, ')
           ..write('createdAt: $createdAt, ')
           ..write('zoneId: $zoneId, ')
           ..write('ambianceId: $ambianceId, ')
           ..write('maxX: $maxX, ')
-          ..write('maxY: $maxY')
+          ..write('maxY: $maxY, ')
+          ..write('surfaceId: $surfaceId')
           ..write(')'))
         .toString();
   }
@@ -929,13 +1350,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $SoundReferencesTable soundReferences =
       $SoundReferencesTable(this);
   late final $ZonesTable zones = $ZonesTable(this);
+  late final $RoomSurfacesTable roomSurfaces = $RoomSurfacesTable(this);
   late final $RoomsTable rooms = $RoomsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [soundReferences, zones, rooms];
+      [soundReferences, zones, roomSurfaces, rooms];
 }
 
 typedef $$SoundReferencesTableCreateCompanionBuilder = SoundReferencesCompanion
@@ -1561,23 +1983,448 @@ typedef $$ZonesTableProcessedTableManager = ProcessedTableManager<
     (Zone, $$ZonesTableReferences),
     Zone,
     PrefetchHooks Function({bool musicId, bool roomsRefs})>;
+typedef $$RoomSurfacesTableCreateCompanionBuilder = RoomSurfacesCompanion
+    Function({
+  Value<int> id,
+  required String name,
+  required String description,
+  Value<int?> footstepSoundId,
+  Value<int?> wallSoundI,
+});
+typedef $$RoomSurfacesTableUpdateCompanionBuilder = RoomSurfacesCompanion
+    Function({
+  Value<int> id,
+  Value<String> name,
+  Value<String> description,
+  Value<int?> footstepSoundId,
+  Value<int?> wallSoundI,
+});
+
+final class $$RoomSurfacesTableReferences
+    extends BaseReferences<_$AppDatabase, $RoomSurfacesTable, RoomSurface> {
+  $$RoomSurfacesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $SoundReferencesTable _footstepSoundIdTable(_$AppDatabase db) =>
+      db.soundReferences.createAlias($_aliasNameGenerator(
+          db.roomSurfaces.footstepSoundId, db.soundReferences.id));
+
+  $$SoundReferencesTableProcessedTableManager? get footstepSoundId {
+    if ($_item.footstepSoundId == null) return null;
+    final manager =
+        $$SoundReferencesTableTableManager($_db, $_db.soundReferences)
+            .filter((f) => f.id($_item.footstepSoundId!));
+    final item = $_typedResult.readTableOrNull(_footstepSoundIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $SoundReferencesTable _wallSoundITable(_$AppDatabase db) =>
+      db.soundReferences.createAlias($_aliasNameGenerator(
+          db.roomSurfaces.wallSoundI, db.soundReferences.id));
+
+  $$SoundReferencesTableProcessedTableManager? get wallSoundI {
+    if ($_item.wallSoundI == null) return null;
+    final manager =
+        $$SoundReferencesTableTableManager($_db, $_db.soundReferences)
+            .filter((f) => f.id($_item.wallSoundI!));
+    final item = $_typedResult.readTableOrNull(_wallSoundITable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static MultiTypedResultKey<$RoomsTable, List<Room>> _roomsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.rooms,
+          aliasName:
+              $_aliasNameGenerator(db.roomSurfaces.id, db.rooms.surfaceId));
+
+  $$RoomsTableProcessedTableManager get roomsRefs {
+    final manager = $$RoomsTableTableManager($_db, $_db.rooms)
+        .filter((f) => f.surfaceId.id($_item.id));
+
+    final cache = $_typedResult.readTableOrNull(_roomsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$RoomSurfacesTableFilterComposer
+    extends Composer<_$AppDatabase, $RoomSurfacesTable> {
+  $$RoomSurfacesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
+
+  $$SoundReferencesTableFilterComposer get footstepSoundId {
+    final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.footstepSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableFilterComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableFilterComposer get wallSoundI {
+    final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.wallSoundI,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableFilterComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  Expression<bool> roomsRefs(
+      Expression<bool> Function($$RoomsTableFilterComposer f) f) {
+    final $$RoomsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.rooms,
+        getReferencedColumn: (t) => t.surfaceId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomsTableFilterComposer(
+              $db: $db,
+              $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$RoomSurfacesTableOrderingComposer
+    extends Composer<_$AppDatabase, $RoomSurfacesTable> {
+  $$RoomSurfacesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
+
+  $$SoundReferencesTableOrderingComposer get footstepSoundId {
+    final $$SoundReferencesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.footstepSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableOrderingComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableOrderingComposer get wallSoundI {
+    final $$SoundReferencesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.wallSoundI,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableOrderingComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RoomSurfacesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RoomSurfacesTable> {
+  $$RoomSurfacesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
+
+  $$SoundReferencesTableAnnotationComposer get footstepSoundId {
+    final $$SoundReferencesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.footstepSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableAnnotationComposer get wallSoundI {
+    final $$SoundReferencesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.wallSoundI,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  Expression<T> roomsRefs<T extends Object>(
+      Expression<T> Function($$RoomsTableAnnotationComposer a) f) {
+    final $$RoomsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.rooms,
+        getReferencedColumn: (t) => t.surfaceId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$RoomSurfacesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $RoomSurfacesTable,
+    RoomSurface,
+    $$RoomSurfacesTableFilterComposer,
+    $$RoomSurfacesTableOrderingComposer,
+    $$RoomSurfacesTableAnnotationComposer,
+    $$RoomSurfacesTableCreateCompanionBuilder,
+    $$RoomSurfacesTableUpdateCompanionBuilder,
+    (RoomSurface, $$RoomSurfacesTableReferences),
+    RoomSurface,
+    PrefetchHooks Function(
+        {bool footstepSoundId, bool wallSoundI, bool roomsRefs})> {
+  $$RoomSurfacesTableTableManager(_$AppDatabase db, $RoomSurfacesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RoomSurfacesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RoomSurfacesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RoomSurfacesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> description = const Value.absent(),
+            Value<int?> footstepSoundId = const Value.absent(),
+            Value<int?> wallSoundI = const Value.absent(),
+          }) =>
+              RoomSurfacesCompanion(
+            id: id,
+            name: name,
+            description: description,
+            footstepSoundId: footstepSoundId,
+            wallSoundI: wallSoundI,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            required String description,
+            Value<int?> footstepSoundId = const Value.absent(),
+            Value<int?> wallSoundI = const Value.absent(),
+          }) =>
+              RoomSurfacesCompanion.insert(
+            id: id,
+            name: name,
+            description: description,
+            footstepSoundId: footstepSoundId,
+            wallSoundI: wallSoundI,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$RoomSurfacesTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: (
+              {footstepSoundId = false,
+              wallSoundI = false,
+              roomsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (roomsRefs) db.rooms],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (footstepSoundId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.footstepSoundId,
+                    referencedTable:
+                        $$RoomSurfacesTableReferences._footstepSoundIdTable(db),
+                    referencedColumn: $$RoomSurfacesTableReferences
+                        ._footstepSoundIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (wallSoundI) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.wallSoundI,
+                    referencedTable:
+                        $$RoomSurfacesTableReferences._wallSoundITable(db),
+                    referencedColumn:
+                        $$RoomSurfacesTableReferences._wallSoundITable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (roomsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable:
+                            $$RoomSurfacesTableReferences._roomsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$RoomSurfacesTableReferences(db, table, p0)
+                                .roomsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.surfaceId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$RoomSurfacesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $RoomSurfacesTable,
+    RoomSurface,
+    $$RoomSurfacesTableFilterComposer,
+    $$RoomSurfacesTableOrderingComposer,
+    $$RoomSurfacesTableAnnotationComposer,
+    $$RoomSurfacesTableCreateCompanionBuilder,
+    $$RoomSurfacesTableUpdateCompanionBuilder,
+    (RoomSurface, $$RoomSurfacesTableReferences),
+    RoomSurface,
+    PrefetchHooks Function(
+        {bool footstepSoundId, bool wallSoundI, bool roomsRefs})>;
 typedef $$RoomsTableCreateCompanionBuilder = RoomsCompanion Function({
   Value<int> id,
   required String name,
+  required String description,
   Value<DateTime> createdAt,
   required int zoneId,
   Value<int?> ambianceId,
   Value<int> maxX,
   Value<int> maxY,
+  required int surfaceId,
 });
 typedef $$RoomsTableUpdateCompanionBuilder = RoomsCompanion Function({
   Value<int> id,
   Value<String> name,
+  Value<String> description,
   Value<DateTime> createdAt,
   Value<int> zoneId,
   Value<int?> ambianceId,
   Value<int> maxX,
   Value<int> maxY,
+  Value<int> surfaceId,
 });
 
 final class $$RoomsTableReferences
@@ -1610,6 +2457,19 @@ final class $$RoomsTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
   }
+
+  static $RoomSurfacesTable _surfaceIdTable(_$AppDatabase db) =>
+      db.roomSurfaces.createAlias(
+          $_aliasNameGenerator(db.rooms.surfaceId, db.roomSurfaces.id));
+
+  $$RoomSurfacesTableProcessedTableManager get surfaceId {
+    final manager = $$RoomSurfacesTableTableManager($_db, $_db.roomSurfaces)
+        .filter((f) => f.id($_item.surfaceId));
+    final item = $_typedResult.readTableOrNull(_surfaceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
 }
 
 class $$RoomsTableFilterComposer extends Composer<_$AppDatabase, $RoomsTable> {
@@ -1625,6 +2485,9 @@ class $$RoomsTableFilterComposer extends Composer<_$AppDatabase, $RoomsTable> {
 
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -1674,6 +2537,26 @@ class $$RoomsTableFilterComposer extends Composer<_$AppDatabase, $RoomsTable> {
             ));
     return composer;
   }
+
+  $$RoomSurfacesTableFilterComposer get surfaceId {
+    final $$RoomSurfacesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.surfaceId,
+        referencedTable: $db.roomSurfaces,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfacesTableFilterComposer(
+              $db: $db,
+              $table: $db.roomSurfaces,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$RoomsTableOrderingComposer
@@ -1690,6 +2573,9 @@ class $$RoomsTableOrderingComposer
 
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
@@ -1739,6 +2625,26 @@ class $$RoomsTableOrderingComposer
             ));
     return composer;
   }
+
+  $$RoomSurfacesTableOrderingComposer get surfaceId {
+    final $$RoomSurfacesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.surfaceId,
+        referencedTable: $db.roomSurfaces,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfacesTableOrderingComposer(
+              $db: $db,
+              $table: $db.roomSurfaces,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$RoomsTableAnnotationComposer
@@ -1755,6 +2661,9 @@ class $$RoomsTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -1804,6 +2713,26 @@ class $$RoomsTableAnnotationComposer
             ));
     return composer;
   }
+
+  $$RoomSurfacesTableAnnotationComposer get surfaceId {
+    final $$RoomSurfacesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.surfaceId,
+        referencedTable: $db.roomSurfaces,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfacesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roomSurfaces,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$RoomsTableTableManager extends RootTableManager<
@@ -1817,7 +2746,7 @@ class $$RoomsTableTableManager extends RootTableManager<
     $$RoomsTableUpdateCompanionBuilder,
     (Room, $$RoomsTableReferences),
     Room,
-    PrefetchHooks Function({bool zoneId, bool ambianceId})> {
+    PrefetchHooks Function({bool zoneId, bool ambianceId, bool surfaceId})> {
   $$RoomsTableTableManager(_$AppDatabase db, $RoomsTable table)
       : super(TableManagerState(
           db: db,
@@ -1831,44 +2760,53 @@ class $$RoomsTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
+            Value<String> description = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<int> zoneId = const Value.absent(),
             Value<int?> ambianceId = const Value.absent(),
             Value<int> maxX = const Value.absent(),
             Value<int> maxY = const Value.absent(),
+            Value<int> surfaceId = const Value.absent(),
           }) =>
               RoomsCompanion(
             id: id,
             name: name,
+            description: description,
             createdAt: createdAt,
             zoneId: zoneId,
             ambianceId: ambianceId,
             maxX: maxX,
             maxY: maxY,
+            surfaceId: surfaceId,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String name,
+            required String description,
             Value<DateTime> createdAt = const Value.absent(),
             required int zoneId,
             Value<int?> ambianceId = const Value.absent(),
             Value<int> maxX = const Value.absent(),
             Value<int> maxY = const Value.absent(),
+            required int surfaceId,
           }) =>
               RoomsCompanion.insert(
             id: id,
             name: name,
+            description: description,
             createdAt: createdAt,
             zoneId: zoneId,
             ambianceId: ambianceId,
             maxX: maxX,
             maxY: maxY,
+            surfaceId: surfaceId,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) =>
                   (e.readTable(table), $$RoomsTableReferences(db, table, e)))
               .toList(),
-          prefetchHooksCallback: ({zoneId = false, ambianceId = false}) {
+          prefetchHooksCallback: (
+              {zoneId = false, ambianceId = false, surfaceId = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -1904,6 +2842,15 @@ class $$RoomsTableTableManager extends RootTableManager<
                         $$RoomsTableReferences._ambianceIdTable(db).id,
                   ) as T;
                 }
+                if (surfaceId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.surfaceId,
+                    referencedTable: $$RoomsTableReferences._surfaceIdTable(db),
+                    referencedColumn:
+                        $$RoomsTableReferences._surfaceIdTable(db).id,
+                  ) as T;
+                }
 
                 return state;
               },
@@ -1926,7 +2873,7 @@ typedef $$RoomsTableProcessedTableManager = ProcessedTableManager<
     $$RoomsTableUpdateCompanionBuilder,
     (Room, $$RoomsTableReferences),
     Room,
-    PrefetchHooks Function({bool zoneId, bool ambianceId})>;
+    PrefetchHooks Function({bool zoneId, bool ambianceId, bool surfaceId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1935,6 +2882,8 @@ class $AppDatabaseManager {
       $$SoundReferencesTableTableManager(_db, _db.soundReferences);
   $$ZonesTableTableManager get zones =>
       $$ZonesTableTableManager(_db, _db.zones);
+  $$RoomSurfacesTableTableManager get roomSurfaces =>
+      $$RoomSurfacesTableTableManager(_db, _db.roomSurfaces);
   $$RoomsTableTableManager get rooms =>
       $$RoomsTableTableManager(_db, _db.rooms);
 }

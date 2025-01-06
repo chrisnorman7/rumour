@@ -1,11 +1,13 @@
 import 'package:drift/drift.dart';
 
 import 'mixins.dart';
+import 'room_surfaces.dart';
 import 'sound_references.dart';
 import 'zones.dart';
 
 /// The rooms table.
-class Rooms extends Table with IdMixin, NameMixin, CreatedAtMixin {
+class Rooms extends Table
+    with IdMixin, NameMixin, DescriptionMixin, CreatedAtMixin {
   /// The ID of the zone which this room belongs to.
   IntColumn get zoneId => integer().references(Zones, #id)();
 
@@ -18,4 +20,7 @@ class Rooms extends Table with IdMixin, NameMixin, CreatedAtMixin {
 
   /// The maximum y coordinate.
   IntColumn get maxY => integer().withDefault(const Constant(15))();
+
+  /// The ID of the surface to use.
+  IntColumn get surfaceId => integer().references(RoomSurfaces, #id)();
 }

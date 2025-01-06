@@ -100,3 +100,21 @@ Future<List<Room>> rooms(final Ref ref, final int zoneId) async {
       .orderBy((final o) => o.name.asc())
       .get();
 }
+
+/// Provide a single room by its [id].
+@riverpod
+Future<Room> room(final Ref ref, final int id) async {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.rooms
+      .filter((final f) => f.id.equals(id))
+      .getSingle();
+}
+
+/// Provide all room surfaces.
+@riverpod
+Future<List<RoomSurface>> roomSurfaces(final Ref ref) {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.roomSurfaces
+      .orderBy((final o) => o.name.asc())
+      .get();
+}

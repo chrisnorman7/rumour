@@ -542,5 +542,164 @@ class _RoomsProviderElement extends AutoDisposeFutureProviderElement<List<Room>>
   @override
   int get zoneId => (origin as RoomsProvider).zoneId;
 }
+
+String _$roomHash() => r'63ec0b7d728c321f0f8515a423a8ba7165f95e33';
+
+/// Provide a single room by its [id].
+///
+/// Copied from [room].
+@ProviderFor(room)
+const roomProvider = RoomFamily();
+
+/// Provide a single room by its [id].
+///
+/// Copied from [room].
+class RoomFamily extends Family<AsyncValue<Room>> {
+  /// Provide a single room by its [id].
+  ///
+  /// Copied from [room].
+  const RoomFamily();
+
+  /// Provide a single room by its [id].
+  ///
+  /// Copied from [room].
+  RoomProvider call(
+    int id,
+  ) {
+    return RoomProvider(
+      id,
+    );
+  }
+
+  @override
+  RoomProvider getProviderOverride(
+    covariant RoomProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'roomProvider';
+}
+
+/// Provide a single room by its [id].
+///
+/// Copied from [room].
+class RoomProvider extends AutoDisposeFutureProvider<Room> {
+  /// Provide a single room by its [id].
+  ///
+  /// Copied from [room].
+  RoomProvider(
+    int id,
+  ) : this._internal(
+          (ref) => room(
+            ref as RoomRef,
+            id,
+          ),
+          from: roomProvider,
+          name: r'roomProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product') ? null : _$roomHash,
+          dependencies: RoomFamily._dependencies,
+          allTransitiveDependencies: RoomFamily._allTransitiveDependencies,
+          id: id,
+        );
+
+  RoomProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
+  final int id;
+
+  @override
+  Override overrideWith(
+    FutureOr<Room> Function(RoomRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: RoomProvider._internal(
+        (ref) => create(ref as RoomRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<Room> createElement() {
+    return _RoomProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RoomProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin RoomRef on AutoDisposeFutureProviderRef<Room> {
+  /// The parameter `id` of this provider.
+  int get id;
+}
+
+class _RoomProviderElement extends AutoDisposeFutureProviderElement<Room>
+    with RoomRef {
+  _RoomProviderElement(super.provider);
+
+  @override
+  int get id => (origin as RoomProvider).id;
+}
+
+String _$roomSurfacesHash() => r'c7fa6fb65288d25cf7cda7f8794ff9fa1186b09e';
+
+/// Provide all room surfaces.
+///
+/// Copied from [roomSurfaces].
+@ProviderFor(roomSurfaces)
+final roomSurfacesProvider =
+    AutoDisposeFutureProvider<List<RoomSurface>>.internal(
+  roomSurfaces,
+  name: r'roomSurfacesProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$roomSurfacesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef RoomSurfacesRef = AutoDisposeFutureProviderRef<List<RoomSurface>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

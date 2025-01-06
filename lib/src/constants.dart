@@ -1,5 +1,8 @@
 import 'dart:math';
 
+import 'package:backstreets_widgets/shortcuts.dart';
+import 'package:flutter/services.dart';
+
 /// The random number generator to use.
 final random = Random();
 
@@ -20,3 +23,6 @@ const maxVolume = 5.0;
 
 /// The title of confirm delete dialogs.
 const confirmDeleteTitle = 'Confirm Delete';
+
+/// The shortcut for renaming things.
+final renameShortcut = CrossPlatformSingleActivator(LogicalKeyboardKey.keyR);

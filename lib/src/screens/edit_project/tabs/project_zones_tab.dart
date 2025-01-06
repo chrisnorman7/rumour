@@ -3,7 +3,6 @@ import 'package:backstreets_widgets/shortcuts.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -46,8 +45,7 @@ class ProjectZonesTab extends ConsumerWidget {
                 actions: [
                   PerformableAction(
                     name: 'Rename',
-                    activator:
-                        CrossPlatformSingleActivator(LogicalKeyboardKey.keyR),
+                    activator: renameShortcut,
                     invoke: () => context.pushWidgetBuilder(
                       (final getTextContext) => GetText(
                         onDone: (final value) async {

@@ -1,8 +1,12 @@
+import 'package:backstreets_widgets/extensions.dart';
 import 'package:backstreets_widgets/screens.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../database/database.dart';
+import '../../providers.dart';
+import '../edit_room/edit_room_screen.dart';
 import 'tabs/zone_rooms_tab.dart';
 import 'tabs/zone_settings_tab.dart';
 
@@ -30,9 +34,48 @@ class EditZoneScreen extends ConsumerWidget {
             TabbedScaffoldTab(
               title: 'Rooms',
               icon: const Text('The rooms in this zone'),
-              builder: (final _) => ZoneRoomsTab(zoneId: zoneId),
+              builder: (final _) => CommonShortcuts(
+                newCallback: () => _createRoom(ref),
+                child: ZoneRoomsTab(zoneId: zoneId),
+              ),
+              floatingActionButton: NewButton(
+                onPressed: () => _createRoom(ref),
+                tooltip: 'New room',
+              ),
             ),
           ],
         ),
       );
+
+  /// Create a new room.
+  Future<void> _createRoom(final WidgetRef ref) async {
+    final context = ref.context;
+    final projectContext = ref.watch(projectContextProvider);
+    final surfaces = await ref.read(roomSurfacesProvider.future);
+    final RoomSurface surface;
+    if (surfaces.isEmpty) {
+      surface =
+          await projectContext.database.managers.roomSurfaces.createReturning(
+        (final f) => f(
+          name: 'Untitled Surface',
+          description: 'An unremarkable room surface.',
+        ),
+      );
+    } else {
+      surface = surfaces.first;
+    }
+    final room = await projectContext.database.managers.rooms.createReturning(
+      (final f) => f(
+        zoneId: zoneId,
+        name: 'Untitled Room',
+        description: 'An unremarkable room.',
+        surfaceId: surface.id,
+      ),
+    );
+    ref.invalidate(roomsProvider);
+    if (context.mounted) {
+      await context
+          .pushWidgetBuilder((final _) => EditRoomScreen(roomId: room.id));
+    }
+  }
 }

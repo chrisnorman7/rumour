@@ -12,6 +12,7 @@ part 'database.g.dart';
   tables: [
     Zones,
     Rooms,
+    RoomSurfaces,
     SoundReferences,
   ],
 )
@@ -22,7 +23,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// The schema version.
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   /// Migrate the database.
   @override
@@ -33,6 +34,12 @@ class AppDatabase extends _$AppDatabase {
         onCreate: (final m) async {
           await m.createAll();
         },
-        onUpgrade: (final m, final from, final to) async {},
+        onUpgrade: (final m, final from, final to) async {
+          if (from < 2) {
+            await m.addColumn(rooms, rooms.description);
+            await m.addColumn(rooms, rooms.surfaceId);
+            await m.createTable(roomSurfaces);
+          }
+        },
       );
 }
