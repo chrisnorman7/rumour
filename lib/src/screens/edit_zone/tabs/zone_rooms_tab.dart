@@ -12,6 +12,7 @@ import '../../../providers.dart';
 import '../../../widgets/nothing_to_see.dart';
 import '../../../widgets/play_sound_reference_semantics.dart';
 import '../../edit_room/edit_room_screen.dart';
+import '../../select_zone_screen.dart';
 
 /// The zone rooms tab.
 class ZoneRoomsTab extends ConsumerWidget {
@@ -64,6 +65,24 @@ class ZoneRoomsTab extends ConsumerWidget {
                         title: 'Rename Room',
                       ),
                     ),
+                  ),
+                  PerformableAction(
+                    name: 'Move',
+                    activator: moveShortcut,
+                    invoke: () => builderContext
+                      ..stopPlaySoundSemantics()
+                      ..pushWidgetBuilder(
+                        (final _) => SelectZoneScreen(
+                          onChanged: (final id) async {
+                            await query
+                                .update((final f) => f(zoneId: Value(id)));
+                            ref
+                              ..invalidate(roomsProvider)
+                              ..invalidate(roomProvider(room.id));
+                          },
+                          currentZoneId: room.zoneId,
+                        ),
+                      ),
                   ),
                   PerformableAction(
                     name: 'Delete',

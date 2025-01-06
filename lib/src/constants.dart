@@ -26,3 +26,6 @@ const confirmDeleteTitle = 'Confirm Delete';
 
 /// The shortcut for renaming things.
 final renameShortcut = CrossPlatformSingleActivator(LogicalKeyboardKey.keyR);
+
+/// The shortcut key for moving things.
+final moveShortcut = CrossPlatformSingleActivator(LogicalKeyboardKey.period);
