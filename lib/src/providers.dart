@@ -40,35 +40,40 @@ Future<List<File>> recentFiles(final Ref ref) async {
   return files;
 }
 
-/// Provide a project context.
+/// Provide the current project context.
+@Riverpod(keepAlive: true)
+ProjectContext projectContext(final Ref ref) {
+  final filename = ref.watch(projectContextFilenameNotifierProvider);
+  if (filename == null) {
+    throw StateError('No project has been loaded yet.');
+  }
+  final file = File(filename);
+  final project = Project.fromFile(file);
+  final databaseFilename = path.join(
+    file.parent.path,
+    project.databaseFilename,
+  );
+  final databaseFile = File(databaseFilename);
+  final database = AppDatabase(file: databaseFile);
+  ref.onDispose(database.close);
+  return ProjectContext(file: file, database: database);
+}
+
+/// Provide the filename of a project context.
 @riverpod
-class ProjectContextNotifier extends _$ProjectContextNotifier {
+class ProjectContextFilenameNotifier extends _$ProjectContextFilenameNotifier {
   /// Build the initial value
   @override
-  ProjectContext? build() => null;
+  String? build() => null;
 
   /// Load a new value from the given [filename].
-  Future<void> setProjectContext(final String filename) async {
-    await clear();
-    final file = File(filename);
-    final project = Project.fromFile(file);
-    final databaseFile = File(
-      path.join(file.parent.path, project.databaseFilename),
-    );
-    final database = AppDatabase(file: databaseFile);
-    final projectContext = ProjectContext(
-      file: file,
-      database: database,
-    );
-    state = projectContext;
+  // ignore: use_setters_to_change_properties
+  void setFilename(final String filename) {
+    state = filename;
   }
 
   /// Clear the value.
   Future<void> clear() async {
-    final old = state;
     state = null;
-    if (old != null) {
-      await old.database.close();
-    }
   }
 }

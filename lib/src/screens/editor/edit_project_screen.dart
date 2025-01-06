@@ -15,8 +15,8 @@ class EditProjectScreen extends ConsumerWidget {
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final projectContext = ref.watch(projectContextNotifierProvider);
-    final project = projectContext!.project;
+    final projectContext = ref.watch(projectContextProvider);
+    final project = projectContext.project;
     return SimpleScaffold(
       title: 'Edit Project',
       body: ListView(
@@ -27,7 +27,7 @@ class EditProjectScreen extends ConsumerWidget {
             onChanged: (final value) {
               project.name = value;
               projectContext.save(project);
-              ref.invalidate(projectContextNotifierProvider);
+              ref.invalidate(projectContextProvider);
             },
             autofocus: true,
             header: 'Name',

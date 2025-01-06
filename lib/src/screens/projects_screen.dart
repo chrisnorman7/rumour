@@ -81,9 +81,9 @@ class ProjectsScreen extends ConsumerWidget {
       preferences.recentFiles.add(file.path);
       await preferences.save(ref: ref);
     }
-    await ref
-        .read(projectContextNotifierProvider.notifier)
-        .setProjectContext(file.path);
+    ref
+        .read(projectContextFilenameNotifierProvider.notifier)
+        .setFilename(file.path);
     if (ref.context.mounted) {
       await ref.context.pushWidgetBuilder(
         (final _) => const EditProjectScreen(),
