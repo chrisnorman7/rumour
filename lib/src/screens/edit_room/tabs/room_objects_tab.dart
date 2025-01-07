@@ -49,4 +49,7 @@ class RoomObjectsTab extends ConsumerWidget {
       },
     );
   }
+
+  /// Create a new object.
+  Future<void> createRoomObject(final WidgetRef ref) async {}
 }

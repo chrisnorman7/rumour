@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart';
 
+import '_tables.dart';
+
 /// A mixin to add a unique [id] column.
 mixin IdMixin on Table {
   /// The primary key field.
@@ -22,4 +24,18 @@ mixin CreatedAtMixin on Table {
 mixin DescriptionMixin on Table {
   /// The description column.
   TextColumn get description => text()();
+}
+
+/// Add an [ambianceId] column.
+mixin AmbianceIdMixin on Table {
+  /// The ID of the ambiance for this row.
+  IntColumn get ambianceId =>
+      integer().references(SoundReferences, #id).nullable()();
+}
+
+/// Add a [roomId] column.
+mixin RoomIdMixin on Table {
+  /// The ID of the room this row is attached to.
+  IntColumn get roomId =>
+      integer().references(Rooms, #id, onDelete: KeyAction.cascade)();
 }
