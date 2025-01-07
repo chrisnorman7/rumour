@@ -22,3 +22,4 @@ Make audio-first RPG's with no code.
 - ⭕ Configurable clothing positions for players.
 - ⭕ Clothing which can be equipped by players.
 - ⭕ Configurable number of "hands" or weapon slots for player classes.
+- ⭕ Configure how sounds are loaded.
