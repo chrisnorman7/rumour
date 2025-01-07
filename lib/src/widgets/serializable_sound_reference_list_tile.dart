@@ -6,6 +6,7 @@ import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_soloud/flutter_soloud.dart';
 
 import '../constants.dart';
 import '../database/database.dart';
@@ -53,6 +54,7 @@ class SerializableSoundReferenceListTile extends ConsumerWidget {
             id: -1,
             path: reference.path,
             volume: reference.volume,
+            loadMode: LoadMode.disk,
           ),
           destroy: false,
           looping: looping,

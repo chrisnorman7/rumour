@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_audio_games/flutter_audio_games.dart';
-import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:path/path.dart' as path;
 
 import 'constants.dart';
@@ -60,7 +59,6 @@ class ProjectContext {
   Sound getSound({
     required final SoundReference soundReference,
     required final bool destroy,
-    final LoadMode loadMode = LoadMode.memory,
     final bool looping = false,
     final Duration loopingStart = Duration.zero,
     final bool paused = false,
@@ -83,7 +81,7 @@ class ProjectContext {
     }
     return file.asSound(
       destroy: destroy,
-      loadMode: loadMode,
+      loadMode: soundReference.loadMode,
       looping: looping,
       loopingStart: loopingStart,
       paused: paused,

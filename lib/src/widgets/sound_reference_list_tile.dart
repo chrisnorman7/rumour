@@ -7,6 +7,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_soloud/flutter_soloud.dart';
 
 import '../constants.dart';
 import '../providers.dart';
@@ -118,6 +119,18 @@ class SoundReferenceListTile extends ConsumerWidget {
                     await query.delete();
                   },
                 ),
+                for (final loadMode in LoadMode.values)
+                  PerformableAction(
+                    name: 'Load mode ${loadMode.name}',
+                    invoke: () async {
+                      await query.update(
+                        (final f) => f(loadMode: Value(loadMode)),
+                      );
+                      ref.invalidate(provider);
+                      onChanged(id);
+                    },
+                    checked: reference.loadMode == loadMode,
+                  ),
               ],
               title: Text(title),
               subtitle: Text(

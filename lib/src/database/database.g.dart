@@ -30,8 +30,17 @@ class $SoundReferencesTable extends SoundReferences
       type: DriftSqlType.double,
       requiredDuringInsert: false,
       defaultValue: const Constant(0.7));
+  static const VerificationMeta _loadModeMeta =
+      const VerificationMeta('loadMode');
   @override
-  List<GeneratedColumn> get $columns => [id, path, volume];
+  late final GeneratedColumnWithTypeConverter<LoadMode, int> loadMode =
+      GeneratedColumn<int>('load_mode', aliasedName, false,
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: Constant(LoadMode.memory.index))
+          .withConverter<LoadMode>($SoundReferencesTable.$converterloadMode);
+  @override
+  List<GeneratedColumn> get $columns => [id, path, volume, loadMode];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -55,6 +64,7 @@ class $SoundReferencesTable extends SoundReferences
       context.handle(_volumeMeta,
           volume.isAcceptableOrUnknown(data['volume']!, _volumeMeta));
     }
+    context.handle(_loadModeMeta, const VerificationResult.success());
     return context;
   }
 
@@ -70,6 +80,9 @@ class $SoundReferencesTable extends SoundReferences
           .read(DriftSqlType.string, data['${effectivePrefix}path'])!,
       volume: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}volume'])!,
+      loadMode: $SoundReferencesTable.$converterloadMode.fromSql(
+          attachedDatabase.typeMapping
+              .read(DriftSqlType.int, data['${effectivePrefix}load_mode'])!),
     );
   }
 
@@ -77,6 +90,9 @@ class $SoundReferencesTable extends SoundReferences
   $SoundReferencesTable createAlias(String alias) {
     return $SoundReferencesTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<LoadMode, int, int> $converterloadMode =
+      const EnumIndexConverter<LoadMode>(LoadMode.values);
 }
 
 class SoundReference extends DataClass implements Insertable<SoundReference> {
@@ -88,14 +104,24 @@ class SoundReference extends DataClass implements Insertable<SoundReference> {
 
   /// The volume of the sound.
   final double volume;
+
+  /// The load mode for this sound.
+  final LoadMode loadMode;
   const SoundReference(
-      {required this.id, required this.path, required this.volume});
+      {required this.id,
+      required this.path,
+      required this.volume,
+      required this.loadMode});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['path'] = Variable<String>(path);
     map['volume'] = Variable<double>(volume);
+    {
+      map['load_mode'] = Variable<int>(
+          $SoundReferencesTable.$converterloadMode.toSql(loadMode));
+    }
     return map;
   }
 
@@ -104,6 +130,7 @@ class SoundReference extends DataClass implements Insertable<SoundReference> {
       id: Value(id),
       path: Value(path),
       volume: Value(volume),
+      loadMode: Value(loadMode),
     );
   }
 
@@ -114,6 +141,8 @@ class SoundReference extends DataClass implements Insertable<SoundReference> {
       id: serializer.fromJson<int>(json['id']),
       path: serializer.fromJson<String>(json['path']),
       volume: serializer.fromJson<double>(json['volume']),
+      loadMode: $SoundReferencesTable.$converterloadMode
+          .fromJson(serializer.fromJson<int>(json['loadMode'])),
     );
   }
   @override
@@ -123,20 +152,25 @@ class SoundReference extends DataClass implements Insertable<SoundReference> {
       'id': serializer.toJson<int>(id),
       'path': serializer.toJson<String>(path),
       'volume': serializer.toJson<double>(volume),
+      'loadMode': serializer.toJson<int>(
+          $SoundReferencesTable.$converterloadMode.toJson(loadMode)),
     };
   }
 
-  SoundReference copyWith({int? id, String? path, double? volume}) =>
+  SoundReference copyWith(
+          {int? id, String? path, double? volume, LoadMode? loadMode}) =>
       SoundReference(
         id: id ?? this.id,
         path: path ?? this.path,
         volume: volume ?? this.volume,
+        loadMode: loadMode ?? this.loadMode,
       );
   SoundReference copyWithCompanion(SoundReferencesCompanion data) {
     return SoundReference(
       id: data.id.present ? data.id.value : this.id,
       path: data.path.present ? data.path.value : this.path,
       volume: data.volume.present ? data.volume.value : this.volume,
+      loadMode: data.loadMode.present ? data.loadMode.value : this.loadMode,
     );
   }
 
@@ -145,54 +179,65 @@ class SoundReference extends DataClass implements Insertable<SoundReference> {
     return (StringBuffer('SoundReference(')
           ..write('id: $id, ')
           ..write('path: $path, ')
-          ..write('volume: $volume')
+          ..write('volume: $volume, ')
+          ..write('loadMode: $loadMode')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, path, volume);
+  int get hashCode => Object.hash(id, path, volume, loadMode);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is SoundReference &&
           other.id == this.id &&
           other.path == this.path &&
-          other.volume == this.volume);
+          other.volume == this.volume &&
+          other.loadMode == this.loadMode);
 }
 
 class SoundReferencesCompanion extends UpdateCompanion<SoundReference> {
   final Value<int> id;
   final Value<String> path;
   final Value<double> volume;
+  final Value<LoadMode> loadMode;
   const SoundReferencesCompanion({
     this.id = const Value.absent(),
     this.path = const Value.absent(),
     this.volume = const Value.absent(),
+    this.loadMode = const Value.absent(),
   });
   SoundReferencesCompanion.insert({
     this.id = const Value.absent(),
     required String path,
     this.volume = const Value.absent(),
+    this.loadMode = const Value.absent(),
   }) : path = Value(path);
   static Insertable<SoundReference> custom({
     Expression<int>? id,
     Expression<String>? path,
     Expression<double>? volume,
+    Expression<int>? loadMode,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (path != null) 'path': path,
       if (volume != null) 'volume': volume,
+      if (loadMode != null) 'load_mode': loadMode,
     });
   }
 
   SoundReferencesCompanion copyWith(
-      {Value<int>? id, Value<String>? path, Value<double>? volume}) {
+      {Value<int>? id,
+      Value<String>? path,
+      Value<double>? volume,
+      Value<LoadMode>? loadMode}) {
     return SoundReferencesCompanion(
       id: id ?? this.id,
       path: path ?? this.path,
       volume: volume ?? this.volume,
+      loadMode: loadMode ?? this.loadMode,
     );
   }
 
@@ -208,6 +253,10 @@ class SoundReferencesCompanion extends UpdateCompanion<SoundReference> {
     if (volume.present) {
       map['volume'] = Variable<double>(volume.value);
     }
+    if (loadMode.present) {
+      map['load_mode'] = Variable<int>(
+          $SoundReferencesTable.$converterloadMode.toSql(loadMode.value));
+    }
     return map;
   }
 
@@ -216,7 +265,8 @@ class SoundReferencesCompanion extends UpdateCompanion<SoundReference> {
     return (StringBuffer('SoundReferencesCompanion(')
           ..write('id: $id, ')
           ..write('path: $path, ')
-          ..write('volume: $volume')
+          ..write('volume: $volume, ')
+          ..write('loadMode: $loadMode')
           ..write(')'))
         .toString();
   }
@@ -1770,12 +1820,14 @@ typedef $$SoundReferencesTableCreateCompanionBuilder = SoundReferencesCompanion
   Value<int> id,
   required String path,
   Value<double> volume,
+  Value<LoadMode> loadMode,
 });
 typedef $$SoundReferencesTableUpdateCompanionBuilder = SoundReferencesCompanion
     Function({
   Value<int> id,
   Value<String> path,
   Value<double> volume,
+  Value<LoadMode> loadMode,
 });
 
 final class $$SoundReferencesTableReferences extends BaseReferences<
@@ -1876,6 +1928,11 @@ class $$SoundReferencesTableFilterComposer
 
   ColumnFilters<double> get volume => $composableBuilder(
       column: $table.volume, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<LoadMode, LoadMode, int> get loadMode =>
+      $composableBuilder(
+          column: $table.loadMode,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   Expression<bool> zonesRefs(
       Expression<bool> Function($$ZonesTableFilterComposer f) f) {
@@ -2000,6 +2057,9 @@ class $$SoundReferencesTableOrderingComposer
 
   ColumnOrderings<double> get volume => $composableBuilder(
       column: $table.volume, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get loadMode => $composableBuilder(
+      column: $table.loadMode, builder: (column) => ColumnOrderings(column));
 }
 
 class $$SoundReferencesTableAnnotationComposer
@@ -2019,6 +2079,9 @@ class $$SoundReferencesTableAnnotationComposer
 
   GeneratedColumn<double> get volume =>
       $composableBuilder(column: $table.volume, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<LoadMode, int> get loadMode =>
+      $composableBuilder(column: $table.loadMode, builder: (column) => column);
 
   Expression<T> zonesRefs<T extends Object>(
       Expression<T> Function($$ZonesTableAnnotationComposer a) f) {
@@ -2158,21 +2221,25 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<String> path = const Value.absent(),
             Value<double> volume = const Value.absent(),
+            Value<LoadMode> loadMode = const Value.absent(),
           }) =>
               SoundReferencesCompanion(
             id: id,
             path: path,
             volume: volume,
+            loadMode: loadMode,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String path,
             Value<double> volume = const Value.absent(),
+            Value<LoadMode> loadMode = const Value.absent(),
           }) =>
               SoundReferencesCompanion.insert(
             id: id,
             path: path,
             volume: volume,
+            loadMode: loadMode,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (

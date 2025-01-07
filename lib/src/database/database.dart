@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:flutter_soloud/flutter_soloud.dart';
 
 import 'tables/_tables.dart';
 
@@ -24,7 +25,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// The schema version.
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   /// Migrate the database.
   @override
@@ -43,6 +44,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 3) {
             await m.createTable(roomObjects);
+          }
+          if (from < 4) {
+            await m.addColumn(soundReferences, soundReferences.loadMode);
           }
         },
       );
