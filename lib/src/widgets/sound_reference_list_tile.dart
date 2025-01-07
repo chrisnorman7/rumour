@@ -121,7 +121,7 @@ class SoundReferenceListTile extends ConsumerWidget {
                 ),
                 for (final loadMode in LoadMode.values)
                   PerformableAction(
-                    name: 'Load mode ${loadMode.name}',
+                    name: 'Play sound from ${loadMode.name}',
                     invoke: () async {
                       await query.update(
                         (final f) => f(loadMode: Value(loadMode)),
