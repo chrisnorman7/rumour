@@ -69,31 +69,36 @@ class SelectSoundScreenState extends ConsumerState<SelectSoundScreen> {
         );
     final Widget child;
     if (directories.isEmpty && files.isEmpty) {
-      child = Column(
-        children: [
-          const CenterText(
-            text: 'There are no sound files to show.',
-            autofocus: true,
-          ),
-          if (d != null)
-            TextButton(
-              onPressed: () => setState(() => _directory = d.parent),
-              child: const Text('Previous directory'),
-            ),
-        ],
+      child = const CenterText(
+        text: 'There are no sound files to show.',
+        autofocus: true,
       );
     } else {
-      final entities = [...directories, ...files];
+      final entities = [
+        if (d != null && files.isNotEmpty) d,
+        ...directories,
+        ...files,
+      ];
       child = ListView.builder(
         shrinkWrap: true,
         itemCount: entities.length,
         itemBuilder: (final context, final index) {
           final entity = entities[index];
+          if (d != null && path.equals(entity.path, d.path)) {
+            return ListTile(
+              autofocus: true,
+              title: const Text('Use Directory'),
+              onTap: () {
+                Navigator.pop(context);
+                widget.onChanged(
+                  path.relative(entity.path, from: soundsPath),
+                );
+              },
+            );
+          }
           if (entity is File) {
             return PlaySoundSemantics(
-              sound: Sound(
-                path: entity.path,
-                soundType: SoundType.file,
+              sound: entity.asSound(
                 destroy: false,
                 looping: widget.looping,
                 volume: widget.volume,
@@ -104,8 +109,9 @@ class SelectSoundScreenState extends ConsumerState<SelectSoundScreen> {
                 subtitle: Text(filesize(entity.statSync().size)),
                 onTap: () {
                   Navigator.pop(context);
-                  widget
-                      .onChanged(path.relative(entity.path, from: soundsPath));
+                  widget.onChanged(
+                    path.relative(entity.path, from: soundsPath),
+                  );
                 },
               ),
             );
@@ -121,6 +127,25 @@ class SelectSoundScreenState extends ConsumerState<SelectSoundScreen> {
         },
       );
     }
-    return Cancel(child: SimpleScaffold(title: 'Select Sound', body: child));
+    return Cancel(
+      child: SimpleScaffold(title: 'Select Sound', body: child),
+      onCancel: () {
+        if (d == null) {
+          Navigator.pop(context);
+        } else {
+          final relativePath = path.relative(d.path, from: soundsPath);
+          final split = path.split(relativePath);
+          if (split.length == 1) {
+            setState(() {
+              _directory = null;
+            });
+          } else {
+            setState(() {
+              _directory = d.parent;
+            });
+          }
+        }
+      },
+    );
   }
 }

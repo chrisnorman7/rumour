@@ -81,9 +81,7 @@ class ProjectContext {
         throw StateError('The file $fullPath does not exist.');
       }
     }
-    return Sound(
-      path: fullPath,
-      soundType: SoundType.file,
+    return file.asSound(
       destroy: destroy,
       loadMode: loadMode,
       looping: looping,
