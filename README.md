@@ -15,7 +15,8 @@ Make audio-first RPG's with no code.
 - ⭕ A commands framework which allows events to be created without code.
 - In game objects which can be placed in rooms.
 - ⭕ Each game object can have commands assigned to it.
-- ⭕ Game object can be teachers.
+- ⭕ Commands can have conditional execution.
+- ⭕ Game objects can be teachers.
 - ⭕ Skills framework, allowing players to train in configurable skills.
 - ⭕ Objects which players can have in their inventory.
 - ⭕ Configurable clothing positions for players.
