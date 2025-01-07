@@ -30,26 +30,28 @@ class RoomObjectsTab extends ConsumerWidget {
           (final surface) {
             final columns = room.maxX;
             final rows = room.maxY;
-            return GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: columns,
+            return FocusTraversalGroup(
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: columns,
+                ),
+                itemBuilder: (final context, final index) {
+                  final x = index % columns;
+                  final y = rows - 1 - (index ~/ columns);
+                  return PlaySoundReferenceSemantics(
+                    soundReferenceId: surface.footstepSoundId,
+                    child: Card(
+                      elevation: 5.0,
+                      child: RoomTile(roomId: roomId, coordinates: Point(x, y)),
+                    ),
+                  );
+                },
+                itemCount: rows * columns,
               ),
-              itemBuilder: (final context, final index) {
-                final x = index % columns;
-                final y = rows - 1 - (index ~/ columns);
-                return PlaySoundReferenceSemantics(
-                  soundReferenceId: surface.footstepSoundId,
-                  child: RoomTile(roomId: roomId, coordinates: Point(x, y)),
-                );
-              },
-              itemCount: rows * columns,
             );
           },
         );
       },
     );
   }
-
-  /// Create a new object.
-  Future<void> createRoomObject(final WidgetRef ref) async {}
 }

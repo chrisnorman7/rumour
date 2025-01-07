@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
+import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -126,4 +128,24 @@ Future<RoomSurface> roomSurface(final Ref ref, final int id) {
   return projectContext.database.managers.roomSurfaces
       .filter((final f) => f.id.equals(id))
       .getSingle();
+}
+
+/// Provide room objects for a given room and coordinates.
+@riverpod
+Future<List<RoomObject>> roomObjects(
+  final Ref ref,
+  final int roomId,
+  final Point<int> coordinates,
+) {
+  final projectContext = ref.watch(projectContextProvider);
+  final db = projectContext.database;
+  final query = db.select(db.roomObjects)
+    ..where(
+      (final t) =>
+          t.roomId.equals(roomId) &
+          t.x.equals(coordinates.x) &
+          t.y.equals(coordinates.y),
+    )
+    ..orderBy([(final t) => OrderingTerm.asc(t.name)]);
+  return query.get();
 }

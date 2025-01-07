@@ -842,5 +842,165 @@ class _RoomSurfaceProviderElement
   @override
   int get id => (origin as RoomSurfaceProvider).id;
 }
+
+String _$roomObjectsHash() => r'5af4e391dd28c94136bcf244f5c6fcd17c9e8baa';
+
+/// Provide room objects for a given room and coordinates.
+///
+/// Copied from [roomObjects].
+@ProviderFor(roomObjects)
+const roomObjectsProvider = RoomObjectsFamily();
+
+/// Provide room objects for a given room and coordinates.
+///
+/// Copied from [roomObjects].
+class RoomObjectsFamily extends Family<AsyncValue<List<RoomObject>>> {
+  /// Provide room objects for a given room and coordinates.
+  ///
+  /// Copied from [roomObjects].
+  const RoomObjectsFamily();
+
+  /// Provide room objects for a given room and coordinates.
+  ///
+  /// Copied from [roomObjects].
+  RoomObjectsProvider call(
+    int roomId,
+    Point<int> coordinates,
+  ) {
+    return RoomObjectsProvider(
+      roomId,
+      coordinates,
+    );
+  }
+
+  @override
+  RoomObjectsProvider getProviderOverride(
+    covariant RoomObjectsProvider provider,
+  ) {
+    return call(
+      provider.roomId,
+      provider.coordinates,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'roomObjectsProvider';
+}
+
+/// Provide room objects for a given room and coordinates.
+///
+/// Copied from [roomObjects].
+class RoomObjectsProvider extends AutoDisposeFutureProvider<List<RoomObject>> {
+  /// Provide room objects for a given room and coordinates.
+  ///
+  /// Copied from [roomObjects].
+  RoomObjectsProvider(
+    int roomId,
+    Point<int> coordinates,
+  ) : this._internal(
+          (ref) => roomObjects(
+            ref as RoomObjectsRef,
+            roomId,
+            coordinates,
+          ),
+          from: roomObjectsProvider,
+          name: r'roomObjectsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$roomObjectsHash,
+          dependencies: RoomObjectsFamily._dependencies,
+          allTransitiveDependencies:
+              RoomObjectsFamily._allTransitiveDependencies,
+          roomId: roomId,
+          coordinates: coordinates,
+        );
+
+  RoomObjectsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.roomId,
+    required this.coordinates,
+  }) : super.internal();
+
+  final int roomId;
+  final Point<int> coordinates;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<RoomObject>> Function(RoomObjectsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: RoomObjectsProvider._internal(
+        (ref) => create(ref as RoomObjectsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        roomId: roomId,
+        coordinates: coordinates,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<RoomObject>> createElement() {
+    return _RoomObjectsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RoomObjectsProvider &&
+        other.roomId == roomId &&
+        other.coordinates == coordinates;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, roomId.hashCode);
+    hash = _SystemHash.combine(hash, coordinates.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin RoomObjectsRef on AutoDisposeFutureProviderRef<List<RoomObject>> {
+  /// The parameter `roomId` of this provider.
+  int get roomId;
+
+  /// The parameter `coordinates` of this provider.
+  Point<int> get coordinates;
+}
+
+class _RoomObjectsProviderElement
+    extends AutoDisposeFutureProviderElement<List<RoomObject>>
+    with RoomObjectsRef {
+  _RoomObjectsProviderElement(super.provider);
+
+  @override
+  int get roomId => (origin as RoomObjectsProvider).roomId;
+  @override
+  Point<int> get coordinates => (origin as RoomObjectsProvider).coordinates;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
