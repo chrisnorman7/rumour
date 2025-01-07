@@ -4,6 +4,7 @@
     "Colors",
     "dialog",
     "dialogs",
+    "jinja",
     "recase",
     "riverpod",
     "soloud",
