@@ -9,20 +9,47 @@ import '../../../widgets/play_sound_reference_semantics.dart';
 import 'room_tile.dart';
 
 /// The room objects tab.
-class RoomObjectsTab extends ConsumerWidget {
+class RoomObjectsTab extends ConsumerStatefulWidget {
   /// Create an instance.
   const RoomObjectsTab({
     required this.roomId,
     super.key,
   });
 
-  /// The ID of the room to edit.
+  /// The ID of the room to use.
   final int roomId;
 
-  /// Build the widget.
+  /// Create state for this widget.
   @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
-    final roomValue = ref.watch(roomProvider(roomId));
+  RoomObjectsTabState createState() => RoomObjectsTabState();
+}
+
+/// State for [RoomObjectsTab].
+class RoomObjectsTabState extends ConsumerState<RoomObjectsTab> {
+  /// The focus nodes to use.
+  late final List<FocusNode> _focusNodes;
+
+  /// Initialise state.
+  @override
+  void initState() {
+    super.initState();
+    _focusNodes = [];
+  }
+
+  /// Dispose of the widget.
+  @override
+  void dispose() {
+    super.dispose();
+    for (final focusNode in _focusNodes) {
+      focusNode.dispose();
+    }
+    _focusNodes.clear();
+  }
+
+  /// Build a widget.
+  @override
+  Widget build(final BuildContext context) {
+    final roomValue = ref.watch(roomProvider(widget.roomId));
     return roomValue.simpleWhen(
       (final room) {
         final roomSurfaceValue = ref.watch(roomSurfaceProvider(room.surfaceId));
@@ -30,24 +57,31 @@ class RoomObjectsTab extends ConsumerWidget {
           (final surface) {
             final columns = room.maxX;
             final rows = room.maxY;
-            return FocusTraversalGroup(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: columns,
-                ),
-                itemBuilder: (final context, final index) {
-                  final x = index % columns;
-                  final y = rows - 1 - (index ~/ columns);
-                  return PlaySoundReferenceSemantics(
-                    soundReferenceId: surface.footstepSoundId,
-                    child: Card(
-                      elevation: 5.0,
-                      child: RoomTile(roomId: roomId, coordinates: Point(x, y)),
-                    ),
-                  );
-                },
-                itemCount: rows * columns,
+            return GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: columns,
               ),
+              itemBuilder: (final context, final index) {
+                final focusNode = FocusNode();
+                _focusNodes.add(focusNode);
+                final x = index % columns;
+                final y = index ~/ columns;
+                return PlaySoundReferenceSemantics(
+                  soundReferenceId: surface.footstepSoundId,
+                  child: Card(
+                    margin: const EdgeInsets.all(4.0),
+                    elevation: 2.0,
+                    child: RoomTile(
+                      autofocus: index == 0,
+                      focusNode: focusNode,
+                      roomId: widget.roomId,
+                      coordinates: Point(x, y),
+                    ),
+                  ),
+                );
+              },
+              itemCount: rows * columns,
+              reverse: true,
             );
           },
         );
