@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../actions/describe_action.dart';
+import '../../../actions/rename_action.dart';
 import '../../../constants.dart';
 import '../../../extensions/async_value_x.dart';
 import '../../../providers.dart';
@@ -47,24 +49,29 @@ class ZoneRoomsTab extends ConsumerWidget {
             child: Builder(
               builder: (final builderContext) => PerformableActionsListTile(
                 actions: [
-                  PerformableAction(
-                    name: 'Rename',
-                    activator: renameShortcut,
-                    invoke: () => builderContext.pushWidgetBuilder(
-                      (final _) => GetText(
-                        onDone: (final value) async {
-                          Navigator.pop(builderContext);
-                          await query
-                              .update((final f) => f(name: Value(value)));
-                          ref
-                            ..invalidate(roomsProvider)
-                            ..invalidate(roomProvider(room.id));
-                        },
-                        labelText: 'Room name',
-                        text: room.name,
-                        title: 'Rename Room',
-                      ),
-                    ),
+                  RenameAction(
+                    context: builderContext,
+                    oldName: room.name,
+                    onRename: (final name) async {
+                      await query.update((final f) => f(name: Value(name)));
+                      ref
+                        ..invalidate(roomsProvider)
+                        ..invalidate(roomProvider(room.id));
+                    },
+                    title: 'Rename Room',
+                  ),
+                  DescribeAction(
+                    context: builderContext,
+                    oldDescription: room.description,
+                    onDescribe: (final description) async {
+                      await query.update(
+                        (final o) => o(description: Value(description)),
+                      );
+                      ref
+                        ..invalidate(roomsProvider)
+                        ..invalidate(roomProvider(room.id));
+                    },
+                    title: 'Describe Room',
                   ),
                   PerformableAction(
                     name: 'Move',

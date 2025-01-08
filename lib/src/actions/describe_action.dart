@@ -5,38 +5,38 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 
 /// The rename action.
-class RenameAction extends PerformableAction {
+class DescribeAction extends PerformableAction {
   /// Create an instance.
-  RenameAction({
+  DescribeAction({
     required this.context,
-    required this.oldName,
-    required this.onRename,
+    required this.oldDescription,
+    required this.onDescribe,
     required this.title,
-    this.labelText = 'Name',
-    super.name = 'Rename',
+    this.labelText = 'Description',
+    super.name = 'Change Description',
   }) : super(
           invoke: () => context.pushWidgetBuilder(
             (final builderContext) => GetText(
               onDone: (final value) {
                 Navigator.pop(builderContext);
-                onRename(value);
+                onDescribe(value);
               },
               labelText: labelText,
-              text: oldName,
+              text: oldDescription,
               title: title,
             ),
           ),
-          activator: renameShortcut,
+          activator: describeShortcut,
         );
 
   /// The build context to use.
   final BuildContext context;
 
-  /// The current name of the thing to be renamed.
-  final String oldName;
+  /// The current description of the thing to be renamed.
+  final String oldDescription;
 
-  /// The function to call when [oldName] changes.
-  final void Function(String name) onRename;
+  /// The function to call when [oldDescription] changes.
+  final void Function(String description) onDescribe;
 
   /// The title of the resulting [GetText] widget.
   final String title;

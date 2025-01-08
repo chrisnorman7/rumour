@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../actions/describe_action.dart';
+import '../../../actions/rename_action.dart';
 import '../../../constants.dart';
 import '../../../extensions/async_value_x.dart';
 import '../../../providers.dart';
@@ -44,25 +46,31 @@ class ProjectRoomSurfacesTab extends ConsumerWidget {
             child: Builder(
               builder: (final builderContext) => PerformableActionsListTile(
                 actions: [
-                  PerformableAction(
-                    name: 'Rename',
-                    activator: renameShortcut,
-                    invoke: () => builderContext.pushWidgetBuilder(
-                      (final _) => GetText(
-                        onDone: (final value) async {
-                          Navigator.pop(builderContext);
-                          await query.update(
-                            (final f) => f(name: Value(value)),
-                          );
-                          ref
-                            ..invalidate(roomSurfacesProvider)
-                            ..invalidate(roomSurfaceProvider(roomSurface.id));
-                        },
-                        labelText: 'Name',
-                        text: roomSurface.name,
-                        title: 'Rename Room Surface',
-                      ),
-                    ),
+                  RenameAction(
+                    context: builderContext,
+                    oldName: roomSurface.name,
+                    onRename: (final name) async {
+                      await query.update(
+                        (final o) => o(name: Value(name)),
+                      );
+                      ref
+                        ..invalidate(roomSurfacesProvider)
+                        ..invalidate(roomSurfaceProvider(roomSurface.id));
+                    },
+                    title: 'Rename Room Surface',
+                  ),
+                  DescribeAction(
+                    context: builderContext,
+                    oldDescription: roomSurface.description,
+                    onDescribe: (final description) async {
+                      await query.update(
+                        (final o) => o(description: Value(description)),
+                      );
+                      ref
+                        ..invalidate(roomSurfacesProvider)
+                        ..invalidate(roomSurfaceProvider(roomSurface.id));
+                    },
+                    title: 'Describe Surface',
                   ),
                   PerformableAction(
                     name: 'Delete',

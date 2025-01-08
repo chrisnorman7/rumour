@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../actions/describe_action.dart';
+import '../../../actions/rename_action.dart';
 import '../../../constants.dart';
 import '../../../extensions/async_value_x.dart';
 import '../../../providers.dart';
@@ -43,25 +45,31 @@ class ProjectZonesTab extends ConsumerWidget {
               builder: (final builderContext) => PerformableActionsListTile(
                 autofocus: index == 0,
                 actions: [
-                  PerformableAction(
-                    name: 'Rename',
-                    activator: renameShortcut,
-                    invoke: () => context.pushWidgetBuilder(
-                      (final getTextContext) => GetText(
-                        onDone: (final value) async {
-                          Navigator.pop(getTextContext);
-                          await query.update(
-                            (final f) => f(name: Value(value)),
-                          );
-                          ref
-                            ..invalidate(zonesProvider)
-                            ..invalidate(zoneProvider(zone.id));
-                        },
-                        labelText: 'Name',
-                        text: zone.name,
-                        title: 'Rename Zone',
-                      ),
-                    ),
+                  RenameAction(
+                    context: builderContext,
+                    oldName: zone.name,
+                    onRename: (final name) async {
+                      await query.update(
+                        (final f) => f(name: Value(name)),
+                      );
+                      ref
+                        ..invalidate(zonesProvider)
+                        ..invalidate(zoneProvider(zone.id));
+                    },
+                    title: 'Rename Zone',
+                  ),
+                  DescribeAction(
+                    context: builderContext,
+                    oldDescription: zone.description,
+                    onDescribe: (final description) async {
+                      await query.update(
+                        (final f) => f(description: Value(description)),
+                      );
+                      ref
+                        ..invalidate(zonesProvider)
+                        ..invalidate(zoneProvider(zone.id));
+                    },
+                    title: 'Rename Zone',
                   ),
                   PerformableAction(
                     name: 'Delete',
