@@ -32,3 +32,6 @@ final describeShortcut = CrossPlatformSingleActivator(LogicalKeyboardKey.keyD);
 
 /// The shortcut key for moving things.
 final moveShortcut = CrossPlatformSingleActivator(LogicalKeyboardKey.period);
+
+/// The shortcut for editing things.
+final editShortcut = CrossPlatformSingleActivator(LogicalKeyboardKey.keyE);

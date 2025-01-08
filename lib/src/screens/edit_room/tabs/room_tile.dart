@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../actions/describe_action.dart';
 import '../../../actions/rename_action.dart';
+import '../../../constants.dart';
 import '../../../providers.dart';
 import '../../../widgets/play_sound_reference_semantics.dart';
 import 'room_tile_coordinates.dart';
@@ -69,6 +70,12 @@ class RoomTile extends ConsumerWidget {
                         flex: 2,
                         child: PerformableActionsBuilder(
                           actions: [
+                            PerformableAction(
+                              name: 'Edit',
+                              invoke: () => builderContext
+                                  .announce('Editing ${object.name}.'),
+                              activator: editShortcut,
+                            ),
                             RenameAction(
                               context: context,
                               oldName: object.name,
