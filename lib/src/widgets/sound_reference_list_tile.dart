@@ -121,7 +121,10 @@ class SoundReferenceListTile extends ConsumerWidget {
                 ),
                 for (final loadMode in LoadMode.values)
                   PerformableAction(
-                    name: 'Play sound from ${loadMode.name}',
+                    name: switch (loadMode) {
+                      LoadMode.memory => 'Load sound to memory',
+                      LoadMode.disk => 'Stream sound from disk',
+                    },
                     invoke: () async {
                       await query.update(
                         (final f) => f(loadMode: Value(loadMode)),
