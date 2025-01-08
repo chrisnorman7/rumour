@@ -4,6 +4,7 @@ import 'package:backstreets_widgets/extensions.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
+import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../actions/describe_action.dart';
@@ -11,6 +12,7 @@ import '../../../actions/rename_action.dart';
 import '../../../constants.dart';
 import '../../../providers.dart';
 import '../../../widgets/play_sound_reference_semantics.dart';
+import '../../edit_room_object/edit_room_object_screen.dart';
 import 'room_tile_coordinates.dart';
 
 /// Show the room objects at [coordinates].
@@ -63,74 +65,78 @@ class RoomTile extends ConsumerWidget {
                       projectContext.database.managers.roomObjects.filter(
                     (final f) => f.id.equals(object.id),
                   );
+                  // For some reason this isn't working.
+
                   return PlaySoundReferenceSemantics(
                     soundReferenceId: object.ambianceId,
+                    looping: true,
                     child: Builder(
-                      builder: (final builderContext) => Expanded(
-                        flex: 2,
-                        child: PerformableActionsBuilder(
-                          actions: [
-                            PerformableAction(
-                              name: 'Edit',
-                              invoke: () => builderContext
-                                  .announce('Editing ${object.name}.'),
-                              activator: editShortcut,
-                            ),
-                            RenameAction(
-                              context: context,
-                              oldName: object.name,
-                              onRename: (final name) async {
-                                await query.update(
-                                  (final f) => f(name: Value(name)),
-                                );
-                                ref.invalidate(provider);
-                              },
-                              title: 'Rename Object',
-                            ),
-                            DescribeAction(
-                              context: builderContext,
-                              oldDescription: object.description,
-                              onDescribe: (final description) async {
-                                await query.update(
-                                  (final o) =>
-                                      o(description: Value(description)),
-                                );
-                                ref.invalidate(provider);
-                              },
-                              title: 'Rename Object',
-                            ),
-                          ],
-                          builder: (final builderContext, final controller) =>
-                              MergeSemantics(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Flexible(child: Text(object.name)),
-                                      Flexible(
-                                        flex: 2,
-                                        child: Text(object.description),
-                                      ),
-                                    ],
-                                  ),
+                      builder: (final builderContext) =>
+                          PerformableActionsBuilder(
+                        actions: [
+                          PerformableAction(
+                            name: 'Edit',
+                            invoke: () => builderContext
+                              ..stopPlaySoundSemantics()
+                              ..pushWidgetBuilder(
+                                (final e) => EditRoomObjectScreen(
+                                  roomObjectId: object.id,
                                 ),
-                                Expanded(
-                                  child: IconButton(
-                                    onPressed: controller.toggle,
-                                    icon: const Icon(
-                                      Icons.more_vert,
-                                      semanticLabel: 'Menu',
+                              ),
+                            activator: editShortcut,
+                          ),
+                          RenameAction(
+                            context: context,
+                            oldName: object.name,
+                            onRename: (final name) async {
+                              await query.update(
+                                (final f) => f(name: Value(name)),
+                              );
+                              ref.invalidate(provider);
+                            },
+                            title: 'Rename Object',
+                          ),
+                          DescribeAction(
+                            context: builderContext,
+                            oldDescription: object.description,
+                            onDescribe: (final description) async {
+                              await query.update(
+                                (final o) => o(description: Value(description)),
+                              );
+                              ref.invalidate(provider);
+                            },
+                            title: 'Rename Object',
+                          ),
+                        ],
+                        builder: (final builderContext, final controller) =>
+                            MergeSemantics(
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Flexible(child: Text(object.name)),
+                                    Flexible(
+                                      flex: 2,
+                                      child: Text(object.description),
                                     ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: IconButton(
+                                  onPressed: controller.toggle,
+                                  icon: const Icon(
+                                    Icons.more_vert,
+                                    semanticLabel: 'Menu',
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

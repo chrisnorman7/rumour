@@ -149,3 +149,14 @@ Future<List<RoomObject>> roomObjects(
     ..orderBy([(final t) => OrderingTerm.asc(t.name)]);
   return query.get();
 }
+
+/// Provide a single room object.
+@riverpod
+Future<RoomObject> roomObject(final Ref ref, final int id) {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.roomObjects
+      .filter(
+        (final f) => f.id.equals(id),
+      )
+      .getSingle();
+}
