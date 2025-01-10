@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:backstreets_widgets/extensions.dart';
+import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -43,33 +45,45 @@ class RoomObjectsTabState extends ConsumerState<RoomObjectsTab> {
       (final room) {
         final columns = room.maxX;
         final rows = room.maxY;
-        return GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: columns,
-          ),
-          itemBuilder: (final context, final index) {
-            final x = index % columns;
-            final y = index ~/ columns;
-            return Card(
-              margin: const EdgeInsets.all(4.0),
-              elevation: 2.0,
-              child: RoomTile(
-                autofocus: index == 0,
-                roomId: widget.roomId,
-                coordinates: Point(x, y),
-                selectedObjectIds: _selectedObjectIds,
-                onSelectChange: (final object) => setState(() {
-                  if (_selectedObjectIds.contains(object.id)) {
-                    _selectedObjectIds.remove(object.id);
-                  } else {
-                    _selectedObjectIds.add(object.id);
-                  }
-                }),
-              ),
-            );
+        return Cancel(
+          onCancel: () {
+            if (_selectedObjectIds.isEmpty) {
+              context.announce('No objects are selected.');
+            } else {
+              context.announce('Deselect all.');
+              setState(() {
+                _selectedObjectIds.clear();
+              });
+            }
           },
-          itemCount: rows * columns,
-          reverse: true,
+          child: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: columns,
+            ),
+            itemBuilder: (final context, final index) {
+              final x = index % columns;
+              final y = index ~/ columns;
+              return Card(
+                margin: const EdgeInsets.all(4.0),
+                elevation: 2.0,
+                child: RoomTile(
+                  autofocus: index == 0,
+                  roomId: widget.roomId,
+                  coordinates: Point(x, y),
+                  selectedObjectIds: _selectedObjectIds,
+                  onSelectChange: (final object) => setState(() {
+                    if (_selectedObjectIds.contains(object.id)) {
+                      _selectedObjectIds.remove(object.id);
+                    } else {
+                      _selectedObjectIds.add(object.id);
+                    }
+                  }),
+                ),
+              );
+            },
+            itemCount: rows * columns,
+            reverse: true,
+          ),
         );
       },
     );
