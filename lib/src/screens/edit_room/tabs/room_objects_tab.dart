@@ -26,24 +26,10 @@ class RoomObjectsTab extends ConsumerStatefulWidget {
 
 /// State for [RoomObjectsTab].
 class RoomObjectsTabState extends ConsumerState<RoomObjectsTab> {
-  /// The focus nodes to use.
-  late final List<FocusNode> _focusNodes;
-
   /// Initialise state.
   @override
   void initState() {
     super.initState();
-    _focusNodes = [];
-  }
-
-  /// Dispose of the widget.
-  @override
-  void dispose() {
-    super.dispose();
-    for (final focusNode in _focusNodes) {
-      focusNode.dispose();
-    }
-    _focusNodes.clear();
   }
 
   /// Build a widget.
@@ -62,8 +48,6 @@ class RoomObjectsTabState extends ConsumerState<RoomObjectsTab> {
                 crossAxisCount: columns,
               ),
               itemBuilder: (final context, final index) {
-                final focusNode = FocusNode();
-                _focusNodes.add(focusNode);
                 final x = index % columns;
                 final y = index ~/ columns;
                 return PlaySoundReferenceSemantics(
@@ -73,7 +57,6 @@ class RoomObjectsTabState extends ConsumerState<RoomObjectsTab> {
                     elevation: 2.0,
                     child: RoomTile(
                       autofocus: index == 0,
-                      focusNode: focusNode,
                       roomId: widget.roomId,
                       coordinates: Point(x, y),
                     ),

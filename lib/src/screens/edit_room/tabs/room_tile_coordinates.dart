@@ -14,15 +14,11 @@ import '../../../providers.dart';
 class RoomTileCoordinates extends ConsumerWidget {
   /// Create an instance.
   const RoomTileCoordinates({
-    required this.focusNode,
     required this.roomId,
     required this.coordinates,
     this.autofocus = false,
     super.key,
   });
-
-  /// The focus node to use.
-  final FocusNode focusNode;
 
   /// The ID of the room where the [coordinates] are.
   final int roomId;
@@ -58,7 +54,6 @@ class RoomTileCoordinates extends ConsumerWidget {
       ],
       builder: (final builderContext, final controller) => TextButton(
         autofocus: autofocus,
-        focusNode: focusNode,
         onPressed: controller.toggle,
         child: Text('${coordinates.x}, ${coordinates.y}'),
       ),

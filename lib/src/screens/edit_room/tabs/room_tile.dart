@@ -19,15 +19,11 @@ import 'room_tile_coordinates.dart';
 class RoomTile extends ConsumerWidget {
   /// Create an instance.
   const RoomTile({
-    required this.focusNode,
     required this.roomId,
     required this.coordinates,
     this.autofocus = false,
     super.key,
   });
-
-  /// The focus node to use for the tile coordinates.
-  final FocusNode focusNode;
 
   /// The ID of the room to show objects for.
   final int roomId;
@@ -54,7 +50,6 @@ class RoomTile extends ConsumerWidget {
               Flexible(
                 child: RoomTileCoordinates(
                   autofocus: autofocus,
-                  focusNode: focusNode,
                   roomId: roomId,
                   coordinates: coordinates,
                 ),
@@ -150,7 +145,6 @@ class RoomTile extends ConsumerWidget {
         error: ErrorListView.withPositional,
         loading: () => RoomTileCoordinates(
           autofocus: autofocus,
-          focusNode: focusNode,
           roomId: roomId,
           coordinates: coordinates,
         ),
