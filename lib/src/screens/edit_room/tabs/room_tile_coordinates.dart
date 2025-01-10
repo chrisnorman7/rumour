@@ -7,6 +7,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../constants.dart';
 import '../../../providers.dart';
 import '../../../widgets/error_text.dart';
 import '../../../widgets/play_sound_reference_semantics.dart';
@@ -18,6 +19,7 @@ class _RoomTileCoordinates extends ConsumerWidget {
     required this.roomId,
     required this.coordinates,
     required this.autofocus,
+    required this.toggleSelection,
   });
 
   /// The ID of the room to use.
@@ -25,6 +27,9 @@ class _RoomTileCoordinates extends ConsumerWidget {
 
   /// The coordinates to use.
   final Point<int> coordinates;
+
+  /// The function to call when selecting or deselecting all objects.
+  final VoidCallback toggleSelection;
 
   /// Whether the button should be autofocused.
   final bool autofocus;
@@ -51,6 +56,11 @@ class _RoomTileCoordinates extends ConsumerWidget {
           },
           activator: newShortcut,
         ),
+        PerformableAction(
+          name: 'Toggle selection',
+          invoke: toggleSelection,
+          activator: changeSelectionShortcut,
+        ),
       ],
       builder: (final builderContext, final controller) => TextButton(
         autofocus: autofocus,
@@ -68,6 +78,7 @@ class RoomTileCoordinates extends ConsumerWidget {
   const RoomTileCoordinates({
     required this.roomId,
     required this.coordinates,
+    required this.toggleSelection,
     this.autofocus = false,
     super.key,
   });
@@ -77,6 +88,9 @@ class RoomTileCoordinates extends ConsumerWidget {
 
   /// The coordinates to display.
   final Point<int> coordinates;
+
+  /// The function to call when selecting or deselecting all objects.
+  final VoidCallback toggleSelection;
 
   /// Whether the button should be autofocused.
   final bool autofocus;
@@ -98,6 +112,7 @@ class RoomTileCoordinates extends ConsumerWidget {
                 roomId: roomId,
                 coordinates: coordinates,
                 autofocus: autofocus,
+                toggleSelection: toggleSelection,
               ),
             ),
           ),
@@ -106,6 +121,7 @@ class RoomTileCoordinates extends ConsumerWidget {
             roomId: roomId,
             coordinates: coordinates,
             autofocus: autofocus,
+            toggleSelection: toggleSelection,
           ),
         );
       },
@@ -114,6 +130,7 @@ class RoomTileCoordinates extends ConsumerWidget {
         roomId: roomId,
         coordinates: coordinates,
         autofocus: autofocus,
+        toggleSelection: toggleSelection,
       ),
     );
   }

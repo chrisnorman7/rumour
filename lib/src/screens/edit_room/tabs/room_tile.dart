@@ -4,6 +4,7 @@ import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../database/database.dart';
 import '../../../providers.dart';
 import 'room_object_tile.dart';
 import 'room_tile_coordinates.dart';
@@ -52,6 +53,7 @@ class RoomTile extends ConsumerWidget {
                   autofocus: autofocus,
                   roomId: roomId,
                   coordinates: coordinates,
+                  toggleSelection: () => toggleSelection(objects),
                 ),
               ),
               ...objects.map(
@@ -69,8 +71,25 @@ class RoomTile extends ConsumerWidget {
           autofocus: autofocus,
           roomId: roomId,
           coordinates: coordinates,
+          toggleSelection: () {},
         ),
       ),
     );
+  }
+
+  /// Toggle selection of [objects].
+  void toggleSelection(final List<RoomObject> objects) {
+    if (objects.every(
+      (final element) => selectedObjectIds.contains(element.id),
+    )) {
+      // Deselect all.
+      objects.forEach(onSelectChange);
+    } else {
+      for (final object in objects) {
+        if (!selectedObjectIds.contains(object.id)) {
+          onSelectChange(object);
+        }
+      }
+    }
   }
 }
