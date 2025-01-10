@@ -35,3 +35,7 @@ final moveShortcut = CrossPlatformSingleActivator(LogicalKeyboardKey.period);
 
 /// The shortcut for editing things.
 final editShortcut = CrossPlatformSingleActivator(LogicalKeyboardKey.keyE);
+
+/// The shortcut for selecting an deselecting things.
+final changeSelectionShortcut =
+    CrossPlatformSingleActivator(LogicalKeyboardKey.space);

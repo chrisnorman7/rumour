@@ -8,22 +8,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../providers.dart';
+import '../../../widgets/error_text.dart';
+import '../../../widgets/play_sound_reference_semantics.dart';
 
-/// A widget which shows [coordinates] and allows new room objects to be
-/// created.
-class RoomTileCoordinates extends ConsumerWidget {
+/// The backend widget.
+class _RoomTileCoordinates extends ConsumerWidget {
   /// Create an instance.
-  const RoomTileCoordinates({
+  const _RoomTileCoordinates({
     required this.roomId,
     required this.coordinates,
-    this.autofocus = false,
-    super.key,
+    required this.autofocus,
   });
 
-  /// The ID of the room where the [coordinates] are.
+  /// The ID of the room to use.
   final int roomId;
 
-  /// The coordinates to display.
+  /// The coordinates to use.
   final Point<int> coordinates;
 
   /// Whether the button should be autofocused.
@@ -56,6 +56,64 @@ class RoomTileCoordinates extends ConsumerWidget {
         autofocus: autofocus,
         onPressed: controller.toggle,
         child: Text('${coordinates.x}, ${coordinates.y}'),
+      ),
+    );
+  }
+}
+
+/// A widget which shows [coordinates] and allows new room objects to be
+/// created.
+class RoomTileCoordinates extends ConsumerWidget {
+  /// Create an instance.
+  const RoomTileCoordinates({
+    required this.roomId,
+    required this.coordinates,
+    this.autofocus = false,
+    super.key,
+  });
+
+  /// The ID of the room where the [coordinates] are.
+  final int roomId;
+
+  /// The coordinates to display.
+  final Point<int> coordinates;
+
+  /// Whether the button should be autofocused.
+  final bool autofocus;
+
+  /// Build the widget.
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final roomValue = ref.watch(roomProvider(roomId));
+    return roomValue.when(
+      data: (final room) {
+        final roomSurfaceValue = ref.watch(
+          roomSurfaceProvider(room.surfaceId),
+        );
+        return roomSurfaceValue.when(
+          data: (final roomSurface) => MergeSemantics(
+            child: PlaySoundReferenceSemantics(
+              soundReferenceId: roomSurface.footstepSoundId,
+              child: _RoomTileCoordinates(
+                roomId: roomId,
+                coordinates: coordinates,
+                autofocus: autofocus,
+              ),
+            ),
+          ),
+          error: ErrorText.withPositional,
+          loading: () => _RoomTileCoordinates(
+            roomId: roomId,
+            coordinates: coordinates,
+            autofocus: autofocus,
+          ),
+        );
+      },
+      error: ErrorText.withPositional,
+      loading: () => _RoomTileCoordinates(
+        roomId: roomId,
+        coordinates: coordinates,
+        autofocus: autofocus,
       ),
     );
   }
