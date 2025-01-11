@@ -11,6 +11,7 @@ import '../../../constants.dart';
 import '../../../providers.dart';
 import '../../../widgets/error_text.dart';
 import '../../../widgets/play_sound_reference_semantics.dart';
+import '../../edit_room_object/edit_room_object_screen.dart';
 
 /// The backend widget.
 class _RoomTileCoordinates extends ConsumerWidget {
@@ -43,7 +44,8 @@ class _RoomTileCoordinates extends ConsumerWidget {
         PerformableAction(
           name: 'New object',
           invoke: () async {
-            await projectContext.database.managers.roomObjects.create(
+            final object = await projectContext.database.managers.roomObjects
+                .createReturning(
               (final f) => f(
                 name: 'Untitled Object',
                 description: 'A new room object.',
@@ -53,6 +55,11 @@ class _RoomTileCoordinates extends ConsumerWidget {
               ),
             );
             ref.invalidate(roomObjectsProvider(roomId, coordinates));
+            if (context.mounted) {
+              await context.pushWidgetBuilder(
+                (final _) => EditRoomObjectScreen(roomObjectId: object.id),
+              );
+            }
           },
           activator: newShortcut,
         ),

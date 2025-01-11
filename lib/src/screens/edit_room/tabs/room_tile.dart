@@ -1,10 +1,12 @@
 import 'dart:math';
 
+import 'package:backstreets_widgets/extensions.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../database/database.dart';
+import '../../../extensions/list_x.dart';
 import '../../../providers.dart';
 import 'room_object_tile.dart';
 import 'room_tile_coordinates.dart';
@@ -53,7 +55,7 @@ class RoomTile extends ConsumerWidget {
                   autofocus: autofocus,
                   roomId: roomId,
                   coordinates: coordinates,
-                  toggleSelection: () => toggleSelection(objects),
+                  toggleSelection: () => toggleSelection(context, objects),
                 ),
               ),
               ...objects.map(
@@ -71,20 +73,32 @@ class RoomTile extends ConsumerWidget {
           autofocus: autofocus,
           roomId: roomId,
           coordinates: coordinates,
-          toggleSelection: () {},
+          toggleSelection: () => context.announce(
+            'Objects are not loaded yet.',
+          ),
         ),
       ),
     );
   }
 
   /// Toggle selection of [objects].
-  void toggleSelection(final List<RoomObject> objects) {
+  void toggleSelection(
+    final BuildContext context,
+    final List<RoomObject> objects,
+  ) {
+    final names =
+        objects.map((final object) => object.name).toList().englishList();
     if (objects.every(
       (final element) => selectedObjectIds.contains(element.id),
     )) {
-      // Deselect all.
       objects.forEach(onSelectChange);
+      context.announce(
+        'Deselected $names.',
+      );
     } else {
+      context.announce(
+        'Selected $names.',
+      );
       for (final object in objects) {
         if (!selectedObjectIds.contains(object.id)) {
           onSelectChange(object);
