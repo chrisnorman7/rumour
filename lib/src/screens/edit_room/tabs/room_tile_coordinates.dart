@@ -14,6 +14,7 @@ import '../../../providers.dart';
 import '../../../widgets/error_text.dart';
 import '../../../widgets/play_sound_reference_semantics.dart';
 import '../../edit_room_object/edit_room_object_screen.dart';
+import '../../select_room_screen.dart';
 
 /// The backend widget.
 class _RoomTileCoordinates extends ConsumerWidget {
@@ -77,6 +78,26 @@ class _RoomTileCoordinates extends ConsumerWidget {
             }
           },
           activator: newShortcut,
+        ),
+        PerformableAction(
+          name: 'Build exit',
+          invoke: () => context.pushWidgetBuilder(
+            (final builderContext) => SelectRoomScreen(
+              onChanged: (final value) async {
+                Navigator.pop(builderContext);
+                final object = await manager.createReturning(
+                  (final o) => o(
+                    name: 'Untitled Exit',
+                    description: 'A new exit to ${value.name}.',
+                    roomId: roomId,
+                    x: Value(coordinates.x),
+                    y: Value(coordinates.y),
+                  ),
+                );
+              },
+            ),
+          ),
+          activator: buildShortcut,
         ),
         PerformableAction(
           name: 'Toggle selection',

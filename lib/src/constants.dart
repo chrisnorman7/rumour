@@ -58,3 +58,6 @@ final deselectShortcut = CrossPlatformSingleActivator(
   LogicalKeyboardKey.keyA,
   shift: true,
 );
+
+/// The build shortcut.
+final buildShortcut = CrossPlatformSingleActivator(LogicalKeyboardKey.keyB);
