@@ -100,6 +100,26 @@ class RoomObjectTile extends ConsumerWidget {
                   activator: changeSelectionShortcut,
                   checked: selected,
                 ),
+                PerformableAction(
+                  name: 'Delete',
+                  invoke: () => builderContext.confirm(
+                    message: 'Really delete the ${object.name} object?',
+                    title: confirmDeleteTitle,
+                    yesCallback: () async {
+                      Navigator.pop(builderContext);
+                      if (selected) {
+                        onSelectChange(object);
+                      }
+                      await query.delete();
+                      ref.invalidate(
+                        roomObjectsProvider(
+                          object.roomId,
+                          Point(object.x, object.y),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ],
               builder: (final builderContext, final controller) => Semantics(
                 selected: selected ? selected : null,
