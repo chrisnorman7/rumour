@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../constants.dart';
+import '../../../extensions/int_x.dart';
 import '../../../extensions/list_x.dart';
 import '../../../providers.dart';
 import '../../../widgets/error_text.dart';
@@ -137,6 +138,39 @@ class _RoomTileCoordinates extends ConsumerWidget {
               ref.invalidate(RoomObjectsProvider(roomId, coordinates));
             },
             activator: pasteAndMoveShortcut,
+          ),
+          PerformableAction(
+            name: 'Delete',
+            invoke: () {
+              final n = selectedObjectIds.length;
+              context.confirm(
+                message: 'Really delete $n ${n.pluralise("object")}?',
+                title: confirmDeleteTitle,
+                yesCallback: () async {
+                  Navigator.pop(context);
+                  final names = <String>[];
+                  for (final id in [...selectedObjectIds]) {
+                    final query = manager.filter(
+                      (final f) => f.id.equals(id),
+                    );
+                    final object = await query.getSingle();
+                    selectedObjectIds.remove(object.id);
+                    names.add(object.name);
+                    await query.delete();
+                    ref.invalidate(
+                      roomObjectsProvider(
+                        object.roomId,
+                        Point(object.x, object.y),
+                      ),
+                    );
+                  }
+                  if (context.mounted) {
+                    context.announce('Delete ${names.englishList()}.');
+                  }
+                },
+              );
+            },
+            activator: deleteShortcut,
           ),
         ],
       ],
