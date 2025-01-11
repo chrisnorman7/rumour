@@ -56,6 +56,7 @@ class RoomTile extends ConsumerWidget {
                   roomId: roomId,
                   coordinates: coordinates,
                   toggleSelection: () => toggleSelection(context, objects),
+                  selectedObjectIds: selectedObjectIds,
                 ),
               ),
               ...objects.map(
@@ -76,6 +77,7 @@ class RoomTile extends ConsumerWidget {
           toggleSelection: () => context.announce(
             'Objects are not loaded yet.',
           ),
+          selectedObjectIds: const [],
         ),
       ),
     );
@@ -86,6 +88,9 @@ class RoomTile extends ConsumerWidget {
     final BuildContext context,
     final List<RoomObject> objects,
   ) {
+    if (objects.isEmpty) {
+      return context.announce('There are no objects here.');
+    }
     final names =
         objects.map((final object) => object.name).toList().englishList();
     if (objects.every(

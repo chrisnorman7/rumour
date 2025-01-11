@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:backstreets_widgets/extensions.dart';
+import 'package:backstreets_widgets/shortcuts.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
@@ -103,7 +104,7 @@ class RoomObjectTile extends ConsumerWidget {
                 PerformableAction(
                   name: 'Delete',
                   invoke: () => builderContext.confirm(
-                    message: 'Really delete the ${object.name} object?',
+                    message: 'Really delete ${object.name} object?',
                     title: confirmDeleteTitle,
                     yesCallback: () async {
                       Navigator.pop(builderContext);
@@ -119,6 +120,7 @@ class RoomObjectTile extends ConsumerWidget {
                       );
                     },
                   ),
+                  activator: deleteShortcut,
                 ),
               ],
               builder: (final builderContext, final controller) => Semantics(

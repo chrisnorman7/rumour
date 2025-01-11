@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../constants.dart';
+import '../../../extensions/list_x.dart';
 import '../../../providers.dart';
 import '../../../widgets/error_text.dart';
 import '../../../widgets/play_sound_reference_semantics.dart';
@@ -21,6 +22,8 @@ class _RoomTileCoordinates extends ConsumerWidget {
     required this.coordinates,
     required this.autofocus,
     required this.toggleSelection,
+    required this.selectedObjectIds,
+    this.soundReferenceId,
   });
 
   /// The ID of the room to use.
@@ -29,16 +32,23 @@ class _RoomTileCoordinates extends ConsumerWidget {
   /// The coordinates to use.
   final Point<int> coordinates;
 
+  /// Whether the button should be autofocused.
+  final bool autofocus;
+
   /// The function to call when selecting or deselecting all objects.
   final VoidCallback toggleSelection;
 
-  /// Whether the button should be autofocused.
-  final bool autofocus;
+  /// The IDs of the currently selected objects.
+  final List<int> selectedObjectIds;
+
+  /// The ID of the ambiance to play.
+  final int? soundReferenceId;
 
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final projectContext = ref.watch(projectContextProvider);
+    final manager = projectContext.database.managers.roomObjects;
     return PerformableActionsBuilder(
       actions: [
         PerformableAction(
@@ -68,11 +78,77 @@ class _RoomTileCoordinates extends ConsumerWidget {
           invoke: toggleSelection,
           activator: changeSelectionShortcut,
         ),
+        if (selectedObjectIds.isNotEmpty) ...[
+          PerformableAction(
+            name: 'Copy selected objects here',
+            invoke: () async {
+              final names = <String>[];
+              for (final id in selectedObjectIds) {
+                final query = manager.filter(
+                  (final f) => f.id.equals(id),
+                );
+                final object = await query.getSingle();
+                names.add(object.name);
+                await manager.create(
+                  (final o) => o(
+                    name: object.name,
+                    description: object.description,
+                    roomId: object.roomId,
+                    ambianceId: Value(object.ambianceId),
+                    x: Value(coordinates.x),
+                    y: Value(coordinates.y),
+                  ),
+                );
+              }
+              if (context.mounted) {
+                context.announce('Copied ${names.englishList()} to here.');
+              }
+              ref.invalidate(roomObjectsProvider(roomId, coordinates));
+            },
+            activator: pasteShortcut,
+          ),
+          PerformableAction(
+            name: 'Move selected objects here',
+            invoke: () async {
+              final names = <String>[];
+              for (final id in selectedObjectIds) {
+                final query = manager.filter(
+                  (final f) => f.id.equals(id),
+                );
+                final object = await query.getSingle();
+                names.add(object.name);
+                await query.update(
+                  (final o) => o(
+                    roomId: Value(roomId),
+                    x: Value(coordinates.x),
+                    y: Value(coordinates.y),
+                  ),
+                );
+                ref.invalidate(
+                  roomObjectsProvider(
+                    object.roomId,
+                    Point(object.x, object.y),
+                  ),
+                );
+              }
+              if (context.mounted) {
+                context.announce('Moved ${names.englishList()} to here.');
+              }
+              ref.invalidate(RoomObjectsProvider(roomId, coordinates));
+            },
+            activator: pasteAndMoveShortcut,
+          ),
+        ],
       ],
-      builder: (final builderContext, final controller) => TextButton(
-        autofocus: autofocus,
-        onPressed: controller.toggle,
-        child: Text('${coordinates.x}, ${coordinates.y}'),
+      builder: (final builderContext, final controller) => MergeSemantics(
+        child: PlaySoundReferenceSemantics(
+          soundReferenceId: soundReferenceId,
+          child: TextButton(
+            autofocus: autofocus,
+            onPressed: controller.toggle,
+            child: Text('${coordinates.x}, ${coordinates.y}'),
+          ),
+        ),
       ),
     );
   }
@@ -86,6 +162,7 @@ class RoomTileCoordinates extends ConsumerWidget {
     required this.roomId,
     required this.coordinates,
     required this.toggleSelection,
+    required this.selectedObjectIds,
     this.autofocus = false,
     super.key,
   });
@@ -98,6 +175,9 @@ class RoomTileCoordinates extends ConsumerWidget {
 
   /// The function to call when selecting or deselecting all objects.
   final VoidCallback toggleSelection;
+
+  /// The IDs of the currently selected objects.
+  final List<int> selectedObjectIds;
 
   /// Whether the button should be autofocused.
   final bool autofocus;
@@ -112,16 +192,13 @@ class RoomTileCoordinates extends ConsumerWidget {
           roomSurfaceProvider(room.surfaceId),
         );
         return roomSurfaceValue.when(
-          data: (final roomSurface) => MergeSemantics(
-            child: PlaySoundReferenceSemantics(
-              soundReferenceId: roomSurface.footstepSoundId,
-              child: _RoomTileCoordinates(
-                roomId: roomId,
-                coordinates: coordinates,
-                autofocus: autofocus,
-                toggleSelection: toggleSelection,
-              ),
-            ),
+          data: (final roomSurface) => _RoomTileCoordinates(
+            roomId: roomId,
+            coordinates: coordinates,
+            autofocus: autofocus,
+            toggleSelection: toggleSelection,
+            selectedObjectIds: selectedObjectIds,
+            soundReferenceId: roomSurface.footstepSoundId,
           ),
           error: ErrorText.withPositional,
           loading: () => _RoomTileCoordinates(
@@ -129,6 +206,7 @@ class RoomTileCoordinates extends ConsumerWidget {
             coordinates: coordinates,
             autofocus: autofocus,
             toggleSelection: toggleSelection,
+            selectedObjectIds: selectedObjectIds,
           ),
         );
       },
@@ -138,6 +216,7 @@ class RoomTileCoordinates extends ConsumerWidget {
         coordinates: coordinates,
         autofocus: autofocus,
         toggleSelection: toggleSelection,
+        selectedObjectIds: selectedObjectIds,
       ),
     );
   }

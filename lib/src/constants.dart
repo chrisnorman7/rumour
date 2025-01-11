@@ -39,3 +39,10 @@ final editShortcut = CrossPlatformSingleActivator(LogicalKeyboardKey.keyE);
 /// The shortcut for selecting an deselecting things.
 final changeSelectionShortcut =
     CrossPlatformSingleActivator(LogicalKeyboardKey.space);
+
+/// The paste shortcut.
+final pasteShortcut = CrossPlatformSingleActivator(LogicalKeyboardKey.keyV);
+
+/// The paste and move shortcut.
+final pasteAndMoveShortcut =
+    CrossPlatformSingleActivator(LogicalKeyboardKey.keyV, shift: true);
