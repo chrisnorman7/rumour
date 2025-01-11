@@ -24,6 +24,7 @@ class _RoomTileCoordinates extends ConsumerWidget {
     required this.autofocus,
     required this.toggleSelection,
     required this.selectedObjectIds,
+    required this.toggleSelectAll,
     this.soundReferenceId,
   });
 
@@ -41,6 +42,9 @@ class _RoomTileCoordinates extends ConsumerWidget {
 
   /// The IDs of the currently selected objects.
   final List<int> selectedObjectIds;
+
+  /// The function to call to select or deselect all.
+  final void Function({required bool selectAll}) toggleSelectAll;
 
   /// The ID of the ambiance to play.
   final int? soundReferenceId;
@@ -140,6 +144,11 @@ class _RoomTileCoordinates extends ConsumerWidget {
             activator: pasteAndMoveShortcut,
           ),
           PerformableAction(
+            name: 'Deselect all',
+            invoke: () => toggleSelectAll(selectAll: false),
+            activator: deselectShortcut,
+          ),
+          PerformableAction(
             name: 'Delete',
             invoke: () {
               final n = selectedObjectIds.length;
@@ -172,6 +181,12 @@ class _RoomTileCoordinates extends ConsumerWidget {
             },
             activator: deleteShortcut,
           ),
+        ] else ...[
+          PerformableAction(
+            name: 'Select all',
+            invoke: () => toggleSelectAll(selectAll: true),
+            activator: selectAllShortcut,
+          ),
         ],
       ],
       builder: (final builderContext, final controller) => MergeSemantics(
@@ -197,6 +212,7 @@ class RoomTileCoordinates extends ConsumerWidget {
     required this.coordinates,
     required this.toggleSelection,
     required this.selectedObjectIds,
+    required this.toggleSelectAll,
     this.autofocus = false,
     super.key,
   });
@@ -212,6 +228,9 @@ class RoomTileCoordinates extends ConsumerWidget {
 
   /// The IDs of the currently selected objects.
   final List<int> selectedObjectIds;
+
+  /// The function to call to select or deselect all.
+  final void Function({required bool selectAll}) toggleSelectAll;
 
   /// Whether the button should be autofocused.
   final bool autofocus;
@@ -232,6 +251,7 @@ class RoomTileCoordinates extends ConsumerWidget {
             autofocus: autofocus,
             toggleSelection: toggleSelection,
             selectedObjectIds: selectedObjectIds,
+            toggleSelectAll: toggleSelectAll,
             soundReferenceId: roomSurface.footstepSoundId,
           ),
           error: ErrorText.withPositional,
@@ -241,6 +261,7 @@ class RoomTileCoordinates extends ConsumerWidget {
             autofocus: autofocus,
             toggleSelection: toggleSelection,
             selectedObjectIds: selectedObjectIds,
+            toggleSelectAll: toggleSelectAll,
           ),
         );
       },
@@ -251,6 +272,7 @@ class RoomTileCoordinates extends ConsumerWidget {
         autofocus: autofocus,
         toggleSelection: toggleSelection,
         selectedObjectIds: selectedObjectIds,
+        toggleSelectAll: toggleSelectAll,
       ),
     );
   }

@@ -19,6 +19,7 @@ class RoomTile extends ConsumerWidget {
     required this.coordinates,
     required this.selectedObjectIds,
     required this.onSelectChange,
+    required this.toggleSelectAll,
     this.autofocus = false,
     super.key,
   });
@@ -34,6 +35,9 @@ class RoomTile extends ConsumerWidget {
 
   /// The function to call when object selection changes.
   final RoomObjectSelectChange onSelectChange;
+
+  /// The function to call to change select all.
+  final void Function({required bool selectAll}) toggleSelectAll;
 
   /// Whether to autofocus this tile.
   final bool autofocus;
@@ -57,6 +61,7 @@ class RoomTile extends ConsumerWidget {
                   coordinates: coordinates,
                   toggleSelection: () => toggleSelection(context, objects),
                   selectedObjectIds: selectedObjectIds,
+                  toggleSelectAll: toggleSelectAll,
                 ),
               ),
               ...objects.map(
@@ -78,6 +83,7 @@ class RoomTile extends ConsumerWidget {
             'Objects are not loaded yet.',
           ),
           selectedObjectIds: const [],
+          toggleSelectAll: toggleSelectAll,
         ),
       ),
     );
