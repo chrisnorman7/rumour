@@ -22,6 +22,14 @@ Project _$ProjectFromJson(Map<String, dynamic> json) => Project(
           ? null
           : Duration(
               microseconds: (json['mainMenuMusicFadeOut'] as num).toInt()),
+      menuSelectSound: json['menuSelectSound'] == null
+          ? null
+          : SerializableSoundReference.fromJson(
+              json['menuSelectSound'] as Map<String, dynamic>),
+      menuActivateSound: json['menuActivateSound'] == null
+          ? null
+          : SerializableSoundReference.fromJson(
+              json['menuActivateSound'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ProjectToJson(Project instance) => <String, dynamic>{
@@ -31,4 +39,6 @@ Map<String, dynamic> _$ProjectToJson(Project instance) => <String, dynamic>{
       'mainMenuMusic': instance.mainMenuMusic,
       'mainMenuMusicFadeIn': instance.mainMenuMusicFadeIn?.inMicroseconds,
       'mainMenuMusicFadeOut': instance.mainMenuMusicFadeOut?.inMicroseconds,
+      'menuSelectSound': instance.menuSelectSound,
+      'menuActivateSound': instance.menuActivateSound,
     };

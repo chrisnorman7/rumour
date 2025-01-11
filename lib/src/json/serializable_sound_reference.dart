@@ -1,3 +1,4 @@
+import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../database/database.dart';
@@ -27,4 +28,15 @@ class SerializableSoundReference {
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$SerializableSoundReferenceToJson(this);
+
+  /// Get a sound reference from this instance.
+  SoundReference getSoundReference({
+    final LoadMode loadMode = LoadMode.memory,
+  }) =>
+      SoundReference(
+        id: -1,
+        path: path,
+        volume: volume,
+        loadMode: loadMode,
+      );
 }

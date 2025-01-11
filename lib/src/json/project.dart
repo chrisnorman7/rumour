@@ -18,6 +18,8 @@ class Project {
     this.mainMenuMusic,
     this.mainMenuMusicFadeIn,
     this.mainMenuMusicFadeOut,
+    this.menuSelectSound,
+    this.menuActivateSound,
   });
 
   /// Create an instance from a JSON object.
@@ -50,6 +52,12 @@ class Project {
 
   /// The fade out time for [mainMenuMusic].
   Duration? mainMenuMusicFadeOut;
+
+  /// The sound to use when selecting items in menus.
+  SerializableSoundReference? menuSelectSound;
+
+  /// The sound to use when activating items in menus.
+  SerializableSoundReference? menuActivateSound;
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$ProjectToJson(this);

@@ -10,7 +10,7 @@ final random = Random();
 const unsetMessage = 'Not set';
 
 /// The file extensions of valid sound files.
-const soundFileExtensions = ['.mp3', '.wav'];
+const soundFileExtensions = ['.mp3', '.wav', '.ogg'];
 
 /// The minimum volume for sounds.
 const minVolume = 0.0;
@@ -61,3 +61,6 @@ final deselectShortcut = CrossPlatformSingleActivator(
 
 /// The build shortcut.
 final buildShortcut = CrossPlatformSingleActivator(LogicalKeyboardKey.keyB);
+
+/// The play project shortcut.
+final playShortcut = CrossPlatformSingleActivator(LogicalKeyboardKey.keyP);
