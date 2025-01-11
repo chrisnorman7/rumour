@@ -49,117 +49,130 @@ class RoomObjectTile extends ConsumerWidget {
       (final f) => f.id.equals(roomObjectId),
     );
     final value = ref.watch(roomObjectProvider(roomObjectId));
+    PlaySoundSemanticsState? semanticsState;
     return value.simpleWhen(
-      (final object) => MergeSemantics(
-        child: PlaySoundReferenceSemantics(
-          soundReferenceId: object.ambianceId,
-          looping: true,
-          child: Builder(
-            builder: (final builderContext) => PerformableActionsBuilder(
-              actions: [
-                PerformableAction(
-                  name: 'Edit',
-                  invoke: () => builderContext
-                    ..stopPlaySoundSemantics()
-                    ..pushWidgetBuilder(
-                      (final e) => EditRoomObjectScreen(
-                        roomObjectId: object.id,
-                      ),
-                    ),
-                  activator: editShortcut,
+      (final object) => PerformableActionsBuilder(
+        actions: [
+          PerformableAction(
+            name: 'Edit',
+            invoke: () {
+              semanticsState?.stop();
+              context.pushWidgetBuilder(
+                (final e) => EditRoomObjectScreen(
+                  roomObjectId: object.id,
                 ),
-                RenameAction(
-                  context: context,
-                  oldName: object.name,
-                  onRename: (final name) async {
-                    await query.update(
-                      (final f) => f(name: Value(name)),
-                    );
-                    invalidateProviders(ref, object);
-                  },
-                  title: 'Rename Object',
-                ),
-                DescribeAction(
-                  context: builderContext,
-                  oldDescription: object.description,
-                  onDescribe: (final description) async {
-                    await query.update(
-                      (final o) => o(description: Value(description)),
-                    );
-                    invalidateProviders(ref, object);
-                  },
-                  title: 'Rename Object',
-                ),
-                PerformableAction(
-                  name: 'Select',
-                  invoke: () {
-                    builderContext.announce(
-                      '${selected ? "Deselected" : "Selected"} ${object.name}.',
-                    );
+              );
+            },
+            activator: editShortcut,
+          ),
+          RenameAction(
+            context: context,
+            oldName: object.name,
+            onRename: (final name) async {
+              await query.update(
+                (final f) => f(name: Value(name)),
+              );
+              invalidateProviders(ref, object);
+            },
+            title: 'Rename Object',
+          ),
+          DescribeAction(
+            context: context,
+            oldDescription: object.description,
+            onDescribe: (final description) async {
+              await query.update(
+                (final o) => o(description: Value(description)),
+              );
+              invalidateProviders(ref, object);
+            },
+            title: 'Rename Object',
+          ),
+          PerformableAction(
+            name: 'Select',
+            invoke: () {
+              context.announce(
+                '${selected ? "Deselected" : "Selected"} ${object.name}.',
+              );
+              onSelectChange(object);
+            },
+            activator: changeSelectionShortcut,
+            checked: selected,
+          ),
+          PerformableAction(
+            name: 'Delete',
+            invoke: () {
+              semanticsState?.stop();
+              context.confirm(
+                message: 'Really delete ${object.name} object?',
+                title: confirmDeleteTitle,
+                yesCallback: () async {
+                  Navigator.pop(context);
+                  if (selected) {
                     onSelectChange(object);
-                  },
-                  activator: changeSelectionShortcut,
-                  checked: selected,
-                ),
-                PerformableAction(
-                  name: 'Delete',
-                  invoke: () => builderContext.confirm(
-                    message: 'Really delete ${object.name} object?',
-                    title: confirmDeleteTitle,
-                    yesCallback: () async {
-                      Navigator.pop(builderContext);
-                      if (selected) {
-                        onSelectChange(object);
-                      }
-                      await query.delete();
-                      ref.invalidate(
-                        roomObjectsProvider(
-                          object.roomId,
-                          Point(object.x, object.y),
+                  }
+                  await query.delete();
+                  ref.invalidate(
+                    roomObjectsProvider(
+                      object.roomId,
+                      Point(object.x, object.y),
+                    ),
+                  );
+                },
+              );
+            },
+            activator: deleteShortcut,
+          ),
+        ],
+        builder: (final _, final controller) => MergeSemantics(
+          child: PlaySoundReferenceSemantics(
+            soundReferenceId: object.ambianceId,
+            looping: true,
+            child: Semantics(
+              selected: selected ? selected : null,
+              child: Builder(
+                builder: (final builderContext) {
+                  semanticsState = builderContext
+                      .findAncestorStateOfType<PlaySoundSemanticsState>();
+                  return Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: DefaultTextStyle(
+                          style: defaultTextStyle!.copyWith(
+                            fontSize: selected ? 18.0 : null,
+                            fontWeight: selected ? FontWeight.bold : null,
+                            color: selected ? Colors.blue : null,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(child: Text(object.name)),
+                              Flexible(
+                                flex: 2,
+                                child: Text(object.description),
+                              ),
+                            ],
+                          ),
                         ),
-                      );
-                    },
-                  ),
-                  activator: deleteShortcut,
-                ),
-              ],
-              builder: (final builderContext, final controller) => Semantics(
-                selected: selected ? selected : null,
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: DefaultTextStyle(
-                        style: defaultTextStyle!.copyWith(
-                          fontSize: selected ? 18.0 : null,
-                          fontWeight: selected ? FontWeight.bold : null,
-                          color: selected ? Colors.blue : null,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Flexible(child: Text(object.name)),
-                            Flexible(
-                              flex: 2,
-                              child: Text(object.description),
+                      ),
+                      Expanded(
+                        child: PlaySoundReferenceSemantics(
+                          soundReferenceId: object.ambianceId,
+                          looping: true,
+                          child: IconButton(
+                            onPressed: controller.toggle,
+                            icon: const Icon(
+                              Icons.more_vert,
+                              semanticLabel: 'Menu',
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: IconButton(
-                        onPressed: controller.toggle,
-                        icon: const Icon(
-                          Icons.more_vert,
-                          semanticLabel: 'Menu',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                    ],
+                  );
+                },
               ),
             ),
           ),
