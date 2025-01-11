@@ -1394,6 +1394,318 @@ class RoomsCompanion extends UpdateCompanion<Room> {
   }
 }
 
+class $RoomExitsTable extends RoomExits
+    with TableInfo<$RoomExitsTable, RoomExit> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RoomExitsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _roomIdMeta = const VerificationMeta('roomId');
+  @override
+  late final GeneratedColumn<int> roomId = GeneratedColumn<int>(
+      'room_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES rooms (id) ON DELETE CASCADE'));
+  static const VerificationMeta _xMeta = const VerificationMeta('x');
+  @override
+  late final GeneratedColumn<int> x = GeneratedColumn<int>(
+      'x', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _yMeta = const VerificationMeta('y');
+  @override
+  late final GeneratedColumn<int> y = GeneratedColumn<int>(
+      'y', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _useSoundIdMeta =
+      const VerificationMeta('useSoundId');
+  @override
+  late final GeneratedColumn<int> useSoundId = GeneratedColumn<int>(
+      'use_sound_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES sound_references (id)'));
+  @override
+  List<GeneratedColumn> get $columns => [id, roomId, x, y, useSoundId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'room_exits';
+  @override
+  VerificationContext validateIntegrity(Insertable<RoomExit> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('room_id')) {
+      context.handle(_roomIdMeta,
+          roomId.isAcceptableOrUnknown(data['room_id']!, _roomIdMeta));
+    } else if (isInserting) {
+      context.missing(_roomIdMeta);
+    }
+    if (data.containsKey('x')) {
+      context.handle(_xMeta, x.isAcceptableOrUnknown(data['x']!, _xMeta));
+    } else if (isInserting) {
+      context.missing(_xMeta);
+    }
+    if (data.containsKey('y')) {
+      context.handle(_yMeta, y.isAcceptableOrUnknown(data['y']!, _yMeta));
+    } else if (isInserting) {
+      context.missing(_yMeta);
+    }
+    if (data.containsKey('use_sound_id')) {
+      context.handle(
+          _useSoundIdMeta,
+          useSoundId.isAcceptableOrUnknown(
+              data['use_sound_id']!, _useSoundIdMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RoomExit map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RoomExit(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      roomId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}room_id'])!,
+      x: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}x'])!,
+      y: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}y'])!,
+      useSoundId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}use_sound_id']),
+    );
+  }
+
+  @override
+  $RoomExitsTable createAlias(String alias) {
+    return $RoomExitsTable(attachedDatabase, alias);
+  }
+}
+
+class RoomExit extends DataClass implements Insertable<RoomExit> {
+  /// The primary key field.
+  final int id;
+
+  /// The ID of the room this row is attached to.
+  final int roomId;
+
+  /// The target x coordinate.
+  final int x;
+
+  /// The target y coordinate.
+  final int y;
+
+  /// The ID of the sound to play when using this exit.
+  final int? useSoundId;
+  const RoomExit(
+      {required this.id,
+      required this.roomId,
+      required this.x,
+      required this.y,
+      this.useSoundId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['room_id'] = Variable<int>(roomId);
+    map['x'] = Variable<int>(x);
+    map['y'] = Variable<int>(y);
+    if (!nullToAbsent || useSoundId != null) {
+      map['use_sound_id'] = Variable<int>(useSoundId);
+    }
+    return map;
+  }
+
+  RoomExitsCompanion toCompanion(bool nullToAbsent) {
+    return RoomExitsCompanion(
+      id: Value(id),
+      roomId: Value(roomId),
+      x: Value(x),
+      y: Value(y),
+      useSoundId: useSoundId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(useSoundId),
+    );
+  }
+
+  factory RoomExit.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RoomExit(
+      id: serializer.fromJson<int>(json['id']),
+      roomId: serializer.fromJson<int>(json['roomId']),
+      x: serializer.fromJson<int>(json['x']),
+      y: serializer.fromJson<int>(json['y']),
+      useSoundId: serializer.fromJson<int?>(json['useSoundId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'roomId': serializer.toJson<int>(roomId),
+      'x': serializer.toJson<int>(x),
+      'y': serializer.toJson<int>(y),
+      'useSoundId': serializer.toJson<int?>(useSoundId),
+    };
+  }
+
+  RoomExit copyWith(
+          {int? id,
+          int? roomId,
+          int? x,
+          int? y,
+          Value<int?> useSoundId = const Value.absent()}) =>
+      RoomExit(
+        id: id ?? this.id,
+        roomId: roomId ?? this.roomId,
+        x: x ?? this.x,
+        y: y ?? this.y,
+        useSoundId: useSoundId.present ? useSoundId.value : this.useSoundId,
+      );
+  RoomExit copyWithCompanion(RoomExitsCompanion data) {
+    return RoomExit(
+      id: data.id.present ? data.id.value : this.id,
+      roomId: data.roomId.present ? data.roomId.value : this.roomId,
+      x: data.x.present ? data.x.value : this.x,
+      y: data.y.present ? data.y.value : this.y,
+      useSoundId:
+          data.useSoundId.present ? data.useSoundId.value : this.useSoundId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoomExit(')
+          ..write('id: $id, ')
+          ..write('roomId: $roomId, ')
+          ..write('x: $x, ')
+          ..write('y: $y, ')
+          ..write('useSoundId: $useSoundId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, roomId, x, y, useSoundId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RoomExit &&
+          other.id == this.id &&
+          other.roomId == this.roomId &&
+          other.x == this.x &&
+          other.y == this.y &&
+          other.useSoundId == this.useSoundId);
+}
+
+class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
+  final Value<int> id;
+  final Value<int> roomId;
+  final Value<int> x;
+  final Value<int> y;
+  final Value<int?> useSoundId;
+  const RoomExitsCompanion({
+    this.id = const Value.absent(),
+    this.roomId = const Value.absent(),
+    this.x = const Value.absent(),
+    this.y = const Value.absent(),
+    this.useSoundId = const Value.absent(),
+  });
+  RoomExitsCompanion.insert({
+    this.id = const Value.absent(),
+    required int roomId,
+    required int x,
+    required int y,
+    this.useSoundId = const Value.absent(),
+  })  : roomId = Value(roomId),
+        x = Value(x),
+        y = Value(y);
+  static Insertable<RoomExit> custom({
+    Expression<int>? id,
+    Expression<int>? roomId,
+    Expression<int>? x,
+    Expression<int>? y,
+    Expression<int>? useSoundId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (roomId != null) 'room_id': roomId,
+      if (x != null) 'x': x,
+      if (y != null) 'y': y,
+      if (useSoundId != null) 'use_sound_id': useSoundId,
+    });
+  }
+
+  RoomExitsCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? roomId,
+      Value<int>? x,
+      Value<int>? y,
+      Value<int?>? useSoundId}) {
+    return RoomExitsCompanion(
+      id: id ?? this.id,
+      roomId: roomId ?? this.roomId,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      useSoundId: useSoundId ?? this.useSoundId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (roomId.present) {
+      map['room_id'] = Variable<int>(roomId.value);
+    }
+    if (x.present) {
+      map['x'] = Variable<int>(x.value);
+    }
+    if (y.present) {
+      map['y'] = Variable<int>(y.value);
+    }
+    if (useSoundId.present) {
+      map['use_sound_id'] = Variable<int>(useSoundId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoomExitsCompanion(')
+          ..write('id: $id, ')
+          ..write('roomId: $roomId, ')
+          ..write('x: $x, ')
+          ..write('y: $y, ')
+          ..write('useSoundId: $useSoundId')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $RoomObjectsTable extends RoomObjects
     with TableInfo<$RoomObjectsTable, RoomObject> {
   @override
@@ -1451,9 +1763,18 @@ class $RoomObjectsTable extends RoomObjects
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
+  static const VerificationMeta _roomExitIdMeta =
+      const VerificationMeta('roomExitId');
+  @override
+  late final GeneratedColumn<int> roomExitId = GeneratedColumn<int>(
+      'room_exit_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES room_exits (id)'));
   @override
   List<GeneratedColumn> get $columns =>
-      [id, name, description, ambianceId, roomId, x, y];
+      [id, name, description, ambianceId, roomId, x, y, roomExitId];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1499,6 +1820,12 @@ class $RoomObjectsTable extends RoomObjects
     if (data.containsKey('y')) {
       context.handle(_yMeta, y.isAcceptableOrUnknown(data['y']!, _yMeta));
     }
+    if (data.containsKey('room_exit_id')) {
+      context.handle(
+          _roomExitIdMeta,
+          roomExitId.isAcceptableOrUnknown(
+              data['room_exit_id']!, _roomExitIdMeta));
+    }
     return context;
   }
 
@@ -1522,6 +1849,8 @@ class $RoomObjectsTable extends RoomObjects
           .read(DriftSqlType.int, data['${effectivePrefix}x'])!,
       y: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}y'])!,
+      roomExitId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}room_exit_id']),
     );
   }
 
@@ -1552,6 +1881,9 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
 
   /// The y coordinate.
   final int y;
+
+  /// The ID of a room exit object.
+  final int? roomExitId;
   const RoomObject(
       {required this.id,
       required this.name,
@@ -1559,7 +1891,8 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
       this.ambianceId,
       required this.roomId,
       required this.x,
-      required this.y});
+      required this.y,
+      this.roomExitId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1572,6 +1905,9 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
     map['room_id'] = Variable<int>(roomId);
     map['x'] = Variable<int>(x);
     map['y'] = Variable<int>(y);
+    if (!nullToAbsent || roomExitId != null) {
+      map['room_exit_id'] = Variable<int>(roomExitId);
+    }
     return map;
   }
 
@@ -1586,6 +1922,9 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
       roomId: Value(roomId),
       x: Value(x),
       y: Value(y),
+      roomExitId: roomExitId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(roomExitId),
     );
   }
 
@@ -1600,6 +1939,7 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
       roomId: serializer.fromJson<int>(json['roomId']),
       x: serializer.fromJson<int>(json['x']),
       y: serializer.fromJson<int>(json['y']),
+      roomExitId: serializer.fromJson<int?>(json['roomExitId']),
     );
   }
   @override
@@ -1613,6 +1953,7 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
       'roomId': serializer.toJson<int>(roomId),
       'x': serializer.toJson<int>(x),
       'y': serializer.toJson<int>(y),
+      'roomExitId': serializer.toJson<int?>(roomExitId),
     };
   }
 
@@ -1623,7 +1964,8 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
           Value<int?> ambianceId = const Value.absent(),
           int? roomId,
           int? x,
-          int? y}) =>
+          int? y,
+          Value<int?> roomExitId = const Value.absent()}) =>
       RoomObject(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -1632,6 +1974,7 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
         roomId: roomId ?? this.roomId,
         x: x ?? this.x,
         y: y ?? this.y,
+        roomExitId: roomExitId.present ? roomExitId.value : this.roomExitId,
       );
   RoomObject copyWithCompanion(RoomObjectsCompanion data) {
     return RoomObject(
@@ -1644,6 +1987,8 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
       roomId: data.roomId.present ? data.roomId.value : this.roomId,
       x: data.x.present ? data.x.value : this.x,
       y: data.y.present ? data.y.value : this.y,
+      roomExitId:
+          data.roomExitId.present ? data.roomExitId.value : this.roomExitId,
     );
   }
 
@@ -1656,14 +2001,15 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
           ..write('ambianceId: $ambianceId, ')
           ..write('roomId: $roomId, ')
           ..write('x: $x, ')
-          ..write('y: $y')
+          ..write('y: $y, ')
+          ..write('roomExitId: $roomExitId')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode =>
-      Object.hash(id, name, description, ambianceId, roomId, x, y);
+      Object.hash(id, name, description, ambianceId, roomId, x, y, roomExitId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1674,7 +2020,8 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
           other.ambianceId == this.ambianceId &&
           other.roomId == this.roomId &&
           other.x == this.x &&
-          other.y == this.y);
+          other.y == this.y &&
+          other.roomExitId == this.roomExitId);
 }
 
 class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
@@ -1685,6 +2032,7 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
   final Value<int> roomId;
   final Value<int> x;
   final Value<int> y;
+  final Value<int?> roomExitId;
   const RoomObjectsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -1693,6 +2041,7 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
     this.roomId = const Value.absent(),
     this.x = const Value.absent(),
     this.y = const Value.absent(),
+    this.roomExitId = const Value.absent(),
   });
   RoomObjectsCompanion.insert({
     this.id = const Value.absent(),
@@ -1702,6 +2051,7 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
     required int roomId,
     this.x = const Value.absent(),
     this.y = const Value.absent(),
+    this.roomExitId = const Value.absent(),
   })  : name = Value(name),
         description = Value(description),
         roomId = Value(roomId);
@@ -1713,6 +2063,7 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
     Expression<int>? roomId,
     Expression<int>? x,
     Expression<int>? y,
+    Expression<int>? roomExitId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1722,6 +2073,7 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
       if (roomId != null) 'room_id': roomId,
       if (x != null) 'x': x,
       if (y != null) 'y': y,
+      if (roomExitId != null) 'room_exit_id': roomExitId,
     });
   }
 
@@ -1732,7 +2084,8 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
       Value<int?>? ambianceId,
       Value<int>? roomId,
       Value<int>? x,
-      Value<int>? y}) {
+      Value<int>? y,
+      Value<int?>? roomExitId}) {
     return RoomObjectsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -1741,6 +2094,7 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
       roomId: roomId ?? this.roomId,
       x: x ?? this.x,
       y: y ?? this.y,
+      roomExitId: roomExitId ?? this.roomExitId,
     );
   }
 
@@ -1768,6 +2122,9 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
     if (y.present) {
       map['y'] = Variable<int>(y.value);
     }
+    if (roomExitId.present) {
+      map['room_exit_id'] = Variable<int>(roomExitId.value);
+    }
     return map;
   }
 
@@ -1780,7 +2137,8 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
           ..write('ambianceId: $ambianceId, ')
           ..write('roomId: $roomId, ')
           ..write('x: $x, ')
-          ..write('y: $y')
+          ..write('y: $y, ')
+          ..write('roomExitId: $roomExitId')
           ..write(')'))
         .toString();
   }
@@ -1794,16 +2152,24 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ZonesTable zones = $ZonesTable(this);
   late final $RoomSurfacesTable roomSurfaces = $RoomSurfacesTable(this);
   late final $RoomsTable rooms = $RoomsTable(this);
+  late final $RoomExitsTable roomExits = $RoomExitsTable(this);
   late final $RoomObjectsTable roomObjects = $RoomObjectsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [soundReferences, zones, roomSurfaces, rooms, roomObjects];
+      [soundReferences, zones, roomSurfaces, rooms, roomExits, roomObjects];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
         [
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('rooms',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_exits', kind: UpdateKind.delete),
+            ],
+          ),
           WritePropagation(
             on: TableUpdateQuery.onTableName('rooms',
                 limitUpdateKind: UpdateKind.delete),
@@ -1891,6 +2257,21 @@ final class $$SoundReferencesTableReferences extends BaseReferences<
         .filter((f) => f.ambianceId.id($_item.id));
 
     final cache = $_typedResult.readTableOrNull(_roomsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$RoomExitsTable, List<RoomExit>>
+      _roomExitsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.roomExits,
+              aliasName: $_aliasNameGenerator(
+                  db.soundReferences.id, db.roomExits.useSoundId));
+
+  $$RoomExitsTableProcessedTableManager get roomExitsRefs {
+    final manager = $$RoomExitsTableTableManager($_db, $_db.roomExits)
+        .filter((f) => f.useSoundId.id($_item.id));
+
+    final cache = $_typedResult.readTableOrNull(_roomExitsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -2010,6 +2391,27 @@ class $$SoundReferencesTableFilterComposer
             $$RoomsTableFilterComposer(
               $db: $db,
               $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> roomExitsRefs(
+      Expression<bool> Function($$RoomExitsTableFilterComposer f) f) {
+    final $$RoomExitsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomExits,
+        getReferencedColumn: (t) => t.useSoundId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomExitsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomExits,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -2167,6 +2569,27 @@ class $$SoundReferencesTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> roomExitsRefs<T extends Object>(
+      Expression<T> Function($$RoomExitsTableAnnotationComposer a) f) {
+    final $$RoomExitsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomExits,
+        getReferencedColumn: (t) => t.useSoundId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomExitsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roomExits,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
   Expression<T> roomObjectsRefs<T extends Object>(
       Expression<T> Function($$RoomObjectsTableAnnotationComposer a) f) {
     final $$RoomObjectsTableAnnotationComposer composer = $composerBuilder(
@@ -2205,6 +2628,7 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
         bool footstepsSurfaces,
         bool wallSoundsSurfaces,
         bool roomsRefs,
+        bool roomExitsRefs,
         bool roomObjectsRefs})> {
   $$SoundReferencesTableTableManager(
       _$AppDatabase db, $SoundReferencesTable table)
@@ -2252,6 +2676,7 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
               footstepsSurfaces = false,
               wallSoundsSurfaces = false,
               roomsRefs = false,
+              roomExitsRefs = false,
               roomObjectsRefs = false}) {
             return PrefetchHooks(
               db: db,
@@ -2260,6 +2685,7 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                 if (footstepsSurfaces) db.roomSurfaces,
                 if (wallSoundsSurfaces) db.roomSurfaces,
                 if (roomsRefs) db.rooms,
+                if (roomExitsRefs) db.roomExits,
                 if (roomObjectsRefs) db.roomObjects
               ],
               addJoins: null,
@@ -2313,6 +2739,18 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.ambianceId == item.id),
                         typedResults: items),
+                  if (roomExitsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$SoundReferencesTableReferences
+                            ._roomExitsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$SoundReferencesTableReferences(db, table, p0)
+                                .roomExitsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.useSoundId == item.id),
+                        typedResults: items),
                   if (roomObjectsRefs)
                     await $_getPrefetchedData(
                         currentTable: table,
@@ -2348,6 +2786,7 @@ typedef $$SoundReferencesTableProcessedTableManager = ProcessedTableManager<
         bool footstepsSurfaces,
         bool wallSoundsSurfaces,
         bool roomsRefs,
+        bool roomExitsRefs,
         bool roomObjectsRefs})>;
 typedef $$ZonesTableCreateCompanionBuilder = ZonesCompanion Function({
   Value<int> id,
@@ -3168,6 +3607,20 @@ final class $$RoomsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
+  static MultiTypedResultKey<$RoomExitsTable, List<RoomExit>>
+      _roomExitsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+          db.roomExits,
+          aliasName: $_aliasNameGenerator(db.rooms.id, db.roomExits.roomId));
+
+  $$RoomExitsTableProcessedTableManager get roomExitsRefs {
+    final manager = $$RoomExitsTableTableManager($_db, $_db.roomExits)
+        .filter((f) => f.roomId.id($_item.id));
+
+    final cache = $_typedResult.readTableOrNull(_roomExitsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
   static MultiTypedResultKey<$RoomObjectsTable, List<RoomObject>>
       _roomObjectsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
           db.roomObjects,
@@ -3267,6 +3720,27 @@ class $$RoomsTableFilterComposer extends Composer<_$AppDatabase, $RoomsTable> {
                   $removeJoinBuilderFromRootComposer,
             ));
     return composer;
+  }
+
+  Expression<bool> roomExitsRefs(
+      Expression<bool> Function($$RoomExitsTableFilterComposer f) f) {
+    final $$RoomExitsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomExits,
+        getReferencedColumn: (t) => t.roomId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomExitsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomExits,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
   }
 
   Expression<bool> roomObjectsRefs(
@@ -3466,6 +3940,27 @@ class $$RoomsTableAnnotationComposer
     return composer;
   }
 
+  Expression<T> roomExitsRefs<T extends Object>(
+      Expression<T> Function($$RoomExitsTableAnnotationComposer a) f) {
+    final $$RoomExitsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomExits,
+        getReferencedColumn: (t) => t.roomId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomExitsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roomExits,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
   Expression<T> roomObjectsRefs<T extends Object>(
       Expression<T> Function($$RoomObjectsTableAnnotationComposer a) f) {
     final $$RoomObjectsTableAnnotationComposer composer = $composerBuilder(
@@ -3500,7 +3995,11 @@ class $$RoomsTableTableManager extends RootTableManager<
     (Room, $$RoomsTableReferences),
     Room,
     PrefetchHooks Function(
-        {bool ambianceId, bool zoneId, bool surfaceId, bool roomObjectsRefs})> {
+        {bool ambianceId,
+        bool zoneId,
+        bool surfaceId,
+        bool roomExitsRefs,
+        bool roomObjectsRefs})> {
   $$RoomsTableTableManager(_$AppDatabase db, $RoomsTable table)
       : super(TableManagerState(
           db: db,
@@ -3563,10 +4062,14 @@ class $$RoomsTableTableManager extends RootTableManager<
               {ambianceId = false,
               zoneId = false,
               surfaceId = false,
+              roomExitsRefs = false,
               roomObjectsRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (roomObjectsRefs) db.roomObjects],
+              explicitlyWatchedTables: [
+                if (roomExitsRefs) db.roomExits,
+                if (roomObjectsRefs) db.roomObjects
+              ],
               addJoins: <
                   T extends TableManagerState<
                       dynamic,
@@ -3613,6 +4116,17 @@ class $$RoomsTableTableManager extends RootTableManager<
               },
               getPrefetchedDataCallback: (items) async {
                 return [
+                  if (roomExitsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable:
+                            $$RoomsTableReferences._roomExitsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$RoomsTableReferences(db, table, p0).roomExitsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.roomId == item.id),
+                        typedResults: items),
                   if (roomObjectsRefs)
                     await $_getPrefetchedData(
                         currentTable: table,
@@ -3644,7 +4158,424 @@ typedef $$RoomsTableProcessedTableManager = ProcessedTableManager<
     (Room, $$RoomsTableReferences),
     Room,
     PrefetchHooks Function(
-        {bool ambianceId, bool zoneId, bool surfaceId, bool roomObjectsRefs})>;
+        {bool ambianceId,
+        bool zoneId,
+        bool surfaceId,
+        bool roomExitsRefs,
+        bool roomObjectsRefs})>;
+typedef $$RoomExitsTableCreateCompanionBuilder = RoomExitsCompanion Function({
+  Value<int> id,
+  required int roomId,
+  required int x,
+  required int y,
+  Value<int?> useSoundId,
+});
+typedef $$RoomExitsTableUpdateCompanionBuilder = RoomExitsCompanion Function({
+  Value<int> id,
+  Value<int> roomId,
+  Value<int> x,
+  Value<int> y,
+  Value<int?> useSoundId,
+});
+
+final class $$RoomExitsTableReferences
+    extends BaseReferences<_$AppDatabase, $RoomExitsTable, RoomExit> {
+  $$RoomExitsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $RoomsTable _roomIdTable(_$AppDatabase db) => db.rooms
+      .createAlias($_aliasNameGenerator(db.roomExits.roomId, db.rooms.id));
+
+  $$RoomsTableProcessedTableManager get roomId {
+    final manager = $$RoomsTableTableManager($_db, $_db.rooms)
+        .filter((f) => f.id($_item.roomId));
+    final item = $_typedResult.readTableOrNull(_roomIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $SoundReferencesTable _useSoundIdTable(_$AppDatabase db) =>
+      db.soundReferences.createAlias(
+          $_aliasNameGenerator(db.roomExits.useSoundId, db.soundReferences.id));
+
+  $$SoundReferencesTableProcessedTableManager? get useSoundId {
+    if ($_item.useSoundId == null) return null;
+    final manager =
+        $$SoundReferencesTableTableManager($_db, $_db.soundReferences)
+            .filter((f) => f.id($_item.useSoundId!));
+    final item = $_typedResult.readTableOrNull(_useSoundIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static MultiTypedResultKey<$RoomObjectsTable, List<RoomObject>>
+      _roomObjectsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+          db.roomObjects,
+          aliasName:
+              $_aliasNameGenerator(db.roomExits.id, db.roomObjects.roomExitId));
+
+  $$RoomObjectsTableProcessedTableManager get roomObjectsRefs {
+    final manager = $$RoomObjectsTableTableManager($_db, $_db.roomObjects)
+        .filter((f) => f.roomExitId.id($_item.id));
+
+    final cache = $_typedResult.readTableOrNull(_roomObjectsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$RoomExitsTableFilterComposer
+    extends Composer<_$AppDatabase, $RoomExitsTable> {
+  $$RoomExitsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get x => $composableBuilder(
+      column: $table.x, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get y => $composableBuilder(
+      column: $table.y, builder: (column) => ColumnFilters(column));
+
+  $$RoomsTableFilterComposer get roomId {
+    final $$RoomsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomId,
+        referencedTable: $db.rooms,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomsTableFilterComposer(
+              $db: $db,
+              $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableFilterComposer get useSoundId {
+    final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.useSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableFilterComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  Expression<bool> roomObjectsRefs(
+      Expression<bool> Function($$RoomObjectsTableFilterComposer f) f) {
+    final $$RoomObjectsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomObjects,
+        getReferencedColumn: (t) => t.roomExitId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$RoomExitsTableOrderingComposer
+    extends Composer<_$AppDatabase, $RoomExitsTable> {
+  $$RoomExitsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get x => $composableBuilder(
+      column: $table.x, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get y => $composableBuilder(
+      column: $table.y, builder: (column) => ColumnOrderings(column));
+
+  $$RoomsTableOrderingComposer get roomId {
+    final $$RoomsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomId,
+        referencedTable: $db.rooms,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomsTableOrderingComposer(
+              $db: $db,
+              $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableOrderingComposer get useSoundId {
+    final $$SoundReferencesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.useSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableOrderingComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RoomExitsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RoomExitsTable> {
+  $$RoomExitsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get x =>
+      $composableBuilder(column: $table.x, builder: (column) => column);
+
+  GeneratedColumn<int> get y =>
+      $composableBuilder(column: $table.y, builder: (column) => column);
+
+  $$RoomsTableAnnotationComposer get roomId {
+    final $$RoomsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomId,
+        referencedTable: $db.rooms,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableAnnotationComposer get useSoundId {
+    final $$SoundReferencesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.useSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  Expression<T> roomObjectsRefs<T extends Object>(
+      Expression<T> Function($$RoomObjectsTableAnnotationComposer a) f) {
+    final $$RoomObjectsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomObjects,
+        getReferencedColumn: (t) => t.roomExitId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$RoomExitsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $RoomExitsTable,
+    RoomExit,
+    $$RoomExitsTableFilterComposer,
+    $$RoomExitsTableOrderingComposer,
+    $$RoomExitsTableAnnotationComposer,
+    $$RoomExitsTableCreateCompanionBuilder,
+    $$RoomExitsTableUpdateCompanionBuilder,
+    (RoomExit, $$RoomExitsTableReferences),
+    RoomExit,
+    PrefetchHooks Function(
+        {bool roomId, bool useSoundId, bool roomObjectsRefs})> {
+  $$RoomExitsTableTableManager(_$AppDatabase db, $RoomExitsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RoomExitsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RoomExitsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RoomExitsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> roomId = const Value.absent(),
+            Value<int> x = const Value.absent(),
+            Value<int> y = const Value.absent(),
+            Value<int?> useSoundId = const Value.absent(),
+          }) =>
+              RoomExitsCompanion(
+            id: id,
+            roomId: roomId,
+            x: x,
+            y: y,
+            useSoundId: useSoundId,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int roomId,
+            required int x,
+            required int y,
+            Value<int?> useSoundId = const Value.absent(),
+          }) =>
+              RoomExitsCompanion.insert(
+            id: id,
+            roomId: roomId,
+            x: x,
+            y: y,
+            useSoundId: useSoundId,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$RoomExitsTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: (
+              {roomId = false, useSoundId = false, roomObjectsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (roomObjectsRefs) db.roomObjects],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (roomId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.roomId,
+                    referencedTable:
+                        $$RoomExitsTableReferences._roomIdTable(db),
+                    referencedColumn:
+                        $$RoomExitsTableReferences._roomIdTable(db).id,
+                  ) as T;
+                }
+                if (useSoundId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.useSoundId,
+                    referencedTable:
+                        $$RoomExitsTableReferences._useSoundIdTable(db),
+                    referencedColumn:
+                        $$RoomExitsTableReferences._useSoundIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (roomObjectsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$RoomExitsTableReferences
+                            ._roomObjectsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$RoomExitsTableReferences(db, table, p0)
+                                .roomObjectsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.roomExitId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$RoomExitsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $RoomExitsTable,
+    RoomExit,
+    $$RoomExitsTableFilterComposer,
+    $$RoomExitsTableOrderingComposer,
+    $$RoomExitsTableAnnotationComposer,
+    $$RoomExitsTableCreateCompanionBuilder,
+    $$RoomExitsTableUpdateCompanionBuilder,
+    (RoomExit, $$RoomExitsTableReferences),
+    RoomExit,
+    PrefetchHooks Function(
+        {bool roomId, bool useSoundId, bool roomObjectsRefs})>;
 typedef $$RoomObjectsTableCreateCompanionBuilder = RoomObjectsCompanion
     Function({
   Value<int> id,
@@ -3654,6 +4585,7 @@ typedef $$RoomObjectsTableCreateCompanionBuilder = RoomObjectsCompanion
   required int roomId,
   Value<int> x,
   Value<int> y,
+  Value<int?> roomExitId,
 });
 typedef $$RoomObjectsTableUpdateCompanionBuilder = RoomObjectsCompanion
     Function({
@@ -3664,6 +4596,7 @@ typedef $$RoomObjectsTableUpdateCompanionBuilder = RoomObjectsCompanion
   Value<int> roomId,
   Value<int> x,
   Value<int> y,
+  Value<int?> roomExitId,
 });
 
 final class $$RoomObjectsTableReferences
@@ -3692,6 +4625,20 @@ final class $$RoomObjectsTableReferences
     final manager = $$RoomsTableTableManager($_db, $_db.rooms)
         .filter((f) => f.id($_item.roomId));
     final item = $_typedResult.readTableOrNull(_roomIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $RoomExitsTable _roomExitIdTable(_$AppDatabase db) =>
+      db.roomExits.createAlias(
+          $_aliasNameGenerator(db.roomObjects.roomExitId, db.roomExits.id));
+
+  $$RoomExitsTableProcessedTableManager? get roomExitId {
+    if ($_item.roomExitId == null) return null;
+    final manager = $$RoomExitsTableTableManager($_db, $_db.roomExits)
+        .filter((f) => f.id($_item.roomExitId!));
+    final item = $_typedResult.readTableOrNull(_roomExitIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
@@ -3754,6 +4701,26 @@ class $$RoomObjectsTableFilterComposer
             $$RoomsTableFilterComposer(
               $db: $db,
               $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$RoomExitsTableFilterComposer get roomExitId {
+    final $$RoomExitsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomExitId,
+        referencedTable: $db.roomExits,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomExitsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomExits,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -3826,6 +4793,26 @@ class $$RoomObjectsTableOrderingComposer
             ));
     return composer;
   }
+
+  $$RoomExitsTableOrderingComposer get roomExitId {
+    final $$RoomExitsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomExitId,
+        referencedTable: $db.roomExits,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomExitsTableOrderingComposer(
+              $db: $db,
+              $table: $db.roomExits,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$RoomObjectsTableAnnotationComposer
@@ -3891,6 +4878,26 @@ class $$RoomObjectsTableAnnotationComposer
             ));
     return composer;
   }
+
+  $$RoomExitsTableAnnotationComposer get roomExitId {
+    final $$RoomExitsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomExitId,
+        referencedTable: $db.roomExits,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomExitsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roomExits,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$RoomObjectsTableTableManager extends RootTableManager<
@@ -3904,7 +4911,7 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
     $$RoomObjectsTableUpdateCompanionBuilder,
     (RoomObject, $$RoomObjectsTableReferences),
     RoomObject,
-    PrefetchHooks Function({bool ambianceId, bool roomId})> {
+    PrefetchHooks Function({bool ambianceId, bool roomId, bool roomExitId})> {
   $$RoomObjectsTableTableManager(_$AppDatabase db, $RoomObjectsTable table)
       : super(TableManagerState(
           db: db,
@@ -3923,6 +4930,7 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
             Value<int> roomId = const Value.absent(),
             Value<int> x = const Value.absent(),
             Value<int> y = const Value.absent(),
+            Value<int?> roomExitId = const Value.absent(),
           }) =>
               RoomObjectsCompanion(
             id: id,
@@ -3932,6 +4940,7 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
             roomId: roomId,
             x: x,
             y: y,
+            roomExitId: roomExitId,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -3941,6 +4950,7 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
             required int roomId,
             Value<int> x = const Value.absent(),
             Value<int> y = const Value.absent(),
+            Value<int?> roomExitId = const Value.absent(),
           }) =>
               RoomObjectsCompanion.insert(
             id: id,
@@ -3950,6 +4960,7 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
             roomId: roomId,
             x: x,
             y: y,
+            roomExitId: roomExitId,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
@@ -3957,7 +4968,8 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
                     $$RoomObjectsTableReferences(db, table, e)
                   ))
               .toList(),
-          prefetchHooksCallback: ({ambianceId = false, roomId = false}) {
+          prefetchHooksCallback: (
+              {ambianceId = false, roomId = false, roomExitId = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -3994,6 +5006,16 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
                         $$RoomObjectsTableReferences._roomIdTable(db).id,
                   ) as T;
                 }
+                if (roomExitId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.roomExitId,
+                    referencedTable:
+                        $$RoomObjectsTableReferences._roomExitIdTable(db),
+                    referencedColumn:
+                        $$RoomObjectsTableReferences._roomExitIdTable(db).id,
+                  ) as T;
+                }
 
                 return state;
               },
@@ -4016,7 +5038,7 @@ typedef $$RoomObjectsTableProcessedTableManager = ProcessedTableManager<
     $$RoomObjectsTableUpdateCompanionBuilder,
     (RoomObject, $$RoomObjectsTableReferences),
     RoomObject,
-    PrefetchHooks Function({bool ambianceId, bool roomId})>;
+    PrefetchHooks Function({bool ambianceId, bool roomId, bool roomExitId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -4029,6 +5051,8 @@ class $AppDatabaseManager {
       $$RoomSurfacesTableTableManager(_db, _db.roomSurfaces);
   $$RoomsTableTableManager get rooms =>
       $$RoomsTableTableManager(_db, _db.rooms);
+  $$RoomExitsTableTableManager get roomExits =>
+      $$RoomExitsTableTableManager(_db, _db.roomExits);
   $$RoomObjectsTableTableManager get roomObjects =>
       $$RoomObjectsTableTableManager(_db, _db.roomObjects);
 }

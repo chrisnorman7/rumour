@@ -13,4 +13,7 @@ class RoomObjects extends Table
 
   /// The y coordinate.
   IntColumn get y => integer().withDefault(const Constant(0))();
+
+  /// The ID of a room exit object.
+  IntColumn get roomExitId => integer().references(RoomExits, #id).nullable()();
 }

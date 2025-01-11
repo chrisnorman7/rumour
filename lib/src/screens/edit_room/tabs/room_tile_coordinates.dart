@@ -54,7 +54,8 @@ class _RoomTileCoordinates extends ConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final projectContext = ref.watch(projectContextProvider);
-    final manager = projectContext.database.managers.roomObjects;
+    final managers = projectContext.database.managers;
+    final manager = managers.roomObjects;
     return PerformableActionsBuilder(
       actions: [
         PerformableAction(
@@ -83,17 +84,51 @@ class _RoomTileCoordinates extends ConsumerWidget {
           name: 'Build exit',
           invoke: () => context.pushWidgetBuilder(
             (final builderContext) => SelectRoomScreen(
-              onChanged: (final value) async {
+              onChanged: (final room) async {
                 Navigator.pop(builderContext);
-                final object = await manager.createReturning(
+                final outExit = await managers.roomExits.createReturning(
+                  (final o) => o(
+                    roomId: room.id,
+                    x: 0,
+                    y: 0,
+                  ),
+                );
+                final outObject = await manager.createReturning(
                   (final o) => o(
                     name: 'Untitled Exit',
-                    description: 'A new exit to ${value.name}.',
+                    description: 'A new exit to ${room.name}.',
                     roomId: roomId,
                     x: Value(coordinates.x),
                     y: Value(coordinates.y),
+                    roomExitId: Value(outExit.id),
                   ),
                 );
+                final backExit = await managers.roomExits.createReturning(
+                  (final o) => o(
+                    roomId: roomId,
+                    x: coordinates.x,
+                    y: coordinates.y,
+                  ),
+                );
+                final backObject = await manager.createReturning(
+                  (final o) => o(
+                    name: outObject.name,
+                    description: 'An exit out of ${room.name}.',
+                    roomId: room.id,
+                    roomExitId: Value(backExit.id),
+                  ),
+                );
+                for (final object in [outObject, backObject]) {
+                  ref.invalidate(
+                    roomObjectsProvider(
+                      object.roomId,
+                      Point(object.x, object.y),
+                    ),
+                  );
+                }
+                if (context.mounted) {
+                  context.announce('Built exit to ${room.name}.');
+                }
               },
             ),
           ),
