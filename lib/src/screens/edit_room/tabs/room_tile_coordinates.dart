@@ -86,13 +86,6 @@ class _RoomTileCoordinates extends ConsumerWidget {
             (final builderContext) => SelectRoomScreen(
               onChanged: (final room) async {
                 Navigator.pop(builderContext);
-                final outExit = await managers.roomExits.createReturning(
-                  (final o) => o(
-                    roomId: room.id,
-                    x: 0,
-                    y: 0,
-                  ),
-                );
                 final outObject = await manager.createReturning(
                   (final o) => o(
                     name: 'Untitled Exit',
@@ -100,14 +93,11 @@ class _RoomTileCoordinates extends ConsumerWidget {
                     roomId: roomId,
                     x: Value(coordinates.x),
                     y: Value(coordinates.y),
-                    roomExitId: Value(outExit.id),
                   ),
                 );
                 final backExit = await managers.roomExits.createReturning(
                   (final o) => o(
-                    roomId: roomId,
-                    x: coordinates.x,
-                    y: coordinates.y,
+                    destinationObjectId: outObject.id,
                   ),
                 );
                 final backObject = await manager.createReturning(
@@ -118,6 +108,18 @@ class _RoomTileCoordinates extends ConsumerWidget {
                     roomExitId: Value(backExit.id),
                   ),
                 );
+                final outExit = await managers.roomExits.createReturning(
+                  (final o) => o(
+                    destinationObjectId: backObject.id,
+                  ),
+                );
+                await manager
+                    .filter(
+                      (final f) => f.id.equals(outObject.id),
+                    )
+                    .update(
+                      (final o) => o(roomExitId: Value(outExit.id)),
+                    );
                 for (final object in [outObject, backObject]) {
                   ref.invalidate(
                     roomObjectsProvider(
