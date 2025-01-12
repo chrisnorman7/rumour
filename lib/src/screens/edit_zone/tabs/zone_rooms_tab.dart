@@ -14,6 +14,7 @@ import '../../../providers.dart';
 import '../../../widgets/nothing_to_see.dart';
 import '../../../widgets/play_sound_reference_semantics.dart';
 import '../../edit_room/edit_room_screen.dart';
+import '../../play_project/play_room_screen.dart';
 import '../../select_zone_screen.dart';
 
 /// The zone rooms tab.
@@ -90,6 +91,18 @@ class ZoneRoomsTab extends ConsumerWidget {
                           currentZoneId: room.zoneId,
                         ),
                       ),
+                  ),
+                  PerformableAction(
+                    name: 'Play',
+                    invoke: () => builderContext
+                      ..stopPlaySoundSemantics()
+                      ..pushWidgetBuilder(
+                        (final _) => PlayRoomScreen(
+                          projectContext: projectContext,
+                          room: room,
+                        ),
+                      ),
+                    activator: playShortcut,
                   ),
                   PerformableAction(
                     name: 'Delete',

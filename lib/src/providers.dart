@@ -138,16 +138,14 @@ Future<List<RoomObject>> roomObjects(
   final Point<int> coordinates,
 ) {
   final projectContext = ref.watch(projectContextProvider);
-  final db = projectContext.database;
-  final query = db.select(db.roomObjects)
-    ..where(
-      (final t) =>
-          t.roomId.equals(roomId) &
-          t.x.equals(coordinates.x) &
-          t.y.equals(coordinates.y),
-    )
-    ..orderBy([(final t) => OrderingTerm.asc(t.name)]);
-  return query.get();
+  return projectContext.database.managers.roomObjects
+      .filter(
+        (final t) =>
+            t.roomId.id.equals(roomId) &
+            t.x.equals(coordinates.x) &
+            t.y.equals(coordinates.y),
+      )
+      .get();
 }
 
 /// Provide a single room object.

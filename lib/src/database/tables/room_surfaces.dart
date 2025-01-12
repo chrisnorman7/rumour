@@ -14,4 +14,7 @@ class RoomSurfaces extends Table with IdMixin, NameMixin, DescriptionMixin {
   @ReferenceName('wallSoundsSurfaces')
   IntColumn get wallSoundI =>
       integer().references(SoundReferences, #id).nullable()();
+
+  /// How many milliseconds must elapse between footsteps on this surface.
+  IntColumn get moveInterval => integer().withDefault(const Constant(500))();
 }

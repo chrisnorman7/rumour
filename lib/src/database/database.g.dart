@@ -628,9 +628,17 @@ class $RoomSurfacesTable extends RoomSurfaces
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES sound_references (id)'));
+  static const VerificationMeta _moveIntervalMeta =
+      const VerificationMeta('moveInterval');
+  @override
+  late final GeneratedColumn<int> moveInterval = GeneratedColumn<int>(
+      'move_interval', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(500));
   @override
   List<GeneratedColumn> get $columns =>
-      [id, name, description, footstepSoundId, wallSoundI];
+      [id, name, description, footstepSoundId, wallSoundI, moveInterval];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -670,6 +678,12 @@ class $RoomSurfacesTable extends RoomSurfaces
           wallSoundI.isAcceptableOrUnknown(
               data['wall_sound_i']!, _wallSoundIMeta));
     }
+    if (data.containsKey('move_interval')) {
+      context.handle(
+          _moveIntervalMeta,
+          moveInterval.isAcceptableOrUnknown(
+              data['move_interval']!, _moveIntervalMeta));
+    }
     return context;
   }
 
@@ -689,6 +703,8 @@ class $RoomSurfacesTable extends RoomSurfaces
           .read(DriftSqlType.int, data['${effectivePrefix}footstep_sound_id']),
       wallSoundI: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}wall_sound_i']),
+      moveInterval: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}move_interval'])!,
     );
   }
 
@@ -713,12 +729,16 @@ class RoomSurface extends DataClass implements Insertable<RoomSurface> {
 
   /// The ID of the wall sound to use.
   final int? wallSoundI;
+
+  /// How many milliseconds must elapse between footsteps on this surface.
+  final int moveInterval;
   const RoomSurface(
       {required this.id,
       required this.name,
       required this.description,
       this.footstepSoundId,
-      this.wallSoundI});
+      this.wallSoundI,
+      required this.moveInterval});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -731,6 +751,7 @@ class RoomSurface extends DataClass implements Insertable<RoomSurface> {
     if (!nullToAbsent || wallSoundI != null) {
       map['wall_sound_i'] = Variable<int>(wallSoundI);
     }
+    map['move_interval'] = Variable<int>(moveInterval);
     return map;
   }
 
@@ -745,6 +766,7 @@ class RoomSurface extends DataClass implements Insertable<RoomSurface> {
       wallSoundI: wallSoundI == null && nullToAbsent
           ? const Value.absent()
           : Value(wallSoundI),
+      moveInterval: Value(moveInterval),
     );
   }
 
@@ -757,6 +779,7 @@ class RoomSurface extends DataClass implements Insertable<RoomSurface> {
       description: serializer.fromJson<String>(json['description']),
       footstepSoundId: serializer.fromJson<int?>(json['footstepSoundId']),
       wallSoundI: serializer.fromJson<int?>(json['wallSoundI']),
+      moveInterval: serializer.fromJson<int>(json['moveInterval']),
     );
   }
   @override
@@ -768,6 +791,7 @@ class RoomSurface extends DataClass implements Insertable<RoomSurface> {
       'description': serializer.toJson<String>(description),
       'footstepSoundId': serializer.toJson<int?>(footstepSoundId),
       'wallSoundI': serializer.toJson<int?>(wallSoundI),
+      'moveInterval': serializer.toJson<int>(moveInterval),
     };
   }
 
@@ -776,7 +800,8 @@ class RoomSurface extends DataClass implements Insertable<RoomSurface> {
           String? name,
           String? description,
           Value<int?> footstepSoundId = const Value.absent(),
-          Value<int?> wallSoundI = const Value.absent()}) =>
+          Value<int?> wallSoundI = const Value.absent(),
+          int? moveInterval}) =>
       RoomSurface(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -785,6 +810,7 @@ class RoomSurface extends DataClass implements Insertable<RoomSurface> {
             ? footstepSoundId.value
             : this.footstepSoundId,
         wallSoundI: wallSoundI.present ? wallSoundI.value : this.wallSoundI,
+        moveInterval: moveInterval ?? this.moveInterval,
       );
   RoomSurface copyWithCompanion(RoomSurfacesCompanion data) {
     return RoomSurface(
@@ -797,6 +823,9 @@ class RoomSurface extends DataClass implements Insertable<RoomSurface> {
           : this.footstepSoundId,
       wallSoundI:
           data.wallSoundI.present ? data.wallSoundI.value : this.wallSoundI,
+      moveInterval: data.moveInterval.present
+          ? data.moveInterval.value
+          : this.moveInterval,
     );
   }
 
@@ -807,14 +836,15 @@ class RoomSurface extends DataClass implements Insertable<RoomSurface> {
           ..write('name: $name, ')
           ..write('description: $description, ')
           ..write('footstepSoundId: $footstepSoundId, ')
-          ..write('wallSoundI: $wallSoundI')
+          ..write('wallSoundI: $wallSoundI, ')
+          ..write('moveInterval: $moveInterval')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, name, description, footstepSoundId, wallSoundI);
+  int get hashCode => Object.hash(
+      id, name, description, footstepSoundId, wallSoundI, moveInterval);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -823,7 +853,8 @@ class RoomSurface extends DataClass implements Insertable<RoomSurface> {
           other.name == this.name &&
           other.description == this.description &&
           other.footstepSoundId == this.footstepSoundId &&
-          other.wallSoundI == this.wallSoundI);
+          other.wallSoundI == this.wallSoundI &&
+          other.moveInterval == this.moveInterval);
 }
 
 class RoomSurfacesCompanion extends UpdateCompanion<RoomSurface> {
@@ -832,12 +863,14 @@ class RoomSurfacesCompanion extends UpdateCompanion<RoomSurface> {
   final Value<String> description;
   final Value<int?> footstepSoundId;
   final Value<int?> wallSoundI;
+  final Value<int> moveInterval;
   const RoomSurfacesCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.description = const Value.absent(),
     this.footstepSoundId = const Value.absent(),
     this.wallSoundI = const Value.absent(),
+    this.moveInterval = const Value.absent(),
   });
   RoomSurfacesCompanion.insert({
     this.id = const Value.absent(),
@@ -845,6 +878,7 @@ class RoomSurfacesCompanion extends UpdateCompanion<RoomSurface> {
     required String description,
     this.footstepSoundId = const Value.absent(),
     this.wallSoundI = const Value.absent(),
+    this.moveInterval = const Value.absent(),
   })  : name = Value(name),
         description = Value(description);
   static Insertable<RoomSurface> custom({
@@ -853,6 +887,7 @@ class RoomSurfacesCompanion extends UpdateCompanion<RoomSurface> {
     Expression<String>? description,
     Expression<int>? footstepSoundId,
     Expression<int>? wallSoundI,
+    Expression<int>? moveInterval,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -860,6 +895,7 @@ class RoomSurfacesCompanion extends UpdateCompanion<RoomSurface> {
       if (description != null) 'description': description,
       if (footstepSoundId != null) 'footstep_sound_id': footstepSoundId,
       if (wallSoundI != null) 'wall_sound_i': wallSoundI,
+      if (moveInterval != null) 'move_interval': moveInterval,
     });
   }
 
@@ -868,13 +904,15 @@ class RoomSurfacesCompanion extends UpdateCompanion<RoomSurface> {
       Value<String>? name,
       Value<String>? description,
       Value<int?>? footstepSoundId,
-      Value<int?>? wallSoundI}) {
+      Value<int?>? wallSoundI,
+      Value<int>? moveInterval}) {
     return RoomSurfacesCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
       footstepSoundId: footstepSoundId ?? this.footstepSoundId,
       wallSoundI: wallSoundI ?? this.wallSoundI,
+      moveInterval: moveInterval ?? this.moveInterval,
     );
   }
 
@@ -896,6 +934,9 @@ class RoomSurfacesCompanion extends UpdateCompanion<RoomSurface> {
     if (wallSoundI.present) {
       map['wall_sound_i'] = Variable<int>(wallSoundI.value);
     }
+    if (moveInterval.present) {
+      map['move_interval'] = Variable<int>(moveInterval.value);
+    }
     return map;
   }
 
@@ -906,7 +947,8 @@ class RoomSurfacesCompanion extends UpdateCompanion<RoomSurface> {
           ..write('name: $name, ')
           ..write('description: $description, ')
           ..write('footstepSoundId: $footstepSoundId, ')
-          ..write('wallSoundI: $wallSoundI')
+          ..write('wallSoundI: $wallSoundI, ')
+          ..write('moveInterval: $moveInterval')
           ..write(')'))
         .toString();
   }
@@ -3047,6 +3089,7 @@ typedef $$RoomSurfacesTableCreateCompanionBuilder = RoomSurfacesCompanion
   required String description,
   Value<int?> footstepSoundId,
   Value<int?> wallSoundI,
+  Value<int> moveInterval,
 });
 typedef $$RoomSurfacesTableUpdateCompanionBuilder = RoomSurfacesCompanion
     Function({
@@ -3055,6 +3098,7 @@ typedef $$RoomSurfacesTableUpdateCompanionBuilder = RoomSurfacesCompanion
   Value<String> description,
   Value<int?> footstepSoundId,
   Value<int?> wallSoundI,
+  Value<int> moveInterval,
 });
 
 final class $$RoomSurfacesTableReferences
@@ -3124,6 +3168,9 @@ class $$RoomSurfacesTableFilterComposer
 
   ColumnFilters<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get moveInterval => $composableBuilder(
+      column: $table.moveInterval, builder: (column) => ColumnFilters(column));
 
   $$SoundReferencesTableFilterComposer get footstepSoundId {
     final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
@@ -3205,6 +3252,10 @@ class $$RoomSurfacesTableOrderingComposer
   ColumnOrderings<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<int> get moveInterval => $composableBuilder(
+      column: $table.moveInterval,
+      builder: (column) => ColumnOrderings(column));
+
   $$SoundReferencesTableOrderingComposer get footstepSoundId {
     final $$SoundReferencesTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -3263,6 +3314,9 @@ class $$RoomSurfacesTableAnnotationComposer
 
   GeneratedColumn<String> get description => $composableBuilder(
       column: $table.description, builder: (column) => column);
+
+  GeneratedColumn<int> get moveInterval => $composableBuilder(
+      column: $table.moveInterval, builder: (column) => column);
 
   $$SoundReferencesTableAnnotationComposer get footstepSoundId {
     final $$SoundReferencesTableAnnotationComposer composer = $composerBuilder(
@@ -3355,6 +3409,7 @@ class $$RoomSurfacesTableTableManager extends RootTableManager<
             Value<String> description = const Value.absent(),
             Value<int?> footstepSoundId = const Value.absent(),
             Value<int?> wallSoundI = const Value.absent(),
+            Value<int> moveInterval = const Value.absent(),
           }) =>
               RoomSurfacesCompanion(
             id: id,
@@ -3362,6 +3417,7 @@ class $$RoomSurfacesTableTableManager extends RootTableManager<
             description: description,
             footstepSoundId: footstepSoundId,
             wallSoundI: wallSoundI,
+            moveInterval: moveInterval,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -3369,6 +3425,7 @@ class $$RoomSurfacesTableTableManager extends RootTableManager<
             required String description,
             Value<int?> footstepSoundId = const Value.absent(),
             Value<int?> wallSoundI = const Value.absent(),
+            Value<int> moveInterval = const Value.absent(),
           }) =>
               RoomSurfacesCompanion.insert(
             id: id,
@@ -3376,6 +3433,7 @@ class $$RoomSurfacesTableTableManager extends RootTableManager<
             description: description,
             footstepSoundId: footstepSoundId,
             wallSoundI: wallSoundI,
+            moveInterval: moveInterval,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
