@@ -843,7 +843,7 @@ class _RoomSurfaceProviderElement
   int get id => (origin as RoomSurfaceProvider).id;
 }
 
-String _$roomObjectsHash() => r'5af4e391dd28c94136bcf244f5c6fcd17c9e8baa';
+String _$roomObjectsHash() => r'd027afd6db05452f21d42197a3b9f6f4e6207aa6';
 
 /// Provide room objects for a given room and coordinates.
 ///
@@ -1143,6 +1143,147 @@ class _RoomObjectProviderElement
 
   @override
   int get id => (origin as RoomObjectProvider).id;
+}
+
+String _$roomExitHash() => r'721a3b7ab4dd7f03daa7e2ad4e9ce39c20cf041b';
+
+/// Provide a room exit.
+///
+/// Copied from [roomExit].
+@ProviderFor(roomExit)
+const roomExitProvider = RoomExitFamily();
+
+/// Provide a room exit.
+///
+/// Copied from [roomExit].
+class RoomExitFamily extends Family<AsyncValue<RoomExit>> {
+  /// Provide a room exit.
+  ///
+  /// Copied from [roomExit].
+  const RoomExitFamily();
+
+  /// Provide a room exit.
+  ///
+  /// Copied from [roomExit].
+  RoomExitProvider call(
+    int id,
+  ) {
+    return RoomExitProvider(
+      id,
+    );
+  }
+
+  @override
+  RoomExitProvider getProviderOverride(
+    covariant RoomExitProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'roomExitProvider';
+}
+
+/// Provide a room exit.
+///
+/// Copied from [roomExit].
+class RoomExitProvider extends AutoDisposeFutureProvider<RoomExit> {
+  /// Provide a room exit.
+  ///
+  /// Copied from [roomExit].
+  RoomExitProvider(
+    int id,
+  ) : this._internal(
+          (ref) => roomExit(
+            ref as RoomExitRef,
+            id,
+          ),
+          from: roomExitProvider,
+          name: r'roomExitProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$roomExitHash,
+          dependencies: RoomExitFamily._dependencies,
+          allTransitiveDependencies: RoomExitFamily._allTransitiveDependencies,
+          id: id,
+        );
+
+  RoomExitProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
+  final int id;
+
+  @override
+  Override overrideWith(
+    FutureOr<RoomExit> Function(RoomExitRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: RoomExitProvider._internal(
+        (ref) => create(ref as RoomExitRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<RoomExit> createElement() {
+    return _RoomExitProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RoomExitProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin RoomExitRef on AutoDisposeFutureProviderRef<RoomExit> {
+  /// The parameter `id` of this provider.
+  int get id;
+}
+
+class _RoomExitProviderElement
+    extends AutoDisposeFutureProviderElement<RoomExit> with RoomExitRef {
+  _RoomExitProviderElement(super.provider);
+
+  @override
+  int get id => (origin as RoomExitProvider).id;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

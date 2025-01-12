@@ -158,3 +158,12 @@ Future<RoomObject> roomObject(final Ref ref, final int id) {
       )
       .getSingle();
 }
+
+/// Provide a room exit.
+@riverpod
+Future<RoomExit> roomExit(final Ref ref, final int id) {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.roomExits
+      .filter((final f) => f.id.equals(id))
+      .getSingle();
+}
