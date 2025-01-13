@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../extensions/async_value_x.dart';
 import '../../providers.dart';
+import '../../widgets/room_object_list_tile.dart';
 import '../../widgets/sound_reference_list_tile.dart';
 
 /// A widget to edit a room exit.
@@ -23,8 +24,9 @@ class EditRoomExitScreen extends ConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final projectContext = ref.watch(projectContextProvider);
-    final query = projectContext.database.managers.roomExits
-        .filter((final f) => f.id.equals(roomExitId));
+    final query = projectContext.database.managers.roomExits.filter(
+      (final f) => f.id.equals(roomExitId),
+    );
     final provider = roomExitProvider(roomExitId);
     final value = ref.watch(provider);
     return Cancel(
@@ -44,6 +46,15 @@ class EditRoomExitScreen extends ConsumerWidget {
                 },
                 title: 'Use sound',
                 autofocus: true,
+              ),
+              RoomObjectListTile(
+                roomObjectId: roomExit.destinationObjectId,
+                onChanged: (final value) async {
+                  await query.update(
+                    (final o) => o(destinationObjectId: Value(value.id)),
+                  );
+                  ref.invalidate(provider);
+                },
               ),
             ],
           ),

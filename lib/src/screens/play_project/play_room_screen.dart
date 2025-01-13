@@ -72,7 +72,7 @@ class PlayRoomScreenState extends State<PlayRoomScreen> {
   Future<List<RoomObject>> getNearbyRoomObjects() => managers.roomObjects
       .filter(
         (final f) =>
-            f.roomExitId.id.equals(room.id) &
+            f.roomId.id.equals(room.id) &
             f.x.equals(coordinates.x) &
             f.y.equals(coordinates.y),
       )
@@ -295,7 +295,7 @@ class PlayRoomScreenState extends State<PlayRoomScreen> {
                 title: room.name,
                 body: GameShortcuts(
                   shortcuts: shortcuts,
-                  child: const Text('Keyboard area'),
+                  child: Text(room.name),
                 ),
               );
             },

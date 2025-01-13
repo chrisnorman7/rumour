@@ -76,6 +76,7 @@ class SoundReferenceListTile extends ConsumerWidget {
             final state = builderContext
                 .findAncestorStateOfType<PlaySoundSemanticsState>();
             return PerformableActionsListTile(
+              autofocus: autofocus,
               actions: [
                 if (reference.volume < maxVolume)
                   PerformableAction(

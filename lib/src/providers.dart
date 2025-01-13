@@ -11,6 +11,7 @@ import 'database/database.dart';
 import 'json/app_preferences.dart';
 import 'json/project.dart';
 import 'project_context.dart';
+import 'room_object_context.dart';
 
 part 'providers.g.dart';
 
@@ -166,4 +167,24 @@ Future<RoomExit> roomExit(final Ref ref, final int id) {
   return projectContext.database.managers.roomExits
       .filter((final f) => f.id.equals(id))
       .getSingle();
+}
+
+/// Provide all objects in a room.
+@riverpod
+Future<List<RoomObject>> objectsInRoom(final Ref ref, final int id) {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.roomObjects
+      .filter((final f) => f.roomId.id.equals(id))
+      .orderBy(
+        (final o) => o.name.asc(),
+      )
+      .get();
+}
+
+/// Provide a room object context.
+@riverpod
+Future<RoomObjectContext> roomObjectContext(final Ref ref, final int id) async {
+  final object = await ref.watch(roomObjectProvider(id).future);
+  final room = await ref.watch(roomProvider(object.roomId).future);
+  return RoomObjectContext(roomObject: object, room: room);
 }
