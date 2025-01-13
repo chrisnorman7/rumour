@@ -85,7 +85,6 @@ class _RoomTileCoordinates extends ConsumerWidget {
           invoke: () => context.pushWidgetBuilder(
             (final builderContext) => SelectRoomScreen(
               onChanged: (final room) async {
-                Navigator.pop(builderContext);
                 final outObject = await manager.createReturning(
                   (final o) => o(
                     name: 'Untitled Exit',

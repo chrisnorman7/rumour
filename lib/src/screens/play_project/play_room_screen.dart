@@ -13,6 +13,7 @@ import '../../database/database.dart';
 import '../../json/project.dart';
 import '../../project_context.dart';
 import '../../providers.dart';
+import 'play_room_loading.dart';
 import 'select_object.dart';
 
 /// A screen to play a given [room].
@@ -200,7 +201,7 @@ class PlayRoomScreenState extends State<PlayRoomScreen> {
     final zone = _zone;
     if (zone == null) {
       loadThings().onError(handleError);
-      return const LoadingScreen();
+      return PlayRoomLoading(room: room);
     }
     final fadeIn = project.mainMenuMusicFadeIn;
     final fadeOut = project.mainMenuMusicFadeOut;
@@ -286,21 +287,15 @@ class PlayRoomScreenState extends State<PlayRoomScreen> {
             ambiances: roomAmbiances,
             fadeInTime: fadeIn,
             fadeOutTime: fadeOut,
-            builder: (final context, final handles) {
-              Future<void>.delayed(
-                100.milliseconds,
-                () => setPlayerCoordinates(coordinates),
-              );
-              return SimpleScaffold(
-                title: room.name,
-                body: GameShortcuts(
-                  shortcuts: shortcuts,
-                  child: Text(room.name),
-                ),
-              );
-            },
+            builder: (final context, final handles) => SimpleScaffold(
+              title: room.name,
+              body: GameShortcuts(
+                shortcuts: shortcuts,
+                child: Text(room.name),
+              ),
+            ),
             error: ErrorScreen.withPositional,
-            loading: LoadingScreen.new,
+            loading: () => PlayRoomLoading(room: room),
           ),
         );
       },

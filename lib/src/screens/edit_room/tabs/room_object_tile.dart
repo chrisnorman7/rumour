@@ -17,6 +17,7 @@ import '../../../providers.dart';
 import '../../../widgets/play_sound_reference_semantics.dart';
 import '../../edit_room_exit/edit_room_exit_screen.dart';
 import '../../edit_room_object/edit_room_object_screen.dart';
+import '../../select_room_screen.dart';
 
 /// The type of a function which is called to change the selection of a room
 /// object.
@@ -112,6 +113,29 @@ class RoomObjectTile extends ConsumerWidget {
                 },
                 activator: editExitShortcut,
               ),
+            PerformableAction(
+              name: 'Move',
+              invoke: () {
+                semanticsState?.stop();
+                context.pushWidgetBuilder(
+                  (final context) => SelectRoomScreen(
+                    onChanged: (final value) async {
+                      await query.update(
+                        (final o) => o(roomId: Value(value.id)),
+                      );
+                      invalidateProviders(ref, object);
+                      ref.invalidate(
+                        roomObjectsProvider(
+                          value.id,
+                          Point(object.x, object.y),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+              activator: moveShortcut,
+            ),
             PerformableAction(
               name: 'Delete',
               invoke: () {

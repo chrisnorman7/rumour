@@ -49,7 +49,10 @@ class SelectRoomScreen extends ConsumerWidget {
               final zone = zones[index];
               return ZoneListTile(
                 zoneId: zone.id,
-                onRoomSelected: onChanged,
+                onRoomSelected: (final value) {
+                  Navigator.pop(context);
+                  onChanged(value);
+                },
                 autofocus: index == 0,
               );
             },
