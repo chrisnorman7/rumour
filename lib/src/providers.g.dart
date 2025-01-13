@@ -1573,5 +1573,167 @@ class _RoomObjectContextProviderElement
   @override
   int get id => (origin as RoomObjectContextProvider).id;
 }
+
+String _$playerClassesHash() => r'9f78afba6e98ba2b597d517c8b1223959a0d09df';
+
+/// Provide all player classes.
+///
+/// Copied from [playerClasses].
+@ProviderFor(playerClasses)
+final playerClassesProvider =
+    AutoDisposeFutureProvider<List<PlayerClass>>.internal(
+  playerClasses,
+  name: r'playerClassesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$playerClassesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef PlayerClassesRef = AutoDisposeFutureProviderRef<List<PlayerClass>>;
+String _$playerClassHash() => r'958320a03bb1064b773f271cf926bd41eb34b91d';
+
+/// Provide a single player class.
+///
+/// Copied from [playerClass].
+@ProviderFor(playerClass)
+const playerClassProvider = PlayerClassFamily();
+
+/// Provide a single player class.
+///
+/// Copied from [playerClass].
+class PlayerClassFamily extends Family<AsyncValue<PlayerClass>> {
+  /// Provide a single player class.
+  ///
+  /// Copied from [playerClass].
+  const PlayerClassFamily();
+
+  /// Provide a single player class.
+  ///
+  /// Copied from [playerClass].
+  PlayerClassProvider call(
+    int id,
+  ) {
+    return PlayerClassProvider(
+      id,
+    );
+  }
+
+  @override
+  PlayerClassProvider getProviderOverride(
+    covariant PlayerClassProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'playerClassProvider';
+}
+
+/// Provide a single player class.
+///
+/// Copied from [playerClass].
+class PlayerClassProvider extends AutoDisposeFutureProvider<PlayerClass> {
+  /// Provide a single player class.
+  ///
+  /// Copied from [playerClass].
+  PlayerClassProvider(
+    int id,
+  ) : this._internal(
+          (ref) => playerClass(
+            ref as PlayerClassRef,
+            id,
+          ),
+          from: playerClassProvider,
+          name: r'playerClassProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$playerClassHash,
+          dependencies: PlayerClassFamily._dependencies,
+          allTransitiveDependencies:
+              PlayerClassFamily._allTransitiveDependencies,
+          id: id,
+        );
+
+  PlayerClassProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
+  final int id;
+
+  @override
+  Override overrideWith(
+    FutureOr<PlayerClass> Function(PlayerClassRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: PlayerClassProvider._internal(
+        (ref) => create(ref as PlayerClassRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<PlayerClass> createElement() {
+    return _PlayerClassProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PlayerClassProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin PlayerClassRef on AutoDisposeFutureProviderRef<PlayerClass> {
+  /// The parameter `id` of this provider.
+  int get id;
+}
+
+class _PlayerClassProviderElement
+    extends AutoDisposeFutureProviderElement<PlayerClass> with PlayerClassRef {
+  _PlayerClassProviderElement(super.provider);
+
+  @override
+  int get id => (origin as PlayerClassProvider).id;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -11,5 +11,5 @@ class RoomExits extends Table with IdMixin {
 
   /// The ID of the object which makes up the other side of this exit.
   IntColumn get destinationObjectId =>
-      integer().references(RoomObjects, #id, onDelete: KeyAction.cascade)();
+      integer().references(RoomObjects, #id, onDelete: KeyAction.restrict)();
 }

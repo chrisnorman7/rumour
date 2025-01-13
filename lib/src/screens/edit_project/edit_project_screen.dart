@@ -8,6 +8,7 @@ import '../../providers.dart';
 import '../../widgets/close_project.dart';
 import '../edit_room_surface/edit_room_surface_screen.dart';
 import '../edit_zone/edit_zone_screen.dart';
+import 'tabs/project_player_classes_tab.dart';
 import 'tabs/project_room_surfaces_tab.dart';
 import 'tabs/project_settings_tab.dart';
 import 'tabs/project_zones_tab.dart';
@@ -52,6 +53,11 @@ class EditProjectScreen extends ConsumerWidget {
                 onPressed: () => _createRoomSurface(ref),
                 tooltip: 'New room surface',
               ),
+            ),
+            TabbedScaffoldTab(
+              title: 'Player Classes',
+              icon: const Text('Classes which new players can choose from'),
+              builder: (final context) => const ProjectPlayerClassesTab(),
             ),
           ],
         ),

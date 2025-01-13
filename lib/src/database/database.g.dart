@@ -1740,8 +1740,8 @@ class $RoomObjectsTable extends RoomObjects
       'room_exit_id', aliasedName, true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES room_exits (id)'));
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES room_exits (id) ON DELETE SET NULL'));
   @override
   List<GeneratedColumn> get $columns =>
       [id, name, description, ambianceId, roomId, x, y, roomExitId];
@@ -2114,6 +2114,347 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
   }
 }
 
+class $PlayerClassesTable extends PlayerClasses
+    with TableInfo<$PlayerClassesTable, PlayerClass> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PlayerClassesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _roomIdMeta = const VerificationMeta('roomId');
+  @override
+  late final GeneratedColumn<int> roomId = GeneratedColumn<int>(
+      'room_id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _xMeta = const VerificationMeta('x');
+  @override
+  late final GeneratedColumn<int> x = GeneratedColumn<int>(
+      'x', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _yMeta = const VerificationMeta('y');
+  @override
+  late final GeneratedColumn<int> y = GeneratedColumn<int>(
+      'y', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  @override
+  List<GeneratedColumn> get $columns => [id, name, description, roomId, x, y];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'player_classes';
+  @override
+  VerificationContext validateIntegrity(Insertable<PlayerClass> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('room_id')) {
+      context.handle(_roomIdMeta,
+          roomId.isAcceptableOrUnknown(data['room_id']!, _roomIdMeta));
+    } else if (isInserting) {
+      context.missing(_roomIdMeta);
+    }
+    if (data.containsKey('x')) {
+      context.handle(_xMeta, x.isAcceptableOrUnknown(data['x']!, _xMeta));
+    }
+    if (data.containsKey('y')) {
+      context.handle(_yMeta, y.isAcceptableOrUnknown(data['y']!, _yMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PlayerClass map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PlayerClass(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+      roomId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}room_id'])!,
+      x: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}x'])!,
+      y: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}y'])!,
+    );
+  }
+
+  @override
+  $PlayerClassesTable createAlias(String alias) {
+    return $PlayerClassesTable(attachedDatabase, alias);
+  }
+}
+
+class PlayerClass extends DataClass implements Insertable<PlayerClass> {
+  /// The primary key field.
+  final int id;
+
+  /// The name column.
+  final String name;
+
+  /// The description column.
+  final String description;
+
+  /// The ID of the room this row is attached to.
+  final int roomId;
+
+  /// The x coordinate.
+  final int x;
+
+  /// The y coordinate.
+  final int y;
+  const PlayerClass(
+      {required this.id,
+      required this.name,
+      required this.description,
+      required this.roomId,
+      required this.x,
+      required this.y});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    map['room_id'] = Variable<int>(roomId);
+    map['x'] = Variable<int>(x);
+    map['y'] = Variable<int>(y);
+    return map;
+  }
+
+  PlayerClassesCompanion toCompanion(bool nullToAbsent) {
+    return PlayerClassesCompanion(
+      id: Value(id),
+      name: Value(name),
+      description: Value(description),
+      roomId: Value(roomId),
+      x: Value(x),
+      y: Value(y),
+    );
+  }
+
+  factory PlayerClass.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PlayerClass(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      roomId: serializer.fromJson<int>(json['roomId']),
+      x: serializer.fromJson<int>(json['x']),
+      y: serializer.fromJson<int>(json['y']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'roomId': serializer.toJson<int>(roomId),
+      'x': serializer.toJson<int>(x),
+      'y': serializer.toJson<int>(y),
+    };
+  }
+
+  PlayerClass copyWith(
+          {int? id,
+          String? name,
+          String? description,
+          int? roomId,
+          int? x,
+          int? y}) =>
+      PlayerClass(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description ?? this.description,
+        roomId: roomId ?? this.roomId,
+        x: x ?? this.x,
+        y: y ?? this.y,
+      );
+  PlayerClass copyWithCompanion(PlayerClassesCompanion data) {
+    return PlayerClass(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      description:
+          data.description.present ? data.description.value : this.description,
+      roomId: data.roomId.present ? data.roomId.value : this.roomId,
+      x: data.x.present ? data.x.value : this.x,
+      y: data.y.present ? data.y.value : this.y,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlayerClass(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('roomId: $roomId, ')
+          ..write('x: $x, ')
+          ..write('y: $y')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, description, roomId, x, y);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PlayerClass &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.roomId == this.roomId &&
+          other.x == this.x &&
+          other.y == this.y);
+}
+
+class PlayerClassesCompanion extends UpdateCompanion<PlayerClass> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<int> roomId;
+  final Value<int> x;
+  final Value<int> y;
+  const PlayerClassesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.roomId = const Value.absent(),
+    this.x = const Value.absent(),
+    this.y = const Value.absent(),
+  });
+  PlayerClassesCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required String description,
+    required int roomId,
+    this.x = const Value.absent(),
+    this.y = const Value.absent(),
+  })  : name = Value(name),
+        description = Value(description),
+        roomId = Value(roomId);
+  static Insertable<PlayerClass> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<int>? roomId,
+    Expression<int>? x,
+    Expression<int>? y,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (roomId != null) 'room_id': roomId,
+      if (x != null) 'x': x,
+      if (y != null) 'y': y,
+    });
+  }
+
+  PlayerClassesCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<String>? description,
+      Value<int>? roomId,
+      Value<int>? x,
+      Value<int>? y}) {
+    return PlayerClassesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      roomId: roomId ?? this.roomId,
+      x: x ?? this.x,
+      y: y ?? this.y,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (roomId.present) {
+      map['room_id'] = Variable<int>(roomId.value);
+    }
+    if (x.present) {
+      map['x'] = Variable<int>(x.value);
+    }
+    if (y.present) {
+      map['y'] = Variable<int>(y.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlayerClassesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('roomId: $roomId, ')
+          ..write('x: $x, ')
+          ..write('y: $y')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2124,12 +2465,24 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $RoomsTable rooms = $RoomsTable(this);
   late final $RoomExitsTable roomExits = $RoomExitsTable(this);
   late final $RoomObjectsTable roomObjects = $RoomObjectsTable(this);
+  late final $PlayerClassesTable playerClasses = $PlayerClassesTable(this);
+  late final Index roomObjectCoordinatesIndex = Index(
+      'room_object_coordinates_index',
+      'CREATE INDEX room_object_coordinates_index ON room_objects (x, y)');
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [soundReferences, zones, roomSurfaces, rooms, roomExits, roomObjects];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        soundReferences,
+        zones,
+        roomSurfaces,
+        rooms,
+        roomExits,
+        roomObjects,
+        playerClasses,
+        roomObjectCoordinatesIndex
+      ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
         [
@@ -2138,6 +2491,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.delete),
             result: [
               TableUpdate('room_objects', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('room_exits',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_objects', kind: UpdateKind.update),
             ],
           ),
         ],
@@ -4836,6 +5196,188 @@ typedef $$RoomObjectsTableProcessedTableManager = ProcessedTableManager<
     (RoomObject, $$RoomObjectsTableReferences),
     RoomObject,
     PrefetchHooks Function({bool ambianceId, bool roomId, bool roomExitId})>;
+typedef $$PlayerClassesTableCreateCompanionBuilder = PlayerClassesCompanion
+    Function({
+  Value<int> id,
+  required String name,
+  required String description,
+  required int roomId,
+  Value<int> x,
+  Value<int> y,
+});
+typedef $$PlayerClassesTableUpdateCompanionBuilder = PlayerClassesCompanion
+    Function({
+  Value<int> id,
+  Value<String> name,
+  Value<String> description,
+  Value<int> roomId,
+  Value<int> x,
+  Value<int> y,
+});
+
+class $$PlayerClassesTableFilterComposer
+    extends Composer<_$AppDatabase, $PlayerClassesTable> {
+  $$PlayerClassesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get roomId => $composableBuilder(
+      column: $table.roomId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get x => $composableBuilder(
+      column: $table.x, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get y => $composableBuilder(
+      column: $table.y, builder: (column) => ColumnFilters(column));
+}
+
+class $$PlayerClassesTableOrderingComposer
+    extends Composer<_$AppDatabase, $PlayerClassesTable> {
+  $$PlayerClassesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get roomId => $composableBuilder(
+      column: $table.roomId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get x => $composableBuilder(
+      column: $table.x, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get y => $composableBuilder(
+      column: $table.y, builder: (column) => ColumnOrderings(column));
+}
+
+class $$PlayerClassesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PlayerClassesTable> {
+  $$PlayerClassesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
+
+  GeneratedColumn<int> get roomId =>
+      $composableBuilder(column: $table.roomId, builder: (column) => column);
+
+  GeneratedColumn<int> get x =>
+      $composableBuilder(column: $table.x, builder: (column) => column);
+
+  GeneratedColumn<int> get y =>
+      $composableBuilder(column: $table.y, builder: (column) => column);
+}
+
+class $$PlayerClassesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $PlayerClassesTable,
+    PlayerClass,
+    $$PlayerClassesTableFilterComposer,
+    $$PlayerClassesTableOrderingComposer,
+    $$PlayerClassesTableAnnotationComposer,
+    $$PlayerClassesTableCreateCompanionBuilder,
+    $$PlayerClassesTableUpdateCompanionBuilder,
+    (
+      PlayerClass,
+      BaseReferences<_$AppDatabase, $PlayerClassesTable, PlayerClass>
+    ),
+    PlayerClass,
+    PrefetchHooks Function()> {
+  $$PlayerClassesTableTableManager(_$AppDatabase db, $PlayerClassesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PlayerClassesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PlayerClassesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PlayerClassesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> description = const Value.absent(),
+            Value<int> roomId = const Value.absent(),
+            Value<int> x = const Value.absent(),
+            Value<int> y = const Value.absent(),
+          }) =>
+              PlayerClassesCompanion(
+            id: id,
+            name: name,
+            description: description,
+            roomId: roomId,
+            x: x,
+            y: y,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            required String description,
+            required int roomId,
+            Value<int> x = const Value.absent(),
+            Value<int> y = const Value.absent(),
+          }) =>
+              PlayerClassesCompanion.insert(
+            id: id,
+            name: name,
+            description: description,
+            roomId: roomId,
+            x: x,
+            y: y,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$PlayerClassesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $PlayerClassesTable,
+    PlayerClass,
+    $$PlayerClassesTableFilterComposer,
+    $$PlayerClassesTableOrderingComposer,
+    $$PlayerClassesTableAnnotationComposer,
+    $$PlayerClassesTableCreateCompanionBuilder,
+    $$PlayerClassesTableUpdateCompanionBuilder,
+    (
+      PlayerClass,
+      BaseReferences<_$AppDatabase, $PlayerClassesTable, PlayerClass>
+    ),
+    PlayerClass,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -4852,4 +5394,6 @@ class $AppDatabaseManager {
       $$RoomExitsTableTableManager(_db, _db.roomExits);
   $$RoomObjectsTableTableManager get roomObjects =>
       $$RoomObjectsTableTableManager(_db, _db.roomObjects);
+  $$PlayerClassesTableTableManager get playerClasses =>
+      $$PlayerClassesTableTableManager(_db, _db.playerClasses);
 }

@@ -39,3 +39,12 @@ mixin RoomIdMixin on Table {
   IntColumn get roomId =>
       integer().references(Rooms, #id, onDelete: KeyAction.cascade)();
 }
+
+/// Add [x] and [y] columns.
+mixin CoordinatesMixin on Table {
+  /// The x coordinate.
+  IntColumn get x => integer().withDefault(const Constant(0))();
+
+  /// The y coordinate.
+  IntColumn get y => integer().withDefault(const Constant(0))();
+}

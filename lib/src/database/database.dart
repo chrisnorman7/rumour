@@ -17,6 +17,7 @@ part 'database.g.dart';
     RoomSurfaces,
     SoundReferences,
     RoomExits,
+    PlayerClasses,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -26,7 +27,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// The schema version.
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 1;
 
   /// Migrate the database.
   @override
@@ -37,10 +38,6 @@ class AppDatabase extends _$AppDatabase {
         onCreate: (final m) async {
           await m.createAll();
         },
-        onUpgrade: (final m, final from, final to) async {
-          if (from < 2) {
-            await m.addColumn(roomSurfaces, roomSurfaces.moveInterval);
-          }
-        },
+        onUpgrade: (final m, final from, final to) async {},
       );
 }

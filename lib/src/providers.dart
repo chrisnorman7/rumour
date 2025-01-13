@@ -188,3 +188,75 @@ Future<RoomObjectContext> roomObjectContext(final Ref ref, final int id) async {
   final room = await ref.watch(roomProvider(object.roomId).future);
   return RoomObjectContext(roomObject: object, room: room);
 }
+
+/// Provide all player classes.
+@riverpod
+Future<List<PlayerClass>> playerClasses(final Ref ref) async {
+  final projectContext = ref.watch(projectContextProvider);
+  final managers = projectContext.database.managers;
+  final classes = await managers.playerClasses
+      .orderBy(
+        (final o) => o.name.asc(),
+      )
+      .get();
+  if (classes.isEmpty) {
+    final zones = await ref.watch(zonesProvider.future);
+    if (zones.isEmpty) {
+      zones.add(
+        await managers.zones.createReturning(
+          (final o) => o(
+            name: 'The First Zone',
+            description: 'There is nothing to see.',
+          ),
+        ),
+      );
+    }
+    final zone = zones.first;
+    final rooms = await ref.watch(roomsProvider(zone.id).future);
+    if (rooms.isEmpty) {
+      final surfaces = await ref.watch(roomSurfacesProvider.future);
+      if (surfaces.isEmpty) {
+        surfaces.add(
+          await managers.roomSurfaces.createReturning(
+            (final o) => o(
+              name: 'The First Surface',
+              description:
+                  'One small step for man, one massive step for mankind.',
+            ),
+          ),
+        );
+      }
+      rooms.add(
+        await managers.rooms.createReturning(
+          (final o) => o(
+            name: 'The First Room',
+            description: 'You see nothing special.',
+            surfaceId: surfaces.first.id,
+            zoneId: zone.id,
+          ),
+        ),
+      );
+    }
+    classes.add(
+      await managers.playerClasses.createReturning(
+        (final o) => o(
+          name: 'Common Players',
+          description: 'This class will be the default for new players.',
+          roomId: rooms.first.id,
+        ),
+      ),
+    );
+  }
+  return classes;
+}
+
+/// Provide a single player class.
+@riverpod
+Future<PlayerClass> playerClass(final Ref ref, final int id) {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.playerClasses
+      .filter(
+        (final f) => f.id.equals(id),
+      )
+      .getSingle();
+}
