@@ -23,3 +23,5 @@ Make audio-first RPG's with no code.
 - ⭕ Clothing which can be equipped by players.
 - ⭕ Configurable number of "hands" or weapon slots for player classes.
 - ☑ Configure how sounds are loaded (into memory or stream from disk).
+- ⭕ Allow adding in-game entities to be added to the player's group.
+- ⭕ Create turn-by-turn combat between players and monsters.
