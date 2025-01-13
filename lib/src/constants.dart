@@ -64,3 +64,6 @@ final buildShortcut = CrossPlatformSingleActivator(LogicalKeyboardKey.keyB);
 
 /// The play project shortcut.
 final playShortcut = CrossPlatformSingleActivator(LogicalKeyboardKey.keyP);
+
+/// The shortcut for editing exits.
+final editExitShortcut = CrossPlatformSingleActivator(LogicalKeyboardKey.keyX);

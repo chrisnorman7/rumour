@@ -104,9 +104,13 @@ class RoomObjectTile extends ConsumerWidget {
             if (roomExitId != null)
               PerformableAction(
                 name: 'Configure exit',
-                invoke: () => context.pushWidgetBuilder(
-                  (final _) => EditRoomExitScreen(roomExitId: roomExitId),
-                ),
+                invoke: () {
+                  semanticsState?.stop();
+                  context.pushWidgetBuilder(
+                    (final _) => EditRoomExitScreen(roomExitId: roomExitId),
+                  );
+                },
+                activator: editExitShortcut,
               ),
             PerformableAction(
               name: 'Delete',
