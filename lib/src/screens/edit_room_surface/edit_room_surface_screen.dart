@@ -72,6 +72,19 @@ class EditRoomSurfaceScreen extends ConsumerWidget {
                 },
                 title: 'Wall Sound',
               ),
+              IntListTile(
+                value: roomSurface.moveInterval,
+                onChanged: (final value) async {
+                  await query.update(
+                    (final o) => o(moveInterval: Value(value)),
+                  );
+                  invalidateProviders(ref);
+                },
+                title: 'Move interval',
+                min: 100,
+                modifier: 10,
+                subtitle: '${roomSurface.moveInterval} ms',
+              ),
             ],
           ),
         ),
