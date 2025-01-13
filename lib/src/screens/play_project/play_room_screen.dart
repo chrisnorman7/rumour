@@ -251,8 +251,12 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
     final value = ref.watch(gamePlayerContextProvider(widget.playerId));
     return value.when(
       data: (final gamePlayerContext) {
-        _playerCoordinates ??= gamePlayerContext.gamePlayer.coordinates;
         _gamePlayerContext = gamePlayerContext;
+        if (_playerCoordinates == null) {
+          // This is fresh.
+          _playerCoordinates = gamePlayerContext.gamePlayer.coordinates;
+          loadAmbiances().onError(handleError);
+        }
         return TimedCommands(
           builder: (final context, final state) {
             timedCommandsState = state;
