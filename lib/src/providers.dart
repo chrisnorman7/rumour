@@ -4,11 +4,16 @@ import 'dart:math';
 
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'database/database.dart';
+import 'game_options_context.dart';
+import 'game_player_context.dart';
 import 'json/app_preferences.dart';
+import 'json/game_player.dart';
 import 'json/project.dart';
 import 'project_context.dart';
 import 'room_object_context.dart';
@@ -259,4 +264,79 @@ Future<PlayerClass> playerClass(final Ref ref, final int id) {
         (final f) => f.id.equals(id),
       )
       .getSingle();
+}
+
+/// Provide the game settings for the current [projectContext].
+@riverpod
+Future<GameOptionsContext> gameOptionsContext(final Ref ref) async {
+  final projectContext = ref.watch(projectContextProvider);
+  final project = projectContext.project;
+  final documentsDirectory = await getApplicationDocumentsDirectory();
+  final directory = Directory(
+    path.join(
+      documentsDirectory.path,
+      project.organisationName,
+      project.appName,
+    ),
+  );
+  if (!directory.existsSync()) {
+    directory.createSync(recursive: true);
+  }
+  final file = File(path.join(directory.path, 'options.json'));
+  return GameOptionsContext.fromFile(file);
+}
+
+/// Provide the players which have been created.
+@riverpod
+Future<List<GamePlayer>> gamePlayers(final Ref ref) async {
+  final gameOptionsContext = await ref.watch(gameOptionsContextProvider.future);
+  return gameOptionsContext.gameOptions.players;
+}
+
+/// Return a single player by its [id].
+@riverpod
+Future<GamePlayer> gamePlayer(final Ref ref, final String id) async {
+  final players = await ref.watch(gamePlayersProvider.future);
+  return players.firstWhere((final player) => player.id == id);
+}
+
+/// Provide a whole game player context from [id].
+@riverpod
+Future<GamePlayerContext> gamePlayerContext(
+  final Ref ref,
+  final String id,
+) async {
+  final gameOptionsContext = await ref.watch(gameOptionsContextProvider.future);
+  final gamePlayer = await ref.watch(gamePlayerProvider(id).future);
+  final room = await ref.watch(roomProvider(gamePlayer.roomId).future);
+  final zone = await ref.watch(zoneProvider(room.zoneId).future);
+  final zoneMusicId = zone.musicId;
+  final zoneMusic = zoneMusicId == null
+      ? null
+      : await ref.watch(soundReferenceProvider(zoneMusicId).future);
+  final roomAmbianceId = room.ambianceId;
+  final roomAmbiance = roomAmbianceId == null
+      ? null
+      : await ref.watch(soundReferenceProvider(roomAmbianceId).future);
+  final roomSurface =
+      await ref.watch(roomSurfaceProvider(room.surfaceId).future);
+  final footstepsId = roomSurface.footstepSoundId;
+  final footsteps = footstepsId == null
+      ? null
+      : await ref.watch(soundReferenceProvider(footstepsId).future);
+  final wallSoundId = roomSurface.wallSoundI;
+  final wallSound = wallSoundId == null
+      ? null
+      : await ref.watch(soundReferenceProvider(wallSoundId).future);
+  return GamePlayerContext(
+    gamePlayer: gamePlayer,
+    gameOptionsContext: gameOptionsContext,
+    room: room,
+    zone: zone,
+    zoneMusic: zoneMusic,
+    roomAmbiance: roomAmbiance,
+    roomSurface: roomSurface,
+    footsteps: footsteps,
+    wallSound: wallSound,
+  );
 }

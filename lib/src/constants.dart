@@ -2,6 +2,13 @@ import 'dart:math';
 
 import 'package:backstreets_widgets/shortcuts.dart';
 import 'package:flutter/services.dart';
+import 'package:uuid/uuid.dart';
+
+/// The UUID generator.
+const uuid = Uuid();
+
+/// Get a new UUID.
+String getUuid() => uuid.v4();
 
 /// The random number generator to use.
 final random = Random();

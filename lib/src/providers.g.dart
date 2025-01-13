@@ -1735,5 +1735,332 @@ class _PlayerClassProviderElement
   @override
   int get id => (origin as PlayerClassProvider).id;
 }
+
+String _$gameOptionsContextHash() =>
+    r'519ffbc6ab7b12726373775d9d534cbcc29cb177';
+
+/// Provide the game settings for the current [projectContext].
+///
+/// Copied from [gameOptionsContext].
+@ProviderFor(gameOptionsContext)
+final gameOptionsContextProvider =
+    AutoDisposeFutureProvider<GameOptionsContext>.internal(
+  gameOptionsContext,
+  name: r'gameOptionsContextProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$gameOptionsContextHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef GameOptionsContextRef
+    = AutoDisposeFutureProviderRef<GameOptionsContext>;
+String _$gamePlayersHash() => r'd54c7be6f76d36fe6cd1e6d30e938f5972ddead1';
+
+/// Provide the players which have been created.
+///
+/// Copied from [gamePlayers].
+@ProviderFor(gamePlayers)
+final gamePlayersProvider =
+    AutoDisposeFutureProvider<List<GamePlayer>>.internal(
+  gamePlayers,
+  name: r'gamePlayersProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$gamePlayersHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef GamePlayersRef = AutoDisposeFutureProviderRef<List<GamePlayer>>;
+String _$gamePlayerHash() => r'a4ad1a39beb009e72a9d7540996629ed094b8736';
+
+/// Return a single player by its [id].
+///
+/// Copied from [gamePlayer].
+@ProviderFor(gamePlayer)
+const gamePlayerProvider = GamePlayerFamily();
+
+/// Return a single player by its [id].
+///
+/// Copied from [gamePlayer].
+class GamePlayerFamily extends Family<AsyncValue<GamePlayer>> {
+  /// Return a single player by its [id].
+  ///
+  /// Copied from [gamePlayer].
+  const GamePlayerFamily();
+
+  /// Return a single player by its [id].
+  ///
+  /// Copied from [gamePlayer].
+  GamePlayerProvider call(
+    String id,
+  ) {
+    return GamePlayerProvider(
+      id,
+    );
+  }
+
+  @override
+  GamePlayerProvider getProviderOverride(
+    covariant GamePlayerProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'gamePlayerProvider';
+}
+
+/// Return a single player by its [id].
+///
+/// Copied from [gamePlayer].
+class GamePlayerProvider extends AutoDisposeFutureProvider<GamePlayer> {
+  /// Return a single player by its [id].
+  ///
+  /// Copied from [gamePlayer].
+  GamePlayerProvider(
+    String id,
+  ) : this._internal(
+          (ref) => gamePlayer(
+            ref as GamePlayerRef,
+            id,
+          ),
+          from: gamePlayerProvider,
+          name: r'gamePlayerProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$gamePlayerHash,
+          dependencies: GamePlayerFamily._dependencies,
+          allTransitiveDependencies:
+              GamePlayerFamily._allTransitiveDependencies,
+          id: id,
+        );
+
+  GamePlayerProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
+  final String id;
+
+  @override
+  Override overrideWith(
+    FutureOr<GamePlayer> Function(GamePlayerRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: GamePlayerProvider._internal(
+        (ref) => create(ref as GamePlayerRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<GamePlayer> createElement() {
+    return _GamePlayerProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is GamePlayerProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin GamePlayerRef on AutoDisposeFutureProviderRef<GamePlayer> {
+  /// The parameter `id` of this provider.
+  String get id;
+}
+
+class _GamePlayerProviderElement
+    extends AutoDisposeFutureProviderElement<GamePlayer> with GamePlayerRef {
+  _GamePlayerProviderElement(super.provider);
+
+  @override
+  String get id => (origin as GamePlayerProvider).id;
+}
+
+String _$gamePlayerContextHash() => r'2735e49f2f0e234cb236f1aa043cd7681780d000';
+
+/// Provide a whole game player context from [id].
+///
+/// Copied from [gamePlayerContext].
+@ProviderFor(gamePlayerContext)
+const gamePlayerContextProvider = GamePlayerContextFamily();
+
+/// Provide a whole game player context from [id].
+///
+/// Copied from [gamePlayerContext].
+class GamePlayerContextFamily extends Family<AsyncValue<GamePlayerContext>> {
+  /// Provide a whole game player context from [id].
+  ///
+  /// Copied from [gamePlayerContext].
+  const GamePlayerContextFamily();
+
+  /// Provide a whole game player context from [id].
+  ///
+  /// Copied from [gamePlayerContext].
+  GamePlayerContextProvider call(
+    String id,
+  ) {
+    return GamePlayerContextProvider(
+      id,
+    );
+  }
+
+  @override
+  GamePlayerContextProvider getProviderOverride(
+    covariant GamePlayerContextProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'gamePlayerContextProvider';
+}
+
+/// Provide a whole game player context from [id].
+///
+/// Copied from [gamePlayerContext].
+class GamePlayerContextProvider
+    extends AutoDisposeFutureProvider<GamePlayerContext> {
+  /// Provide a whole game player context from [id].
+  ///
+  /// Copied from [gamePlayerContext].
+  GamePlayerContextProvider(
+    String id,
+  ) : this._internal(
+          (ref) => gamePlayerContext(
+            ref as GamePlayerContextRef,
+            id,
+          ),
+          from: gamePlayerContextProvider,
+          name: r'gamePlayerContextProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$gamePlayerContextHash,
+          dependencies: GamePlayerContextFamily._dependencies,
+          allTransitiveDependencies:
+              GamePlayerContextFamily._allTransitiveDependencies,
+          id: id,
+        );
+
+  GamePlayerContextProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
+  final String id;
+
+  @override
+  Override overrideWith(
+    FutureOr<GamePlayerContext> Function(GamePlayerContextRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: GamePlayerContextProvider._internal(
+        (ref) => create(ref as GamePlayerContextRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<GamePlayerContext> createElement() {
+    return _GamePlayerContextProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is GamePlayerContextProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin GamePlayerContextRef on AutoDisposeFutureProviderRef<GamePlayerContext> {
+  /// The parameter `id` of this provider.
+  String get id;
+}
+
+class _GamePlayerContextProviderElement
+    extends AutoDisposeFutureProviderElement<GamePlayerContext>
+    with GamePlayerContextRef {
+  _GamePlayerContextProviderElement(super.provider);
+
+  @override
+  String get id => (origin as GamePlayerContextProvider).id;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

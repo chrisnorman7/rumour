@@ -20,6 +20,8 @@ class Project {
     this.mainMenuMusicFadeOut,
     this.menuSelectSound,
     this.menuActivateSound,
+    this.organisationName = 'com.example',
+    this.appName = 'game',
   });
 
   /// Create an instance from a JSON object.
@@ -58,6 +60,15 @@ class Project {
 
   /// The sound to use when activating items in menus.
   SerializableSoundReference? menuActivateSound;
+
+  /// The name of the organisation that owns this game.
+  String organisationName;
+
+  /// The name of the app.
+  ///
+  /// The [organisationName] and the [appName] will be combined to provide the
+  /// path where game options are stored.
+  String appName;
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$ProjectToJson(this);

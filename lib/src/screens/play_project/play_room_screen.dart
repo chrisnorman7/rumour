@@ -3,13 +3,15 @@ import 'dart:math';
 import 'package:backstreets_widgets/extensions.dart';
 import 'package:backstreets_widgets/screens.dart';
 import 'package:backstreets_widgets/widgets.dart';
-import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:time/time.dart';
 
 import '../../database/database.dart';
+import '../../game_player_context.dart';
+import '../../json/game_player.dart';
 import '../../json/project.dart';
 import '../../project_context.dart';
 import '../../providers.dart';
@@ -17,23 +19,15 @@ import 'play_room_loading.dart';
 import 'select_object.dart';
 
 /// A screen to play a given [room].
-class PlayRoomScreen extends StatefulWidget {
+class PlayRoomScreen extends ConsumerStatefulWidget {
   /// Create an instance.
   const PlayRoomScreen({
-    required this.projectContext,
-    required this.room,
-    this.initialCoordinates = const Point(0, 0),
+    required this.playerId,
     super.key,
   });
 
-  /// The project context to use.
-  final ProjectContext projectContext;
-
-  /// The room to play.
-  final Room room;
-
-  /// The coordinates to start at.
-  final Point<int> initialCoordinates;
+  /// The ID of the player to play.
+  final String playerId;
 
   /// Create state for this widget.
   @override
@@ -41,7 +35,7 @@ class PlayRoomScreen extends StatefulWidget {
 }
 
 /// State for [PlayRoomScreen].
-class PlayRoomScreenState extends State<PlayRoomScreen> {
+class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
   /// An error object.
   Object? _error;
 
@@ -51,64 +45,52 @@ class PlayRoomScreenState extends State<PlayRoomScreen> {
   /// The timed commands state to use.
   late TimedCommandsState timedCommandsState;
 
-  /// The zone that [room] is part of.
-  Zone? _zone;
-
-  /// The [zone] music.
-  SoundReference? zoneMusic;
-
   /// The project context to use.
-  ProjectContext get projectContext => widget.projectContext;
+  late ProjectContext projectContext;
 
-  /// The project to work with.
+  /// The project loaded from [projectContext].
   Project get project => projectContext.project;
 
-  /// The database to work with.
-  AppDatabase get database => projectContext.database;
+  /// The game player context to use.
+  late GamePlayerContext _gamePlayerContext;
 
-  /// The managers to use.
-  $AppDatabaseManager get managers => database.managers;
+  /// The player to play.
+  GamePlayer get _player => _gamePlayerContext.gamePlayer;
 
-  /// The objects query to use.
-  Future<List<RoomObject>> getNearbyRoomObjects() => managers.roomObjects
-      .filter(
-        (final f) =>
-            f.roomId.id.equals(room.id) &
-            f.x.equals(coordinates.x) &
-            f.y.equals(coordinates.y),
-      )
-      .orderBy(
-        (final o) => o.name.asc(),
-      )
-      .get();
+  /// The room where the player is.
+  Room get _room => _gamePlayerContext.room;
 
-  /// The room to play.
-  late Room room;
+  /// The [zone] music.
+  SoundReference? get _zoneMusic => _gamePlayerContext.zoneMusic;
 
   /// The maximum x coordinate supported by the move system.
-  Point<int> get maxCoordinates => Point(room.maxX - 1, room.maxY - 1);
+  Point<int> get maxCoordinates => Point(_room.maxX - 1, _room.maxY - 1);
 
-  /// Returns `true` if [coordinates] are valid coordinates for this [room].
+  /// Returns `true` if [coordinates] are valid coordinates for this [_room].
   bool validCoordinates(final Point<int> coordinates) =>
       coordinates.x >= 0 &&
       coordinates.y >= 0 &&
       coordinates.x <= maxCoordinates.x &&
       coordinates.y <= maxCoordinates.y;
 
-  /// The ambiances for [room].
+  /// The ambiances for [_room].
   late final List<Sound> roomAmbiances;
 
-  /// The [room] surface.
-  late RoomSurface roomSurface;
+  /// The [_room] surface.
+  RoomSurface get _roomSurface => _gamePlayerContext.roomSurface;
 
   /// The footsteps to use when moving.
-  SoundReference? footsteps;
+  SoundReference? get _footsteps => _gamePlayerContext.footsteps;
 
   /// The wall sound to use.
-  SoundReference? wallSound;
+  SoundReference? get _wallSound => _gamePlayerContext.wallSound;
+
+  /// The player's coordinates.
+  Point<int>? _playerCoordinates;
 
   /// The current coordinates of the player.
-  late Point<int> coordinates;
+  Point<int> get coordinates =>
+      _playerCoordinates ?? _gamePlayerContext.gamePlayer.coordinates;
 
   /// The direction the player is moving in.
   MovingDirection? movingDirection;
@@ -117,9 +99,7 @@ class PlayRoomScreenState extends State<PlayRoomScreen> {
   @override
   void initState() {
     super.initState();
-    room = widget.room;
     roomAmbiances = [];
-    setPlayerCoordinates(widget.initialCoordinates);
   }
 
   /// Get a sound reference with the given [id].
@@ -160,6 +140,10 @@ class PlayRoomScreenState extends State<PlayRoomScreen> {
     );
   }
 
+  /// Get nearby objects.
+  Future<List<RoomObject>> getNearbyRoomObjects() =>
+      ref.read(roomObjectsProvider(_room.id, coordinates).future);
+
   /// Maybe play [soundReference].
   ///
   /// If [soundReference] is `null`, then nothing will happen.
@@ -198,11 +182,7 @@ class PlayRoomScreenState extends State<PlayRoomScreen> {
         ),
       );
     }
-    final zone = _zone;
-    if (zone == null) {
-      loadThings().onError(handleError);
-      return PlayRoomLoading(room: room);
-    }
+    projectContext = ref.watch(projectContextProvider);
     final fadeIn = project.mainMenuMusicFadeIn;
     final fadeOut = project.mainMenuMusicFadeOut;
     final shortcuts = [
@@ -268,37 +248,46 @@ class PlayRoomScreenState extends State<PlayRoomScreen> {
             innerContext.announce('${coordinates.x}, ${coordinates.y}.'),
       ),
     ];
-    return TimedCommands(
-      builder: (final context, final state) {
-        timedCommandsState = state;
-        state.registerCommand(
-          walkPlayer,
-          roomSurface.moveInterval.milliseconds,
-        );
-        return MaybeMusic(
-          music: getSound(
-            soundReference: zoneMusic,
-            destroy: false,
-            looping: true,
-          ),
-          fadeInTime: fadeIn,
-          fadeOutTime: fadeOut,
-          builder: (final context) => AmbiancesBuilder(
-            ambiances: roomAmbiances,
-            fadeInTime: fadeIn,
-            fadeOutTime: fadeOut,
-            builder: (final context, final handles) => SimpleScaffold(
-              title: room.name,
-              body: GameShortcuts(
-                shortcuts: shortcuts,
-                child: Text(room.name),
+    final value = ref.watch(gamePlayerContextProvider(widget.playerId));
+    return value.when(
+      data: (final gamePlayerContext) {
+        _playerCoordinates ??= gamePlayerContext.gamePlayer.coordinates;
+        _gamePlayerContext = gamePlayerContext;
+        return TimedCommands(
+          builder: (final context, final state) {
+            timedCommandsState = state;
+            state.registerCommand(
+              walkPlayer,
+              _roomSurface.moveInterval.milliseconds,
+            );
+            return MaybeMusic(
+              music: getSound(
+                soundReference: _zoneMusic,
+                destroy: false,
+                looping: true,
               ),
-            ),
-            error: ErrorScreen.withPositional,
-            loading: () => PlayRoomLoading(room: room),
-          ),
+              fadeInTime: fadeIn,
+              fadeOutTime: fadeOut,
+              builder: (final context) => AmbiancesBuilder(
+                ambiances: roomAmbiances,
+                fadeInTime: fadeIn,
+                fadeOutTime: fadeOut,
+                builder: (final context, final handles) => SimpleScaffold(
+                  title: _room.name,
+                  body: GameShortcuts(
+                    shortcuts: shortcuts,
+                    child: Text(_room.name),
+                  ),
+                ),
+                error: ErrorScreen.withPositional,
+                loading: () => PlayRoomLoading(room: _room),
+              ),
+            );
+          },
         );
       },
+      error: ErrorScreen.withPositional,
+      loading: LoadingScreen.new,
     );
   }
 
@@ -310,29 +299,17 @@ class PlayRoomScreenState extends State<PlayRoomScreen> {
       });
 
   /// Load the [zone].
-  Future<void> loadThings() async {
-    final zone = await managers.zones
-        .filter(
-          (final f) => f.id.equals(room.zoneId),
-        )
-        .getSingle();
-    _zone = zone;
-    zoneMusic = await getSoundReference(zone.musicId);
+  Future<void> loadAmbiances() async {
     roomAmbiances.clear();
-    final roomAmbianceReference = await getSoundReference(room.ambianceId);
     final roomAmbiance = getSound(
-      soundReference: roomAmbianceReference,
+      soundReference: _gamePlayerContext.roomAmbiance,
       destroy: false,
       looping: true,
     );
     if (roomAmbiance != null) {
       roomAmbiances.add(roomAmbiance);
     }
-    final objects = await managers.roomObjects
-        .filter(
-          (final f) => f.roomId.id.equals(room.id),
-        )
-        .get();
+    final objects = await ref.read(objectsInRoomProvider(_room.id).future);
     for (final object in objects) {
       final objectAmbiance = getSound(
         soundReference: await getSoundReference(object.ambianceId),
@@ -348,13 +325,6 @@ class PlayRoomScreenState extends State<PlayRoomScreen> {
         roomAmbiances.add(objectAmbiance);
       }
     }
-    roomSurface = await managers.roomSurfaces
-        .filter(
-          (final f) => f.id.equals(room.surfaceId),
-        )
-        .getSingle();
-    footsteps = await getSoundReference(roomSurface.footstepSoundId);
-    wallSound = await getSoundReference(roomSurface.wallSoundI);
     if (mounted) {
       setState(() {});
     }
@@ -362,7 +332,7 @@ class PlayRoomScreenState extends State<PlayRoomScreen> {
 
   /// Set the player [coordinates].
   void setPlayerCoordinates(final Point<int> destination) {
-    coordinates = destination;
+    _playerCoordinates = destination;
     SoLoud.instance.set3dListenerPosition(
       destination.x.toDouble(),
       destination.y.toDouble(),
@@ -395,37 +365,33 @@ class PlayRoomScreenState extends State<PlayRoomScreen> {
       MovingDirection.right => coordinates.east,
     };
     if (!validCoordinates(newCoordinates)) {
-      await maybePlaySoundReference(soundReference: wallSound, destroy: true);
+      await maybePlaySoundReference(soundReference: _wallSound, destroy: true);
       return;
     }
     setPlayerCoordinates(newCoordinates);
-    await maybePlaySoundReference(soundReference: footsteps, destroy: true);
+    await maybePlaySoundReference(soundReference: _footsteps, destroy: true);
   }
 
   /// Activate the given [object].
   Future<void> activateObject(final RoomObject object) async {
     final exitId = object.roomExitId;
     if (exitId != null) {
-      final exit = await managers.roomExits
-          .filter((final f) => f.id.equals(exitId))
-          .getSingle();
+      final exit = await ref.read(roomExitProvider(exitId).future);
       await maybePlaySoundReference(
         soundReference: await getSoundReference(exit.useSoundId),
         destroy: true,
       );
-      final destinationObject = await managers.roomObjects
-          .filter((final f) => f.id.equals(exit.destinationObjectId))
-          .getSingle();
-      room = await managers.rooms
-          .filter((final f) => f.id.equals(destinationObject.roomId))
-          .getSingle();
+      final destinationObject = await ref.read(
+        roomObjectProvider(exit.destinationObjectId).future,
+      );
+      _player
+        ..roomId = destinationObject.roomId
+        ..x = destinationObject.x
+        ..y = destinationObject.y;
+      _gamePlayerContext.save();
       stopPlayerMoving();
       setPlayerCoordinates(Point(destinationObject.x, destinationObject.y));
-      if (mounted) {
-        setState(() {
-          _zone = null;
-        });
-      }
+      ref.invalidate(gamePlayerContextProvider(widget.playerId));
     }
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../constants.dart';
+import '../../../json/project.dart';
 import '../../../providers.dart';
 import '../../../widgets/serializable_sound_reference_list_tile.dart';
 import '../../play_project/play_project_screen.dart';
@@ -32,8 +33,7 @@ class ProjectSettingsTab extends ConsumerWidget {
             value: project.name,
             onChanged: (final value) {
               project.name = value;
-              projectContext.save(project);
-              ref.invalidate(projectProvider);
+              _saveProject(ref, project);
             },
             autofocus: true,
             header: 'Name',
@@ -52,10 +52,7 @@ class ProjectSettingsTab extends ConsumerWidget {
             soundReference: music,
             onChanged: (final value) {
               project.mainMenuMusic = value;
-              projectContext.save(project);
-              ref
-                ..invalidate(projectProvider)
-                ..invalidate(recentFilesProvider);
+              _saveProject(ref, project);
             },
             title: 'Main menu music',
           ),
@@ -64,8 +61,7 @@ class ProjectSettingsTab extends ConsumerWidget {
             onChanged: (final value) {
               project.mainMenuMusicFadeIn =
                   value == Duration.zero ? null : value;
-              projectContext.save(project);
-              ref.invalidate(projectProvider);
+              _saveProject(ref, project);
             },
             title: 'Music fade in',
           ),
@@ -74,8 +70,7 @@ class ProjectSettingsTab extends ConsumerWidget {
             onChanged: (final value) {
               project.mainMenuMusicFadeOut =
                   value == Duration.zero ? null : value;
-              projectContext.save(project);
-              ref.invalidate(projectProvider);
+              _saveProject(ref, project);
             },
             title: 'Music fade out',
           ),
@@ -83,10 +78,7 @@ class ProjectSettingsTab extends ConsumerWidget {
             soundReference: project.menuSelectSound,
             onChanged: (final value) {
               project.menuSelectSound = value;
-              projectContext.save(project);
-              ref
-                ..invalidate(projectProvider)
-                ..invalidate(recentFilesProvider);
+              _saveProject(ref, project);
             },
             title: 'Menu select sound',
           ),
@@ -94,12 +86,25 @@ class ProjectSettingsTab extends ConsumerWidget {
             soundReference: project.menuActivateSound,
             onChanged: (final value) {
               project.menuActivateSound = value;
-              projectContext.save(project);
-              ref
-                ..invalidate(projectProvider)
-                ..invalidate(recentFilesProvider);
+              _saveProject(ref, project);
             },
             title: 'Menu activate sound',
+          ),
+          TextListTile(
+            value: project.organisationName,
+            onChanged: (final value) {
+              project.organisationName = value;
+              _saveProject(ref, project);
+            },
+            header: 'Organisation name',
+          ),
+          TextListTile(
+            value: project.appName,
+            onChanged: (final value) {
+              project.appName = value;
+              _saveProject(ref, project);
+            },
+            header: 'App name',
           ),
         ],
       ),
@@ -108,10 +113,17 @@ class ProjectSettingsTab extends ConsumerWidget {
 
   /// Play the current project.
   void _playProject(final WidgetRef ref) {
-    final projectContext = ref.read(projectContextProvider);
     ref.context.pushWidgetBuilder((final builderContext) {
       builderContext.stopPlaySoundSemantics();
-      return PlayProjectScreen(projectContext: projectContext);
+      return const PlayProjectScreen();
     });
+  }
+
+  /// Invalidate providers.
+  void _saveProject(final WidgetRef ref, final Project project) {
+    ref.read(projectContextProvider).save(project);
+    ref
+      ..invalidate(recentFilesProvider)
+      ..invalidate(projectProvider);
   }
 }
