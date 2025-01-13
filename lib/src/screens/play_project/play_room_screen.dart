@@ -85,12 +85,8 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
   /// The wall sound to use.
   SoundReference? get _wallSound => _gamePlayerContext.wallSound;
 
-  /// The player's coordinates.
-  Point<int>? _playerCoordinates;
-
   /// The current coordinates of the player.
-  Point<int> get coordinates =>
-      _playerCoordinates ?? _gamePlayerContext.gamePlayer.coordinates;
+  Point<int> get coordinates => _gamePlayerContext.gamePlayer.coordinates;
 
   /// The direction the player is moving in.
   MovingDirection? movingDirection;
@@ -247,16 +243,20 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
         onStart: (final innerContext) =>
             innerContext.announce('${coordinates.x}, ${coordinates.y}.'),
       ),
+      GameShortcut(
+        title: 'Save player',
+        shortcut: GameShortcutsShortcut.f4,
+        onStart: (final innerContext) {
+          _gamePlayerContext.save();
+          innerContext.announce('${_player.name} Saved.');
+        },
+      ),
     ];
     final value = ref.watch(gamePlayerContextProvider(widget.playerId));
     return value.when(
       data: (final gamePlayerContext) {
         _gamePlayerContext = gamePlayerContext;
-        if (_playerCoordinates == null) {
-          // This is fresh.
-          _playerCoordinates = gamePlayerContext.gamePlayer.coordinates;
-          loadAmbiances().onError(handleError);
-        }
+        loadAmbiances().onError(handleError);
         return TimedCommands(
           builder: (final context, final state) {
             timedCommandsState = state;
@@ -279,7 +279,19 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
                 builder: (final context, final handles) => SimpleScaffold(
                   title: _room.name,
                   body: GameShortcuts(
-                    shortcuts: shortcuts,
+                    shortcuts: [
+                      ...shortcuts,
+                      GameShortcut(
+                        title: 'Shortcut help',
+                        shortcut: GameShortcutsShortcut.slash,
+                        shiftKey: true,
+                        onStart: (final innerContext) =>
+                            innerContext.fadeMusicAndPushWidget(
+                          (final _) =>
+                              GameShortcutsHelpScreen(shortcuts: shortcuts),
+                        ),
+                      ),
+                    ],
                     child: Text(_room.name),
                   ),
                 ),
@@ -304,6 +316,7 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
 
   /// Load the [zone].
   Future<void> loadAmbiances() async {
+    // TODO(chrisnorman7): Add a new `RoomAmbiances` widget.
     roomAmbiances.clear();
     final roomAmbiance = getSound(
       soundReference: _gamePlayerContext.roomAmbiance,
@@ -336,7 +349,7 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
 
   /// Set the player [coordinates].
   void setPlayerCoordinates(final Point<int> destination) {
-    _playerCoordinates = destination;
+    _gamePlayerContext.gamePlayer.coordinates = destination;
     SoLoud.instance.set3dListenerPosition(
       destination.x.toDouble(),
       destination.y.toDouble(),

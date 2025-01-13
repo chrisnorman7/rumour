@@ -78,6 +78,7 @@ class PlaySavedPlayerScreenState extends ConsumerState<PlaySavedPlayerScreen> {
                             if (players.length == 1) {
                               Navigator.pop(context);
                             }
+                            // TODO(chrisnorman7): This isn't working.
                             players.removeWhere(
                               (final player) => player.id == player.id,
                             );

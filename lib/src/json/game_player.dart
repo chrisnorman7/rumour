@@ -39,6 +39,12 @@ class GamePlayer {
   @JsonKey(includeFromJson: false, includeToJson: false)
   Point<int> get coordinates => Point(x, y);
 
+  /// Set [coordinates].
+  set coordinates(final Point<int> value) {
+    x = value.x;
+    y = value.y;
+  }
+
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$GamePlayerToJson(this);
 }
