@@ -14,6 +14,7 @@ class ProjectContext {
   const ProjectContext({
     required this.file,
     required this.database,
+    this.soundType = SoundType.file,
   });
 
   /// Load an instance from [file].
@@ -48,6 +49,11 @@ class ProjectContext {
   /// The database to use.
   final AppDatabase database;
 
+  /// The sound type for this project.
+  ///
+  /// When editing projects, [soundType] is [SoundType.file].
+  final SoundType soundType;
+
   /// Save the [project].
   void save(final Project project) {
     final json = project.toJson();
@@ -64,30 +70,39 @@ class ProjectContext {
     final bool paused = false,
     final SoundPosition position = unpanned,
   }) {
-    final fullPath = path.join(soundsDirectory.path, soundReference.path);
-    final File file;
-    final directory = Directory(fullPath);
-    if (directory.existsSync()) {
-      final files = directory.listSync().whereType<File>().toList();
-      if (files.isEmpty) {
-        throw StateError('The directory $fullPath is empty.');
-      }
-      file = files.randomElement(random);
-    } else {
-      file = File(fullPath);
-      if (!file.existsSync()) {
-        throw StateError('The file $fullPath does not exist.');
-      }
+    switch (soundType) {
+      case SoundType.asset:
+        throw UnimplementedError();
+      case SoundType.file:
+        final fullPath = path.join(soundsDirectory.path, soundReference.path);
+        final File file;
+        final directory = Directory(fullPath);
+        if (directory.existsSync()) {
+          final files = directory.listSync().whereType<File>().toList();
+          if (files.isEmpty) {
+            throw StateError('The directory $fullPath is empty.');
+          }
+          file = files.randomElement(random);
+        } else {
+          file = File(fullPath);
+          if (!file.existsSync()) {
+            throw StateError('The file $fullPath does not exist.');
+          }
+        }
+        return file.asSound(
+          destroy: destroy,
+          loadMode: soundReference.loadMode,
+          looping: looping,
+          loopingStart: loopingStart,
+          paused: paused,
+          position: position,
+          volume: soundReference.volume,
+        );
+      case SoundType.url:
+        throw UnimplementedError();
+      case SoundType.custom:
+        throw UnimplementedError();
     }
-    return file.asSound(
-      destroy: destroy,
-      loadMode: soundReference.loadMode,
-      looping: looping,
-      loopingStart: loopingStart,
-      paused: paused,
-      position: position,
-      volume: soundReference.volume,
-    );
   }
 
   /// Get a sound path from [soundPath].
