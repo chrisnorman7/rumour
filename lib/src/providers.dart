@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:drift/drift.dart';
+import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
@@ -10,11 +11,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'database/database.dart';
-import 'game_options_context.dart';
 import 'game_player_context.dart';
+import 'game_player_file.dart';
 import 'json/app_preferences.dart';
-import 'json/game_player.dart';
 import 'json/project.dart';
+import 'positioned_sound_reference.dart';
 import 'project_context.dart';
 import 'room_object_context.dart';
 
@@ -266,9 +267,9 @@ Future<PlayerClass> playerClass(final Ref ref, final int id) {
       .getSingle();
 }
 
-/// Provide the game settings for the current [projectContext].
+/// Provide the game options directory.
 @riverpod
-Future<GameOptionsContext> gameOptionsContext(final Ref ref) async {
+Future<Directory> gameOptionsDirectory(final Ref ref) async {
   final projectContext = ref.watch(projectContextProvider);
   final project = projectContext.project;
   final documentsDirectory = await getApplicationDocumentsDirectory();
@@ -282,22 +283,30 @@ Future<GameOptionsContext> gameOptionsContext(final Ref ref) async {
   if (!directory.existsSync()) {
     directory.createSync(recursive: true);
   }
-  final file = File(path.join(directory.path, 'options.json'));
-  return GameOptionsContext.fromFile(file);
+  return directory;
 }
 
 /// Provide the players which have been created.
 @riverpod
-Future<List<GamePlayer>> gamePlayers(final Ref ref) async {
-  final gameOptionsContext = await ref.watch(gameOptionsContextProvider.future);
-  return gameOptionsContext.gameOptions.players;
+Future<List<GamePlayerFile>> gamePlayers(final Ref ref) async {
+  final directory = await ref.watch(gamePlayersDirectoryProvider.future);
+  return directory
+      .listSync()
+      .whereType<File>()
+      .where((final file) => path.extension(file.path) == '.player')
+      .map(GamePlayerFile.fromFile)
+      .toList();
 }
 
-/// Return a single player by its [id].
+/// Provide the game players directory.
 @riverpod
-Future<GamePlayer> gamePlayer(final Ref ref, final String id) async {
-  final players = await ref.watch(gamePlayersProvider.future);
-  return players.firstWhere((final player) => player.id == id);
+Future<Directory> gamePlayersDirectory(final Ref ref) async {
+  final optionsDirectory = await ref.watch(gameOptionsDirectoryProvider.future);
+  final directory = Directory(path.join(optionsDirectory.path, 'players'));
+  if (!directory.existsSync()) {
+    directory.createSync(recursive: true);
+  }
+  return directory;
 }
 
 /// Provide a whole game player context from [id].
@@ -306,8 +315,9 @@ Future<GamePlayerContext> gamePlayerContext(
   final Ref ref,
   final String id,
 ) async {
-  final gameOptionsContext = await ref.watch(gameOptionsContextProvider.future);
-  final gamePlayer = await ref.watch(gamePlayerProvider(id).future);
+  final players = await ref.watch(gamePlayersProvider.future);
+  final gamePlayerFile = players.firstWhere((final e) => e.id == id);
+  final gamePlayer = gamePlayerFile.gamePlayer;
   final room = await ref.watch(roomProvider(gamePlayer.roomId).future);
   final zone = await ref.watch(zoneProvider(room.zoneId).future);
   final zoneMusicId = zone.musicId;
@@ -329,8 +339,7 @@ Future<GamePlayerContext> gamePlayerContext(
       ? null
       : await ref.watch(soundReferenceProvider(wallSoundId).future);
   return GamePlayerContext(
-    gamePlayer: gamePlayer,
-    gameOptionsContext: gameOptionsContext,
+    gamePlayerFile: gamePlayerFile,
     room: room,
     zone: zone,
     zoneMusic: zoneMusic,
@@ -339,4 +348,38 @@ Future<GamePlayerContext> gamePlayerContext(
     footsteps: footsteps,
     wallSound: wallSound,
   );
+}
+
+/// Provide ambiances for a room with the given [id].
+@riverpod
+Future<List<PositionedSoundReference>> roomAmbiances(
+  final Ref ref,
+  final int id,
+) async {
+  final room = await ref.watch(roomProvider(id).future);
+  final ambiances = <PositionedSoundReference>[];
+  final objects = await ref.watch(objectsInRoomProvider(id).future);
+  final roomAmbianceId = room.ambianceId;
+  if (roomAmbianceId != null) {
+    ambiances.add(
+      PositionedSoundReference(
+        soundReference:
+            await ref.watch(soundReferenceProvider(roomAmbianceId).future),
+      ),
+    );
+  }
+  for (final object in objects) {
+    final ambianceId = object.ambianceId;
+    if (ambianceId != null) {
+      ambiances.add(
+        PositionedSoundReference(
+          soundReference:
+              await ref.watch(soundReferenceProvider(ambianceId).future),
+          position:
+              SoundPosition3d(object.x.toDouble(), object.y.toDouble(), 0.0),
+        ),
+      );
+    }
+  }
+  return ambiances;
 }

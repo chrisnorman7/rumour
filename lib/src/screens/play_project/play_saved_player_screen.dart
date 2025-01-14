@@ -39,76 +39,74 @@ class PlaySavedPlayerScreenState extends ConsumerState<PlaySavedPlayerScreen> {
     final project = projectContext.project;
     final selectSound = project.menuSelectSound?.getSoundReference();
     final activateSound = project.menuActivateSound?.getSoundReference();
-    final value = ref.watch(gameOptionsContextProvider);
+    final value = ref.watch(gamePlayersProvider);
     return Cancel(
       child: SimpleScaffold(
         title: 'Select Player',
         body: value.when(
-          data: (final gameOptionsContext) {
-            final players = gameOptionsContext.gameOptions.players;
-            return ListView.builder(
-              itemBuilder: (final context, final index) {
-                final player = players[index];
-                return MaybePlaySoundSemantics(
-                  sound: selectSound == null
-                      ? null
-                      : projectContext.getSound(
-                          soundReference: selectSound,
-                          destroy: false,
-                        ),
-                  child: PerformableActionsListTile(
-                    actions: [
-                      RenameAction(
-                        context: context,
-                        oldName: player.name,
-                        onRename: (final name) async {
-                          player.name = name;
-                          gameOptionsContext.save();
-                          ref.invalidate(gameOptionsContextProvider);
-                        },
-                        title: 'Rename Player',
+          data: (final players) => ListView.builder(
+            itemBuilder: (final context, final index) {
+              final gamePlayerFile = players[index];
+              final player = gamePlayerFile.gamePlayer;
+              return MaybePlaySoundSemantics(
+                sound: selectSound == null
+                    ? null
+                    : projectContext.getSound(
+                        soundReference: selectSound,
+                        destroy: false,
                       ),
-                      PerformableAction(
-                        name: 'Delete',
-                        invoke: () => context.confirm(
-                          message: 'Really delete ${player.name}?',
-                          title: confirmDeleteTitle,
-                          yesCallback: () async {
+                child: PerformableActionsListTile(
+                  actions: [
+                    RenameAction(
+                      context: context,
+                      oldName: player.name,
+                      onRename: (final name) async {
+                        player.name = name;
+                        gamePlayerFile.save();
+                        ref
+                          ..invalidate(gamePlayersProvider)
+                          ..invalidate(
+                            gamePlayerContextProvider(gamePlayerFile.id),
+                          );
+                      },
+                      title: 'Rename Player',
+                    ),
+                    PerformableAction(
+                      name: 'Delete',
+                      invoke: () => context.confirm(
+                        message: 'Really delete ${player.name}?',
+                        title: confirmDeleteTitle,
+                        yesCallback: () async {
+                          Navigator.pop(context);
+                          if (players.length == 1) {
                             Navigator.pop(context);
-                            if (players.length == 1) {
-                              Navigator.pop(context);
-                            }
-                            // TODO(chrisnorman7): This isn't working.
-                            players.removeWhere(
-                              (final player) => player.id == player.id,
-                            );
-                            gameOptionsContext.save();
-                            ref.invalidate(gameOptionsContextProvider);
-                          },
-                        ),
-                        activator: deleteShortcut,
+                          }
+                          gamePlayerFile.file.deleteSync(recursive: true);
+                          ref.invalidate(gamePlayersProvider);
+                        },
                       ),
-                    ],
-                    autofocus: index == 0,
-                    title: Text(player.name),
-                    onTap: () {
-                      if (activateSound != null) {
-                        context.playSound(
-                          projectContext.getSound(
-                            soundReference: activateSound,
-                            destroy: true,
-                          ),
-                        );
-                      }
-                      setState(() => _playerId = player.id);
-                    },
-                  ),
-                );
-              },
-              itemCount: players.length,
-              shrinkWrap: true,
-            );
-          },
+                      activator: deleteShortcut,
+                    ),
+                  ],
+                  autofocus: index == 0,
+                  title: Text(player.name),
+                  onTap: () {
+                    if (activateSound != null) {
+                      context.playSound(
+                        projectContext.getSound(
+                          soundReference: activateSound,
+                          destroy: true,
+                        ),
+                      );
+                    }
+                    setState(() => _playerId = gamePlayerFile.id);
+                  },
+                ),
+              );
+            },
+            itemCount: players.length,
+            shrinkWrap: true,
+          ),
           error: ErrorScreen.withPositional,
           loading: LoadingScreen.new,
         ),

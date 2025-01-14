@@ -1736,36 +1736,35 @@ class _PlayerClassProviderElement
   int get id => (origin as PlayerClassProvider).id;
 }
 
-String _$gameOptionsContextHash() =>
-    r'519ffbc6ab7b12726373775d9d534cbcc29cb177';
+String _$gameOptionsDirectoryHash() =>
+    r'bd6457c238273b9c23894a4c149196098e05f897';
 
-/// Provide the game settings for the current [projectContext].
+/// Provide the game options directory.
 ///
-/// Copied from [gameOptionsContext].
-@ProviderFor(gameOptionsContext)
-final gameOptionsContextProvider =
-    AutoDisposeFutureProvider<GameOptionsContext>.internal(
-  gameOptionsContext,
-  name: r'gameOptionsContextProvider',
+/// Copied from [gameOptionsDirectory].
+@ProviderFor(gameOptionsDirectory)
+final gameOptionsDirectoryProvider =
+    AutoDisposeFutureProvider<Directory>.internal(
+  gameOptionsDirectory,
+  name: r'gameOptionsDirectoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$gameOptionsContextHash,
+      : _$gameOptionsDirectoryHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef GameOptionsContextRef
-    = AutoDisposeFutureProviderRef<GameOptionsContext>;
-String _$gamePlayersHash() => r'd54c7be6f76d36fe6cd1e6d30e938f5972ddead1';
+typedef GameOptionsDirectoryRef = AutoDisposeFutureProviderRef<Directory>;
+String _$gamePlayersHash() => r'81ed60b6e7fe19751b5ec6adf7266d382d02c0b5';
 
 /// Provide the players which have been created.
 ///
 /// Copied from [gamePlayers].
 @ProviderFor(gamePlayers)
 final gamePlayersProvider =
-    AutoDisposeFutureProvider<List<GamePlayer>>.internal(
+    AutoDisposeFutureProvider<List<GamePlayerFile>>.internal(
   gamePlayers,
   name: r'gamePlayersProvider',
   debugGetCreateSourceHash:
@@ -1776,150 +1775,29 @@ final gamePlayersProvider =
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef GamePlayersRef = AutoDisposeFutureProviderRef<List<GamePlayer>>;
-String _$gamePlayerHash() => r'a4ad1a39beb009e72a9d7540996629ed094b8736';
+typedef GamePlayersRef = AutoDisposeFutureProviderRef<List<GamePlayerFile>>;
+String _$gamePlayersDirectoryHash() =>
+    r'36b7aed126b8f7188e9572b1152321ee370f36a7';
 
-/// Return a single player by its [id].
+/// Provide the game players directory.
 ///
-/// Copied from [gamePlayer].
-@ProviderFor(gamePlayer)
-const gamePlayerProvider = GamePlayerFamily();
-
-/// Return a single player by its [id].
-///
-/// Copied from [gamePlayer].
-class GamePlayerFamily extends Family<AsyncValue<GamePlayer>> {
-  /// Return a single player by its [id].
-  ///
-  /// Copied from [gamePlayer].
-  const GamePlayerFamily();
-
-  /// Return a single player by its [id].
-  ///
-  /// Copied from [gamePlayer].
-  GamePlayerProvider call(
-    String id,
-  ) {
-    return GamePlayerProvider(
-      id,
-    );
-  }
-
-  @override
-  GamePlayerProvider getProviderOverride(
-    covariant GamePlayerProvider provider,
-  ) {
-    return call(
-      provider.id,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'gamePlayerProvider';
-}
-
-/// Return a single player by its [id].
-///
-/// Copied from [gamePlayer].
-class GamePlayerProvider extends AutoDisposeFutureProvider<GamePlayer> {
-  /// Return a single player by its [id].
-  ///
-  /// Copied from [gamePlayer].
-  GamePlayerProvider(
-    String id,
-  ) : this._internal(
-          (ref) => gamePlayer(
-            ref as GamePlayerRef,
-            id,
-          ),
-          from: gamePlayerProvider,
-          name: r'gamePlayerProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$gamePlayerHash,
-          dependencies: GamePlayerFamily._dependencies,
-          allTransitiveDependencies:
-              GamePlayerFamily._allTransitiveDependencies,
-          id: id,
-        );
-
-  GamePlayerProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
-
-  final String id;
-
-  @override
-  Override overrideWith(
-    FutureOr<GamePlayer> Function(GamePlayerRef provider) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      override: GamePlayerProvider._internal(
-        (ref) => create(ref as GamePlayerRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeFutureProviderElement<GamePlayer> createElement() {
-    return _GamePlayerProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is GamePlayerProvider && other.id == id;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
+/// Copied from [gamePlayersDirectory].
+@ProviderFor(gamePlayersDirectory)
+final gamePlayersDirectoryProvider =
+    AutoDisposeFutureProvider<Directory>.internal(
+  gamePlayersDirectory,
+  name: r'gamePlayersDirectoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$gamePlayersDirectoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin GamePlayerRef on AutoDisposeFutureProviderRef<GamePlayer> {
-  /// The parameter `id` of this provider.
-  String get id;
-}
-
-class _GamePlayerProviderElement
-    extends AutoDisposeFutureProviderElement<GamePlayer> with GamePlayerRef {
-  _GamePlayerProviderElement(super.provider);
-
-  @override
-  String get id => (origin as GamePlayerProvider).id;
-}
-
-String _$gamePlayerContextHash() => r'2735e49f2f0e234cb236f1aa043cd7681780d000';
+typedef GamePlayersDirectoryRef = AutoDisposeFutureProviderRef<Directory>;
+String _$gamePlayerContextHash() => r'c71fdb71728d43c7ca8b7b5782da66ea60fa3ee1';
 
 /// Provide a whole game player context from [id].
 ///
@@ -2061,6 +1939,154 @@ class _GamePlayerContextProviderElement
 
   @override
   String get id => (origin as GamePlayerContextProvider).id;
+}
+
+String _$roomAmbiancesHash() => r'b40b745be66d81630e737d9945731597d036a877';
+
+/// Provide ambiances for a room with the given [id].
+///
+/// Copied from [roomAmbiances].
+@ProviderFor(roomAmbiances)
+const roomAmbiancesProvider = RoomAmbiancesFamily();
+
+/// Provide ambiances for a room with the given [id].
+///
+/// Copied from [roomAmbiances].
+class RoomAmbiancesFamily
+    extends Family<AsyncValue<List<PositionedSoundReference>>> {
+  /// Provide ambiances for a room with the given [id].
+  ///
+  /// Copied from [roomAmbiances].
+  const RoomAmbiancesFamily();
+
+  /// Provide ambiances for a room with the given [id].
+  ///
+  /// Copied from [roomAmbiances].
+  RoomAmbiancesProvider call(
+    int id,
+  ) {
+    return RoomAmbiancesProvider(
+      id,
+    );
+  }
+
+  @override
+  RoomAmbiancesProvider getProviderOverride(
+    covariant RoomAmbiancesProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'roomAmbiancesProvider';
+}
+
+/// Provide ambiances for a room with the given [id].
+///
+/// Copied from [roomAmbiances].
+class RoomAmbiancesProvider
+    extends AutoDisposeFutureProvider<List<PositionedSoundReference>> {
+  /// Provide ambiances for a room with the given [id].
+  ///
+  /// Copied from [roomAmbiances].
+  RoomAmbiancesProvider(
+    int id,
+  ) : this._internal(
+          (ref) => roomAmbiances(
+            ref as RoomAmbiancesRef,
+            id,
+          ),
+          from: roomAmbiancesProvider,
+          name: r'roomAmbiancesProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$roomAmbiancesHash,
+          dependencies: RoomAmbiancesFamily._dependencies,
+          allTransitiveDependencies:
+              RoomAmbiancesFamily._allTransitiveDependencies,
+          id: id,
+        );
+
+  RoomAmbiancesProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
+  final int id;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<PositionedSoundReference>> Function(RoomAmbiancesRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: RoomAmbiancesProvider._internal(
+        (ref) => create(ref as RoomAmbiancesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<PositionedSoundReference>>
+      createElement() {
+    return _RoomAmbiancesProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RoomAmbiancesProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin RoomAmbiancesRef
+    on AutoDisposeFutureProviderRef<List<PositionedSoundReference>> {
+  /// The parameter `id` of this provider.
+  int get id;
+}
+
+class _RoomAmbiancesProviderElement
+    extends AutoDisposeFutureProviderElement<List<PositionedSoundReference>>
+    with RoomAmbiancesRef {
+  _RoomAmbiancesProviderElement(super.provider);
+
+  @override
+  int get id => (origin as RoomAmbiancesProvider).id;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

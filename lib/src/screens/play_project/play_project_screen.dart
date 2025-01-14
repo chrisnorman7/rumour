@@ -19,9 +19,9 @@ class PlayProjectScreen extends ConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final projectContext = ref.watch(projectContextProvider);
-    final value = ref.watch(gameOptionsContextProvider);
+    final value = ref.watch(gamePlayersProvider);
     return value.when(
-      data: (final gameOptionsContext) {
+      data: (final players) {
         final project = projectContext.project;
         final music = project.mainMenuMusic;
         final selectSound = project.menuSelectSound;
@@ -36,7 +36,7 @@ class PlayProjectScreen extends ConsumerWidget {
                 (final _) => const NewPlayerScreen(),
               ),
             ),
-            if (gameOptionsContext.gameOptions.players.isNotEmpty)
+            if (players.isNotEmpty)
               AudioGameMenuItem(
                 title: 'Play saved player',
                 onActivate: (final innerContext) =>

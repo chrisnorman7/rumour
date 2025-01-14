@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:backstreets_widgets/screens.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' as path;
 
 import '../../constants.dart';
 import '../../database/database.dart';
+import '../../game_player_file.dart';
 import '../../json/game_player.dart';
 import '../../providers.dart';
 import 'play_room_screen.dart';
@@ -108,20 +112,19 @@ class NewPlayerScreenState extends ConsumerState<NewPlayerScreen> {
       return;
     }
     final player = GamePlayer(
-      id: getUuid(),
       name: _controller.text,
+      classId: playerClass.id,
       roomId: playerClass.roomId,
       x: playerClass.x,
       y: playerClass.y,
     );
-    final gameOptionsContext = await ref.read(
-      gameOptionsContextProvider.future,
-    );
-    gameOptionsContext.gameOptions.players.add(player);
-    gameOptionsContext.save();
+    final directory = await ref.read(gamePlayersDirectoryProvider.future);
+    final file = File(path.join(directory.path, '${getUuid()}.player'));
+    final gamePlayerFile = GamePlayerFile(file: file, gamePlayer: player)
+      ..save();
     ref.invalidate(gamePlayersProvider);
     setState(() {
-      _playerId = player.id;
+      _playerId = gamePlayerFile.id;
     });
   }
 }

@@ -15,7 +15,7 @@ import '../../json/game_player.dart';
 import '../../json/project.dart';
 import '../../project_context.dart';
 import '../../providers.dart';
-import 'play_room_loading.dart';
+import '../../widgets/room_ambiances.dart';
 import 'select_object.dart';
 
 /// A screen to play a given [room].
@@ -73,9 +73,6 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
       coordinates.x <= maxCoordinates.x &&
       coordinates.y <= maxCoordinates.y;
 
-  /// The ambiances for [_room].
-  late final List<Sound> roomAmbiances;
-
   /// The [_room] surface.
   RoomSurface get _roomSurface => _gamePlayerContext.roomSurface;
 
@@ -90,13 +87,6 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
 
   /// The direction the player is moving in.
   MovingDirection? movingDirection;
-
-  /// Initialise state.
-  @override
-  void initState() {
-    super.initState();
-    roomAmbiances = [];
-  }
 
   /// Get a sound reference with the given [id].
   ///
@@ -256,27 +246,25 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
     return value.when(
       data: (final gamePlayerContext) {
         _gamePlayerContext = gamePlayerContext;
-        loadAmbiances().onError(handleError);
-        return TimedCommands(
-          builder: (final context, final state) {
-            timedCommandsState = state;
-            state.registerCommand(
-              walkPlayer,
-              _roomSurface.moveInterval.milliseconds,
-            );
-            return MaybeMusic(
-              music: getSound(
-                soundReference: _zoneMusic,
-                destroy: false,
-                looping: true,
-              ),
-              fadeInTime: fadeIn,
-              fadeOutTime: fadeOut,
-              builder: (final context) => AmbiancesBuilder(
-                ambiances: roomAmbiances,
+        return RoomAmbiances(
+          roomId: _room.id,
+          error: ErrorScreen.withPositional,
+          child: TimedCommands(
+            builder: (final context, final state) {
+              timedCommandsState = state;
+              state.registerCommand(
+                walkPlayer,
+                _roomSurface.moveInterval.milliseconds,
+              );
+              return MaybeMusic(
+                music: getSound(
+                  soundReference: _zoneMusic,
+                  destroy: false,
+                  looping: true,
+                ),
                 fadeInTime: fadeIn,
                 fadeOutTime: fadeOut,
-                builder: (final context, final handles) => SimpleScaffold(
+                builder: (final context) => SimpleScaffold(
                   title: _room.name,
                   body: GameShortcuts(
                     shortcuts: [
@@ -295,11 +283,9 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
                     child: Text(_room.name),
                   ),
                 ),
-                error: ErrorScreen.withPositional,
-                loading: () => PlayRoomLoading(room: _room),
-              ),
-            );
-          },
+              );
+            },
+          ),
         );
       },
       error: ErrorScreen.withPositional,
@@ -313,39 +299,6 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
         _error = error;
         _stackTrace = stackTrace;
       });
-
-  /// Load the [zone].
-  Future<void> loadAmbiances() async {
-    // TODO(chrisnorman7): Add a new `RoomAmbiances` widget.
-    roomAmbiances.clear();
-    final roomAmbiance = getSound(
-      soundReference: _gamePlayerContext.roomAmbiance,
-      destroy: false,
-      looping: true,
-    );
-    if (roomAmbiance != null) {
-      roomAmbiances.add(roomAmbiance);
-    }
-    final objects = await ref.read(objectsInRoomProvider(_room.id).future);
-    for (final object in objects) {
-      final objectAmbiance = getSound(
-        soundReference: await getSoundReference(object.ambianceId),
-        destroy: false,
-        looping: true,
-        position: SoundPosition3d(
-          object.x.toDouble(),
-          object.y.toDouble(),
-          0.0,
-        ),
-      );
-      if (objectAmbiance != null) {
-        roomAmbiances.add(objectAmbiance);
-      }
-    }
-    if (mounted) {
-      setState(() {});
-    }
-  }
 
   /// Set the player [coordinates].
   void setPlayerCoordinates(final Point<int> destination) {

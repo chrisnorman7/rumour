@@ -1,14 +1,12 @@
 import 'database/database.dart';
-import 'game_options_context.dart';
-import 'json/game_options.dart';
+import 'game_player_file.dart';
 import 'json/game_player.dart';
 
 /// Context for a [gamePlayer].
 class GamePlayerContext {
   /// Create an instance.
   const GamePlayerContext({
-    required this.gamePlayer,
-    required this.gameOptionsContext,
+    required this.gamePlayerFile,
     required this.room,
     required this.zone,
     required this.zoneMusic,
@@ -19,13 +17,10 @@ class GamePlayerContext {
   });
 
   /// The game player to use.
-  final GamePlayer gamePlayer;
+  final GamePlayerFile gamePlayerFile;
 
-  /// The options context which [gamePlayer] is part of.
-  final GameOptionsContext gameOptionsContext;
-
-  /// The game options from [gameOptionsContext].
-  GameOptions get gameOptions => gameOptionsContext.gameOptions;
+  /// The game player from [gamePlayerFile].
+  GamePlayer get gamePlayer => gamePlayerFile.gamePlayer;
 
   /// The room where [gamePlayer] is situated.
   final Room room;
@@ -49,10 +44,5 @@ class GamePlayerContext {
   final SoundReference? wallSound;
 
   /// Save the [gamePlayer].
-  void save() {
-    gameOptions.players
-        .removeWhere((final player) => player.id == gamePlayer.id);
-    gameOptions.players.add(gamePlayer);
-    gameOptionsContext.save();
-  }
+  void save() => gamePlayerFile.save();
 }

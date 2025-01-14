@@ -9,8 +9,8 @@ part 'game_player.g.dart';
 class GamePlayer {
   /// Create an instance.
   GamePlayer({
-    required this.id,
     required this.name,
+    required this.classId,
     required this.roomId,
     required this.x,
     required this.y,
@@ -20,11 +20,11 @@ class GamePlayer {
   factory GamePlayer.fromJson(final Map<String, dynamic> json) =>
       _$GamePlayerFromJson(json);
 
-  /// The ID of this player.
-  final String id;
-
   /// The name of this player.
   String name;
+
+  /// The ID of the player class which created this player.
+  final int classId;
 
   /// The ID of the room where this player last saved.
   int roomId;
