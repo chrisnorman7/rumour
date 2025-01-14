@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'constants.dart';
 import 'database/database.dart';
 import 'game_player_context.dart';
 import 'game_player_file.dart';
@@ -382,4 +383,128 @@ Future<List<PositionedSoundReference>> roomAmbiances(
     }
   }
   return ambiances;
+}
+
+/// Build the project context.
+@riverpod
+Stream<String> buildProject(final Ref ref) async* {
+  final projectContext = ref.watch(projectContextProvider);
+  final project = projectContext.project;
+  yield 'Building ${project.name}';
+  final flutterProjectPath = path.join(
+    projectContext.directory.path,
+    project.appName,
+  );
+  final outputDirectory = Directory(flutterProjectPath);
+  if (outputDirectory.existsSync()) {
+    yield 'Removing directory ${outputDirectory.path}.';
+    await outputDirectory.delete(recursive: true);
+  }
+  final executable = Platform.isWindows ? 'flutter.bat' : 'flutter';
+  final flutterCreate = await Process.run(
+    executable,
+    [
+      'create',
+      '--org',
+      project.organisationName,
+      '--description',
+      'Game created by Rumour on ${DateTime.now()}.',
+      flutterProjectPath,
+    ],
+  );
+  if (flutterCreate.exitCode != 0) {
+    yield 'Error:';
+    yield 'stdout: ${flutterCreate.stdout}';
+    yield 'stderr: ${flutterCreate.stderr}';
+    return;
+  }
+  yield 'Flutter project created at $flutterProjectPath.';
+  final pubAdd = await Process.run(
+    executable,
+    [
+      'pub',
+      'add',
+      'flutter_audio_games',
+      '-C',
+      flutterProjectPath,
+    ],
+  );
+  if (pubAdd.exitCode != 0) {
+    yield 'Error:';
+    yield 'stdout: ${pubAdd.stdout}';
+    yield 'stderr: ${pubAdd.stderr}';
+    return;
+  }
+  yield 'Depending on `flutter_audio_games`.';
+  await Process.run(executable, ['pub', 'get']);
+  final pubspecPath = path.join(flutterProjectPath, 'pubspec.yaml');
+  final pubspecFile = File(pubspecPath);
+  final buffer = StringBuffer();
+  for (final line in pubspecFile.readAsLinesSync()) {
+    if (!line.trim().startsWith('#')) {
+      buffer.writeln(line);
+    }
+  }
+  yield 'Loading sound references from database...';
+  final soundReferences = await projectContext.database.managers.soundReferences
+      .orderBy(
+        (final o) => o.path.asc(),
+      )
+      .get();
+  yield 'Sound references: ${soundReferences.length}.';
+  final files = <String>[];
+  final directories = <String, List<String>>{};
+  const soundsDirectoryName = 'sounds';
+  final soundsPath = path.join(outputDirectory.path, soundsDirectoryName);
+  for (final soundReference in soundReferences) {
+    final p = soundReference.path;
+    final referencePath = path.join(projectContext.soundsDirectory.path, p);
+    final file = File(referencePath);
+    final directory = Directory(referencePath);
+    if (files.contains(p) || directories.containsKey(p)) {
+      continue;
+    }
+    final outputPath = path.join(soundsPath, p);
+    if (file.existsSync()) {
+      yield 'File: $p.';
+      files.add(p);
+      final newFile = File(outputPath);
+      newFile.parent.createSync(recursive: true);
+      newFile.writeAsBytesSync(file.readAsBytesSync());
+    } else if (directory.existsSync()) {
+      yield 'Directory: $p.';
+      Directory(outputPath).createSync(recursive: true);
+      final directoryFiles = directory.listSync().whereType<File>().where(
+            (final file) =>
+                soundFileExtensions.contains(path.extension(file.path)),
+          );
+      directories[p] = directoryFiles
+          .map((final file) => path.join(p, path.basename(file.path)))
+          .toList();
+      for (final directoryFile in directoryFiles) {
+        File(path.join(outputPath, path.basename(directoryFile.path)))
+            .writeAsBytesSync(
+          directoryFile.readAsBytesSync(),
+        );
+      }
+    } else {
+      // ignore: lines_longer_than_80_chars
+      yield 'Error: The sound reference $p (#${soundReference.id}) does not match any file or directory.';
+      return;
+    }
+  }
+  buffer.writeln('  assets:');
+  for (final key in files) {
+    buffer.writeln('    - $soundsDirectoryName/${key.replaceAll(r'\', '/')}');
+  }
+  for (final MapEntry(:key, value: filenames) in directories.entries) {
+    buffer.writeln('    # $soundsDirectoryName/$key');
+    for (final name in filenames) {
+      buffer
+          .writeln('    - $soundsDirectoryName/${name.replaceAll(r'\', '/')}');
+    }
+  }
+  yield 'Writing assets to pubspec.';
+  pubspecFile.writeAsStringSync(buffer.toString());
+  yield 'Done.';
 }

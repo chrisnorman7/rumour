@@ -11,6 +11,7 @@ import '../../widgets/menu_button.dart';
 import '../edit_room_surface/edit_room_surface_screen.dart';
 import '../edit_zone/edit_zone_screen.dart';
 import '../play_project/play_project_screen.dart';
+import 'build_project_screen.dart';
 import 'tabs/project_player_classes_tab.dart';
 import 'tabs/project_room_surfaces_tab.dart';
 import 'tabs/project_settings_tab.dart';
@@ -34,10 +35,17 @@ class EditProjectScreen extends ConsumerWidget {
               shortcut: playShortcut,
               child: const Text('Play project'),
             ),
+            MenuItemButton(
+              shortcut: buildProjectShortcut,
+              child: const Text('Build project'),
+            ),
           ],
           builder: (final context, final controller, final child) =>
               CallbackShortcuts(
-            bindings: {playShortcut: () => _playProject(ref)},
+            bindings: {
+              playShortcut: () => _playProject(ref),
+              buildProjectShortcut: () => _buildProject(ref),
+            },
             child: TabbedScaffold(
               tabs: [
                 TabbedScaffoldTab(
@@ -86,6 +94,12 @@ class EditProjectScreen extends ConsumerWidget {
   /// Play the current project.
   void _playProject(final WidgetRef ref) => ref.context
       .pushWidgetBuilder((final builderContext) => const PlayProjectScreen());
+
+  /// Build the project into a single project which can be compiled.
+  void _buildProject(final WidgetRef ref) {
+    ref.invalidate(buildProjectProvider);
+    ref.context.pushWidgetBuilder((final _) => const BuildProjectScreen());
+  }
 
   /// Create a new zone.
   Future<void> _createZone(final WidgetRef ref) async {

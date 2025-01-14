@@ -2088,5 +2088,24 @@ class _RoomAmbiancesProviderElement
   @override
   int get id => (origin as RoomAmbiancesProvider).id;
 }
+
+String _$buildProjectHash() => r'e1628739b6b084ca679087856091ec0b58de90de';
+
+/// Build the project context.
+///
+/// Copied from [buildProject].
+@ProviderFor(buildProject)
+final buildProjectProvider = AutoDisposeStreamProvider<String>.internal(
+  buildProject,
+  name: r'buildProjectProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$buildProjectHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef BuildProjectRef = AutoDisposeStreamProviderRef<String>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
