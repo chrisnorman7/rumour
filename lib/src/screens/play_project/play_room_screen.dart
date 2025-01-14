@@ -246,25 +246,25 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
     return value.when(
       data: (final gamePlayerContext) {
         _gamePlayerContext = gamePlayerContext;
-        return RoomAmbiances(
-          roomId: _room.id,
-          error: ErrorScreen.withPositional,
-          child: TimedCommands(
-            builder: (final context, final state) {
-              timedCommandsState = state;
-              state.registerCommand(
-                walkPlayer,
-                _roomSurface.moveInterval.milliseconds,
-              );
-              return MaybeMusic(
-                music: getSound(
-                  soundReference: _zoneMusic,
-                  destroy: false,
-                  looping: true,
-                ),
-                fadeInTime: fadeIn,
-                fadeOutTime: fadeOut,
-                builder: (final context) => SimpleScaffold(
+        return MaybeMusic(
+          music: getSound(
+            soundReference: _zoneMusic,
+            destroy: false,
+            looping: true,
+          ),
+          fadeInTime: fadeIn,
+          fadeOutTime: fadeOut,
+          builder: (final context) => RoomAmbiances(
+            roomId: _room.id,
+            error: ErrorScreen.withPositional,
+            child: TimedCommands(
+              builder: (final context, final state) {
+                timedCommandsState = state;
+                state.registerCommand(
+                  walkPlayer,
+                  _roomSurface.moveInterval.milliseconds,
+                );
+                return SimpleScaffold(
                   title: _room.name,
                   body: GameShortcuts(
                     shortcuts: [
@@ -275,16 +275,17 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
                         shiftKey: true,
                         onStart: (final innerContext) =>
                             innerContext.fadeMusicAndPushWidget(
-                          (final _) =>
-                              GameShortcutsHelpScreen(shortcuts: shortcuts),
+                          (final _) => GameShortcutsHelpScreen(
+                            shortcuts: shortcuts,
+                          ),
                         ),
                       ),
                     ],
                     child: Text(_room.name),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         );
       },
