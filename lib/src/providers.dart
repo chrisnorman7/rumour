@@ -456,7 +456,7 @@ Stream<String> buildProject(final Ref ref) async* {
   final directories = <String, List<String>>{};
   const soundsDirectoryName = 'sounds';
   final soundsPath = path.join(outputDirectory.path, soundsDirectoryName);
-  for (final soundReference in soundReferences) {
+  for (final soundReference in <SoundReference>[...soundReferences, project]) {
     final p = soundReference.path;
     final referencePath = path.join(projectContext.soundsDirectory.path, p);
     final file = File(referencePath);
