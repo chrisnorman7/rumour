@@ -456,7 +456,16 @@ Stream<String> buildProject(final Ref ref) async* {
   final directories = <String, List<String>>{};
   const soundsDirectoryName = 'sounds';
   final soundsPath = path.join(outputDirectory.path, soundsDirectoryName);
-  for (final soundReference in <SoundReference>[...soundReferences, project]) {
+  final pretendSoundReferences = [
+    project.mainMenuMusic,
+    project.menuActivateSound,
+    project.menuSelectSound,
+  ];
+  for (final soundReference in <SoundReference>[
+    ...soundReferences,
+    for (final possibility in pretendSoundReferences)
+      if (possibility != null) possibility.getSoundReference(),
+  ]) {
     final p = soundReference.path;
     final referencePath = path.join(projectContext.soundsDirectory.path, p);
     final file = File(referencePath);
