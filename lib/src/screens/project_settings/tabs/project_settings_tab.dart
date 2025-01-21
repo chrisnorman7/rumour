@@ -5,7 +5,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../json/project.dart';
 import '../../../providers.dart';
-import '../../../widgets/serializable_sound_reference_list_tile.dart';
 
 /// The project settings tab.
 class ProjectSettingsTab extends ConsumerWidget {
@@ -19,7 +18,6 @@ class ProjectSettingsTab extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     final projectContext = ref.watch(projectContextProvider);
     final project = ref.watch(projectProvider);
-    final music = project.mainMenuMusic;
     return ListView(
       shrinkWrap: true,
       children: [
@@ -41,47 +39,6 @@ class ProjectSettingsTab extends ConsumerWidget {
             final uri = Uri.parse(projectContext.soundsDirectory.path);
             launchUrl(uri);
           },
-        ),
-        SerializableSoundReferenceListTile(
-          soundReference: music,
-          onChanged: (final value) {
-            project.mainMenuMusic = value;
-            _saveProject(ref, project);
-          },
-          title: 'Main menu music',
-        ),
-        DurationListTile(
-          duration: project.mainMenuMusicFadeIn ?? Duration.zero,
-          onChanged: (final value) {
-            project.mainMenuMusicFadeIn = value == Duration.zero ? null : value;
-            _saveProject(ref, project);
-          },
-          title: 'Music fade in',
-        ),
-        DurationListTile(
-          duration: project.mainMenuMusicFadeOut ?? Duration.zero,
-          onChanged: (final value) {
-            project.mainMenuMusicFadeOut =
-                value == Duration.zero ? null : value;
-            _saveProject(ref, project);
-          },
-          title: 'Music fade out',
-        ),
-        SerializableSoundReferenceListTile(
-          soundReference: project.menuSelectSound,
-          onChanged: (final value) {
-            project.menuSelectSound = value;
-            _saveProject(ref, project);
-          },
-          title: 'Menu select sound',
-        ),
-        SerializableSoundReferenceListTile(
-          soundReference: project.menuActivateSound,
-          onChanged: (final value) {
-            project.menuActivateSound = value;
-            _saveProject(ref, project);
-          },
-          title: 'Menu activate sound',
         ),
         TextListTile(
           value: project.organisationName,

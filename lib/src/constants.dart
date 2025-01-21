@@ -78,3 +78,11 @@ final editExitShortcut = CrossPlatformSingleActivator(LogicalKeyboardKey.keyX);
 /// The shortcut for building projects.
 final buildProjectShortcut =
     CrossPlatformSingleActivator(LogicalKeyboardKey.keyB);
+
+/// The preferences shortcut.
+final preferencesShortcut =
+    CrossPlatformSingleActivator(LogicalKeyboardKey.comma);
+
+/// The sounds directory shortcut.
+final soundsDirectoryShortcut =
+    CrossPlatformSingleActivator(LogicalKeyboardKey.keyS, shift: true);
