@@ -28,6 +28,7 @@ class ProjectMenuSettingsTab extends ConsumerWidget {
             _saveProject(ref, project);
           },
           title: 'Main menu music',
+          autofocus: true,
         ),
         DurationListTile(
           duration: project.mainMenuMusicFadeIn ?? Duration.zero,
@@ -61,6 +62,38 @@ class ProjectMenuSettingsTab extends ConsumerWidget {
             _saveProject(ref, project);
           },
           title: 'Menu activate sound',
+        ),
+        TextListTile(
+          value: project.newPlayerLabel,
+          onChanged: (final value) {
+            project.newPlayerLabel = value;
+            _saveProject(ref, project);
+          },
+          header: 'New player label',
+        ),
+        SerializableSoundReferenceListTile(
+          soundReference: project.newPlayerEarcon,
+          onChanged: (final value) {
+            project.newPlayerEarcon = value;
+            _saveProject(ref, project);
+          },
+          title: 'New player earcon',
+        ),
+        TextListTile(
+          value: project.savedPlayersLabel,
+          onChanged: (final value) {
+            project.savedPlayersLabel = value;
+            _saveProject(ref, project);
+          },
+          header: 'Saved players label',
+        ),
+        SerializableSoundReferenceListTile(
+          soundReference: project.savedPlayersEarcon,
+          onChanged: (final value) {
+            project.savedPlayersEarcon = value;
+            _saveProject(ref, project);
+          },
+          title: 'Saved players earcon',
         ),
       ],
     );

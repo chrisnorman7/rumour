@@ -20,6 +20,10 @@ class Project {
     this.mainMenuMusicFadeOut,
     this.menuSelectSound,
     this.menuActivateSound,
+    this.newPlayerLabel = 'New player',
+    this.newPlayerEarcon,
+    this.savedPlayersLabel = 'Saved players',
+    this.savedPlayersEarcon,
     this.organisationName = 'com.example',
     this.appName = 'game',
   });
@@ -60,6 +64,18 @@ class Project {
 
   /// The sound to use when activating items in menus.
   SerializableSoundReference? menuActivateSound;
+
+  /// The label for the new player menu item.
+  String newPlayerLabel;
+
+  /// The earcon for the new player menu item.
+  SerializableSoundReference? newPlayerEarcon;
+
+  /// The label for the saved players menu item.
+  String savedPlayersLabel;
+
+  /// The earcon for the saved players menu item.
+  SerializableSoundReference? savedPlayersEarcon;
 
   /// The name of the organisation that owns this game.
   String organisationName;

@@ -30,18 +30,27 @@ class PlayProjectScreen extends ConsumerWidget {
           title: project.name,
           menuItems: [
             AudioGameMenuItem(
-              title: 'Create new player',
+              title: project.newPlayerLabel,
               onActivate: (final innerContext) =>
                   innerContext.fadeMusicAndPushWidget(
                 (final _) => const NewPlayerScreen(),
               ),
+              earcon: projectContext.maybeGetSound(
+                soundReference: project.newPlayerEarcon?.getSoundReference(),
+                destroy: false,
+              ),
             ),
             if (players.isNotEmpty)
               AudioGameMenuItem(
-                title: 'Play saved player',
+                title: project.savedPlayersLabel,
                 onActivate: (final innerContext) =>
                     innerContext.fadeMusicAndPushWidget(
                   (final _) => const PlaySavedPlayerScreen(),
+                ),
+                earcon: projectContext.maybeGetSound(
+                  soundReference:
+                      project.savedPlayersEarcon?.getSoundReference(),
+                  destroy: false,
                 ),
               ),
           ],

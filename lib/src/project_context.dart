@@ -105,6 +105,28 @@ class ProjectContext {
     }
   }
 
+  /// Maybe call [getSound].
+  Sound? maybeGetSound({
+    required final SoundReference? soundReference,
+    required final bool destroy,
+    final bool looping = false,
+    final Duration loopingStart = Duration.zero,
+    final bool paused = false,
+    final SoundPosition position = unpanned,
+  }) {
+    if (soundReference == null) {
+      return null;
+    }
+    return getSound(
+      soundReference: soundReference,
+      destroy: destroy,
+      looping: looping,
+      loopingStart: loopingStart,
+      paused: paused,
+      position: position,
+    );
+  }
+
   /// Get a sound path from [soundPath].
   String getSoundPath(final String soundPath) =>
       path.relative(soundPath, from: soundsDirectory.path);

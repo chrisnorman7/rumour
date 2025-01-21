@@ -5,6 +5,7 @@
     "Colors",
     "dialog",
     "dialogs",
+    "Earcon",
     "jinja",
     "recase",
     "riverpod",
