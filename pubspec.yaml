@@ -30,6 +30,7 @@ dependencies:
   uuid: ^4.5.1
 
 dev_dependencies:
+  analyzer: ^6.4.4
   build_runner: ^2.4.14
   custom_lint: ^0.7.0
   drift_dev: ^2.23.1
