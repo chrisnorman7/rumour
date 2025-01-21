@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../constants.dart';
 import '../../providers.dart';
 import '../../widgets/close_project.dart';
-import '../../widgets/menu_button.dart';
+import '../../widgets/performable_actions_tabbed_scaffold_tab.dart';
 import '../edit_room_surface/edit_room_surface_screen.dart';
 import '../edit_zone/edit_zone_screen.dart';
 import '../play_project/play_project_screen.dart';
@@ -27,67 +27,57 @@ class EditProjectScreen extends ConsumerWidget {
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) => CloseProject(
-        child: MenuAnchor(
-          menuChildren: [
-            MenuItemButton(
-              autofocus: true,
-              onPressed: () => _playProject(ref),
-              shortcut: playShortcut,
-              child: const Text('Play project'),
-            ),
-            MenuItemButton(
-              shortcut: buildProjectShortcut,
-              child: const Text('Build project'),
-            ),
-          ],
-          builder: (final context, final controller, final child) =>
-              CallbackShortcuts(
-            bindings: {
-              playShortcut: () => _playProject(ref),
-              buildProjectShortcut: () => _buildProject(ref),
-            },
-            child: TabbedScaffold(
-              tabs: [
-                TabbedScaffoldTab(
-                  actions: [MenuButton(menuController: controller)],
-                  title: 'Settings',
-                  icon: const Text('Project settings'),
-                  builder: (final _) => const ProjectSettingsTab(),
+        child: TabbedScaffold(
+          tabs: [
+            PerformableActionsTabbedScaffoldTab(
+              performableActions: [
+                PerformableAction(
+                  name: 'Play project',
+                  invoke: () => _playProject(ref),
+                  activator: playShortcut,
                 ),
-                TabbedScaffoldTab(
-                  title: 'Zones',
-                  icon: const Text('Share settings between multiple rooms'),
-                  builder: (final _) => CommonShortcuts(
-                    newCallback: () => _createZone(ref),
-                    child: const ProjectZonesTab(),
-                  ),
-                  floatingActionButton: NewButton(
-                    onPressed: () => _createZone(ref),
-                    tooltip: 'New zone',
-                  ),
-                ),
-                TabbedScaffoldTab(
-                  title: 'Room Surfaces',
-                  icon: const Text(
-                    'Share footstep and wall sounds between rooms.',
-                  ),
-                  builder: (final _) => CommonShortcuts(
-                    newCallback: () => _createRoomSurface(ref),
-                    child: const ProjectRoomSurfacesTab(),
-                  ),
-                  floatingActionButton: NewButton(
-                    onPressed: () => _createRoomSurface(ref),
-                    tooltip: 'New room surface',
-                  ),
-                ),
-                TabbedScaffoldTab(
-                  title: 'Player Classes',
-                  icon: const Text('Classes which new players can choose from'),
-                  builder: (final context) => const ProjectPlayerClassesTab(),
+                PerformableAction(
+                  name: 'Build project',
+                  invoke: () => _buildProject(ref),
+                  activator: buildShortcut,
                 ),
               ],
+              title: 'Settings',
+              icon: const Text('Project settings'),
+              builder: (final _) => const ProjectSettingsTab(),
             ),
-          ),
+            TabbedScaffoldTab(
+              title: 'Zones',
+              icon: const Text('Share settings between multiple rooms'),
+              builder: (final _) => CommonShortcuts(
+                newCallback: () => _createZone(ref),
+                child: const ProjectZonesTab(),
+              ),
+              floatingActionButton: NewButton(
+                onPressed: () => _createZone(ref),
+                tooltip: 'New zone',
+              ),
+            ),
+            TabbedScaffoldTab(
+              title: 'Room Surfaces',
+              icon: const Text(
+                'Share footstep and wall sounds between rooms.',
+              ),
+              builder: (final _) => CommonShortcuts(
+                newCallback: () => _createRoomSurface(ref),
+                child: const ProjectRoomSurfacesTab(),
+              ),
+              floatingActionButton: NewButton(
+                onPressed: () => _createRoomSurface(ref),
+                tooltip: 'New room surface',
+              ),
+            ),
+            TabbedScaffoldTab(
+              title: 'Player Classes',
+              icon: const Text('Classes which new players can choose from'),
+              builder: (final context) => const ProjectPlayerClassesTab(),
+            ),
+          ],
         ),
       );
 

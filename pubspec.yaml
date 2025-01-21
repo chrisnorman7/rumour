@@ -8,7 +8,7 @@ environment:
   sdk: ^3.6.1
 
 dependencies:
-  backstreets_widgets: ^0.31.1
+  backstreets_widgets: ^0.32.0
   cupertino_icons: ^1.0.8
   drift: ^2.23.1
   drift_flutter: ^0.2.4
@@ -16,7 +16,7 @@ dependencies:
   filesize: ^2.0.1
   flutter:
     sdk: flutter
-  flutter_audio_games: ^0.37.2
+  flutter_audio_games: ^0.37.3
   flutter_riverpod: ^2.6.1
   flutter_soloud: ^2.1.7
   jinja: ^0.6.0
