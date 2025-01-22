@@ -501,11 +501,46 @@ Stream<String> buildProject(final Ref ref) async* {
   for (final MapEntry(:key, value: filenames) in directories.entries) {
     buffer.writeln('    # $soundsDirectoryName/$key');
     for (final name in filenames) {
-      buffer
-          .writeln('    - $soundsDirectoryName/${name.replaceAll(r'\', '/')}');
+      buffer.writeln(
+        '    - $soundsDirectoryName/${name.replaceAll(r'\', '/')}',
+      );
     }
   }
-  yield 'Writing assets to pubspec.';
+  yield 'Sounds written to pubspec.';
+  final loader = ProjectContextLoader(
+    projectAssetKey: path.basename(projectContext.file.path),
+    directories: directories,
+  );
+  const loaderFilename = 'loader.json';
+  const assetsDirectoryName = 'assets';
+  final projectFilename = path.basename(projectContext.file.path);
+  yield 'Copying data files.';
+  final databaseBytes =
+      File(path.join(projectContext.directory.path, project.databaseFilename))
+          .readAsBytesSync();
+  final assetsDirectory = Directory(
+    path.join(outputDirectory.path, assetsDirectoryName),
+  );
+  if (!assetsDirectory.existsSync()) {
+    assetsDirectory.createSync(recursive: true);
+  }
+  for (final MapEntry(key: filename, value: contents) in {
+    project.databaseFilename: databaseBytes,
+    projectFilename: jsonEncode(project),
+    loaderFilename: jsonEncode(loader),
+  }.entries) {
+    final file = File(path.join(assetsDirectory.path, filename));
+    buffer.writeln('    - $assetsDirectoryName/$filename');
+    if (contents is List<int>) {
+      file.writeAsBytesSync(contents);
+    } else if (contents is String) {
+      file.writeAsStringSync(contents);
+    } else {
+      throw UnsupportedError(
+        'Cannot write file $filename with contents $contents.',
+      );
+    }
+  }
   pubspecFile.writeAsStringSync(buffer.toString());
   yield 'Done.';
 }
