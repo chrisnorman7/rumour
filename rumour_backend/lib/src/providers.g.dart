@@ -2108,26 +2108,150 @@ final buildProjectProvider = AutoDisposeStreamProvider<String>.internal(
 // ignore: unused_element
 typedef BuildProjectRef = AutoDisposeStreamProviderRef<String>;
 String _$projectDataDirectoryHash() =>
-    r'31d64526e443d55e673620993203fcbf2c29a5db';
+    r'c853fac9334fa5991d7278e00eaabcba500e229e';
 
 /// Provide the project data directory.
 ///
 /// Copied from [projectDataDirectory].
 @ProviderFor(projectDataDirectory)
-final projectDataDirectoryProvider =
-    AutoDisposeFutureProvider<Directory>.internal(
-  projectDataDirectory,
-  name: r'projectDataDirectoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$projectDataDirectoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+const projectDataDirectoryProvider = ProjectDataDirectoryFamily();
+
+/// Provide the project data directory.
+///
+/// Copied from [projectDataDirectory].
+class ProjectDataDirectoryFamily extends Family<AsyncValue<Directory>> {
+  /// Provide the project data directory.
+  ///
+  /// Copied from [projectDataDirectory].
+  const ProjectDataDirectoryFamily();
+
+  /// Provide the project data directory.
+  ///
+  /// Copied from [projectDataDirectory].
+  ProjectDataDirectoryProvider call(
+    Project project,
+  ) {
+    return ProjectDataDirectoryProvider(
+      project,
+    );
+  }
+
+  @override
+  ProjectDataDirectoryProvider getProviderOverride(
+    covariant ProjectDataDirectoryProvider provider,
+  ) {
+    return call(
+      provider.project,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'projectDataDirectoryProvider';
+}
+
+/// Provide the project data directory.
+///
+/// Copied from [projectDataDirectory].
+class ProjectDataDirectoryProvider
+    extends AutoDisposeFutureProvider<Directory> {
+  /// Provide the project data directory.
+  ///
+  /// Copied from [projectDataDirectory].
+  ProjectDataDirectoryProvider(
+    Project project,
+  ) : this._internal(
+          (ref) => projectDataDirectory(
+            ref as ProjectDataDirectoryRef,
+            project,
+          ),
+          from: projectDataDirectoryProvider,
+          name: r'projectDataDirectoryProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$projectDataDirectoryHash,
+          dependencies: ProjectDataDirectoryFamily._dependencies,
+          allTransitiveDependencies:
+              ProjectDataDirectoryFamily._allTransitiveDependencies,
+          project: project,
+        );
+
+  ProjectDataDirectoryProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.project,
+  }) : super.internal();
+
+  final Project project;
+
+  @override
+  Override overrideWith(
+    FutureOr<Directory> Function(ProjectDataDirectoryRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ProjectDataDirectoryProvider._internal(
+        (ref) => create(ref as ProjectDataDirectoryRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        project: project,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<Directory> createElement() {
+    return _ProjectDataDirectoryProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ProjectDataDirectoryProvider && other.project == project;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, project.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef ProjectDataDirectoryRef = AutoDisposeFutureProviderRef<Directory>;
+mixin ProjectDataDirectoryRef on AutoDisposeFutureProviderRef<Directory> {
+  /// The parameter `project` of this provider.
+  Project get project;
+}
+
+class _ProjectDataDirectoryProviderElement
+    extends AutoDisposeFutureProviderElement<Directory>
+    with ProjectDataDirectoryRef {
+  _ProjectDataDirectoryProviderElement(super.provider);
+
+  @override
+  Project get project => (origin as ProjectDataDirectoryProvider).project;
+}
+
 String _$currentProjectContextHash() =>
     r'cd441d8be7e93f11f4a88ac711ea7c83936cad55';
 

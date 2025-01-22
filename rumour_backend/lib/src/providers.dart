@@ -582,8 +582,10 @@ Stream<String> buildProject(final Ref ref) async* {
 
 /// Provide the project data directory.
 @riverpod
-Future<Directory> projectDataDirectory(final Ref ref) async {
-  final project = ref.watch(projectProvider);
+Future<Directory> projectDataDirectory(
+  final Ref ref,
+  final Project project,
+) async {
   final cacheDirectory = await getApplicationCacheDirectory();
   final directory = Directory(
     path.join(

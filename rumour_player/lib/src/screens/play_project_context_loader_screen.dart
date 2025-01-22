@@ -61,10 +61,15 @@ class PlayProjectContextLoaderScreenState
       final json = jsonDecode(source) as Map<String, dynamic>;
       final loader = ProjectContextLoader.fromJson(json);
       final projectSource = await bundle.loadString(loader.projectAssetKey);
-      final directory = await ref.read(projectDataDirectoryProvider.future);
-      final file = File(path.join(directory.path, loader.projectAssetKey))
-        ..writeAsStringSync(projectSource);
-      final project = Project.fromFile(file);
+      final project = Project.fromJson(jsonDecode(source));
+      final directory =
+          await ref.read(projectDataDirectoryProvider(project).future);
+      final file = File(
+        path.join(
+          directory.path,
+          path.basename(loader.projectAssetKey),
+        ),
+      )..writeAsStringSync(projectSource);
       final databaseBuffer = await bundle.load(project.databaseFilename);
       final databaseFile =
           File(path.join(directory.path, project.databaseFilename))
