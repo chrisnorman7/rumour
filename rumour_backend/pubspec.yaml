@@ -1,5 +1,5 @@
 name: rumour_backend
-description: "The backend package for the Rumour editor and player."
+description: "Common code shared by the Rumour Editor and the Rumour Player."
 version: 0.0.1
 repository: https://github.com/chrisnorman7/rumour
 publish_to: none

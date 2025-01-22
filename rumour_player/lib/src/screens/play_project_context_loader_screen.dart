@@ -79,6 +79,7 @@ class PlayProjectContextLoaderScreenState
         loader: loader,
       );
       if (mounted) {
+        currentProjectContext = projectContext;
         setState(() {
           _projectContext = projectContext;
         });
