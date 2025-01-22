@@ -128,17 +128,9 @@ class SelectSoundScreenState extends ConsumerState<SelectSoundScreen> {
         if (path.equals(directory.path, projectContext.soundsDirectory.path)) {
           Navigator.pop(context);
         } else {
-          final relativePath = path.relative(directory.path, from: soundsPath);
-          final split = path.split(relativePath);
-          if (split.length == 1) {
-            setState(() {
-              _directory = null;
-            });
-          } else {
-            setState(() {
-              _directory = directory.parent;
-            });
-          }
+          setState(() {
+            _directory = directory.parent;
+          });
         }
       },
     );
