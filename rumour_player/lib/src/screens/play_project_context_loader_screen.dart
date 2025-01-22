@@ -37,7 +37,7 @@ class PlayProjectContextLoaderScreenState
 
   /// Build a widget.
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final error = _error;
     if (error != null) {
       return ErrorScreen(
@@ -47,10 +47,10 @@ class PlayProjectContextLoaderScreenState
     }
     final projectContext = ref.watch(currentProjectContextProvider);
     if (projectContext != null) {
-      return CloseProject(child: PlayProjectScreen());
+      return const CloseProject(child: PlayProjectScreen());
     }
     _loadProjectContext();
-    return LoadingScreen();
+    return const LoadingScreen();
   }
 
   /// Load the project.
@@ -61,7 +61,8 @@ class PlayProjectContextLoaderScreenState
       final json = jsonDecode(source) as Map<String, dynamic>;
       final loader = ProjectContextLoader.fromJson(json);
       final projectSource = await bundle.loadString(loader.projectAssetKey);
-      final project = Project.fromJson(jsonDecode(source));
+      final project =
+          Project.fromJson(jsonDecode(source) as Map<String, dynamic>);
       final directory =
           await ref.read(projectDataDirectoryProvider(project).future);
       final file = File(
@@ -70,6 +71,7 @@ class PlayProjectContextLoaderScreenState
           path.basename(loader.projectAssetKey),
         ),
       )..writeAsStringSync(projectSource);
+      print(project.databaseFilename);
       final databaseBuffer = await bundle.load(project.databaseFilename);
       final databaseFile =
           File(path.join(directory.path, project.databaseFilename))
@@ -85,6 +87,7 @@ class PlayProjectContextLoaderScreenState
             .read(currentProjectContextProvider.notifier)
             .setProjectContext(projectContext);
       }
+      // ignore: avoid_catches_without_on_clauses
     } catch (e, s) {
       if (mounted) {
         setState(() {
