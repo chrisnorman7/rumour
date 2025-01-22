@@ -390,7 +390,7 @@ Stream<String> buildProject(final Ref ref) async* {
   final outputDirectory = Directory(flutterProjectPath);
   if (outputDirectory.existsSync()) {
     yield 'Removing directory ${outputDirectory.path}.';
-    await outputDirectory.delete(recursive: true);
+    outputDirectory.deleteSync(recursive: true);
   }
   final executable = Platform.isWindows ? 'flutter.bat' : 'flutter';
   final flutterCreate = await Process.run(
@@ -416,7 +416,7 @@ Stream<String> buildProject(final Ref ref) async* {
     [
       'pub',
       'add',
-      'flutter_audio_games',
+      'rumour_player:{"git":{"url":"https://github.com/chrisnorman7/rumour.git","path":"rumour_player"}}',
       '-C',
       flutterProjectPath,
     ],
@@ -542,6 +542,22 @@ Stream<String> buildProject(final Ref ref) async* {
     }
   }
   pubspecFile.writeAsStringSync(buffer.toString());
+  buffer.clear();
+  final mainFilename = path.join(flutterProjectPath, 'lib', 'main.dart');
+  buffer
+    ..writeln("import 'package:rumour_player/rumour_player.dart';")
+    ..writeln("import 'package:flutter/material.dart';")
+    ..writeln()
+    ..writeln('void main() async {')
+    ..writeln('  runApp(')
+    ..writeln('  const ProjectContextApp(')
+    ..writeln("      title: '${project.name.replaceAll("'", r"\'")}',")
+    ..writeln("      assetKey: '$assetsDirectoryName/$loaderFilename',")
+    ..writeln('    ),')
+    ..writeln('  );')
+    ..writeln('}');
+  File(mainFilename).writeAsStringSync(buffer.toString());
+  yield 'Wrote `lib/main.dart`.';
   yield 'Done.';
 }
 
