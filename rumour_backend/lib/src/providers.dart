@@ -471,6 +471,8 @@ Stream<String> buildProject(final Ref ref) async* {
     project.mainMenuMusic,
     project.menuActivateSound,
     project.menuSelectSound,
+    project.newPlayerEarcon,
+    project.savedPlayersEarcon,
   ];
   for (final soundReference in <SoundReference>[
     ...soundReferences,
