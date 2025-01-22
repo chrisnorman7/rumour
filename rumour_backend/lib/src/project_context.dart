@@ -102,16 +102,19 @@ class ProjectContext {
     } else {
       key = keys.randomElement(random);
     }
-    return key.asSound(
-      destroy: destroy,
-      soundType: SoundType.asset,
-      loadMode: soundReference.loadMode,
-      looping: looping,
-      loopingStart: loopingStart,
-      paused: paused,
-      position: position,
-      volume: soundReference.volume,
-    );
+    return path
+        .join(project.soundsDirectoryName, key)
+        .replaceAll(r'\', '/')
+        .asSound(
+          destroy: destroy,
+          soundType: SoundType.asset,
+          loadMode: soundReference.loadMode,
+          looping: looping,
+          loopingStart: loopingStart,
+          paused: paused,
+          position: position,
+          volume: soundReference.volume,
+        );
   }
 
   /// Maybe call [getSound].

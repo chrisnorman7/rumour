@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -61,8 +62,9 @@ class PlayProjectContextLoaderScreenState
       final json = jsonDecode(source) as Map<String, dynamic>;
       final loader = ProjectContextLoader.fromJson(json);
       final projectSource = await bundle.loadString(loader.projectAssetKey);
-      final project =
-          Project.fromJson(jsonDecode(source) as Map<String, dynamic>);
+      final project = Project.fromJson(
+        jsonDecode(projectSource) as Map<String, dynamic>,
+      );
       final directory =
           await ref.read(projectDataDirectoryProvider(project).future);
       final file = File(
@@ -71,11 +73,13 @@ class PlayProjectContextLoaderScreenState
           path.basename(loader.projectAssetKey),
         ),
       )..writeAsStringSync(projectSource);
-      print(project.databaseFilename);
       final databaseBuffer = await bundle.load(project.databaseFilename);
-      final databaseFile =
-          File(path.join(directory.path, project.databaseFilename))
-            ..writeAsBytesSync(Uint8List.sublistView(databaseBuffer));
+      final databaseFile = File(
+        path.join(
+          directory.path,
+          path.basename(project.databaseFilename),
+        ),
+      )..writeAsBytesSync(Uint8List.sublistView(databaseBuffer));
       final database = AppDatabase(file: databaseFile);
       final projectContext = ProjectContext(
         file: file,
