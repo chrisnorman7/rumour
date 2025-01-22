@@ -99,7 +99,9 @@ class SelectSoundScreenState extends ConsumerState<SelectSoundScreen> {
                 volume: widget.volume,
               ),
               child: ListTile(
-                autofocus: index == 0,
+                autofocus:
+                    path.basename(entity.path) ==
+                    path.basename(widget.path ?? 'Will hopefully never match'),
                 title: Text(path.basename(entity.path)),
                 subtitle: Text(filesize(entity.statSync().size)),
                 onTap: () {
@@ -112,7 +114,7 @@ class SelectSoundScreenState extends ConsumerState<SelectSoundScreen> {
             );
           } else if (entity is Directory) {
             return ListTile(
-              autofocus: index == 0,
+              autofocus: d == null && index == 0,
               title: Text(path.basename(entity.path)),
               onTap: () => setState(() => _directory = entity),
             );

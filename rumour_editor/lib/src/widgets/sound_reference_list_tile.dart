@@ -149,6 +149,7 @@ class SoundReferenceListTile extends ConsumerWidget {
                             await query.update(
                               (final f) => f(path: Value(value)),
                             );
+                            ref.invalidate(soundReferenceProvider(id));
                             onChanged(id);
                           },
                           path: reference.path,
