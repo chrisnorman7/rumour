@@ -1,0 +1,37 @@
+name: rumour_backend
+description: "The backend package for the Rumour editor and player."
+version: 0.0.1
+repository: https://github.com/chrisnorman7/rumour
+publish_to: none
+
+environment:
+  sdk: ^3.6.1
+  flutter: ">=1.17.0"
+dependencies:
+  backstreets_widgets: ^0.32.0
+  drift: ^2.24.0
+  drift_flutter: ^0.2.4
+  flutter:
+    sdk: flutter
+  flutter_audio_games: ^0.37.3
+  flutter_riverpod: ^2.6.1
+  flutter_soloud: ^2.1.7
+  json_annotation: ^4.9.0
+  path: ^1.9.1
+  path_provider: ^2.1.5
+  riverpod_annotation: ^2.6.1
+  rumour_player:
+    path: ../rumour_player
+  shared_preferences: ^2.3.5
+  uuid: ^4.5.1
+
+dev_dependencies:
+  build_runner: ^2.4.14
+  custom_lint: ^0.7.1
+  drift_dev: ^2.24.0
+  flutter_lints: ^5.0.0
+  flutter_test:
+    sdk: flutter
+  json_serializable: ^6.9.3
+  riverpod_generator: ^2.6.4
+  riverpod_lint: ^2.6.4

@@ -1,0 +1,35 @@
+name: rumour_editor
+description: "An app to edit Rumour games."
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.0-209.1.beta
+
+dependencies:
+  backstreets_widgets: ^0.32.0
+  cupertino_icons: ^1.0.8
+  drift: ^2.24.0
+  file_picker: ^8.1.7
+  filesize: ^2.0.1
+  flutter:
+    sdk: flutter
+  flutter_audio_games: ^0.37.3
+  flutter_riverpod: ^2.6.1
+  flutter_soloud: ^2.1.7
+  path: ^1.9.1
+  path_provider: ^2.1.5
+  rumour_backend:
+    path: ../rumour_backend
+  rumour_player:
+    path: ../rumour_player
+  url_launcher: ^6.3.1
+
+dev_dependencies:
+  flutter_lints: ^5.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
