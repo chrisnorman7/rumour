@@ -2089,7 +2089,7 @@ class _RoomAmbiancesProviderElement
   int get id => (origin as RoomAmbiancesProvider).id;
 }
 
-String _$buildProjectHash() => r'8b50614aa0e5e4f7f9707b1d0fbd73ebf685b24b';
+String _$buildProjectHash() => r'9a9847503faa84263618070eb530918b96dd379b';
 
 /// Build the project context.
 ///
@@ -2253,14 +2253,14 @@ class _ProjectDataDirectoryProviderElement
 }
 
 String _$currentProjectContextHash() =>
-    r'cd441d8be7e93f11f4a88ac711ea7c83936cad55';
+    r'4c8cc047a1a79eb695b9f390a99148ce921e1e5b';
 
 /// Provide The current project context.
 ///
 /// Copied from [CurrentProjectContext].
 @ProviderFor(CurrentProjectContext)
-final currentProjectContextProvider = AutoDisposeNotifierProvider<
-    CurrentProjectContext, ProjectContext?>.internal(
+final currentProjectContextProvider =
+    NotifierProvider<CurrentProjectContext, ProjectContext?>.internal(
   CurrentProjectContext.new,
   name: r'currentProjectContextProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -2270,6 +2270,6 @@ final currentProjectContextProvider = AutoDisposeNotifierProvider<
   allTransitiveDependencies: null,
 );
 
-typedef _$CurrentProjectContext = AutoDisposeNotifier<ProjectContext?>;
+typedef _$CurrentProjectContext = Notifier<ProjectContext?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

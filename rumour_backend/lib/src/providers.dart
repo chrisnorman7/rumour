@@ -42,7 +42,7 @@ Future<List<File>> recentFiles(final Ref ref) async {
 }
 
 /// Provide The current project context.
-@riverpod
+@Riverpod(keepAlive: true)
 class CurrentProjectContext extends _$CurrentProjectContext {
   /// Build the initial value.
   @override
@@ -543,9 +543,12 @@ Stream<String> buildProject(final Ref ref) async* {
   if (!assetsDirectory.existsSync()) {
     assetsDirectory.createSync(recursive: true);
   }
+  final projectJson = project.toJson();
+  projectJson['databaseFilename'] =
+      '$assetsDirectoryName/${project.databaseFilename}';
   for (final MapEntry(key: filename, value: contents) in {
     project.databaseFilename: databaseBytes,
-    projectFilename: jsonEncode(project),
+    projectFilename: jsonEncode(projectJson),
     loaderFilename: jsonEncode(loader),
   }.entries) {
     final file = File(path.join(assetsDirectory.path, filename));
