@@ -515,13 +515,13 @@ Stream<String> buildProject(final Ref ref) async* {
     }
   }
   yield 'Sounds written to pubspec.';
-  final loader = ProjectContextLoader(
-    projectAssetKey: path.basename(projectContext.file.path),
-    directories: directories,
-  );
   const loaderFilename = 'loader.json';
   const assetsDirectoryName = 'assets';
   final projectFilename = path.basename(projectContext.file.path);
+  final loader = ProjectContextLoader(
+    projectAssetKey: '$assetsDirectoryName/$projectFilename',
+    directories: directories,
+  );
   yield 'Copying data files.';
   final databaseBytes =
       File(path.join(projectContext.directory.path, project.databaseFilename))

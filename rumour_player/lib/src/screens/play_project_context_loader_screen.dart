@@ -50,6 +50,8 @@ class PlayProjectContextLoaderScreenState
     }
     final projectContext = _projectContext;
     if (projectContext != null) {
+      assert(projectContext == currentProjectContext,
+          'Project context differ for some reason. This is a bug in `rumour_player`.');
       return PlayProjectScreen();
     }
     _loadProjectContext();

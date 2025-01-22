@@ -2089,7 +2089,7 @@ class _RoomAmbiancesProviderElement
   int get id => (origin as RoomAmbiancesProvider).id;
 }
 
-String _$buildProjectHash() => r'ba4d1c0ef235f6b76172e875f0f085cd07dbbff2';
+String _$buildProjectHash() => r'8b50614aa0e5e4f7f9707b1d0fbd73ebf685b24b';
 
 /// Build the project context.
 ///
