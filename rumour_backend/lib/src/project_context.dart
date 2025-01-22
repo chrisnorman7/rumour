@@ -3,9 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:path/path.dart' as path;
-import 'package:rumour_backend/src/constants.dart';
-import 'package:rumour_backend/src/database/database.dart';
-import 'package:rumour_backend/src/json/project.dart';
+import 'package:rumour_backend/rumour_backend.dart';
 
 /// The project context class.
 class ProjectContext {
@@ -13,7 +11,7 @@ class ProjectContext {
   const ProjectContext({
     required this.file,
     required this.database,
-    this.soundType = SoundType.file,
+    this.loader,
   });
 
   /// Load an instance from [file].
@@ -48,10 +46,11 @@ class ProjectContext {
   /// The database to use.
   final AppDatabase database;
 
-  /// The sound type for this project.
+  /// The loader which created this project context.
   ///
-  /// When editing projects, [soundType] is [SoundType.file].
-  final SoundType soundType;
+  /// If [loader] is not `null`, then [SoundType.asset] will be used when
+  /// loading sounds.
+  final ProjectContextLoader? loader;
 
   /// Save the [project].
   void save(final Project project) {
@@ -69,39 +68,50 @@ class ProjectContext {
     final bool paused = false,
     final SoundPosition position = unpanned,
   }) {
-    switch (soundType) {
-      case SoundType.asset:
-        throw UnimplementedError();
-      case SoundType.file:
-        final fullPath = path.join(soundsDirectory.path, soundReference.path);
-        final File file;
-        final directory = Directory(fullPath);
-        if (directory.existsSync()) {
-          final files = directory.listSync().whereType<File>().toList();
-          if (files.isEmpty) {
-            throw StateError('The directory $fullPath is empty.');
-          }
-          file = files.randomElement(random);
-        } else {
-          file = File(fullPath);
-          if (!file.existsSync()) {
-            throw StateError('The file $fullPath does not exist.');
-          }
+    final directories = loader?.directories;
+    if (directories == null) {
+      final fullPath = path.join(soundsDirectory.path, soundReference.path);
+      final File file;
+      final directory = Directory(fullPath);
+      if (directory.existsSync()) {
+        final files = directory.listSync().whereType<File>().toList();
+        if (files.isEmpty) {
+          throw StateError('The directory $fullPath is empty.');
         }
-        return file.asSound(
-          destroy: destroy,
-          loadMode: soundReference.loadMode,
-          looping: looping,
-          loopingStart: loopingStart,
-          paused: paused,
-          position: position,
-          volume: soundReference.volume,
-        );
-      case SoundType.url:
-        throw UnimplementedError();
-      case SoundType.custom:
-        throw UnimplementedError();
+        file = files.randomElement(random);
+      } else {
+        file = File(fullPath);
+        if (!file.existsSync()) {
+          throw StateError('The file $fullPath does not exist.');
+        }
+      }
+      return file.asSound(
+        destroy: destroy,
+        loadMode: soundReference.loadMode,
+        looping: looping,
+        loopingStart: loopingStart,
+        paused: paused,
+        position: position,
+        volume: soundReference.volume,
+      );
     }
+    final keys = directories[soundReference.path];
+    final String key;
+    if (keys == null) {
+      key = soundReference.path;
+    } else {
+      key = keys.randomElement(random);
+    }
+    return key.asSound(
+      destroy: destroy,
+      soundType: SoundType.asset,
+      loadMode: soundReference.loadMode,
+      looping: looping,
+      loopingStart: loopingStart,
+      paused: paused,
+      position: position,
+      volume: soundReference.volume,
+    );
   }
 
   /// Maybe call [getSound].

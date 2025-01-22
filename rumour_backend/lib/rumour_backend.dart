@@ -10,6 +10,7 @@ export 'src/database/tables/mixins.dart';
 export 'src/json/app_preferences.dart';
 export 'src/json/game_player.dart';
 export 'src/json/project.dart';
+export 'src/json/project_context_loader.dart';
 export 'src/json/serializable_sound_reference.dart';
 export 'src/positioned_sound_reference.dart';
 export 'src/project_context.dart';

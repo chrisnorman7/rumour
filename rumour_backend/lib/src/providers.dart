@@ -509,3 +509,21 @@ Stream<String> buildProject(final Ref ref) async* {
   pubspecFile.writeAsStringSync(buffer.toString());
   yield 'Done.';
 }
+
+/// Provide the project data directory.
+@riverpod
+Future<Directory> projectDataDirectory(final Ref ref) async {
+  final project = ref.watch(projectProvider);
+  final cacheDirectory = await getApplicationCacheDirectory();
+  final directory = Directory(
+    path.join(
+      cacheDirectory.path,
+      project.organisationName,
+      project.appName,
+    ),
+  );
+  if (!directory.existsSync()) {
+    directory.createSync(recursive: true);
+  }
+  return directory;
+}
