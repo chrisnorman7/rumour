@@ -427,8 +427,16 @@ Stream<String> buildProject(final Ref ref) async* {
     yield 'stderr: ${pubAdd.stderr}';
     return;
   }
-  yield 'Depending on `flutter_audio_games`.';
-  await Process.run(executable, ['pub', 'get']);
+  yield 'Depending on `rumour_player`.';
+  await Process.run(
+    executable,
+    [
+      'pub',
+      'get',
+      '-C',
+      flutterProjectPath,
+    ],
+  );
   final pubspecPath = path.join(flutterProjectPath, 'pubspec.yaml');
   final pubspecFile = File(pubspecPath);
   final buffer = StringBuffer();
@@ -550,7 +558,7 @@ Stream<String> buildProject(final Ref ref) async* {
     ..writeln()
     ..writeln('void main() async {')
     ..writeln('  runApp(')
-    ..writeln('  const ProjectContextApp(')
+    ..writeln('    const ProjectContextApp(')
     ..writeln("      title: '${project.name.replaceAll("'", r"\'")}',")
     ..writeln("      assetKey: '$assetsDirectoryName/$loaderFilename',")
     ..writeln('    ),')

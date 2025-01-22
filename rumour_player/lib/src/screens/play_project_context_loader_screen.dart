@@ -50,9 +50,9 @@ class PlayProjectContextLoaderScreenState
     }
     final projectContext = _projectContext;
     if (projectContext != null) {
-      _loadProjectContext();
       return PlayProjectScreen();
     }
+    _loadProjectContext();
     return LoadingScreen();
   }
 

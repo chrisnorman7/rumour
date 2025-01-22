@@ -1,4 +1,3 @@
-import 'package:backstreets_widgets/extensions.dart';
 import 'package:backstreets_widgets/screens.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +17,9 @@ class BuildProjectScreen extends ConsumerStatefulWidget {
 
 /// State for [BuildProjectScreen].
 class BuildProjectScreenState extends ConsumerState<BuildProjectScreen> {
+  /// The controller to use.
+  late final TextEditingController _controller;
+
   /// The messages which have been yielded.
   late final List<String> messages;
 
@@ -25,7 +27,15 @@ class BuildProjectScreenState extends ConsumerState<BuildProjectScreen> {
   @override
   void initState() {
     super.initState();
+    _controller = TextEditingController();
     messages = [];
+  }
+
+  /// Dispose of the widget.
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
   }
 
   /// Build a widget.
@@ -37,17 +47,11 @@ class BuildProjectScreenState extends ConsumerState<BuildProjectScreen> {
         title: 'Build Project',
         body: value.simpleWhen((final message) {
           messages.add(message);
-          return ListView.builder(
-            itemBuilder: (final context, final index) {
-              final message = messages[index];
-              return ListTile(
-                autofocus: index == 0,
-                title: Text(message),
-                onTap: message.copyToClipboard,
-              );
-            },
-            itemCount: messages.length,
-            shrinkWrap: true,
+          _controller.text = messages.join('\n');
+          return TextField(
+            autofocus: true,
+            controller: _controller,
+            readOnly: true,
           );
         }),
       ),
