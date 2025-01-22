@@ -32,7 +32,6 @@ export 'src/screens/select_zone_screen.dart';
 export 'src/screens/zone/edit_zone_screen.dart';
 export 'src/screens/zone/tabs/zone_rooms_tab.dart';
 export 'src/screens/zone/tabs/zone_settings_tab.dart';
-export 'src/widgets/close_project.dart';
 export 'src/widgets/error_text.dart';
 export 'src/widgets/menu_button.dart';
 export 'src/widgets/nothing_to_see.dart';

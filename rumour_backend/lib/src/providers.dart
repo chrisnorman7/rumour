@@ -41,13 +41,24 @@ Future<List<File>> recentFiles(final Ref ref) async {
   return files;
 }
 
-/// The current project context.
-ProjectContext? currentProjectContext;
+/// Provide The current project context.
+@riverpod
+class CurrentProjectContext extends _$CurrentProjectContext {
+  /// Build the initial value.
+  @override
+  ProjectContext? build() => null;
+
+  /// Set the [state].
+  // ignore: use_setters_to_change_properties
+  void setProjectContext(final ProjectContext projectContext) =>
+      state = projectContext;
+}
 
 /// Provide the current project context.
 @riverpod
 ProjectContext projectContext(final Ref ref) {
-  final project = currentProjectContext;
+  // ignore: avoid_manual_providers_as_generated_provider_dependency
+  final project = ref.watch(currentProjectContextProvider);
   if (project == null) {
     throw StateError('No project has been loaded.');
   }

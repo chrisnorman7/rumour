@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as path;
 import 'package:rumour_backend/rumour_backend.dart';
-import 'package:rumour_player/src/screens/play_project_screen.dart';
+import 'package:rumour_player/rumour_player.dart';
 
 /// A screen which will load a [ProjectContext] from the given [assetKey].
 class PlayProjectContextLoaderScreen extends ConsumerStatefulWidget {
@@ -35,9 +35,6 @@ class PlayProjectContextLoaderScreenState
   /// The stack trace from an error.
   StackTrace? _stackTrace;
 
-  /// The loaded project context.
-  ProjectContext? _projectContext;
-
   /// Build a widget.
   @override
   Widget build(BuildContext context) {
@@ -48,11 +45,9 @@ class PlayProjectContextLoaderScreenState
         stackTrace: _stackTrace,
       );
     }
-    final projectContext = _projectContext;
+    final projectContext = ref.watch(currentProjectContextProvider);
     if (projectContext != null) {
-      assert(projectContext == currentProjectContext,
-          'Project context differ for some reason. This is a bug in `rumour_player`.');
-      return PlayProjectScreen();
+      return CloseProject(child: PlayProjectScreen());
     }
     _loadProjectContext();
     return LoadingScreen();
@@ -81,10 +76,9 @@ class PlayProjectContextLoaderScreenState
         loader: loader,
       );
       if (mounted) {
-        currentProjectContext = projectContext;
-        setState(() {
-          _projectContext = projectContext;
-        });
+        ref
+            .read(currentProjectContextProvider.notifier)
+            .setProjectContext(projectContext);
       }
     } catch (e, s) {
       if (mounted) {

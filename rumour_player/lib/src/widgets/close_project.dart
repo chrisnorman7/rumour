@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 
 /// A widget which will close the given [projectContext] when it is disposed.
-class CloseProject extends StatefulWidget {
+class CloseProject extends ConsumerStatefulWidget {
   /// Create an instance.
   const CloseProject({required this.child, super.key});
 
@@ -15,16 +16,21 @@ class CloseProject extends StatefulWidget {
 }
 
 /// State for [CloseProject].
-class CloseProjectState extends State<CloseProject> {
+class CloseProjectState extends ConsumerState<CloseProject> {
+  /// The project context to work with.
+  late ProjectContext projectContext;
+
   /// Dispose of the widget.
   @override
   void dispose() {
     super.dispose();
-    currentProjectContext?.database.close();
-    currentProjectContext = null;
+    projectContext.database.close();
   }
 
   /// Build a widget.
   @override
-  Widget build(final BuildContext context) => widget.child;
+  Widget build(final BuildContext context) {
+    projectContext = ref.watch(projectContextProvider);
+    return widget.child;
+  }
 }

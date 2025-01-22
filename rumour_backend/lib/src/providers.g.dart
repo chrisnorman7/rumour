@@ -44,7 +44,7 @@ final recentFilesProvider = AutoDisposeFutureProvider<List<File>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef RecentFilesRef = AutoDisposeFutureProviderRef<List<File>>;
-String _$projectContextHash() => r'3584feaeda8d11966e8515024425a196abad2383';
+String _$projectContextHash() => r'7f0406e66b1f84835a67cc52f6a57609ddadffff';
 
 /// Provide the current project context.
 ///
@@ -2128,5 +2128,24 @@ final projectDataDirectoryProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ProjectDataDirectoryRef = AutoDisposeFutureProviderRef<Directory>;
+String _$currentProjectContextHash() =>
+    r'cd441d8be7e93f11f4a88ac711ea7c83936cad55';
+
+/// Provide The current project context.
+///
+/// Copied from [CurrentProjectContext].
+@ProviderFor(CurrentProjectContext)
+final currentProjectContextProvider = AutoDisposeNotifierProvider<
+    CurrentProjectContext, ProjectContext?>.internal(
+  CurrentProjectContext.new,
+  name: r'currentProjectContextProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$currentProjectContextHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$CurrentProjectContext = AutoDisposeNotifier<ProjectContext?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
