@@ -2775,6 +2775,923 @@ class GameStatsCompanion extends UpdateCompanion<GameStat> {
   }
 }
 
+class $RoomSurfaceBoostsTable extends RoomSurfaceBoosts
+    with TableInfo<$RoomSurfaceBoostsTable, RoomSurfaceBoost> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RoomSurfaceBoostsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _roomSurfaceIdMeta =
+      const VerificationMeta('roomSurfaceId');
+  @override
+  late final GeneratedColumn<int> roomSurfaceId = GeneratedColumn<int>(
+      'room_surface_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES room_surfaces (id) ON DELETE CASCADE'));
+  static const VerificationMeta _gameStatIdMeta =
+      const VerificationMeta('gameStatId');
+  @override
+  late final GeneratedColumn<int> gameStatId = GeneratedColumn<int>(
+      'game_stat_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES game_stats (id) ON DELETE CASCADE'));
+  static const VerificationMeta _intervalMeta =
+      const VerificationMeta('interval');
+  @override
+  late final GeneratedColumn<int> interval = GeneratedColumn<int>(
+      'interval', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(30));
+  static const VerificationMeta _boostMeta = const VerificationMeta('boost');
+  @override
+  late final GeneratedColumn<int> boost = GeneratedColumn<int>(
+      'boost', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  static const VerificationMeta _maxGameStatIdMeta =
+      const VerificationMeta('maxGameStatId');
+  @override
+  late final GeneratedColumn<int> maxGameStatId = GeneratedColumn<int>(
+      'max_game_stat_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES game_stats (id) ON DELETE SET NULL'));
+  static const VerificationMeta _mathematicalOperatorMeta =
+      const VerificationMeta('mathematicalOperator');
+  @override
+  late final GeneratedColumnWithTypeConverter<MathematicalOperator, int>
+      mathematicalOperator = GeneratedColumn<int>(
+              'mathematical_operator', aliasedName, false,
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: Constant(MathematicalOperator.plus.index))
+          .withConverter<MathematicalOperator>(
+              $RoomSurfaceBoostsTable.$convertermathematicalOperator);
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<int> value = GeneratedColumn<int>(
+      'value', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  static const VerificationMeta _boostSoundIdMeta =
+      const VerificationMeta('boostSoundId');
+  @override
+  late final GeneratedColumn<int> boostSoundId = GeneratedColumn<int>(
+      'boost_sound_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES sound_references (id) ON DELETE SET NULL'));
+  static const VerificationMeta _maxedOutSoundIdMeta =
+      const VerificationMeta('maxedOutSoundId');
+  @override
+  late final GeneratedColumn<int> maxedOutSoundId = GeneratedColumn<int>(
+      'maxed_out_sound_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES sound_references (id) ON DELETE SET NULL'));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        roomSurfaceId,
+        gameStatId,
+        interval,
+        boost,
+        maxGameStatId,
+        mathematicalOperator,
+        value,
+        boostSoundId,
+        maxedOutSoundId
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'room_surface_boosts';
+  @override
+  VerificationContext validateIntegrity(Insertable<RoomSurfaceBoost> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('room_surface_id')) {
+      context.handle(
+          _roomSurfaceIdMeta,
+          roomSurfaceId.isAcceptableOrUnknown(
+              data['room_surface_id']!, _roomSurfaceIdMeta));
+    } else if (isInserting) {
+      context.missing(_roomSurfaceIdMeta);
+    }
+    if (data.containsKey('game_stat_id')) {
+      context.handle(
+          _gameStatIdMeta,
+          gameStatId.isAcceptableOrUnknown(
+              data['game_stat_id']!, _gameStatIdMeta));
+    } else if (isInserting) {
+      context.missing(_gameStatIdMeta);
+    }
+    if (data.containsKey('interval')) {
+      context.handle(_intervalMeta,
+          interval.isAcceptableOrUnknown(data['interval']!, _intervalMeta));
+    }
+    if (data.containsKey('boost')) {
+      context.handle(
+          _boostMeta, boost.isAcceptableOrUnknown(data['boost']!, _boostMeta));
+    }
+    if (data.containsKey('max_game_stat_id')) {
+      context.handle(
+          _maxGameStatIdMeta,
+          maxGameStatId.isAcceptableOrUnknown(
+              data['max_game_stat_id']!, _maxGameStatIdMeta));
+    }
+    context.handle(
+        _mathematicalOperatorMeta, const VerificationResult.success());
+    if (data.containsKey('value')) {
+      context.handle(
+          _valueMeta, value.isAcceptableOrUnknown(data['value']!, _valueMeta));
+    }
+    if (data.containsKey('boost_sound_id')) {
+      context.handle(
+          _boostSoundIdMeta,
+          boostSoundId.isAcceptableOrUnknown(
+              data['boost_sound_id']!, _boostSoundIdMeta));
+    }
+    if (data.containsKey('maxed_out_sound_id')) {
+      context.handle(
+          _maxedOutSoundIdMeta,
+          maxedOutSoundId.isAcceptableOrUnknown(
+              data['maxed_out_sound_id']!, _maxedOutSoundIdMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RoomSurfaceBoost map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RoomSurfaceBoost(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      roomSurfaceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}room_surface_id'])!,
+      gameStatId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}game_stat_id'])!,
+      interval: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}interval'])!,
+      boost: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}boost'])!,
+      maxGameStatId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}max_game_stat_id']),
+      mathematicalOperator: $RoomSurfaceBoostsTable
+          .$convertermathematicalOperator
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
+              data['${effectivePrefix}mathematical_operator'])!),
+      value: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}value'])!,
+      boostSoundId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}boost_sound_id']),
+      maxedOutSoundId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}maxed_out_sound_id']),
+    );
+  }
+
+  @override
+  $RoomSurfaceBoostsTable createAlias(String alias) {
+    return $RoomSurfaceBoostsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<MathematicalOperator, int, int>
+      $convertermathematicalOperator =
+      const EnumIndexConverter<MathematicalOperator>(
+          MathematicalOperator.values);
+}
+
+class RoomSurfaceBoost extends DataClass
+    implements Insertable<RoomSurfaceBoost> {
+  /// The primary key field.
+  final int id;
+
+  /// The ID of the room surface to use.
+  final int roomSurfaceId;
+
+  /// The ID of the game stat to use.
+  final int gameStatId;
+
+  /// How many seconds will elapse between this stat being replenished.
+  final int interval;
+
+  /// How much of this stat should be added each boost cycle.
+  final int boost;
+
+  /// The ID of the game stat whose value should be treated as the max value for
+  /// this stat.
+  final int? maxGameStatId;
+
+  /// /// The mathematical operator to use.
+  final MathematicalOperator mathematicalOperator;
+
+  /// The value to combine with the [mathematicalOperator] and the max game stat
+  /// to get the final max value.
+  final int value;
+
+  /// The ID of the sound which will play if and when this stat is boosted.
+  final int? boostSoundId;
+
+  /// The ID of the sound that will play if this stat is maxed out.
+  final int? maxedOutSoundId;
+  const RoomSurfaceBoost(
+      {required this.id,
+      required this.roomSurfaceId,
+      required this.gameStatId,
+      required this.interval,
+      required this.boost,
+      this.maxGameStatId,
+      required this.mathematicalOperator,
+      required this.value,
+      this.boostSoundId,
+      this.maxedOutSoundId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['room_surface_id'] = Variable<int>(roomSurfaceId);
+    map['game_stat_id'] = Variable<int>(gameStatId);
+    map['interval'] = Variable<int>(interval);
+    map['boost'] = Variable<int>(boost);
+    if (!nullToAbsent || maxGameStatId != null) {
+      map['max_game_stat_id'] = Variable<int>(maxGameStatId);
+    }
+    {
+      map['mathematical_operator'] = Variable<int>($RoomSurfaceBoostsTable
+          .$convertermathematicalOperator
+          .toSql(mathematicalOperator));
+    }
+    map['value'] = Variable<int>(value);
+    if (!nullToAbsent || boostSoundId != null) {
+      map['boost_sound_id'] = Variable<int>(boostSoundId);
+    }
+    if (!nullToAbsent || maxedOutSoundId != null) {
+      map['maxed_out_sound_id'] = Variable<int>(maxedOutSoundId);
+    }
+    return map;
+  }
+
+  RoomSurfaceBoostsCompanion toCompanion(bool nullToAbsent) {
+    return RoomSurfaceBoostsCompanion(
+      id: Value(id),
+      roomSurfaceId: Value(roomSurfaceId),
+      gameStatId: Value(gameStatId),
+      interval: Value(interval),
+      boost: Value(boost),
+      maxGameStatId: maxGameStatId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxGameStatId),
+      mathematicalOperator: Value(mathematicalOperator),
+      value: Value(value),
+      boostSoundId: boostSoundId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(boostSoundId),
+      maxedOutSoundId: maxedOutSoundId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxedOutSoundId),
+    );
+  }
+
+  factory RoomSurfaceBoost.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RoomSurfaceBoost(
+      id: serializer.fromJson<int>(json['id']),
+      roomSurfaceId: serializer.fromJson<int>(json['roomSurfaceId']),
+      gameStatId: serializer.fromJson<int>(json['gameStatId']),
+      interval: serializer.fromJson<int>(json['interval']),
+      boost: serializer.fromJson<int>(json['boost']),
+      maxGameStatId: serializer.fromJson<int?>(json['maxGameStatId']),
+      mathematicalOperator: $RoomSurfaceBoostsTable
+          .$convertermathematicalOperator
+          .fromJson(serializer.fromJson<int>(json['mathematicalOperator'])),
+      value: serializer.fromJson<int>(json['value']),
+      boostSoundId: serializer.fromJson<int?>(json['boostSoundId']),
+      maxedOutSoundId: serializer.fromJson<int?>(json['maxedOutSoundId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'roomSurfaceId': serializer.toJson<int>(roomSurfaceId),
+      'gameStatId': serializer.toJson<int>(gameStatId),
+      'interval': serializer.toJson<int>(interval),
+      'boost': serializer.toJson<int>(boost),
+      'maxGameStatId': serializer.toJson<int?>(maxGameStatId),
+      'mathematicalOperator': serializer.toJson<int>($RoomSurfaceBoostsTable
+          .$convertermathematicalOperator
+          .toJson(mathematicalOperator)),
+      'value': serializer.toJson<int>(value),
+      'boostSoundId': serializer.toJson<int?>(boostSoundId),
+      'maxedOutSoundId': serializer.toJson<int?>(maxedOutSoundId),
+    };
+  }
+
+  RoomSurfaceBoost copyWith(
+          {int? id,
+          int? roomSurfaceId,
+          int? gameStatId,
+          int? interval,
+          int? boost,
+          Value<int?> maxGameStatId = const Value.absent(),
+          MathematicalOperator? mathematicalOperator,
+          int? value,
+          Value<int?> boostSoundId = const Value.absent(),
+          Value<int?> maxedOutSoundId = const Value.absent()}) =>
+      RoomSurfaceBoost(
+        id: id ?? this.id,
+        roomSurfaceId: roomSurfaceId ?? this.roomSurfaceId,
+        gameStatId: gameStatId ?? this.gameStatId,
+        interval: interval ?? this.interval,
+        boost: boost ?? this.boost,
+        maxGameStatId:
+            maxGameStatId.present ? maxGameStatId.value : this.maxGameStatId,
+        mathematicalOperator: mathematicalOperator ?? this.mathematicalOperator,
+        value: value ?? this.value,
+        boostSoundId:
+            boostSoundId.present ? boostSoundId.value : this.boostSoundId,
+        maxedOutSoundId: maxedOutSoundId.present
+            ? maxedOutSoundId.value
+            : this.maxedOutSoundId,
+      );
+  RoomSurfaceBoost copyWithCompanion(RoomSurfaceBoostsCompanion data) {
+    return RoomSurfaceBoost(
+      id: data.id.present ? data.id.value : this.id,
+      roomSurfaceId: data.roomSurfaceId.present
+          ? data.roomSurfaceId.value
+          : this.roomSurfaceId,
+      gameStatId:
+          data.gameStatId.present ? data.gameStatId.value : this.gameStatId,
+      interval: data.interval.present ? data.interval.value : this.interval,
+      boost: data.boost.present ? data.boost.value : this.boost,
+      maxGameStatId: data.maxGameStatId.present
+          ? data.maxGameStatId.value
+          : this.maxGameStatId,
+      mathematicalOperator: data.mathematicalOperator.present
+          ? data.mathematicalOperator.value
+          : this.mathematicalOperator,
+      value: data.value.present ? data.value.value : this.value,
+      boostSoundId: data.boostSoundId.present
+          ? data.boostSoundId.value
+          : this.boostSoundId,
+      maxedOutSoundId: data.maxedOutSoundId.present
+          ? data.maxedOutSoundId.value
+          : this.maxedOutSoundId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoomSurfaceBoost(')
+          ..write('id: $id, ')
+          ..write('roomSurfaceId: $roomSurfaceId, ')
+          ..write('gameStatId: $gameStatId, ')
+          ..write('interval: $interval, ')
+          ..write('boost: $boost, ')
+          ..write('maxGameStatId: $maxGameStatId, ')
+          ..write('mathematicalOperator: $mathematicalOperator, ')
+          ..write('value: $value, ')
+          ..write('boostSoundId: $boostSoundId, ')
+          ..write('maxedOutSoundId: $maxedOutSoundId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id,
+      roomSurfaceId,
+      gameStatId,
+      interval,
+      boost,
+      maxGameStatId,
+      mathematicalOperator,
+      value,
+      boostSoundId,
+      maxedOutSoundId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RoomSurfaceBoost &&
+          other.id == this.id &&
+          other.roomSurfaceId == this.roomSurfaceId &&
+          other.gameStatId == this.gameStatId &&
+          other.interval == this.interval &&
+          other.boost == this.boost &&
+          other.maxGameStatId == this.maxGameStatId &&
+          other.mathematicalOperator == this.mathematicalOperator &&
+          other.value == this.value &&
+          other.boostSoundId == this.boostSoundId &&
+          other.maxedOutSoundId == this.maxedOutSoundId);
+}
+
+class RoomSurfaceBoostsCompanion extends UpdateCompanion<RoomSurfaceBoost> {
+  final Value<int> id;
+  final Value<int> roomSurfaceId;
+  final Value<int> gameStatId;
+  final Value<int> interval;
+  final Value<int> boost;
+  final Value<int?> maxGameStatId;
+  final Value<MathematicalOperator> mathematicalOperator;
+  final Value<int> value;
+  final Value<int?> boostSoundId;
+  final Value<int?> maxedOutSoundId;
+  const RoomSurfaceBoostsCompanion({
+    this.id = const Value.absent(),
+    this.roomSurfaceId = const Value.absent(),
+    this.gameStatId = const Value.absent(),
+    this.interval = const Value.absent(),
+    this.boost = const Value.absent(),
+    this.maxGameStatId = const Value.absent(),
+    this.mathematicalOperator = const Value.absent(),
+    this.value = const Value.absent(),
+    this.boostSoundId = const Value.absent(),
+    this.maxedOutSoundId = const Value.absent(),
+  });
+  RoomSurfaceBoostsCompanion.insert({
+    this.id = const Value.absent(),
+    required int roomSurfaceId,
+    required int gameStatId,
+    this.interval = const Value.absent(),
+    this.boost = const Value.absent(),
+    this.maxGameStatId = const Value.absent(),
+    this.mathematicalOperator = const Value.absent(),
+    this.value = const Value.absent(),
+    this.boostSoundId = const Value.absent(),
+    this.maxedOutSoundId = const Value.absent(),
+  })  : roomSurfaceId = Value(roomSurfaceId),
+        gameStatId = Value(gameStatId);
+  static Insertable<RoomSurfaceBoost> custom({
+    Expression<int>? id,
+    Expression<int>? roomSurfaceId,
+    Expression<int>? gameStatId,
+    Expression<int>? interval,
+    Expression<int>? boost,
+    Expression<int>? maxGameStatId,
+    Expression<int>? mathematicalOperator,
+    Expression<int>? value,
+    Expression<int>? boostSoundId,
+    Expression<int>? maxedOutSoundId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (roomSurfaceId != null) 'room_surface_id': roomSurfaceId,
+      if (gameStatId != null) 'game_stat_id': gameStatId,
+      if (interval != null) 'interval': interval,
+      if (boost != null) 'boost': boost,
+      if (maxGameStatId != null) 'max_game_stat_id': maxGameStatId,
+      if (mathematicalOperator != null)
+        'mathematical_operator': mathematicalOperator,
+      if (value != null) 'value': value,
+      if (boostSoundId != null) 'boost_sound_id': boostSoundId,
+      if (maxedOutSoundId != null) 'maxed_out_sound_id': maxedOutSoundId,
+    });
+  }
+
+  RoomSurfaceBoostsCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? roomSurfaceId,
+      Value<int>? gameStatId,
+      Value<int>? interval,
+      Value<int>? boost,
+      Value<int?>? maxGameStatId,
+      Value<MathematicalOperator>? mathematicalOperator,
+      Value<int>? value,
+      Value<int?>? boostSoundId,
+      Value<int?>? maxedOutSoundId}) {
+    return RoomSurfaceBoostsCompanion(
+      id: id ?? this.id,
+      roomSurfaceId: roomSurfaceId ?? this.roomSurfaceId,
+      gameStatId: gameStatId ?? this.gameStatId,
+      interval: interval ?? this.interval,
+      boost: boost ?? this.boost,
+      maxGameStatId: maxGameStatId ?? this.maxGameStatId,
+      mathematicalOperator: mathematicalOperator ?? this.mathematicalOperator,
+      value: value ?? this.value,
+      boostSoundId: boostSoundId ?? this.boostSoundId,
+      maxedOutSoundId: maxedOutSoundId ?? this.maxedOutSoundId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (roomSurfaceId.present) {
+      map['room_surface_id'] = Variable<int>(roomSurfaceId.value);
+    }
+    if (gameStatId.present) {
+      map['game_stat_id'] = Variable<int>(gameStatId.value);
+    }
+    if (interval.present) {
+      map['interval'] = Variable<int>(interval.value);
+    }
+    if (boost.present) {
+      map['boost'] = Variable<int>(boost.value);
+    }
+    if (maxGameStatId.present) {
+      map['max_game_stat_id'] = Variable<int>(maxGameStatId.value);
+    }
+    if (mathematicalOperator.present) {
+      map['mathematical_operator'] = Variable<int>($RoomSurfaceBoostsTable
+          .$convertermathematicalOperator
+          .toSql(mathematicalOperator.value));
+    }
+    if (value.present) {
+      map['value'] = Variable<int>(value.value);
+    }
+    if (boostSoundId.present) {
+      map['boost_sound_id'] = Variable<int>(boostSoundId.value);
+    }
+    if (maxedOutSoundId.present) {
+      map['maxed_out_sound_id'] = Variable<int>(maxedOutSoundId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoomSurfaceBoostsCompanion(')
+          ..write('id: $id, ')
+          ..write('roomSurfaceId: $roomSurfaceId, ')
+          ..write('gameStatId: $gameStatId, ')
+          ..write('interval: $interval, ')
+          ..write('boost: $boost, ')
+          ..write('maxGameStatId: $maxGameStatId, ')
+          ..write('mathematicalOperator: $mathematicalOperator, ')
+          ..write('value: $value, ')
+          ..write('boostSoundId: $boostSoundId, ')
+          ..write('maxedOutSoundId: $maxedOutSoundId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RoomSurfaceCostsTable extends RoomSurfaceCosts
+    with TableInfo<$RoomSurfaceCostsTable, RoomSurfaceCost> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RoomSurfaceCostsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _roomSurfaceIdMeta =
+      const VerificationMeta('roomSurfaceId');
+  @override
+  late final GeneratedColumn<int> roomSurfaceId = GeneratedColumn<int>(
+      'room_surface_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES room_surfaces (id) ON DELETE CASCADE'));
+  static const VerificationMeta _gameStatIdMeta =
+      const VerificationMeta('gameStatId');
+  @override
+  late final GeneratedColumn<int> gameStatId = GeneratedColumn<int>(
+      'game_stat_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES game_stats (id) ON DELETE CASCADE'));
+  static const VerificationMeta _surfaceCostMeta =
+      const VerificationMeta('surfaceCost');
+  @override
+  late final GeneratedColumn<int> surfaceCost = GeneratedColumn<int>(
+      'surface_cost', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  static const VerificationMeta _exhaustedSoundIdMeta =
+      const VerificationMeta('exhaustedSoundId');
+  @override
+  late final GeneratedColumn<int> exhaustedSoundId = GeneratedColumn<int>(
+      'exhausted_sound_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES sound_references (id) ON DELETE SET NULL'));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, roomSurfaceId, gameStatId, surfaceCost, exhaustedSoundId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'room_surface_costs';
+  @override
+  VerificationContext validateIntegrity(Insertable<RoomSurfaceCost> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('room_surface_id')) {
+      context.handle(
+          _roomSurfaceIdMeta,
+          roomSurfaceId.isAcceptableOrUnknown(
+              data['room_surface_id']!, _roomSurfaceIdMeta));
+    } else if (isInserting) {
+      context.missing(_roomSurfaceIdMeta);
+    }
+    if (data.containsKey('game_stat_id')) {
+      context.handle(
+          _gameStatIdMeta,
+          gameStatId.isAcceptableOrUnknown(
+              data['game_stat_id']!, _gameStatIdMeta));
+    } else if (isInserting) {
+      context.missing(_gameStatIdMeta);
+    }
+    if (data.containsKey('surface_cost')) {
+      context.handle(
+          _surfaceCostMeta,
+          surfaceCost.isAcceptableOrUnknown(
+              data['surface_cost']!, _surfaceCostMeta));
+    }
+    if (data.containsKey('exhausted_sound_id')) {
+      context.handle(
+          _exhaustedSoundIdMeta,
+          exhaustedSoundId.isAcceptableOrUnknown(
+              data['exhausted_sound_id']!, _exhaustedSoundIdMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RoomSurfaceCost map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RoomSurfaceCost(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      roomSurfaceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}room_surface_id'])!,
+      gameStatId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}game_stat_id'])!,
+      surfaceCost: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}surface_cost'])!,
+      exhaustedSoundId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}exhausted_sound_id']),
+    );
+  }
+
+  @override
+  $RoomSurfaceCostsTable createAlias(String alias) {
+    return $RoomSurfaceCostsTable(attachedDatabase, alias);
+  }
+}
+
+class RoomSurfaceCost extends DataClass implements Insertable<RoomSurfaceCost> {
+  /// The primary key field.
+  final int id;
+
+  /// The ID of the room surface to use.
+  final int roomSurfaceId;
+
+  /// The ID of the game stat to use.
+  final int gameStatId;
+
+  /// How much of this stat should be subtracted when travelling the surface.
+  final int surfaceCost;
+
+  /// The ID of the sound to play when the player does not have enough of this
+  /// stat.
+  final int? exhaustedSoundId;
+  const RoomSurfaceCost(
+      {required this.id,
+      required this.roomSurfaceId,
+      required this.gameStatId,
+      required this.surfaceCost,
+      this.exhaustedSoundId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['room_surface_id'] = Variable<int>(roomSurfaceId);
+    map['game_stat_id'] = Variable<int>(gameStatId);
+    map['surface_cost'] = Variable<int>(surfaceCost);
+    if (!nullToAbsent || exhaustedSoundId != null) {
+      map['exhausted_sound_id'] = Variable<int>(exhaustedSoundId);
+    }
+    return map;
+  }
+
+  RoomSurfaceCostsCompanion toCompanion(bool nullToAbsent) {
+    return RoomSurfaceCostsCompanion(
+      id: Value(id),
+      roomSurfaceId: Value(roomSurfaceId),
+      gameStatId: Value(gameStatId),
+      surfaceCost: Value(surfaceCost),
+      exhaustedSoundId: exhaustedSoundId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(exhaustedSoundId),
+    );
+  }
+
+  factory RoomSurfaceCost.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RoomSurfaceCost(
+      id: serializer.fromJson<int>(json['id']),
+      roomSurfaceId: serializer.fromJson<int>(json['roomSurfaceId']),
+      gameStatId: serializer.fromJson<int>(json['gameStatId']),
+      surfaceCost: serializer.fromJson<int>(json['surfaceCost']),
+      exhaustedSoundId: serializer.fromJson<int?>(json['exhaustedSoundId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'roomSurfaceId': serializer.toJson<int>(roomSurfaceId),
+      'gameStatId': serializer.toJson<int>(gameStatId),
+      'surfaceCost': serializer.toJson<int>(surfaceCost),
+      'exhaustedSoundId': serializer.toJson<int?>(exhaustedSoundId),
+    };
+  }
+
+  RoomSurfaceCost copyWith(
+          {int? id,
+          int? roomSurfaceId,
+          int? gameStatId,
+          int? surfaceCost,
+          Value<int?> exhaustedSoundId = const Value.absent()}) =>
+      RoomSurfaceCost(
+        id: id ?? this.id,
+        roomSurfaceId: roomSurfaceId ?? this.roomSurfaceId,
+        gameStatId: gameStatId ?? this.gameStatId,
+        surfaceCost: surfaceCost ?? this.surfaceCost,
+        exhaustedSoundId: exhaustedSoundId.present
+            ? exhaustedSoundId.value
+            : this.exhaustedSoundId,
+      );
+  RoomSurfaceCost copyWithCompanion(RoomSurfaceCostsCompanion data) {
+    return RoomSurfaceCost(
+      id: data.id.present ? data.id.value : this.id,
+      roomSurfaceId: data.roomSurfaceId.present
+          ? data.roomSurfaceId.value
+          : this.roomSurfaceId,
+      gameStatId:
+          data.gameStatId.present ? data.gameStatId.value : this.gameStatId,
+      surfaceCost:
+          data.surfaceCost.present ? data.surfaceCost.value : this.surfaceCost,
+      exhaustedSoundId: data.exhaustedSoundId.present
+          ? data.exhaustedSoundId.value
+          : this.exhaustedSoundId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoomSurfaceCost(')
+          ..write('id: $id, ')
+          ..write('roomSurfaceId: $roomSurfaceId, ')
+          ..write('gameStatId: $gameStatId, ')
+          ..write('surfaceCost: $surfaceCost, ')
+          ..write('exhaustedSoundId: $exhaustedSoundId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, roomSurfaceId, gameStatId, surfaceCost, exhaustedSoundId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RoomSurfaceCost &&
+          other.id == this.id &&
+          other.roomSurfaceId == this.roomSurfaceId &&
+          other.gameStatId == this.gameStatId &&
+          other.surfaceCost == this.surfaceCost &&
+          other.exhaustedSoundId == this.exhaustedSoundId);
+}
+
+class RoomSurfaceCostsCompanion extends UpdateCompanion<RoomSurfaceCost> {
+  final Value<int> id;
+  final Value<int> roomSurfaceId;
+  final Value<int> gameStatId;
+  final Value<int> surfaceCost;
+  final Value<int?> exhaustedSoundId;
+  const RoomSurfaceCostsCompanion({
+    this.id = const Value.absent(),
+    this.roomSurfaceId = const Value.absent(),
+    this.gameStatId = const Value.absent(),
+    this.surfaceCost = const Value.absent(),
+    this.exhaustedSoundId = const Value.absent(),
+  });
+  RoomSurfaceCostsCompanion.insert({
+    this.id = const Value.absent(),
+    required int roomSurfaceId,
+    required int gameStatId,
+    this.surfaceCost = const Value.absent(),
+    this.exhaustedSoundId = const Value.absent(),
+  })  : roomSurfaceId = Value(roomSurfaceId),
+        gameStatId = Value(gameStatId);
+  static Insertable<RoomSurfaceCost> custom({
+    Expression<int>? id,
+    Expression<int>? roomSurfaceId,
+    Expression<int>? gameStatId,
+    Expression<int>? surfaceCost,
+    Expression<int>? exhaustedSoundId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (roomSurfaceId != null) 'room_surface_id': roomSurfaceId,
+      if (gameStatId != null) 'game_stat_id': gameStatId,
+      if (surfaceCost != null) 'surface_cost': surfaceCost,
+      if (exhaustedSoundId != null) 'exhausted_sound_id': exhaustedSoundId,
+    });
+  }
+
+  RoomSurfaceCostsCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? roomSurfaceId,
+      Value<int>? gameStatId,
+      Value<int>? surfaceCost,
+      Value<int?>? exhaustedSoundId}) {
+    return RoomSurfaceCostsCompanion(
+      id: id ?? this.id,
+      roomSurfaceId: roomSurfaceId ?? this.roomSurfaceId,
+      gameStatId: gameStatId ?? this.gameStatId,
+      surfaceCost: surfaceCost ?? this.surfaceCost,
+      exhaustedSoundId: exhaustedSoundId ?? this.exhaustedSoundId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (roomSurfaceId.present) {
+      map['room_surface_id'] = Variable<int>(roomSurfaceId.value);
+    }
+    if (gameStatId.present) {
+      map['game_stat_id'] = Variable<int>(gameStatId.value);
+    }
+    if (surfaceCost.present) {
+      map['surface_cost'] = Variable<int>(surfaceCost.value);
+    }
+    if (exhaustedSoundId.present) {
+      map['exhausted_sound_id'] = Variable<int>(exhaustedSoundId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoomSurfaceCostsCompanion(')
+          ..write('id: $id, ')
+          ..write('roomSurfaceId: $roomSurfaceId, ')
+          ..write('gameStatId: $gameStatId, ')
+          ..write('surfaceCost: $surfaceCost, ')
+          ..write('exhaustedSoundId: $exhaustedSoundId')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2787,6 +3704,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $RoomObjectsTable roomObjects = $RoomObjectsTable(this);
   late final $PlayerClassesTable playerClasses = $PlayerClassesTable(this);
   late final $GameStatsTable gameStats = $GameStatsTable(this);
+  late final $RoomSurfaceBoostsTable roomSurfaceBoosts =
+      $RoomSurfaceBoostsTable(this);
+  late final $RoomSurfaceCostsTable roomSurfaceCosts =
+      $RoomSurfaceCostsTable(this);
   late final Index roomObjectCoordinatesIndex = Index(
       'room_object_coordinates_index',
       'CREATE INDEX room_object_coordinates_index ON room_objects (x, y)');
@@ -2803,6 +3724,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         roomObjects,
         playerClasses,
         gameStats,
+        roomSurfaceBoosts,
+        roomSurfaceCosts,
         roomObjectCoordinatesIndex
       ];
   @override
@@ -2827,6 +3750,62 @@ abstract class _$AppDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.delete),
             result: [
               TableUpdate('player_classes', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('room_surfaces',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_surface_boosts', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('game_stats',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_surface_boosts', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('game_stats',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_surface_boosts', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('sound_references',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_surface_boosts', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('sound_references',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_surface_boosts', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('room_surfaces',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_surface_costs', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('game_stats',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_surface_costs', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('sound_references',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_surface_costs', kind: UpdateKind.update),
             ],
           ),
         ],
@@ -2940,6 +3919,60 @@ final class $$SoundReferencesTableReferences extends BaseReferences<
         .filter((f) => f.ambianceId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_roomObjectsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$RoomSurfaceBoostsTable, List<RoomSurfaceBoost>>
+      _roomSurfaceBoostBoostSoundsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.roomSurfaceBoosts,
+              aliasName: $_aliasNameGenerator(
+                  db.soundReferences.id, db.roomSurfaceBoosts.boostSoundId));
+
+  $$RoomSurfaceBoostsTableProcessedTableManager
+      get roomSurfaceBoostBoostSounds {
+    final manager = $$RoomSurfaceBoostsTableTableManager(
+            $_db, $_db.roomSurfaceBoosts)
+        .filter((f) => f.boostSoundId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_roomSurfaceBoostBoostSoundsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$RoomSurfaceBoostsTable, List<RoomSurfaceBoost>>
+      _roomSurfaceBoostMaxedOutSoundsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.roomSurfaceBoosts,
+              aliasName: $_aliasNameGenerator(
+                  db.soundReferences.id, db.roomSurfaceBoosts.maxedOutSoundId));
+
+  $$RoomSurfaceBoostsTableProcessedTableManager
+      get roomSurfaceBoostMaxedOutSounds {
+    final manager = $$RoomSurfaceBoostsTableTableManager(
+            $_db, $_db.roomSurfaceBoosts)
+        .filter(
+            (f) => f.maxedOutSoundId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult
+        .readTableOrNull(_roomSurfaceBoostMaxedOutSoundsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$RoomSurfaceCostsTable, List<RoomSurfaceCost>>
+      _roomSurfaceCostsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.roomSurfaceCosts,
+              aliasName: $_aliasNameGenerator(
+                  db.soundReferences.id, db.roomSurfaceCosts.exhaustedSoundId));
+
+  $$RoomSurfaceCostsTableProcessedTableManager get roomSurfaceCostsRefs {
+    final manager =
+        $$RoomSurfaceCostsTableTableManager($_db, $_db.roomSurfaceCosts).filter(
+            (f) => f.exhaustedSoundId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_roomSurfaceCostsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -3086,6 +4119,69 @@ class $$SoundReferencesTableFilterComposer
             $$RoomObjectsTableFilterComposer(
               $db: $db,
               $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> roomSurfaceBoostBoostSounds(
+      Expression<bool> Function($$RoomSurfaceBoostsTableFilterComposer f) f) {
+    final $$RoomSurfaceBoostsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomSurfaceBoosts,
+        getReferencedColumn: (t) => t.boostSoundId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfaceBoostsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomSurfaceBoosts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> roomSurfaceBoostMaxedOutSounds(
+      Expression<bool> Function($$RoomSurfaceBoostsTableFilterComposer f) f) {
+    final $$RoomSurfaceBoostsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomSurfaceBoosts,
+        getReferencedColumn: (t) => t.maxedOutSoundId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfaceBoostsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomSurfaceBoosts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> roomSurfaceCostsRefs(
+      Expression<bool> Function($$RoomSurfaceCostsTableFilterComposer f) f) {
+    final $$RoomSurfaceCostsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomSurfaceCosts,
+        getReferencedColumn: (t) => t.exhaustedSoundId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfaceCostsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomSurfaceCosts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -3263,6 +4359,71 @@ class $$SoundReferencesTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> roomSurfaceBoostBoostSounds<T extends Object>(
+      Expression<T> Function($$RoomSurfaceBoostsTableAnnotationComposer a) f) {
+    final $$RoomSurfaceBoostsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomSurfaceBoosts,
+            getReferencedColumn: (t) => t.boostSoundId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomSurfaceBoostsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.roomSurfaceBoosts,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+
+  Expression<T> roomSurfaceBoostMaxedOutSounds<T extends Object>(
+      Expression<T> Function($$RoomSurfaceBoostsTableAnnotationComposer a) f) {
+    final $$RoomSurfaceBoostsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomSurfaceBoosts,
+            getReferencedColumn: (t) => t.maxedOutSoundId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomSurfaceBoostsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.roomSurfaceBoosts,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+
+  Expression<T> roomSurfaceCostsRefs<T extends Object>(
+      Expression<T> Function($$RoomSurfaceCostsTableAnnotationComposer a) f) {
+    final $$RoomSurfaceCostsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomSurfaceCosts,
+        getReferencedColumn: (t) => t.exhaustedSoundId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfaceCostsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roomSurfaceCosts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$SoundReferencesTableTableManager extends RootTableManager<
@@ -3282,7 +4443,10 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
         bool wallSoundsSurfaces,
         bool roomsRefs,
         bool roomExitsRefs,
-        bool roomObjectsRefs})> {
+        bool roomObjectsRefs,
+        bool roomSurfaceBoostBoostSounds,
+        bool roomSurfaceBoostMaxedOutSounds,
+        bool roomSurfaceCostsRefs})> {
   $$SoundReferencesTableTableManager(
       _$AppDatabase db, $SoundReferencesTable table)
       : super(TableManagerState(
@@ -3330,7 +4494,10 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
               wallSoundsSurfaces = false,
               roomsRefs = false,
               roomExitsRefs = false,
-              roomObjectsRefs = false}) {
+              roomObjectsRefs = false,
+              roomSurfaceBoostBoostSounds = false,
+              roomSurfaceBoostMaxedOutSounds = false,
+              roomSurfaceCostsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
@@ -3339,7 +4506,10 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                 if (wallSoundsSurfaces) db.roomSurfaces,
                 if (roomsRefs) db.rooms,
                 if (roomExitsRefs) db.roomExits,
-                if (roomObjectsRefs) db.roomObjects
+                if (roomObjectsRefs) db.roomObjects,
+                if (roomSurfaceBoostBoostSounds) db.roomSurfaceBoosts,
+                if (roomSurfaceBoostMaxedOutSounds) db.roomSurfaceBoosts,
+                if (roomSurfaceCostsRefs) db.roomSurfaceCosts
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
@@ -3415,6 +4585,42 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.ambianceId == item.id),
+                        typedResults: items),
+                  if (roomSurfaceBoostBoostSounds)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$SoundReferencesTableReferences
+                            ._roomSurfaceBoostBoostSoundsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$SoundReferencesTableReferences(db, table, p0)
+                                .roomSurfaceBoostBoostSounds,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.boostSoundId == item.id),
+                        typedResults: items),
+                  if (roomSurfaceBoostMaxedOutSounds)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$SoundReferencesTableReferences
+                            ._roomSurfaceBoostMaxedOutSoundsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$SoundReferencesTableReferences(db, table, p0)
+                                .roomSurfaceBoostMaxedOutSounds,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.maxedOutSoundId == item.id),
+                        typedResults: items),
+                  if (roomSurfaceCostsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$SoundReferencesTableReferences
+                            ._roomSurfaceCostsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$SoundReferencesTableReferences(db, table, p0)
+                                .roomSurfaceCostsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.exhaustedSoundId == item.id),
                         typedResults: items)
                 ];
               },
@@ -3440,7 +4646,10 @@ typedef $$SoundReferencesTableProcessedTableManager = ProcessedTableManager<
         bool wallSoundsSurfaces,
         bool roomsRefs,
         bool roomExitsRefs,
-        bool roomObjectsRefs})>;
+        bool roomObjectsRefs,
+        bool roomSurfaceBoostBoostSounds,
+        bool roomSurfaceBoostMaxedOutSounds,
+        bool roomSurfaceCostsRefs})>;
 typedef $$ZonesTableCreateCompanionBuilder = ZonesCompanion Function({
   Value<int> id,
   required String name,
@@ -3842,6 +5051,40 @@ final class $$RoomSurfacesTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$RoomSurfaceBoostsTable, List<RoomSurfaceBoost>>
+      _roomSurfaceBoostsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.roomSurfaceBoosts,
+              aliasName: $_aliasNameGenerator(
+                  db.roomSurfaces.id, db.roomSurfaceBoosts.roomSurfaceId));
+
+  $$RoomSurfaceBoostsTableProcessedTableManager get roomSurfaceBoostsRefs {
+    final manager = $$RoomSurfaceBoostsTableTableManager(
+            $_db, $_db.roomSurfaceBoosts)
+        .filter((f) => f.roomSurfaceId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_roomSurfaceBoostsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$RoomSurfaceCostsTable, List<RoomSurfaceCost>>
+      _roomSurfaceCostsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.roomSurfaceCosts,
+              aliasName: $_aliasNameGenerator(
+                  db.roomSurfaces.id, db.roomSurfaceCosts.roomSurfaceId));
+
+  $$RoomSurfaceCostsTableProcessedTableManager get roomSurfaceCostsRefs {
+    final manager = $$RoomSurfaceCostsTableTableManager(
+            $_db, $_db.roomSurfaceCosts)
+        .filter((f) => f.roomSurfaceId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_roomSurfaceCostsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$RoomSurfacesTableFilterComposer
@@ -3918,6 +5161,48 @@ class $$RoomSurfacesTableFilterComposer
             $$RoomsTableFilterComposer(
               $db: $db,
               $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> roomSurfaceBoostsRefs(
+      Expression<bool> Function($$RoomSurfaceBoostsTableFilterComposer f) f) {
+    final $$RoomSurfaceBoostsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomSurfaceBoosts,
+        getReferencedColumn: (t) => t.roomSurfaceId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfaceBoostsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomSurfaceBoosts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> roomSurfaceCostsRefs(
+      Expression<bool> Function($$RoomSurfaceCostsTableFilterComposer f) f) {
+    final $$RoomSurfaceCostsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomSurfaceCosts,
+        getReferencedColumn: (t) => t.roomSurfaceId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfaceCostsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomSurfaceCosts,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -4071,6 +5356,49 @@ class $$RoomSurfacesTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> roomSurfaceBoostsRefs<T extends Object>(
+      Expression<T> Function($$RoomSurfaceBoostsTableAnnotationComposer a) f) {
+    final $$RoomSurfaceBoostsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomSurfaceBoosts,
+            getReferencedColumn: (t) => t.roomSurfaceId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomSurfaceBoostsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.roomSurfaceBoosts,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+
+  Expression<T> roomSurfaceCostsRefs<T extends Object>(
+      Expression<T> Function($$RoomSurfaceCostsTableAnnotationComposer a) f) {
+    final $$RoomSurfaceCostsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomSurfaceCosts,
+        getReferencedColumn: (t) => t.roomSurfaceId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfaceCostsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roomSurfaceCosts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$RoomSurfacesTableTableManager extends RootTableManager<
@@ -4085,7 +5413,11 @@ class $$RoomSurfacesTableTableManager extends RootTableManager<
     (RoomSurface, $$RoomSurfacesTableReferences),
     RoomSurface,
     PrefetchHooks Function(
-        {bool footstepSoundId, bool wallSoundI, bool roomsRefs})> {
+        {bool footstepSoundId,
+        bool wallSoundI,
+        bool roomsRefs,
+        bool roomSurfaceBoostsRefs,
+        bool roomSurfaceCostsRefs})> {
   $$RoomSurfacesTableTableManager(_$AppDatabase db, $RoomSurfacesTable table)
       : super(TableManagerState(
           db: db,
@@ -4137,10 +5469,16 @@ class $$RoomSurfacesTableTableManager extends RootTableManager<
           prefetchHooksCallback: (
               {footstepSoundId = false,
               wallSoundI = false,
-              roomsRefs = false}) {
+              roomsRefs = false,
+              roomSurfaceBoostsRefs = false,
+              roomSurfaceCostsRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (roomsRefs) db.rooms],
+              explicitlyWatchedTables: [
+                if (roomsRefs) db.rooms,
+                if (roomSurfaceBoostsRefs) db.roomSurfaceBoosts,
+                if (roomSurfaceCostsRefs) db.roomSurfaceCosts
+              ],
               addJoins: <
                   T extends TableManagerState<
                       dynamic,
@@ -4191,6 +5529,30 @@ class $$RoomSurfacesTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.surfaceId == item.id),
+                        typedResults: items),
+                  if (roomSurfaceBoostsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$RoomSurfacesTableReferences
+                            ._roomSurfaceBoostsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$RoomSurfacesTableReferences(db, table, p0)
+                                .roomSurfaceBoostsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.roomSurfaceId == item.id),
+                        typedResults: items),
+                  if (roomSurfaceCostsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$RoomSurfacesTableReferences
+                            ._roomSurfaceCostsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$RoomSurfacesTableReferences(db, table, p0)
+                                .roomSurfaceCostsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.roomSurfaceId == item.id),
                         typedResults: items)
                 ];
               },
@@ -4211,7 +5573,11 @@ typedef $$RoomSurfacesTableProcessedTableManager = ProcessedTableManager<
     (RoomSurface, $$RoomSurfacesTableReferences),
     RoomSurface,
     PrefetchHooks Function(
-        {bool footstepSoundId, bool wallSoundI, bool roomsRefs})>;
+        {bool footstepSoundId,
+        bool wallSoundI,
+        bool roomsRefs,
+        bool roomSurfaceBoostsRefs,
+        bool roomSurfaceCostsRefs})>;
 typedef $$RoomsTableCreateCompanionBuilder = RoomsCompanion Function({
   Value<int> id,
   required String name,
@@ -5919,6 +7285,61 @@ typedef $$GameStatsTableUpdateCompanionBuilder = GameStatsCompanion Function({
   Value<bool> isVisible,
 });
 
+final class $$GameStatsTableReferences
+    extends BaseReferences<_$AppDatabase, $GameStatsTable, GameStat> {
+  $$GameStatsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$RoomSurfaceBoostsTable, List<RoomSurfaceBoost>>
+      _roomSurfaceBoostsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.roomSurfaceBoosts,
+              aliasName: $_aliasNameGenerator(
+                  db.gameStats.id, db.roomSurfaceBoosts.gameStatId));
+
+  $$RoomSurfaceBoostsTableProcessedTableManager get roomSurfaceBoostsRefs {
+    final manager =
+        $$RoomSurfaceBoostsTableTableManager($_db, $_db.roomSurfaceBoosts)
+            .filter((f) => f.gameStatId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_roomSurfaceBoostsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$RoomSurfaceBoostsTable, List<RoomSurfaceBoost>>
+      _game_stat_maxTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.roomSurfaceBoosts,
+              aliasName: $_aliasNameGenerator(
+                  db.gameStats.id, db.roomSurfaceBoosts.maxGameStatId));
+
+  $$RoomSurfaceBoostsTableProcessedTableManager get game_stat_max {
+    final manager = $$RoomSurfaceBoostsTableTableManager(
+            $_db, $_db.roomSurfaceBoosts)
+        .filter((f) => f.maxGameStatId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_game_stat_maxTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$RoomSurfaceCostsTable, List<RoomSurfaceCost>>
+      _roomSurfaceCostsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.roomSurfaceCosts,
+              aliasName: $_aliasNameGenerator(
+                  db.gameStats.id, db.roomSurfaceCosts.gameStatId));
+
+  $$RoomSurfaceCostsTableProcessedTableManager get roomSurfaceCostsRefs {
+    final manager =
+        $$RoomSurfaceCostsTableTableManager($_db, $_db.roomSurfaceCosts)
+            .filter((f) => f.gameStatId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_roomSurfaceCostsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
 class $$GameStatsTableFilterComposer
     extends Composer<_$AppDatabase, $GameStatsTable> {
   $$GameStatsTableFilterComposer({
@@ -5942,6 +7363,69 @@ class $$GameStatsTableFilterComposer
 
   ColumnFilters<bool> get isVisible => $composableBuilder(
       column: $table.isVisible, builder: (column) => ColumnFilters(column));
+
+  Expression<bool> roomSurfaceBoostsRefs(
+      Expression<bool> Function($$RoomSurfaceBoostsTableFilterComposer f) f) {
+    final $$RoomSurfaceBoostsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomSurfaceBoosts,
+        getReferencedColumn: (t) => t.gameStatId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfaceBoostsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomSurfaceBoosts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> game_stat_max(
+      Expression<bool> Function($$RoomSurfaceBoostsTableFilterComposer f) f) {
+    final $$RoomSurfaceBoostsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomSurfaceBoosts,
+        getReferencedColumn: (t) => t.maxGameStatId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfaceBoostsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomSurfaceBoosts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> roomSurfaceCostsRefs(
+      Expression<bool> Function($$RoomSurfaceCostsTableFilterComposer f) f) {
+    final $$RoomSurfaceCostsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomSurfaceCosts,
+        getReferencedColumn: (t) => t.gameStatId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfaceCostsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomSurfaceCosts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$GameStatsTableOrderingComposer
@@ -5993,6 +7477,71 @@ class $$GameStatsTableAnnotationComposer
 
   GeneratedColumn<bool> get isVisible =>
       $composableBuilder(column: $table.isVisible, builder: (column) => column);
+
+  Expression<T> roomSurfaceBoostsRefs<T extends Object>(
+      Expression<T> Function($$RoomSurfaceBoostsTableAnnotationComposer a) f) {
+    final $$RoomSurfaceBoostsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomSurfaceBoosts,
+            getReferencedColumn: (t) => t.gameStatId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomSurfaceBoostsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.roomSurfaceBoosts,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+
+  Expression<T> game_stat_max<T extends Object>(
+      Expression<T> Function($$RoomSurfaceBoostsTableAnnotationComposer a) f) {
+    final $$RoomSurfaceBoostsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomSurfaceBoosts,
+            getReferencedColumn: (t) => t.maxGameStatId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomSurfaceBoostsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.roomSurfaceBoosts,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+
+  Expression<T> roomSurfaceCostsRefs<T extends Object>(
+      Expression<T> Function($$RoomSurfaceCostsTableAnnotationComposer a) f) {
+    final $$RoomSurfaceCostsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomSurfaceCosts,
+        getReferencedColumn: (t) => t.gameStatId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfaceCostsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roomSurfaceCosts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$GameStatsTableTableManager extends RootTableManager<
@@ -6004,9 +7553,12 @@ class $$GameStatsTableTableManager extends RootTableManager<
     $$GameStatsTableAnnotationComposer,
     $$GameStatsTableCreateCompanionBuilder,
     $$GameStatsTableUpdateCompanionBuilder,
-    (GameStat, BaseReferences<_$AppDatabase, $GameStatsTable, GameStat>),
+    (GameStat, $$GameStatsTableReferences),
     GameStat,
-    PrefetchHooks Function()> {
+    PrefetchHooks Function(
+        {bool roomSurfaceBoostsRefs,
+        bool game_stat_max,
+        bool roomSurfaceCostsRefs})> {
   $$GameStatsTableTableManager(_$AppDatabase db, $GameStatsTable table)
       : super(TableManagerState(
           db: db,
@@ -6046,9 +7598,65 @@ class $$GameStatsTableTableManager extends RootTableManager<
             isVisible: isVisible,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) => (
+                    e.readTable(table),
+                    $$GameStatsTableReferences(db, table, e)
+                  ))
               .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: (
+              {roomSurfaceBoostsRefs = false,
+              game_stat_max = false,
+              roomSurfaceCostsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (roomSurfaceBoostsRefs) db.roomSurfaceBoosts,
+                if (game_stat_max) db.roomSurfaceBoosts,
+                if (roomSurfaceCostsRefs) db.roomSurfaceCosts
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (roomSurfaceBoostsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$GameStatsTableReferences
+                            ._roomSurfaceBoostsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$GameStatsTableReferences(db, table, p0)
+                                .roomSurfaceBoostsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.gameStatId == item.id),
+                        typedResults: items),
+                  if (game_stat_max)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable:
+                            $$GameStatsTableReferences._game_stat_maxTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$GameStatsTableReferences(db, table, p0)
+                                .game_stat_max,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.maxGameStatId == item.id),
+                        typedResults: items),
+                  if (roomSurfaceCostsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$GameStatsTableReferences
+                            ._roomSurfaceCostsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$GameStatsTableReferences(db, table, p0)
+                                .roomSurfaceCostsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.gameStatId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
         ));
 }
 
@@ -6061,9 +7669,1124 @@ typedef $$GameStatsTableProcessedTableManager = ProcessedTableManager<
     $$GameStatsTableAnnotationComposer,
     $$GameStatsTableCreateCompanionBuilder,
     $$GameStatsTableUpdateCompanionBuilder,
-    (GameStat, BaseReferences<_$AppDatabase, $GameStatsTable, GameStat>),
+    (GameStat, $$GameStatsTableReferences),
     GameStat,
-    PrefetchHooks Function()>;
+    PrefetchHooks Function(
+        {bool roomSurfaceBoostsRefs,
+        bool game_stat_max,
+        bool roomSurfaceCostsRefs})>;
+typedef $$RoomSurfaceBoostsTableCreateCompanionBuilder
+    = RoomSurfaceBoostsCompanion Function({
+  Value<int> id,
+  required int roomSurfaceId,
+  required int gameStatId,
+  Value<int> interval,
+  Value<int> boost,
+  Value<int?> maxGameStatId,
+  Value<MathematicalOperator> mathematicalOperator,
+  Value<int> value,
+  Value<int?> boostSoundId,
+  Value<int?> maxedOutSoundId,
+});
+typedef $$RoomSurfaceBoostsTableUpdateCompanionBuilder
+    = RoomSurfaceBoostsCompanion Function({
+  Value<int> id,
+  Value<int> roomSurfaceId,
+  Value<int> gameStatId,
+  Value<int> interval,
+  Value<int> boost,
+  Value<int?> maxGameStatId,
+  Value<MathematicalOperator> mathematicalOperator,
+  Value<int> value,
+  Value<int?> boostSoundId,
+  Value<int?> maxedOutSoundId,
+});
+
+final class $$RoomSurfaceBoostsTableReferences extends BaseReferences<
+    _$AppDatabase, $RoomSurfaceBoostsTable, RoomSurfaceBoost> {
+  $$RoomSurfaceBoostsTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $RoomSurfacesTable _roomSurfaceIdTable(_$AppDatabase db) =>
+      db.roomSurfaces.createAlias($_aliasNameGenerator(
+          db.roomSurfaceBoosts.roomSurfaceId, db.roomSurfaces.id));
+
+  $$RoomSurfacesTableProcessedTableManager get roomSurfaceId {
+    final $_column = $_itemColumn<int>('room_surface_id')!;
+
+    final manager = $$RoomSurfacesTableTableManager($_db, $_db.roomSurfaces)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_roomSurfaceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $GameStatsTable _gameStatIdTable(_$AppDatabase db) =>
+      db.gameStats.createAlias($_aliasNameGenerator(
+          db.roomSurfaceBoosts.gameStatId, db.gameStats.id));
+
+  $$GameStatsTableProcessedTableManager get gameStatId {
+    final $_column = $_itemColumn<int>('game_stat_id')!;
+
+    final manager = $$GameStatsTableTableManager($_db, $_db.gameStats)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_gameStatIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $GameStatsTable _maxGameStatIdTable(_$AppDatabase db) =>
+      db.gameStats.createAlias($_aliasNameGenerator(
+          db.roomSurfaceBoosts.maxGameStatId, db.gameStats.id));
+
+  $$GameStatsTableProcessedTableManager? get maxGameStatId {
+    final $_column = $_itemColumn<int>('max_game_stat_id');
+    if ($_column == null) return null;
+    final manager = $$GameStatsTableTableManager($_db, $_db.gameStats)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_maxGameStatIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $SoundReferencesTable _boostSoundIdTable(_$AppDatabase db) =>
+      db.soundReferences.createAlias($_aliasNameGenerator(
+          db.roomSurfaceBoosts.boostSoundId, db.soundReferences.id));
+
+  $$SoundReferencesTableProcessedTableManager? get boostSoundId {
+    final $_column = $_itemColumn<int>('boost_sound_id');
+    if ($_column == null) return null;
+    final manager =
+        $$SoundReferencesTableTableManager($_db, $_db.soundReferences)
+            .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_boostSoundIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $SoundReferencesTable _maxedOutSoundIdTable(_$AppDatabase db) =>
+      db.soundReferences.createAlias($_aliasNameGenerator(
+          db.roomSurfaceBoosts.maxedOutSoundId, db.soundReferences.id));
+
+  $$SoundReferencesTableProcessedTableManager? get maxedOutSoundId {
+    final $_column = $_itemColumn<int>('maxed_out_sound_id');
+    if ($_column == null) return null;
+    final manager =
+        $$SoundReferencesTableTableManager($_db, $_db.soundReferences)
+            .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_maxedOutSoundIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$RoomSurfaceBoostsTableFilterComposer
+    extends Composer<_$AppDatabase, $RoomSurfaceBoostsTable> {
+  $$RoomSurfaceBoostsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get interval => $composableBuilder(
+      column: $table.interval, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get boost => $composableBuilder(
+      column: $table.boost, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<MathematicalOperator, MathematicalOperator,
+          int>
+      get mathematicalOperator => $composableBuilder(
+          column: $table.mathematicalOperator,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<int> get value => $composableBuilder(
+      column: $table.value, builder: (column) => ColumnFilters(column));
+
+  $$RoomSurfacesTableFilterComposer get roomSurfaceId {
+    final $$RoomSurfacesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomSurfaceId,
+        referencedTable: $db.roomSurfaces,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfacesTableFilterComposer(
+              $db: $db,
+              $table: $db.roomSurfaces,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$GameStatsTableFilterComposer get gameStatId {
+    final $$GameStatsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.gameStatId,
+        referencedTable: $db.gameStats,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$GameStatsTableFilterComposer(
+              $db: $db,
+              $table: $db.gameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$GameStatsTableFilterComposer get maxGameStatId {
+    final $$GameStatsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.maxGameStatId,
+        referencedTable: $db.gameStats,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$GameStatsTableFilterComposer(
+              $db: $db,
+              $table: $db.gameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableFilterComposer get boostSoundId {
+    final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.boostSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableFilterComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableFilterComposer get maxedOutSoundId {
+    final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.maxedOutSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableFilterComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RoomSurfaceBoostsTableOrderingComposer
+    extends Composer<_$AppDatabase, $RoomSurfaceBoostsTable> {
+  $$RoomSurfaceBoostsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get interval => $composableBuilder(
+      column: $table.interval, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get boost => $composableBuilder(
+      column: $table.boost, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get mathematicalOperator => $composableBuilder(
+      column: $table.mathematicalOperator,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get value => $composableBuilder(
+      column: $table.value, builder: (column) => ColumnOrderings(column));
+
+  $$RoomSurfacesTableOrderingComposer get roomSurfaceId {
+    final $$RoomSurfacesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomSurfaceId,
+        referencedTable: $db.roomSurfaces,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfacesTableOrderingComposer(
+              $db: $db,
+              $table: $db.roomSurfaces,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$GameStatsTableOrderingComposer get gameStatId {
+    final $$GameStatsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.gameStatId,
+        referencedTable: $db.gameStats,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$GameStatsTableOrderingComposer(
+              $db: $db,
+              $table: $db.gameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$GameStatsTableOrderingComposer get maxGameStatId {
+    final $$GameStatsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.maxGameStatId,
+        referencedTable: $db.gameStats,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$GameStatsTableOrderingComposer(
+              $db: $db,
+              $table: $db.gameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableOrderingComposer get boostSoundId {
+    final $$SoundReferencesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.boostSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableOrderingComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableOrderingComposer get maxedOutSoundId {
+    final $$SoundReferencesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.maxedOutSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableOrderingComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RoomSurfaceBoostsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RoomSurfaceBoostsTable> {
+  $$RoomSurfaceBoostsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get interval =>
+      $composableBuilder(column: $table.interval, builder: (column) => column);
+
+  GeneratedColumn<int> get boost =>
+      $composableBuilder(column: $table.boost, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<MathematicalOperator, int>
+      get mathematicalOperator => $composableBuilder(
+          column: $table.mathematicalOperator, builder: (column) => column);
+
+  GeneratedColumn<int> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+
+  $$RoomSurfacesTableAnnotationComposer get roomSurfaceId {
+    final $$RoomSurfacesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomSurfaceId,
+        referencedTable: $db.roomSurfaces,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfacesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roomSurfaces,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$GameStatsTableAnnotationComposer get gameStatId {
+    final $$GameStatsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.gameStatId,
+        referencedTable: $db.gameStats,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$GameStatsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.gameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$GameStatsTableAnnotationComposer get maxGameStatId {
+    final $$GameStatsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.maxGameStatId,
+        referencedTable: $db.gameStats,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$GameStatsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.gameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableAnnotationComposer get boostSoundId {
+    final $$SoundReferencesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.boostSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableAnnotationComposer get maxedOutSoundId {
+    final $$SoundReferencesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.maxedOutSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RoomSurfaceBoostsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $RoomSurfaceBoostsTable,
+    RoomSurfaceBoost,
+    $$RoomSurfaceBoostsTableFilterComposer,
+    $$RoomSurfaceBoostsTableOrderingComposer,
+    $$RoomSurfaceBoostsTableAnnotationComposer,
+    $$RoomSurfaceBoostsTableCreateCompanionBuilder,
+    $$RoomSurfaceBoostsTableUpdateCompanionBuilder,
+    (RoomSurfaceBoost, $$RoomSurfaceBoostsTableReferences),
+    RoomSurfaceBoost,
+    PrefetchHooks Function(
+        {bool roomSurfaceId,
+        bool gameStatId,
+        bool maxGameStatId,
+        bool boostSoundId,
+        bool maxedOutSoundId})> {
+  $$RoomSurfaceBoostsTableTableManager(
+      _$AppDatabase db, $RoomSurfaceBoostsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RoomSurfaceBoostsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RoomSurfaceBoostsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RoomSurfaceBoostsTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> roomSurfaceId = const Value.absent(),
+            Value<int> gameStatId = const Value.absent(),
+            Value<int> interval = const Value.absent(),
+            Value<int> boost = const Value.absent(),
+            Value<int?> maxGameStatId = const Value.absent(),
+            Value<MathematicalOperator> mathematicalOperator =
+                const Value.absent(),
+            Value<int> value = const Value.absent(),
+            Value<int?> boostSoundId = const Value.absent(),
+            Value<int?> maxedOutSoundId = const Value.absent(),
+          }) =>
+              RoomSurfaceBoostsCompanion(
+            id: id,
+            roomSurfaceId: roomSurfaceId,
+            gameStatId: gameStatId,
+            interval: interval,
+            boost: boost,
+            maxGameStatId: maxGameStatId,
+            mathematicalOperator: mathematicalOperator,
+            value: value,
+            boostSoundId: boostSoundId,
+            maxedOutSoundId: maxedOutSoundId,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int roomSurfaceId,
+            required int gameStatId,
+            Value<int> interval = const Value.absent(),
+            Value<int> boost = const Value.absent(),
+            Value<int?> maxGameStatId = const Value.absent(),
+            Value<MathematicalOperator> mathematicalOperator =
+                const Value.absent(),
+            Value<int> value = const Value.absent(),
+            Value<int?> boostSoundId = const Value.absent(),
+            Value<int?> maxedOutSoundId = const Value.absent(),
+          }) =>
+              RoomSurfaceBoostsCompanion.insert(
+            id: id,
+            roomSurfaceId: roomSurfaceId,
+            gameStatId: gameStatId,
+            interval: interval,
+            boost: boost,
+            maxGameStatId: maxGameStatId,
+            mathematicalOperator: mathematicalOperator,
+            value: value,
+            boostSoundId: boostSoundId,
+            maxedOutSoundId: maxedOutSoundId,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$RoomSurfaceBoostsTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: (
+              {roomSurfaceId = false,
+              gameStatId = false,
+              maxGameStatId = false,
+              boostSoundId = false,
+              maxedOutSoundId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (roomSurfaceId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.roomSurfaceId,
+                    referencedTable: $$RoomSurfaceBoostsTableReferences
+                        ._roomSurfaceIdTable(db),
+                    referencedColumn: $$RoomSurfaceBoostsTableReferences
+                        ._roomSurfaceIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (gameStatId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.gameStatId,
+                    referencedTable:
+                        $$RoomSurfaceBoostsTableReferences._gameStatIdTable(db),
+                    referencedColumn: $$RoomSurfaceBoostsTableReferences
+                        ._gameStatIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (maxGameStatId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.maxGameStatId,
+                    referencedTable: $$RoomSurfaceBoostsTableReferences
+                        ._maxGameStatIdTable(db),
+                    referencedColumn: $$RoomSurfaceBoostsTableReferences
+                        ._maxGameStatIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (boostSoundId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.boostSoundId,
+                    referencedTable: $$RoomSurfaceBoostsTableReferences
+                        ._boostSoundIdTable(db),
+                    referencedColumn: $$RoomSurfaceBoostsTableReferences
+                        ._boostSoundIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (maxedOutSoundId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.maxedOutSoundId,
+                    referencedTable: $$RoomSurfaceBoostsTableReferences
+                        ._maxedOutSoundIdTable(db),
+                    referencedColumn: $$RoomSurfaceBoostsTableReferences
+                        ._maxedOutSoundIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$RoomSurfaceBoostsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $RoomSurfaceBoostsTable,
+    RoomSurfaceBoost,
+    $$RoomSurfaceBoostsTableFilterComposer,
+    $$RoomSurfaceBoostsTableOrderingComposer,
+    $$RoomSurfaceBoostsTableAnnotationComposer,
+    $$RoomSurfaceBoostsTableCreateCompanionBuilder,
+    $$RoomSurfaceBoostsTableUpdateCompanionBuilder,
+    (RoomSurfaceBoost, $$RoomSurfaceBoostsTableReferences),
+    RoomSurfaceBoost,
+    PrefetchHooks Function(
+        {bool roomSurfaceId,
+        bool gameStatId,
+        bool maxGameStatId,
+        bool boostSoundId,
+        bool maxedOutSoundId})>;
+typedef $$RoomSurfaceCostsTableCreateCompanionBuilder
+    = RoomSurfaceCostsCompanion Function({
+  Value<int> id,
+  required int roomSurfaceId,
+  required int gameStatId,
+  Value<int> surfaceCost,
+  Value<int?> exhaustedSoundId,
+});
+typedef $$RoomSurfaceCostsTableUpdateCompanionBuilder
+    = RoomSurfaceCostsCompanion Function({
+  Value<int> id,
+  Value<int> roomSurfaceId,
+  Value<int> gameStatId,
+  Value<int> surfaceCost,
+  Value<int?> exhaustedSoundId,
+});
+
+final class $$RoomSurfaceCostsTableReferences extends BaseReferences<
+    _$AppDatabase, $RoomSurfaceCostsTable, RoomSurfaceCost> {
+  $$RoomSurfaceCostsTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $RoomSurfacesTable _roomSurfaceIdTable(_$AppDatabase db) =>
+      db.roomSurfaces.createAlias($_aliasNameGenerator(
+          db.roomSurfaceCosts.roomSurfaceId, db.roomSurfaces.id));
+
+  $$RoomSurfacesTableProcessedTableManager get roomSurfaceId {
+    final $_column = $_itemColumn<int>('room_surface_id')!;
+
+    final manager = $$RoomSurfacesTableTableManager($_db, $_db.roomSurfaces)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_roomSurfaceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $GameStatsTable _gameStatIdTable(_$AppDatabase db) =>
+      db.gameStats.createAlias($_aliasNameGenerator(
+          db.roomSurfaceCosts.gameStatId, db.gameStats.id));
+
+  $$GameStatsTableProcessedTableManager get gameStatId {
+    final $_column = $_itemColumn<int>('game_stat_id')!;
+
+    final manager = $$GameStatsTableTableManager($_db, $_db.gameStats)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_gameStatIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $SoundReferencesTable _exhaustedSoundIdTable(_$AppDatabase db) =>
+      db.soundReferences.createAlias($_aliasNameGenerator(
+          db.roomSurfaceCosts.exhaustedSoundId, db.soundReferences.id));
+
+  $$SoundReferencesTableProcessedTableManager? get exhaustedSoundId {
+    final $_column = $_itemColumn<int>('exhausted_sound_id');
+    if ($_column == null) return null;
+    final manager =
+        $$SoundReferencesTableTableManager($_db, $_db.soundReferences)
+            .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_exhaustedSoundIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$RoomSurfaceCostsTableFilterComposer
+    extends Composer<_$AppDatabase, $RoomSurfaceCostsTable> {
+  $$RoomSurfaceCostsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get surfaceCost => $composableBuilder(
+      column: $table.surfaceCost, builder: (column) => ColumnFilters(column));
+
+  $$RoomSurfacesTableFilterComposer get roomSurfaceId {
+    final $$RoomSurfacesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomSurfaceId,
+        referencedTable: $db.roomSurfaces,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfacesTableFilterComposer(
+              $db: $db,
+              $table: $db.roomSurfaces,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$GameStatsTableFilterComposer get gameStatId {
+    final $$GameStatsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.gameStatId,
+        referencedTable: $db.gameStats,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$GameStatsTableFilterComposer(
+              $db: $db,
+              $table: $db.gameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableFilterComposer get exhaustedSoundId {
+    final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.exhaustedSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableFilterComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RoomSurfaceCostsTableOrderingComposer
+    extends Composer<_$AppDatabase, $RoomSurfaceCostsTable> {
+  $$RoomSurfaceCostsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get surfaceCost => $composableBuilder(
+      column: $table.surfaceCost, builder: (column) => ColumnOrderings(column));
+
+  $$RoomSurfacesTableOrderingComposer get roomSurfaceId {
+    final $$RoomSurfacesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomSurfaceId,
+        referencedTable: $db.roomSurfaces,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfacesTableOrderingComposer(
+              $db: $db,
+              $table: $db.roomSurfaces,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$GameStatsTableOrderingComposer get gameStatId {
+    final $$GameStatsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.gameStatId,
+        referencedTable: $db.gameStats,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$GameStatsTableOrderingComposer(
+              $db: $db,
+              $table: $db.gameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableOrderingComposer get exhaustedSoundId {
+    final $$SoundReferencesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.exhaustedSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableOrderingComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RoomSurfaceCostsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RoomSurfaceCostsTable> {
+  $$RoomSurfaceCostsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get surfaceCost => $composableBuilder(
+      column: $table.surfaceCost, builder: (column) => column);
+
+  $$RoomSurfacesTableAnnotationComposer get roomSurfaceId {
+    final $$RoomSurfacesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomSurfaceId,
+        referencedTable: $db.roomSurfaces,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomSurfacesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roomSurfaces,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$GameStatsTableAnnotationComposer get gameStatId {
+    final $$GameStatsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.gameStatId,
+        referencedTable: $db.gameStats,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$GameStatsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.gameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableAnnotationComposer get exhaustedSoundId {
+    final $$SoundReferencesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.exhaustedSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RoomSurfaceCostsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $RoomSurfaceCostsTable,
+    RoomSurfaceCost,
+    $$RoomSurfaceCostsTableFilterComposer,
+    $$RoomSurfaceCostsTableOrderingComposer,
+    $$RoomSurfaceCostsTableAnnotationComposer,
+    $$RoomSurfaceCostsTableCreateCompanionBuilder,
+    $$RoomSurfaceCostsTableUpdateCompanionBuilder,
+    (RoomSurfaceCost, $$RoomSurfaceCostsTableReferences),
+    RoomSurfaceCost,
+    PrefetchHooks Function(
+        {bool roomSurfaceId, bool gameStatId, bool exhaustedSoundId})> {
+  $$RoomSurfaceCostsTableTableManager(
+      _$AppDatabase db, $RoomSurfaceCostsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RoomSurfaceCostsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RoomSurfaceCostsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RoomSurfaceCostsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> roomSurfaceId = const Value.absent(),
+            Value<int> gameStatId = const Value.absent(),
+            Value<int> surfaceCost = const Value.absent(),
+            Value<int?> exhaustedSoundId = const Value.absent(),
+          }) =>
+              RoomSurfaceCostsCompanion(
+            id: id,
+            roomSurfaceId: roomSurfaceId,
+            gameStatId: gameStatId,
+            surfaceCost: surfaceCost,
+            exhaustedSoundId: exhaustedSoundId,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int roomSurfaceId,
+            required int gameStatId,
+            Value<int> surfaceCost = const Value.absent(),
+            Value<int?> exhaustedSoundId = const Value.absent(),
+          }) =>
+              RoomSurfaceCostsCompanion.insert(
+            id: id,
+            roomSurfaceId: roomSurfaceId,
+            gameStatId: gameStatId,
+            surfaceCost: surfaceCost,
+            exhaustedSoundId: exhaustedSoundId,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$RoomSurfaceCostsTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: (
+              {roomSurfaceId = false,
+              gameStatId = false,
+              exhaustedSoundId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (roomSurfaceId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.roomSurfaceId,
+                    referencedTable: $$RoomSurfaceCostsTableReferences
+                        ._roomSurfaceIdTable(db),
+                    referencedColumn: $$RoomSurfaceCostsTableReferences
+                        ._roomSurfaceIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (gameStatId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.gameStatId,
+                    referencedTable:
+                        $$RoomSurfaceCostsTableReferences._gameStatIdTable(db),
+                    referencedColumn: $$RoomSurfaceCostsTableReferences
+                        ._gameStatIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (exhaustedSoundId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.exhaustedSoundId,
+                    referencedTable: $$RoomSurfaceCostsTableReferences
+                        ._exhaustedSoundIdTable(db),
+                    referencedColumn: $$RoomSurfaceCostsTableReferences
+                        ._exhaustedSoundIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$RoomSurfaceCostsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $RoomSurfaceCostsTable,
+    RoomSurfaceCost,
+    $$RoomSurfaceCostsTableFilterComposer,
+    $$RoomSurfaceCostsTableOrderingComposer,
+    $$RoomSurfaceCostsTableAnnotationComposer,
+    $$RoomSurfaceCostsTableCreateCompanionBuilder,
+    $$RoomSurfaceCostsTableUpdateCompanionBuilder,
+    (RoomSurfaceCost, $$RoomSurfaceCostsTableReferences),
+    RoomSurfaceCost,
+    PrefetchHooks Function(
+        {bool roomSurfaceId, bool gameStatId, bool exhaustedSoundId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6084,4 +8807,8 @@ class $AppDatabaseManager {
       $$PlayerClassesTableTableManager(_db, _db.playerClasses);
   $$GameStatsTableTableManager get gameStats =>
       $$GameStatsTableTableManager(_db, _db.gameStats);
+  $$RoomSurfaceBoostsTableTableManager get roomSurfaceBoosts =>
+      $$RoomSurfaceBoostsTableTableManager(_db, _db.roomSurfaceBoosts);
+  $$RoomSurfaceCostsTableTableManager get roomSurfaceCosts =>
+      $$RoomSurfaceCostsTableTableManager(_db, _db.roomSurfaceCosts);
 }

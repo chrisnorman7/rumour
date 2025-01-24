@@ -12,6 +12,7 @@ export 'src/json/game_player.dart';
 export 'src/json/project.dart';
 export 'src/json/project_context_loader.dart';
 export 'src/json/serializable_sound_reference.dart';
+export 'src/mathematical_operator.dart';
 export 'src/positioned_sound_reference.dart';
 export 'src/project_context.dart';
 export 'src/providers.dart';

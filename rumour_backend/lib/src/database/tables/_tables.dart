@@ -2,6 +2,8 @@ export 'game_stats.dart';
 export 'player_classes.dart';
 export 'room_exits.dart';
 export 'room_objects.dart';
+export 'room_surface_boosts.dart';
+export 'room_surface_costs.dart';
 export 'room_surfaces.dart';
 export 'rooms.dart';
 export 'sound_references.dart';

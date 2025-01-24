@@ -47,3 +47,17 @@ mixin CoordinatesMixin on Table {
   /// The y coordinate.
   IntColumn get y => integer().withDefault(const Constant(0))();
 }
+
+/// Add a [roomSurfaceId] column.
+mixin RoomSurfaceIdMixin on Table {
+  /// The ID of the room surface to use.
+  IntColumn get roomSurfaceId =>
+      integer().references(RoomSurfaces, #id, onDelete: KeyAction.cascade)();
+}
+
+/// Add a [gameStatId] column.
+mixin GameStatIdMixin on Table {
+  /// The ID of the game stat to use.
+  IntColumn get gameStatId =>
+      integer().references(GameStats, #id, onDelete: KeyAction.cascade)();
+}
