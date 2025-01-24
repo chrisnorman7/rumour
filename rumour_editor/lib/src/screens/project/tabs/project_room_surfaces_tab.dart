@@ -20,13 +20,8 @@ class ProjectRoomSurfacesTab extends ConsumerWidget {
     final managers = projectContext.database.managers;
     final roomSurfacesManager = managers.roomSurfaces;
     final value = ref.watch(roomSurfacesProvider);
-    return value.simpleWhen((final roomSurfaces) {
-      if (roomSurfaces.isEmpty) {
-        return const NothingToSee(
-          message: "You haven't created any room surfaces yet.",
-        );
-      }
-      return ListView.builder(
+    return value.simpleWhen(
+      (final roomSurfaces) => ListView.builder(
         itemBuilder: (final context, final index) {
           final roomSurface = roomSurfaces[index];
           final query = roomSurfacesManager.filter(
@@ -111,7 +106,7 @@ class ProjectRoomSurfacesTab extends ConsumerWidget {
         },
         itemCount: roomSurfaces.length,
         shrinkWrap: true,
-      );
-    });
+      ),
+    );
   }
 }

@@ -14,6 +14,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 part 'providers.g.dart';
 
+/// The default description.
+const _defaultDescription = 'Automatically created by the editor.';
+
 /// Provide the app preferences.
 @riverpod
 Future<AppPreferences> appPreferences(final Ref ref) async {
@@ -88,11 +91,23 @@ Future<SoundReference> soundReference(final Ref ref, final int id) async {
 @riverpod
 Future<List<Zone>> zones(final Ref ref) async {
   final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.zones
+  final manager = projectContext.database.managers.zones;
+  final zones = await manager
       .orderBy(
         (final o) => o.name.asc(),
       )
       .get();
+  if (zones.isEmpty) {
+    zones.add(
+      await manager.createReturning(
+        (final f) => f(
+          name: 'The First Zone',
+          description: _defaultDescription,
+        ),
+      ),
+    );
+  }
+  return zones;
 }
 
 /// Provide a single zone with the given [id].
@@ -108,10 +123,25 @@ Future<Zone> zone(final Ref ref, final int id) async {
 @riverpod
 Future<List<Room>> rooms(final Ref ref, final int zoneId) async {
   final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.rooms
+  final manager = projectContext.database.managers.rooms;
+  final rooms = await manager
       .filter((final f) => f.zoneId.id.equals(zoneId))
       .orderBy((final o) => o.name.asc())
       .get();
+  if (rooms.isEmpty) {
+    final surfaces = await ref.read(roomSurfacesProvider.future);
+    rooms.add(
+      await manager.createReturning(
+        (final f) => f(
+          name: 'The First Room',
+          description: _defaultDescription,
+          surfaceId: surfaces.first.id,
+          zoneId: zoneId,
+        ),
+      ),
+    );
+  }
+  return rooms;
 }
 
 /// Provide a single room by its [id].
@@ -125,11 +155,21 @@ Future<Room> room(final Ref ref, final int id) async {
 
 /// Provide all room surfaces.
 @riverpod
-Future<List<RoomSurface>> roomSurfaces(final Ref ref) {
+Future<List<RoomSurface>> roomSurfaces(final Ref ref) async {
   final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.roomSurfaces
-      .orderBy((final o) => o.name.asc())
-      .get();
+  final manager = projectContext.database.managers.roomSurfaces;
+  final surfaces = await manager.orderBy((final o) => o.name.asc()).get();
+  if (surfaces.isEmpty) {
+    surfaces.add(
+      await manager.createReturning(
+        (final f) => f(
+          name: 'Default Room Surface',
+          description: _defaultDescription,
+        ),
+      ),
+    );
+  }
+  return surfaces;
 }
 
 /// Provide a single room surface by its [id].
@@ -210,48 +250,14 @@ Future<List<PlayerClass>> playerClasses(final Ref ref) async {
       )
       .get();
   if (classes.isEmpty) {
-    final zones = await ref.watch(zonesProvider.future);
-    if (zones.isEmpty) {
-      zones.add(
-        await managers.zones.createReturning(
-          (final o) => o(
-            name: 'The First Zone',
-            description: 'There is nothing to see.',
-          ),
-        ),
-      );
-    }
+    final zones = await ref.read(zonesProvider.future);
     final zone = zones.first;
-    final rooms = await ref.watch(roomsProvider(zone.id).future);
-    if (rooms.isEmpty) {
-      final surfaces = await ref.watch(roomSurfacesProvider.future);
-      if (surfaces.isEmpty) {
-        surfaces.add(
-          await managers.roomSurfaces.createReturning(
-            (final o) => o(
-              name: 'The First Surface',
-              description:
-                  'One small step for man, one massive step for mankind.',
-            ),
-          ),
-        );
-      }
-      rooms.add(
-        await managers.rooms.createReturning(
-          (final o) => o(
-            name: 'The First Room',
-            description: 'You see nothing special.',
-            surfaceId: surfaces.first.id,
-            zoneId: zone.id,
-          ),
-        ),
-      );
-    }
+    final rooms = await ref.read(roomsProvider(zone.id).future);
     classes.add(
       await managers.playerClasses.createReturning(
         (final o) => o(
           name: 'Common Players',
-          description: 'This class will be the default for new players.',
+          description: _defaultDescription,
           roomId: rooms.first.id,
         ),
       ),

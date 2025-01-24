@@ -22,13 +22,8 @@ class ZoneRoomsTab extends ConsumerWidget {
     final projectContext = ref.watch(projectContextProvider);
     final roomsManager = projectContext.database.managers.rooms;
     final value = ref.watch(roomsProvider(zoneId));
-    return value.simpleWhen((final rooms) {
-      if (rooms.isEmpty) {
-        return const NothingToSee(
-          message: "You haven't created any rooms yet.",
-        );
-      }
-      return ListView.builder(
+    return value.simpleWhen(
+      (final rooms) => ListView.builder(
         itemBuilder: (final context, final index) {
           final room = rooms[index];
           final query = roomsManager.filter((final f) => f.id.equals(room.id));
@@ -115,7 +110,7 @@ class ZoneRoomsTab extends ConsumerWidget {
         },
         itemCount: rooms.length,
         shrinkWrap: true,
-      );
-    });
+      ),
+    );
   }
 }

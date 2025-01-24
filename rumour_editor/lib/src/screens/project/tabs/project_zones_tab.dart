@@ -19,13 +19,8 @@ class ProjectZonesTab extends ConsumerWidget {
     final projectContext = ref.watch(projectContextProvider);
     final zoneManager = projectContext.database.managers.zones;
     final value = ref.watch(zonesProvider);
-    return value.simpleWhen((final zones) {
-      if (zones.isEmpty) {
-        return const NothingToSee(
-          message: "You haven't created any zones yet.",
-        );
-      }
-      return ListView.builder(
+    return value.simpleWhen(
+      (final zones) => ListView.builder(
         itemBuilder: (final context, final index) {
           final zone = zones[index];
           final query = zoneManager.filter((final f) => f.id.equals(zone.id));
@@ -91,7 +86,7 @@ class ProjectZonesTab extends ConsumerWidget {
         },
         itemCount: zones.length,
         shrinkWrap: true,
-      );
-    });
+      ),
+    );
   }
 }

@@ -245,7 +245,7 @@ class _SoundReferenceProviderElement
   int get id => (origin as SoundReferenceProvider).id;
 }
 
-String _$zonesHash() => r'7c41575c87d09c9215be210bb23d3fde4098ed3c';
+String _$zonesHash() => r'fb62e3420dfa6c3f88255cc6f92fdb4cbe51bfe9';
 
 /// Provide all zones.
 ///
@@ -402,7 +402,7 @@ class _ZoneProviderElement extends AutoDisposeFutureProviderElement<Zone>
   int get id => (origin as ZoneProvider).id;
 }
 
-String _$roomsHash() => r'63e18305655b9da537f95adab054b22877456061';
+String _$roomsHash() => r'4505c8cddbcebe98d4e564e1ddaa22ae2635e829';
 
 /// Provide all rooms with the given [zoneId].
 ///
@@ -682,7 +682,7 @@ class _RoomProviderElement extends AutoDisposeFutureProviderElement<Room>
   int get id => (origin as RoomProvider).id;
 }
 
-String _$roomSurfacesHash() => r'c7fa6fb65288d25cf7cda7f8794ff9fa1186b09e';
+String _$roomSurfacesHash() => r'51d99ac9778cf0738d89376e295e7327a8ce1224';
 
 /// Provide all room surfaces.
 ///
@@ -1574,7 +1574,7 @@ class _RoomObjectContextProviderElement
   int get id => (origin as RoomObjectContextProvider).id;
 }
 
-String _$playerClassesHash() => r'9f78afba6e98ba2b597d517c8b1223959a0d09df';
+String _$playerClassesHash() => r'b8d905fa7078d569b555fee616a084861d29d9ed';
 
 /// Provide all player classes.
 ///

@@ -34,13 +34,8 @@ class SelectRoomScreen extends ConsumerWidget {
     return Cancel(
       child: SimpleScaffold(
         title: 'Select Zone',
-        body: value.simpleWhen((final zones) {
-          if (zones.isEmpty) {
-            return const NothingToSee(
-              message: 'No zones have been created yet.',
-            );
-          }
-          return ListView.builder(
+        body: value.simpleWhen(
+          (final zones) => ListView.builder(
             itemBuilder: (final context, final index) {
               final zone = zones[index];
               return ZoneListTile(
@@ -54,8 +49,8 @@ class SelectRoomScreen extends ConsumerWidget {
             },
             itemCount: zones.length,
             shrinkWrap: true,
-          );
-        }),
+          ),
+        ),
       ),
     );
   }

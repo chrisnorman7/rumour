@@ -18,13 +18,8 @@ class ProjectPlayerClassesTab extends ConsumerWidget {
     final projectContext = ref.watch(projectContextProvider);
     final manager = projectContext.database.managers.playerClasses;
     final value = ref.watch(playerClassesProvider);
-    return value.simpleWhen((final playerClasses) {
-      if (playerClasses.isEmpty) {
-        return const NothingToSee(
-          message: 'No player classes have been created.',
-        );
-      }
-      return ListView.builder(
+    return value.simpleWhen(
+      (final playerClasses) => ListView.builder(
         itemBuilder: (final context, final index) {
           final playerClass = playerClasses[index];
           final query = manager.filter(
@@ -98,7 +93,7 @@ class ProjectPlayerClassesTab extends ConsumerWidget {
         },
         itemCount: playerClasses.length,
         shrinkWrap: true,
-      );
-    });
+      ),
+    );
   }
 }

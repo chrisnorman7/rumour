@@ -31,11 +31,8 @@ class SelectZoneScreen extends ConsumerWidget {
     return Cancel(
       child: SimpleScaffold(
         title: title,
-        body: value.simpleWhen((final zones) {
-          if (zones.isEmpty) {
-            return const NothingToSee(message: 'There are no zones to show.');
-          }
-          return ListView.builder(
+        body: value.simpleWhen(
+          (final zones) => ListView.builder(
             itemBuilder: (final context, final index) {
               final zone = zones[index];
               return PlaySoundReferenceSemantics(
@@ -54,8 +51,8 @@ class SelectZoneScreen extends ConsumerWidget {
             },
             itemCount: zones.length,
             shrinkWrap: true,
-          );
-        }),
+          ),
+        ),
       ),
     );
   }

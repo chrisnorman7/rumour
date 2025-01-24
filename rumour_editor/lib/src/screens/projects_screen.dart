@@ -37,8 +37,9 @@ class ProjectsScreen extends ConsumerWidget {
         body: value.when(
           data: (final files) {
             if (files.isEmpty) {
-              return const NothingToSee(
-                message: 'There are no recent projects.',
+              return const CenterText(
+                text: 'There are no recent projects.',
+                autofocus: true,
               );
             }
             return ListView.builder(
