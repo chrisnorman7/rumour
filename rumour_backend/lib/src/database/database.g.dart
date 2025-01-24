@@ -2458,6 +2458,323 @@ class PlayerClassesCompanion extends UpdateCompanion<PlayerClass> {
   }
 }
 
+class $GameStatsTable extends GameStats
+    with TableInfo<$GameStatsTable, GameStat> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $GameStatsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _defaultValueMeta =
+      const VerificationMeta('defaultValue');
+  @override
+  late final GeneratedColumn<int> defaultValue = GeneratedColumn<int>(
+      'default_value', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(5));
+  static const VerificationMeta _isVisibleMeta =
+      const VerificationMeta('isVisible');
+  @override
+  late final GeneratedColumn<bool> isVisible = GeneratedColumn<bool>(
+      'is_visible', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_visible" IN (0, 1))'),
+      defaultValue: const Constant(true));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, name, description, defaultValue, isVisible];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'game_stats';
+  @override
+  VerificationContext validateIntegrity(Insertable<GameStat> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('default_value')) {
+      context.handle(
+          _defaultValueMeta,
+          defaultValue.isAcceptableOrUnknown(
+              data['default_value']!, _defaultValueMeta));
+    }
+    if (data.containsKey('is_visible')) {
+      context.handle(_isVisibleMeta,
+          isVisible.isAcceptableOrUnknown(data['is_visible']!, _isVisibleMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  GameStat map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return GameStat(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+      defaultValue: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}default_value'])!,
+      isVisible: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_visible'])!,
+    );
+  }
+
+  @override
+  $GameStatsTable createAlias(String alias) {
+    return $GameStatsTable(attachedDatabase, alias);
+  }
+}
+
+class GameStat extends DataClass implements Insertable<GameStat> {
+  /// The primary key field.
+  final int id;
+
+  /// The name column.
+  final String name;
+
+  /// The description column.
+  final String description;
+
+  /// The default value when no other default is provided.
+  ///
+  /// The [defaultValue] will be ignored in most cases.
+  final int defaultValue;
+
+  /// Whether or not this stat is visible to the player.
+  final bool isVisible;
+  const GameStat(
+      {required this.id,
+      required this.name,
+      required this.description,
+      required this.defaultValue,
+      required this.isVisible});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    map['default_value'] = Variable<int>(defaultValue);
+    map['is_visible'] = Variable<bool>(isVisible);
+    return map;
+  }
+
+  GameStatsCompanion toCompanion(bool nullToAbsent) {
+    return GameStatsCompanion(
+      id: Value(id),
+      name: Value(name),
+      description: Value(description),
+      defaultValue: Value(defaultValue),
+      isVisible: Value(isVisible),
+    );
+  }
+
+  factory GameStat.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return GameStat(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      defaultValue: serializer.fromJson<int>(json['defaultValue']),
+      isVisible: serializer.fromJson<bool>(json['isVisible']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'defaultValue': serializer.toJson<int>(defaultValue),
+      'isVisible': serializer.toJson<bool>(isVisible),
+    };
+  }
+
+  GameStat copyWith(
+          {int? id,
+          String? name,
+          String? description,
+          int? defaultValue,
+          bool? isVisible}) =>
+      GameStat(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description ?? this.description,
+        defaultValue: defaultValue ?? this.defaultValue,
+        isVisible: isVisible ?? this.isVisible,
+      );
+  GameStat copyWithCompanion(GameStatsCompanion data) {
+    return GameStat(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      description:
+          data.description.present ? data.description.value : this.description,
+      defaultValue: data.defaultValue.present
+          ? data.defaultValue.value
+          : this.defaultValue,
+      isVisible: data.isVisible.present ? data.isVisible.value : this.isVisible,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GameStat(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('defaultValue: $defaultValue, ')
+          ..write('isVisible: $isVisible')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, description, defaultValue, isVisible);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is GameStat &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.defaultValue == this.defaultValue &&
+          other.isVisible == this.isVisible);
+}
+
+class GameStatsCompanion extends UpdateCompanion<GameStat> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<int> defaultValue;
+  final Value<bool> isVisible;
+  const GameStatsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.defaultValue = const Value.absent(),
+    this.isVisible = const Value.absent(),
+  });
+  GameStatsCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required String description,
+    this.defaultValue = const Value.absent(),
+    this.isVisible = const Value.absent(),
+  })  : name = Value(name),
+        description = Value(description);
+  static Insertable<GameStat> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<int>? defaultValue,
+    Expression<bool>? isVisible,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (defaultValue != null) 'default_value': defaultValue,
+      if (isVisible != null) 'is_visible': isVisible,
+    });
+  }
+
+  GameStatsCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<String>? description,
+      Value<int>? defaultValue,
+      Value<bool>? isVisible}) {
+    return GameStatsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      defaultValue: defaultValue ?? this.defaultValue,
+      isVisible: isVisible ?? this.isVisible,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (defaultValue.present) {
+      map['default_value'] = Variable<int>(defaultValue.value);
+    }
+    if (isVisible.present) {
+      map['is_visible'] = Variable<bool>(isVisible.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GameStatsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('defaultValue: $defaultValue, ')
+          ..write('isVisible: $isVisible')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2469,6 +2786,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $RoomExitsTable roomExits = $RoomExitsTable(this);
   late final $RoomObjectsTable roomObjects = $RoomObjectsTable(this);
   late final $PlayerClassesTable playerClasses = $PlayerClassesTable(this);
+  late final $GameStatsTable gameStats = $GameStatsTable(this);
   late final Index roomObjectCoordinatesIndex = Index(
       'room_object_coordinates_index',
       'CREATE INDEX room_object_coordinates_index ON room_objects (x, y)');
@@ -2484,6 +2802,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         roomExits,
         roomObjects,
         playerClasses,
+        gameStats,
         roomObjectCoordinatesIndex
       ];
   @override
@@ -5585,6 +5904,166 @@ typedef $$PlayerClassesTableProcessedTableManager = ProcessedTableManager<
     (PlayerClass, $$PlayerClassesTableReferences),
     PlayerClass,
     PrefetchHooks Function({bool roomId})>;
+typedef $$GameStatsTableCreateCompanionBuilder = GameStatsCompanion Function({
+  Value<int> id,
+  required String name,
+  required String description,
+  Value<int> defaultValue,
+  Value<bool> isVisible,
+});
+typedef $$GameStatsTableUpdateCompanionBuilder = GameStatsCompanion Function({
+  Value<int> id,
+  Value<String> name,
+  Value<String> description,
+  Value<int> defaultValue,
+  Value<bool> isVisible,
+});
+
+class $$GameStatsTableFilterComposer
+    extends Composer<_$AppDatabase, $GameStatsTable> {
+  $$GameStatsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get defaultValue => $composableBuilder(
+      column: $table.defaultValue, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isVisible => $composableBuilder(
+      column: $table.isVisible, builder: (column) => ColumnFilters(column));
+}
+
+class $$GameStatsTableOrderingComposer
+    extends Composer<_$AppDatabase, $GameStatsTable> {
+  $$GameStatsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get defaultValue => $composableBuilder(
+      column: $table.defaultValue,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isVisible => $composableBuilder(
+      column: $table.isVisible, builder: (column) => ColumnOrderings(column));
+}
+
+class $$GameStatsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $GameStatsTable> {
+  $$GameStatsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
+
+  GeneratedColumn<int> get defaultValue => $composableBuilder(
+      column: $table.defaultValue, builder: (column) => column);
+
+  GeneratedColumn<bool> get isVisible =>
+      $composableBuilder(column: $table.isVisible, builder: (column) => column);
+}
+
+class $$GameStatsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $GameStatsTable,
+    GameStat,
+    $$GameStatsTableFilterComposer,
+    $$GameStatsTableOrderingComposer,
+    $$GameStatsTableAnnotationComposer,
+    $$GameStatsTableCreateCompanionBuilder,
+    $$GameStatsTableUpdateCompanionBuilder,
+    (GameStat, BaseReferences<_$AppDatabase, $GameStatsTable, GameStat>),
+    GameStat,
+    PrefetchHooks Function()> {
+  $$GameStatsTableTableManager(_$AppDatabase db, $GameStatsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$GameStatsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$GameStatsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$GameStatsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> description = const Value.absent(),
+            Value<int> defaultValue = const Value.absent(),
+            Value<bool> isVisible = const Value.absent(),
+          }) =>
+              GameStatsCompanion(
+            id: id,
+            name: name,
+            description: description,
+            defaultValue: defaultValue,
+            isVisible: isVisible,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            required String description,
+            Value<int> defaultValue = const Value.absent(),
+            Value<bool> isVisible = const Value.absent(),
+          }) =>
+              GameStatsCompanion.insert(
+            id: id,
+            name: name,
+            description: description,
+            defaultValue: defaultValue,
+            isVisible: isVisible,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$GameStatsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $GameStatsTable,
+    GameStat,
+    $$GameStatsTableFilterComposer,
+    $$GameStatsTableOrderingComposer,
+    $$GameStatsTableAnnotationComposer,
+    $$GameStatsTableCreateCompanionBuilder,
+    $$GameStatsTableUpdateCompanionBuilder,
+    (GameStat, BaseReferences<_$AppDatabase, $GameStatsTable, GameStat>),
+    GameStat,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -5603,4 +6082,6 @@ class $AppDatabaseManager {
       $$RoomObjectsTableTableManager(_db, _db.roomObjects);
   $$PlayerClassesTableTableManager get playerClasses =>
       $$PlayerClassesTableTableManager(_db, _db.playerClasses);
+  $$GameStatsTableTableManager get gameStats =>
+      $$GameStatsTableTableManager(_db, _db.gameStats);
 }

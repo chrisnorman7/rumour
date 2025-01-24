@@ -610,3 +610,39 @@ Future<Directory> projectDataDirectory(
   }
   return directory;
 }
+
+/// Provide all game stats.
+@riverpod
+Future<List<GameStat>> gameStats(final Ref ref) async {
+  final projectContext = ref.watch(projectContextProvider);
+  final manager = projectContext.database.managers.gameStats;
+  final stats = await manager.orderBy((final o) => o.name.asc()).get();
+  if (stats.isEmpty) {
+    stats.addAll([
+      await manager.createReturning(
+        (final f) => f(
+          name: 'Gold',
+          description: 'How much gold is currently being carried.',
+        ),
+      ),
+      await manager.createReturning(
+        (final f) =>
+            f(name: 'Max health', description: 'The maximum possible health.'),
+      ),
+      await manager.createReturning(
+        (final f) =>
+            f(name: 'Health', description: 'How healthy something is.'),
+      ),
+    ]);
+  }
+  return stats;
+}
+
+/// Provide a single game stat.
+@riverpod
+Future<GameStat> gameStat(final Ref ref, final int id) async {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.gameStats
+      .filter((final f) => f.id.equals(id))
+      .getSingle();
+}

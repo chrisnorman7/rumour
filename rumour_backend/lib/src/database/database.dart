@@ -17,6 +17,7 @@ part 'database.g.dart';
     SoundReferences,
     RoomExits,
     PlayerClasses,
+    GameStats,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -26,7 +27,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// The schema version.
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   /// Migrate the database.
   @override
@@ -37,6 +38,10 @@ class AppDatabase extends _$AppDatabase {
         onCreate: (final m) async {
           await m.createAll();
         },
-        onUpgrade: (final m, final from, final to) async {},
+        onUpgrade: (final m, final from, final to) async {
+          if (from < 2) {
+            await m.createTable(this.gameStats);
+          }
+        },
       );
 }
