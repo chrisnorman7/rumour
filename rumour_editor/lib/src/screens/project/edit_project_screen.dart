@@ -75,6 +75,19 @@ class EditProjectScreen extends ConsumerWidget {
             icon: const Text('Classes which new players can choose from'),
             builder: (final context) => const ProjectPlayerClassesTab(),
           ),
+          PerformableActionsTabbedScaffoldTab(
+            performableActions: actions,
+            title: 'Stats',
+            icon: const Text("Stats for players, NPC's and objects"),
+            builder:
+                (final context) => CommonShortcuts(
+                  newCallback: () => _createGameStat(ref),
+                  child: const ProjectGameStatsTab(),
+                ),
+            floatingActionButton: NewButton(
+              onPressed: () => _createGameStat(ref),
+            ),
+          ),
         ],
       ),
     );
@@ -132,6 +145,22 @@ class EditProjectScreen extends ConsumerWidget {
     if (context.mounted) {
       await context.pushWidgetBuilder(
         (final _) => EditRoomSurfaceScreen(roomSurfaceId: surface.id),
+      );
+    }
+  }
+
+  /// Create a new game stat.
+  Future<void> _createGameStat(final WidgetRef ref) async {
+    final projectContext = ref.watch(projectContextProvider);
+    final stat = await projectContext.database.managers.gameStats
+        .createReturning(
+          (final o) => o(name: 'Untitled Stat', description: 'A new stat.'),
+        );
+    ref.invalidate(gameStatsProvider);
+    final context = ref.context;
+    if (context.mounted) {
+      await context.pushWidgetBuilder(
+        (_) => EditGameStatScreen(gameStatId: stat.id),
       );
     }
   }
