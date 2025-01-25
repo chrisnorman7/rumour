@@ -2502,9 +2502,45 @@ class $GameStatsTable extends GameStats
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("is_visible" IN (0, 1))'),
       defaultValue: const Constant(true));
+  static const VerificationMeta _maxGameStatIdMeta =
+      const VerificationMeta('maxGameStatId');
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, name, description, defaultValue, isVisible];
+  late final GeneratedColumn<int> maxGameStatId = GeneratedColumn<int>(
+      'max_game_stat_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES game_stats (id) ON DELETE SET NULL'));
+  static const VerificationMeta _mathematicalOperatorMeta =
+      const VerificationMeta('mathematicalOperator');
+  @override
+  late final GeneratedColumnWithTypeConverter<MathematicalOperator, int>
+      mathematicalOperator = GeneratedColumn<int>(
+              'mathematical_operator', aliasedName, false,
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: Constant(MathematicalOperator.multiply.index))
+          .withConverter<MathematicalOperator>(
+              $GameStatsTable.$convertermathematicalOperator);
+  static const VerificationMeta _maxValueMultiplierMeta =
+      const VerificationMeta('maxValueMultiplier');
+  @override
+  late final GeneratedColumn<int> maxValueMultiplier = GeneratedColumn<int>(
+      'max_value_multiplier', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        description,
+        defaultValue,
+        isVisible,
+        maxGameStatId,
+        mathematicalOperator,
+        maxValueMultiplier
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2542,6 +2578,20 @@ class $GameStatsTable extends GameStats
       context.handle(_isVisibleMeta,
           isVisible.isAcceptableOrUnknown(data['is_visible']!, _isVisibleMeta));
     }
+    if (data.containsKey('max_game_stat_id')) {
+      context.handle(
+          _maxGameStatIdMeta,
+          maxGameStatId.isAcceptableOrUnknown(
+              data['max_game_stat_id']!, _maxGameStatIdMeta));
+    }
+    context.handle(
+        _mathematicalOperatorMeta, const VerificationResult.success());
+    if (data.containsKey('max_value_multiplier')) {
+      context.handle(
+          _maxValueMultiplierMeta,
+          maxValueMultiplier.isAcceptableOrUnknown(
+              data['max_value_multiplier']!, _maxValueMultiplierMeta));
+    }
     return context;
   }
 
@@ -2561,6 +2611,13 @@ class $GameStatsTable extends GameStats
           .read(DriftSqlType.int, data['${effectivePrefix}default_value'])!,
       isVisible: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_visible'])!,
+      maxGameStatId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}max_game_stat_id']),
+      mathematicalOperator: $GameStatsTable.$convertermathematicalOperator
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
+              data['${effectivePrefix}mathematical_operator'])!),
+      maxValueMultiplier: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}max_value_multiplier'])!,
     );
   }
 
@@ -2568,6 +2625,11 @@ class $GameStatsTable extends GameStats
   $GameStatsTable createAlias(String alias) {
     return $GameStatsTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<MathematicalOperator, int, int>
+      $convertermathematicalOperator =
+      const EnumIndexConverter<MathematicalOperator>(
+          MathematicalOperator.values);
 }
 
 class GameStat extends DataClass implements Insertable<GameStat> {
@@ -2587,12 +2649,31 @@ class GameStat extends DataClass implements Insertable<GameStat> {
 
   /// Whether or not this stat is visible to the player.
   final bool isVisible;
+
+  /// The ID of the game stat whose value on the target (player or NPC) will be
+  /// considered the maximum value for this stat when the stat is being boosted
+  /// by [RoomSurfaces] or similar.
+  ///
+  /// **note**: If [maxGameStatId] is `null`, then [RoomSurfaceBoosts] will
+  /// boost stats indefinitely. This is probably not what you want.
+  final int? maxGameStatId;
+
+  /// The mathematical operator to combine the value of the max game stat and
+  /// [maxValueMultiplier] to get the final max value.
+  final MathematicalOperator mathematicalOperator;
+
+  /// The maximum value to combine with the value of the max stat to get the
+  /// maximum value.
+  final int maxValueMultiplier;
   const GameStat(
       {required this.id,
       required this.name,
       required this.description,
       required this.defaultValue,
-      required this.isVisible});
+      required this.isVisible,
+      this.maxGameStatId,
+      required this.mathematicalOperator,
+      required this.maxValueMultiplier});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2601,6 +2682,15 @@ class GameStat extends DataClass implements Insertable<GameStat> {
     map['description'] = Variable<String>(description);
     map['default_value'] = Variable<int>(defaultValue);
     map['is_visible'] = Variable<bool>(isVisible);
+    if (!nullToAbsent || maxGameStatId != null) {
+      map['max_game_stat_id'] = Variable<int>(maxGameStatId);
+    }
+    {
+      map['mathematical_operator'] = Variable<int>($GameStatsTable
+          .$convertermathematicalOperator
+          .toSql(mathematicalOperator));
+    }
+    map['max_value_multiplier'] = Variable<int>(maxValueMultiplier);
     return map;
   }
 
@@ -2611,6 +2701,11 @@ class GameStat extends DataClass implements Insertable<GameStat> {
       description: Value(description),
       defaultValue: Value(defaultValue),
       isVisible: Value(isVisible),
+      maxGameStatId: maxGameStatId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxGameStatId),
+      mathematicalOperator: Value(mathematicalOperator),
+      maxValueMultiplier: Value(maxValueMultiplier),
     );
   }
 
@@ -2623,6 +2718,10 @@ class GameStat extends DataClass implements Insertable<GameStat> {
       description: serializer.fromJson<String>(json['description']),
       defaultValue: serializer.fromJson<int>(json['defaultValue']),
       isVisible: serializer.fromJson<bool>(json['isVisible']),
+      maxGameStatId: serializer.fromJson<int?>(json['maxGameStatId']),
+      mathematicalOperator: $GameStatsTable.$convertermathematicalOperator
+          .fromJson(serializer.fromJson<int>(json['mathematicalOperator'])),
+      maxValueMultiplier: serializer.fromJson<int>(json['maxValueMultiplier']),
     );
   }
   @override
@@ -2634,6 +2733,11 @@ class GameStat extends DataClass implements Insertable<GameStat> {
       'description': serializer.toJson<String>(description),
       'defaultValue': serializer.toJson<int>(defaultValue),
       'isVisible': serializer.toJson<bool>(isVisible),
+      'maxGameStatId': serializer.toJson<int?>(maxGameStatId),
+      'mathematicalOperator': serializer.toJson<int>($GameStatsTable
+          .$convertermathematicalOperator
+          .toJson(mathematicalOperator)),
+      'maxValueMultiplier': serializer.toJson<int>(maxValueMultiplier),
     };
   }
 
@@ -2642,13 +2746,20 @@ class GameStat extends DataClass implements Insertable<GameStat> {
           String? name,
           String? description,
           int? defaultValue,
-          bool? isVisible}) =>
+          bool? isVisible,
+          Value<int?> maxGameStatId = const Value.absent(),
+          MathematicalOperator? mathematicalOperator,
+          int? maxValueMultiplier}) =>
       GameStat(
         id: id ?? this.id,
         name: name ?? this.name,
         description: description ?? this.description,
         defaultValue: defaultValue ?? this.defaultValue,
         isVisible: isVisible ?? this.isVisible,
+        maxGameStatId:
+            maxGameStatId.present ? maxGameStatId.value : this.maxGameStatId,
+        mathematicalOperator: mathematicalOperator ?? this.mathematicalOperator,
+        maxValueMultiplier: maxValueMultiplier ?? this.maxValueMultiplier,
       );
   GameStat copyWithCompanion(GameStatsCompanion data) {
     return GameStat(
@@ -2660,6 +2771,15 @@ class GameStat extends DataClass implements Insertable<GameStat> {
           ? data.defaultValue.value
           : this.defaultValue,
       isVisible: data.isVisible.present ? data.isVisible.value : this.isVisible,
+      maxGameStatId: data.maxGameStatId.present
+          ? data.maxGameStatId.value
+          : this.maxGameStatId,
+      mathematicalOperator: data.mathematicalOperator.present
+          ? data.mathematicalOperator.value
+          : this.mathematicalOperator,
+      maxValueMultiplier: data.maxValueMultiplier.present
+          ? data.maxValueMultiplier.value
+          : this.maxValueMultiplier,
     );
   }
 
@@ -2670,14 +2790,17 @@ class GameStat extends DataClass implements Insertable<GameStat> {
           ..write('name: $name, ')
           ..write('description: $description, ')
           ..write('defaultValue: $defaultValue, ')
-          ..write('isVisible: $isVisible')
+          ..write('isVisible: $isVisible, ')
+          ..write('maxGameStatId: $maxGameStatId, ')
+          ..write('mathematicalOperator: $mathematicalOperator, ')
+          ..write('maxValueMultiplier: $maxValueMultiplier')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, name, description, defaultValue, isVisible);
+  int get hashCode => Object.hash(id, name, description, defaultValue,
+      isVisible, maxGameStatId, mathematicalOperator, maxValueMultiplier);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2686,7 +2809,10 @@ class GameStat extends DataClass implements Insertable<GameStat> {
           other.name == this.name &&
           other.description == this.description &&
           other.defaultValue == this.defaultValue &&
-          other.isVisible == this.isVisible);
+          other.isVisible == this.isVisible &&
+          other.maxGameStatId == this.maxGameStatId &&
+          other.mathematicalOperator == this.mathematicalOperator &&
+          other.maxValueMultiplier == this.maxValueMultiplier);
 }
 
 class GameStatsCompanion extends UpdateCompanion<GameStat> {
@@ -2695,12 +2821,18 @@ class GameStatsCompanion extends UpdateCompanion<GameStat> {
   final Value<String> description;
   final Value<int> defaultValue;
   final Value<bool> isVisible;
+  final Value<int?> maxGameStatId;
+  final Value<MathematicalOperator> mathematicalOperator;
+  final Value<int> maxValueMultiplier;
   const GameStatsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.description = const Value.absent(),
     this.defaultValue = const Value.absent(),
     this.isVisible = const Value.absent(),
+    this.maxGameStatId = const Value.absent(),
+    this.mathematicalOperator = const Value.absent(),
+    this.maxValueMultiplier = const Value.absent(),
   });
   GameStatsCompanion.insert({
     this.id = const Value.absent(),
@@ -2708,6 +2840,9 @@ class GameStatsCompanion extends UpdateCompanion<GameStat> {
     required String description,
     this.defaultValue = const Value.absent(),
     this.isVisible = const Value.absent(),
+    this.maxGameStatId = const Value.absent(),
+    this.mathematicalOperator = const Value.absent(),
+    this.maxValueMultiplier = const Value.absent(),
   })  : name = Value(name),
         description = Value(description);
   static Insertable<GameStat> custom({
@@ -2716,6 +2851,9 @@ class GameStatsCompanion extends UpdateCompanion<GameStat> {
     Expression<String>? description,
     Expression<int>? defaultValue,
     Expression<bool>? isVisible,
+    Expression<int>? maxGameStatId,
+    Expression<int>? mathematicalOperator,
+    Expression<int>? maxValueMultiplier,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2723,6 +2861,11 @@ class GameStatsCompanion extends UpdateCompanion<GameStat> {
       if (description != null) 'description': description,
       if (defaultValue != null) 'default_value': defaultValue,
       if (isVisible != null) 'is_visible': isVisible,
+      if (maxGameStatId != null) 'max_game_stat_id': maxGameStatId,
+      if (mathematicalOperator != null)
+        'mathematical_operator': mathematicalOperator,
+      if (maxValueMultiplier != null)
+        'max_value_multiplier': maxValueMultiplier,
     });
   }
 
@@ -2731,13 +2874,19 @@ class GameStatsCompanion extends UpdateCompanion<GameStat> {
       Value<String>? name,
       Value<String>? description,
       Value<int>? defaultValue,
-      Value<bool>? isVisible}) {
+      Value<bool>? isVisible,
+      Value<int?>? maxGameStatId,
+      Value<MathematicalOperator>? mathematicalOperator,
+      Value<int>? maxValueMultiplier}) {
     return GameStatsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
       defaultValue: defaultValue ?? this.defaultValue,
       isVisible: isVisible ?? this.isVisible,
+      maxGameStatId: maxGameStatId ?? this.maxGameStatId,
+      mathematicalOperator: mathematicalOperator ?? this.mathematicalOperator,
+      maxValueMultiplier: maxValueMultiplier ?? this.maxValueMultiplier,
     );
   }
 
@@ -2759,6 +2908,17 @@ class GameStatsCompanion extends UpdateCompanion<GameStat> {
     if (isVisible.present) {
       map['is_visible'] = Variable<bool>(isVisible.value);
     }
+    if (maxGameStatId.present) {
+      map['max_game_stat_id'] = Variable<int>(maxGameStatId.value);
+    }
+    if (mathematicalOperator.present) {
+      map['mathematical_operator'] = Variable<int>($GameStatsTable
+          .$convertermathematicalOperator
+          .toSql(mathematicalOperator.value));
+    }
+    if (maxValueMultiplier.present) {
+      map['max_value_multiplier'] = Variable<int>(maxValueMultiplier.value);
+    }
     return map;
   }
 
@@ -2769,7 +2929,10 @@ class GameStatsCompanion extends UpdateCompanion<GameStat> {
           ..write('name: $name, ')
           ..write('description: $description, ')
           ..write('defaultValue: $defaultValue, ')
-          ..write('isVisible: $isVisible')
+          ..write('isVisible: $isVisible, ')
+          ..write('maxGameStatId: $maxGameStatId, ')
+          ..write('mathematicalOperator: $mathematicalOperator, ')
+          ..write('maxValueMultiplier: $maxValueMultiplier')
           ..write(')'))
         .toString();
   }
@@ -2823,33 +2986,6 @@ class $RoomSurfaceBoostsTable extends RoomSurfaceBoosts
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(1));
-  static const VerificationMeta _maxGameStatIdMeta =
-      const VerificationMeta('maxGameStatId');
-  @override
-  late final GeneratedColumn<int> maxGameStatId = GeneratedColumn<int>(
-      'max_game_stat_id', aliasedName, true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES game_stats (id) ON DELETE SET NULL'));
-  static const VerificationMeta _mathematicalOperatorMeta =
-      const VerificationMeta('mathematicalOperator');
-  @override
-  late final GeneratedColumnWithTypeConverter<MathematicalOperator, int>
-      mathematicalOperator = GeneratedColumn<int>(
-              'mathematical_operator', aliasedName, false,
-              type: DriftSqlType.int,
-              requiredDuringInsert: false,
-              defaultValue: Constant(MathematicalOperator.plus.index))
-          .withConverter<MathematicalOperator>(
-              $RoomSurfaceBoostsTable.$convertermathematicalOperator);
-  static const VerificationMeta _valueMeta = const VerificationMeta('value');
-  @override
-  late final GeneratedColumn<int> value = GeneratedColumn<int>(
-      'value', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(1));
   static const VerificationMeta _boostSoundIdMeta =
       const VerificationMeta('boostSoundId');
   @override
@@ -2875,9 +3011,6 @@ class $RoomSurfaceBoostsTable extends RoomSurfaceBoosts
         gameStatId,
         interval,
         boost,
-        maxGameStatId,
-        mathematicalOperator,
-        value,
         boostSoundId,
         maxedOutSoundId
       ];
@@ -2918,18 +3051,6 @@ class $RoomSurfaceBoostsTable extends RoomSurfaceBoosts
       context.handle(
           _boostMeta, boost.isAcceptableOrUnknown(data['boost']!, _boostMeta));
     }
-    if (data.containsKey('max_game_stat_id')) {
-      context.handle(
-          _maxGameStatIdMeta,
-          maxGameStatId.isAcceptableOrUnknown(
-              data['max_game_stat_id']!, _maxGameStatIdMeta));
-    }
-    context.handle(
-        _mathematicalOperatorMeta, const VerificationResult.success());
-    if (data.containsKey('value')) {
-      context.handle(
-          _valueMeta, value.isAcceptableOrUnknown(data['value']!, _valueMeta));
-    }
     if (data.containsKey('boost_sound_id')) {
       context.handle(
           _boostSoundIdMeta,
@@ -2961,14 +3082,6 @@ class $RoomSurfaceBoostsTable extends RoomSurfaceBoosts
           .read(DriftSqlType.int, data['${effectivePrefix}interval'])!,
       boost: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}boost'])!,
-      maxGameStatId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}max_game_stat_id']),
-      mathematicalOperator: $RoomSurfaceBoostsTable
-          .$convertermathematicalOperator
-          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
-              data['${effectivePrefix}mathematical_operator'])!),
-      value: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}value'])!,
       boostSoundId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}boost_sound_id']),
       maxedOutSoundId: attachedDatabase.typeMapping
@@ -2980,11 +3093,6 @@ class $RoomSurfaceBoostsTable extends RoomSurfaceBoosts
   $RoomSurfaceBoostsTable createAlias(String alias) {
     return $RoomSurfaceBoostsTable(attachedDatabase, alias);
   }
-
-  static JsonTypeConverter2<MathematicalOperator, int, int>
-      $convertermathematicalOperator =
-      const EnumIndexConverter<MathematicalOperator>(
-          MathematicalOperator.values);
 }
 
 class RoomSurfaceBoost extends DataClass
@@ -3004,17 +3112,6 @@ class RoomSurfaceBoost extends DataClass
   /// How much of this stat should be added each boost cycle.
   final int boost;
 
-  /// The ID of the game stat whose value should be treated as the max value for
-  /// this stat.
-  final int? maxGameStatId;
-
-  /// /// The mathematical operator to use.
-  final MathematicalOperator mathematicalOperator;
-
-  /// The value to combine with the [mathematicalOperator] and the max game stat
-  /// to get the final max value.
-  final int value;
-
   /// The ID of the sound which will play if and when this stat is boosted.
   final int? boostSoundId;
 
@@ -3026,9 +3123,6 @@ class RoomSurfaceBoost extends DataClass
       required this.gameStatId,
       required this.interval,
       required this.boost,
-      this.maxGameStatId,
-      required this.mathematicalOperator,
-      required this.value,
       this.boostSoundId,
       this.maxedOutSoundId});
   @override
@@ -3039,15 +3133,6 @@ class RoomSurfaceBoost extends DataClass
     map['game_stat_id'] = Variable<int>(gameStatId);
     map['interval'] = Variable<int>(interval);
     map['boost'] = Variable<int>(boost);
-    if (!nullToAbsent || maxGameStatId != null) {
-      map['max_game_stat_id'] = Variable<int>(maxGameStatId);
-    }
-    {
-      map['mathematical_operator'] = Variable<int>($RoomSurfaceBoostsTable
-          .$convertermathematicalOperator
-          .toSql(mathematicalOperator));
-    }
-    map['value'] = Variable<int>(value);
     if (!nullToAbsent || boostSoundId != null) {
       map['boost_sound_id'] = Variable<int>(boostSoundId);
     }
@@ -3064,11 +3149,6 @@ class RoomSurfaceBoost extends DataClass
       gameStatId: Value(gameStatId),
       interval: Value(interval),
       boost: Value(boost),
-      maxGameStatId: maxGameStatId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(maxGameStatId),
-      mathematicalOperator: Value(mathematicalOperator),
-      value: Value(value),
       boostSoundId: boostSoundId == null && nullToAbsent
           ? const Value.absent()
           : Value(boostSoundId),
@@ -3087,11 +3167,6 @@ class RoomSurfaceBoost extends DataClass
       gameStatId: serializer.fromJson<int>(json['gameStatId']),
       interval: serializer.fromJson<int>(json['interval']),
       boost: serializer.fromJson<int>(json['boost']),
-      maxGameStatId: serializer.fromJson<int?>(json['maxGameStatId']),
-      mathematicalOperator: $RoomSurfaceBoostsTable
-          .$convertermathematicalOperator
-          .fromJson(serializer.fromJson<int>(json['mathematicalOperator'])),
-      value: serializer.fromJson<int>(json['value']),
       boostSoundId: serializer.fromJson<int?>(json['boostSoundId']),
       maxedOutSoundId: serializer.fromJson<int?>(json['maxedOutSoundId']),
     );
@@ -3105,11 +3180,6 @@ class RoomSurfaceBoost extends DataClass
       'gameStatId': serializer.toJson<int>(gameStatId),
       'interval': serializer.toJson<int>(interval),
       'boost': serializer.toJson<int>(boost),
-      'maxGameStatId': serializer.toJson<int?>(maxGameStatId),
-      'mathematicalOperator': serializer.toJson<int>($RoomSurfaceBoostsTable
-          .$convertermathematicalOperator
-          .toJson(mathematicalOperator)),
-      'value': serializer.toJson<int>(value),
       'boostSoundId': serializer.toJson<int?>(boostSoundId),
       'maxedOutSoundId': serializer.toJson<int?>(maxedOutSoundId),
     };
@@ -3121,9 +3191,6 @@ class RoomSurfaceBoost extends DataClass
           int? gameStatId,
           int? interval,
           int? boost,
-          Value<int?> maxGameStatId = const Value.absent(),
-          MathematicalOperator? mathematicalOperator,
-          int? value,
           Value<int?> boostSoundId = const Value.absent(),
           Value<int?> maxedOutSoundId = const Value.absent()}) =>
       RoomSurfaceBoost(
@@ -3132,10 +3199,6 @@ class RoomSurfaceBoost extends DataClass
         gameStatId: gameStatId ?? this.gameStatId,
         interval: interval ?? this.interval,
         boost: boost ?? this.boost,
-        maxGameStatId:
-            maxGameStatId.present ? maxGameStatId.value : this.maxGameStatId,
-        mathematicalOperator: mathematicalOperator ?? this.mathematicalOperator,
-        value: value ?? this.value,
         boostSoundId:
             boostSoundId.present ? boostSoundId.value : this.boostSoundId,
         maxedOutSoundId: maxedOutSoundId.present
@@ -3152,13 +3215,6 @@ class RoomSurfaceBoost extends DataClass
           data.gameStatId.present ? data.gameStatId.value : this.gameStatId,
       interval: data.interval.present ? data.interval.value : this.interval,
       boost: data.boost.present ? data.boost.value : this.boost,
-      maxGameStatId: data.maxGameStatId.present
-          ? data.maxGameStatId.value
-          : this.maxGameStatId,
-      mathematicalOperator: data.mathematicalOperator.present
-          ? data.mathematicalOperator.value
-          : this.mathematicalOperator,
-      value: data.value.present ? data.value.value : this.value,
       boostSoundId: data.boostSoundId.present
           ? data.boostSoundId.value
           : this.boostSoundId,
@@ -3176,9 +3232,6 @@ class RoomSurfaceBoost extends DataClass
           ..write('gameStatId: $gameStatId, ')
           ..write('interval: $interval, ')
           ..write('boost: $boost, ')
-          ..write('maxGameStatId: $maxGameStatId, ')
-          ..write('mathematicalOperator: $mathematicalOperator, ')
-          ..write('value: $value, ')
           ..write('boostSoundId: $boostSoundId, ')
           ..write('maxedOutSoundId: $maxedOutSoundId')
           ..write(')'))
@@ -3186,17 +3239,8 @@ class RoomSurfaceBoost extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(
-      id,
-      roomSurfaceId,
-      gameStatId,
-      interval,
-      boost,
-      maxGameStatId,
-      mathematicalOperator,
-      value,
-      boostSoundId,
-      maxedOutSoundId);
+  int get hashCode => Object.hash(id, roomSurfaceId, gameStatId, interval,
+      boost, boostSoundId, maxedOutSoundId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3206,9 +3250,6 @@ class RoomSurfaceBoost extends DataClass
           other.gameStatId == this.gameStatId &&
           other.interval == this.interval &&
           other.boost == this.boost &&
-          other.maxGameStatId == this.maxGameStatId &&
-          other.mathematicalOperator == this.mathematicalOperator &&
-          other.value == this.value &&
           other.boostSoundId == this.boostSoundId &&
           other.maxedOutSoundId == this.maxedOutSoundId);
 }
@@ -3219,9 +3260,6 @@ class RoomSurfaceBoostsCompanion extends UpdateCompanion<RoomSurfaceBoost> {
   final Value<int> gameStatId;
   final Value<int> interval;
   final Value<int> boost;
-  final Value<int?> maxGameStatId;
-  final Value<MathematicalOperator> mathematicalOperator;
-  final Value<int> value;
   final Value<int?> boostSoundId;
   final Value<int?> maxedOutSoundId;
   const RoomSurfaceBoostsCompanion({
@@ -3230,9 +3268,6 @@ class RoomSurfaceBoostsCompanion extends UpdateCompanion<RoomSurfaceBoost> {
     this.gameStatId = const Value.absent(),
     this.interval = const Value.absent(),
     this.boost = const Value.absent(),
-    this.maxGameStatId = const Value.absent(),
-    this.mathematicalOperator = const Value.absent(),
-    this.value = const Value.absent(),
     this.boostSoundId = const Value.absent(),
     this.maxedOutSoundId = const Value.absent(),
   });
@@ -3242,9 +3277,6 @@ class RoomSurfaceBoostsCompanion extends UpdateCompanion<RoomSurfaceBoost> {
     required int gameStatId,
     this.interval = const Value.absent(),
     this.boost = const Value.absent(),
-    this.maxGameStatId = const Value.absent(),
-    this.mathematicalOperator = const Value.absent(),
-    this.value = const Value.absent(),
     this.boostSoundId = const Value.absent(),
     this.maxedOutSoundId = const Value.absent(),
   })  : roomSurfaceId = Value(roomSurfaceId),
@@ -3255,9 +3287,6 @@ class RoomSurfaceBoostsCompanion extends UpdateCompanion<RoomSurfaceBoost> {
     Expression<int>? gameStatId,
     Expression<int>? interval,
     Expression<int>? boost,
-    Expression<int>? maxGameStatId,
-    Expression<int>? mathematicalOperator,
-    Expression<int>? value,
     Expression<int>? boostSoundId,
     Expression<int>? maxedOutSoundId,
   }) {
@@ -3267,10 +3296,6 @@ class RoomSurfaceBoostsCompanion extends UpdateCompanion<RoomSurfaceBoost> {
       if (gameStatId != null) 'game_stat_id': gameStatId,
       if (interval != null) 'interval': interval,
       if (boost != null) 'boost': boost,
-      if (maxGameStatId != null) 'max_game_stat_id': maxGameStatId,
-      if (mathematicalOperator != null)
-        'mathematical_operator': mathematicalOperator,
-      if (value != null) 'value': value,
       if (boostSoundId != null) 'boost_sound_id': boostSoundId,
       if (maxedOutSoundId != null) 'maxed_out_sound_id': maxedOutSoundId,
     });
@@ -3282,9 +3307,6 @@ class RoomSurfaceBoostsCompanion extends UpdateCompanion<RoomSurfaceBoost> {
       Value<int>? gameStatId,
       Value<int>? interval,
       Value<int>? boost,
-      Value<int?>? maxGameStatId,
-      Value<MathematicalOperator>? mathematicalOperator,
-      Value<int>? value,
       Value<int?>? boostSoundId,
       Value<int?>? maxedOutSoundId}) {
     return RoomSurfaceBoostsCompanion(
@@ -3293,9 +3315,6 @@ class RoomSurfaceBoostsCompanion extends UpdateCompanion<RoomSurfaceBoost> {
       gameStatId: gameStatId ?? this.gameStatId,
       interval: interval ?? this.interval,
       boost: boost ?? this.boost,
-      maxGameStatId: maxGameStatId ?? this.maxGameStatId,
-      mathematicalOperator: mathematicalOperator ?? this.mathematicalOperator,
-      value: value ?? this.value,
       boostSoundId: boostSoundId ?? this.boostSoundId,
       maxedOutSoundId: maxedOutSoundId ?? this.maxedOutSoundId,
     );
@@ -3319,17 +3338,6 @@ class RoomSurfaceBoostsCompanion extends UpdateCompanion<RoomSurfaceBoost> {
     if (boost.present) {
       map['boost'] = Variable<int>(boost.value);
     }
-    if (maxGameStatId.present) {
-      map['max_game_stat_id'] = Variable<int>(maxGameStatId.value);
-    }
-    if (mathematicalOperator.present) {
-      map['mathematical_operator'] = Variable<int>($RoomSurfaceBoostsTable
-          .$convertermathematicalOperator
-          .toSql(mathematicalOperator.value));
-    }
-    if (value.present) {
-      map['value'] = Variable<int>(value.value);
-    }
     if (boostSoundId.present) {
       map['boost_sound_id'] = Variable<int>(boostSoundId.value);
     }
@@ -3347,9 +3355,6 @@ class RoomSurfaceBoostsCompanion extends UpdateCompanion<RoomSurfaceBoost> {
           ..write('gameStatId: $gameStatId, ')
           ..write('interval: $interval, ')
           ..write('boost: $boost, ')
-          ..write('maxGameStatId: $maxGameStatId, ')
-          ..write('mathematicalOperator: $mathematicalOperator, ')
-          ..write('value: $value, ')
           ..write('boostSoundId: $boostSoundId, ')
           ..write('maxedOutSoundId: $maxedOutSoundId')
           ..write(')'))
@@ -3753,6 +3758,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
             ],
           ),
           WritePropagation(
+            on: TableUpdateQuery.onTableName('game_stats',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('game_stats', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
             on: TableUpdateQuery.onTableName('room_surfaces',
                 limitUpdateKind: UpdateKind.delete),
             result: [
@@ -3764,13 +3776,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.delete),
             result: [
               TableUpdate('room_surface_boosts', kind: UpdateKind.delete),
-            ],
-          ),
-          WritePropagation(
-            on: TableUpdateQuery.onTableName('game_stats',
-                limitUpdateKind: UpdateKind.delete),
-            result: [
-              TableUpdate('room_surface_boosts', kind: UpdateKind.update),
             ],
           ),
           WritePropagation(
@@ -7276,6 +7281,9 @@ typedef $$GameStatsTableCreateCompanionBuilder = GameStatsCompanion Function({
   required String description,
   Value<int> defaultValue,
   Value<bool> isVisible,
+  Value<int?> maxGameStatId,
+  Value<MathematicalOperator> mathematicalOperator,
+  Value<int> maxValueMultiplier,
 });
 typedef $$GameStatsTableUpdateCompanionBuilder = GameStatsCompanion Function({
   Value<int> id,
@@ -7283,11 +7291,29 @@ typedef $$GameStatsTableUpdateCompanionBuilder = GameStatsCompanion Function({
   Value<String> description,
   Value<int> defaultValue,
   Value<bool> isVisible,
+  Value<int?> maxGameStatId,
+  Value<MathematicalOperator> mathematicalOperator,
+  Value<int> maxValueMultiplier,
 });
 
 final class $$GameStatsTableReferences
     extends BaseReferences<_$AppDatabase, $GameStatsTable, GameStat> {
   $$GameStatsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $GameStatsTable _maxGameStatIdTable(_$AppDatabase db) =>
+      db.gameStats.createAlias(
+          $_aliasNameGenerator(db.gameStats.maxGameStatId, db.gameStats.id));
+
+  $$GameStatsTableProcessedTableManager? get maxGameStatId {
+    final $_column = $_itemColumn<int>('max_game_stat_id');
+    if ($_column == null) return null;
+    final manager = $$GameStatsTableTableManager($_db, $_db.gameStats)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_maxGameStatIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
 
   static MultiTypedResultKey<$RoomSurfaceBoostsTable, List<RoomSurfaceBoost>>
       _roomSurfaceBoostsRefsTable(_$AppDatabase db) =>
@@ -7302,22 +7328,6 @@ final class $$GameStatsTableReferences
 
     final cache =
         $_typedResult.readTableOrNull(_roomSurfaceBoostsRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$RoomSurfaceBoostsTable, List<RoomSurfaceBoost>>
-      _game_stat_maxTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.roomSurfaceBoosts,
-              aliasName: $_aliasNameGenerator(
-                  db.gameStats.id, db.roomSurfaceBoosts.maxGameStatId));
-
-  $$RoomSurfaceBoostsTableProcessedTableManager get game_stat_max {
-    final manager = $$RoomSurfaceBoostsTableTableManager(
-            $_db, $_db.roomSurfaceBoosts)
-        .filter((f) => f.maxGameStatId.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_game_stat_maxTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -7364,6 +7374,36 @@ class $$GameStatsTableFilterComposer
   ColumnFilters<bool> get isVisible => $composableBuilder(
       column: $table.isVisible, builder: (column) => ColumnFilters(column));
 
+  ColumnWithTypeConverterFilters<MathematicalOperator, MathematicalOperator,
+          int>
+      get mathematicalOperator => $composableBuilder(
+          column: $table.mathematicalOperator,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<int> get maxValueMultiplier => $composableBuilder(
+      column: $table.maxValueMultiplier,
+      builder: (column) => ColumnFilters(column));
+
+  $$GameStatsTableFilterComposer get maxGameStatId {
+    final $$GameStatsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.maxGameStatId,
+        referencedTable: $db.gameStats,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$GameStatsTableFilterComposer(
+              $db: $db,
+              $table: $db.gameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
   Expression<bool> roomSurfaceBoostsRefs(
       Expression<bool> Function($$RoomSurfaceBoostsTableFilterComposer f) f) {
     final $$RoomSurfaceBoostsTableFilterComposer composer = $composerBuilder(
@@ -7371,27 +7411,6 @@ class $$GameStatsTableFilterComposer
         getCurrentColumn: (t) => t.id,
         referencedTable: $db.roomSurfaceBoosts,
         getReferencedColumn: (t) => t.gameStatId,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$RoomSurfaceBoostsTableFilterComposer(
-              $db: $db,
-              $table: $db.roomSurfaceBoosts,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<bool> game_stat_max(
-      Expression<bool> Function($$RoomSurfaceBoostsTableFilterComposer f) f) {
-    final $$RoomSurfaceBoostsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.roomSurfaceBoosts,
-        getReferencedColumn: (t) => t.maxGameStatId,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
@@ -7452,6 +7471,34 @@ class $$GameStatsTableOrderingComposer
 
   ColumnOrderings<bool> get isVisible => $composableBuilder(
       column: $table.isVisible, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get mathematicalOperator => $composableBuilder(
+      column: $table.mathematicalOperator,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get maxValueMultiplier => $composableBuilder(
+      column: $table.maxValueMultiplier,
+      builder: (column) => ColumnOrderings(column));
+
+  $$GameStatsTableOrderingComposer get maxGameStatId {
+    final $$GameStatsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.maxGameStatId,
+        referencedTable: $db.gameStats,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$GameStatsTableOrderingComposer(
+              $db: $db,
+              $table: $db.gameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$GameStatsTableAnnotationComposer
@@ -7478,6 +7525,33 @@ class $$GameStatsTableAnnotationComposer
   GeneratedColumn<bool> get isVisible =>
       $composableBuilder(column: $table.isVisible, builder: (column) => column);
 
+  GeneratedColumnWithTypeConverter<MathematicalOperator, int>
+      get mathematicalOperator => $composableBuilder(
+          column: $table.mathematicalOperator, builder: (column) => column);
+
+  GeneratedColumn<int> get maxValueMultiplier => $composableBuilder(
+      column: $table.maxValueMultiplier, builder: (column) => column);
+
+  $$GameStatsTableAnnotationComposer get maxGameStatId {
+    final $$GameStatsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.maxGameStatId,
+        referencedTable: $db.gameStats,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$GameStatsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.gameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
   Expression<T> roomSurfaceBoostsRefs<T extends Object>(
       Expression<T> Function($$RoomSurfaceBoostsTableAnnotationComposer a) f) {
     final $$RoomSurfaceBoostsTableAnnotationComposer composer =
@@ -7486,28 +7560,6 @@ class $$GameStatsTableAnnotationComposer
             getCurrentColumn: (t) => t.id,
             referencedTable: $db.roomSurfaceBoosts,
             getReferencedColumn: (t) => t.gameStatId,
-            builder: (joinBuilder,
-                    {$addJoinBuilderToRootComposer,
-                    $removeJoinBuilderFromRootComposer}) =>
-                $$RoomSurfaceBoostsTableAnnotationComposer(
-                  $db: $db,
-                  $table: $db.roomSurfaceBoosts,
-                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                  joinBuilder: joinBuilder,
-                  $removeJoinBuilderFromRootComposer:
-                      $removeJoinBuilderFromRootComposer,
-                ));
-    return f(composer);
-  }
-
-  Expression<T> game_stat_max<T extends Object>(
-      Expression<T> Function($$RoomSurfaceBoostsTableAnnotationComposer a) f) {
-    final $$RoomSurfaceBoostsTableAnnotationComposer composer =
-        $composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.id,
-            referencedTable: $db.roomSurfaceBoosts,
-            getReferencedColumn: (t) => t.maxGameStatId,
             builder: (joinBuilder,
                     {$addJoinBuilderToRootComposer,
                     $removeJoinBuilderFromRootComposer}) =>
@@ -7556,8 +7608,8 @@ class $$GameStatsTableTableManager extends RootTableManager<
     (GameStat, $$GameStatsTableReferences),
     GameStat,
     PrefetchHooks Function(
-        {bool roomSurfaceBoostsRefs,
-        bool game_stat_max,
+        {bool maxGameStatId,
+        bool roomSurfaceBoostsRefs,
         bool roomSurfaceCostsRefs})> {
   $$GameStatsTableTableManager(_$AppDatabase db, $GameStatsTable table)
       : super(TableManagerState(
@@ -7575,6 +7627,10 @@ class $$GameStatsTableTableManager extends RootTableManager<
             Value<String> description = const Value.absent(),
             Value<int> defaultValue = const Value.absent(),
             Value<bool> isVisible = const Value.absent(),
+            Value<int?> maxGameStatId = const Value.absent(),
+            Value<MathematicalOperator> mathematicalOperator =
+                const Value.absent(),
+            Value<int> maxValueMultiplier = const Value.absent(),
           }) =>
               GameStatsCompanion(
             id: id,
@@ -7582,6 +7638,9 @@ class $$GameStatsTableTableManager extends RootTableManager<
             description: description,
             defaultValue: defaultValue,
             isVisible: isVisible,
+            maxGameStatId: maxGameStatId,
+            mathematicalOperator: mathematicalOperator,
+            maxValueMultiplier: maxValueMultiplier,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -7589,6 +7648,10 @@ class $$GameStatsTableTableManager extends RootTableManager<
             required String description,
             Value<int> defaultValue = const Value.absent(),
             Value<bool> isVisible = const Value.absent(),
+            Value<int?> maxGameStatId = const Value.absent(),
+            Value<MathematicalOperator> mathematicalOperator =
+                const Value.absent(),
+            Value<int> maxValueMultiplier = const Value.absent(),
           }) =>
               GameStatsCompanion.insert(
             id: id,
@@ -7596,6 +7659,9 @@ class $$GameStatsTableTableManager extends RootTableManager<
             description: description,
             defaultValue: defaultValue,
             isVisible: isVisible,
+            maxGameStatId: maxGameStatId,
+            mathematicalOperator: mathematicalOperator,
+            maxValueMultiplier: maxValueMultiplier,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
@@ -7604,17 +7670,41 @@ class $$GameStatsTableTableManager extends RootTableManager<
                   ))
               .toList(),
           prefetchHooksCallback: (
-              {roomSurfaceBoostsRefs = false,
-              game_stat_max = false,
+              {maxGameStatId = false,
+              roomSurfaceBoostsRefs = false,
               roomSurfaceCostsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (roomSurfaceBoostsRefs) db.roomSurfaceBoosts,
-                if (game_stat_max) db.roomSurfaceBoosts,
                 if (roomSurfaceCostsRefs) db.roomSurfaceCosts
               ],
-              addJoins: null,
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (maxGameStatId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.maxGameStatId,
+                    referencedTable:
+                        $$GameStatsTableReferences._maxGameStatIdTable(db),
+                    referencedColumn:
+                        $$GameStatsTableReferences._maxGameStatIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (roomSurfaceBoostsRefs)
@@ -7628,18 +7718,6 @@ class $$GameStatsTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.gameStatId == item.id),
-                        typedResults: items),
-                  if (game_stat_max)
-                    await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable:
-                            $$GameStatsTableReferences._game_stat_maxTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$GameStatsTableReferences(db, table, p0)
-                                .game_stat_max,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) => referencedItems
-                                .where((e) => e.maxGameStatId == item.id),
                         typedResults: items),
                   if (roomSurfaceCostsRefs)
                     await $_getPrefetchedData(
@@ -7672,8 +7750,8 @@ typedef $$GameStatsTableProcessedTableManager = ProcessedTableManager<
     (GameStat, $$GameStatsTableReferences),
     GameStat,
     PrefetchHooks Function(
-        {bool roomSurfaceBoostsRefs,
-        bool game_stat_max,
+        {bool maxGameStatId,
+        bool roomSurfaceBoostsRefs,
         bool roomSurfaceCostsRefs})>;
 typedef $$RoomSurfaceBoostsTableCreateCompanionBuilder
     = RoomSurfaceBoostsCompanion Function({
@@ -7682,9 +7760,6 @@ typedef $$RoomSurfaceBoostsTableCreateCompanionBuilder
   required int gameStatId,
   Value<int> interval,
   Value<int> boost,
-  Value<int?> maxGameStatId,
-  Value<MathematicalOperator> mathematicalOperator,
-  Value<int> value,
   Value<int?> boostSoundId,
   Value<int?> maxedOutSoundId,
 });
@@ -7695,9 +7770,6 @@ typedef $$RoomSurfaceBoostsTableUpdateCompanionBuilder
   Value<int> gameStatId,
   Value<int> interval,
   Value<int> boost,
-  Value<int?> maxGameStatId,
-  Value<MathematicalOperator> mathematicalOperator,
-  Value<int> value,
   Value<int?> boostSoundId,
   Value<int?> maxedOutSoundId,
 });
@@ -7732,21 +7804,6 @@ final class $$RoomSurfaceBoostsTableReferences extends BaseReferences<
     final manager = $$GameStatsTableTableManager($_db, $_db.gameStats)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_gameStatIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
-  }
-
-  static $GameStatsTable _maxGameStatIdTable(_$AppDatabase db) =>
-      db.gameStats.createAlias($_aliasNameGenerator(
-          db.roomSurfaceBoosts.maxGameStatId, db.gameStats.id));
-
-  $$GameStatsTableProcessedTableManager? get maxGameStatId {
-    final $_column = $_itemColumn<int>('max_game_stat_id');
-    if ($_column == null) return null;
-    final manager = $$GameStatsTableTableManager($_db, $_db.gameStats)
-        .filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_maxGameStatIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
@@ -7803,15 +7860,6 @@ class $$RoomSurfaceBoostsTableFilterComposer
   ColumnFilters<int> get boost => $composableBuilder(
       column: $table.boost, builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<MathematicalOperator, MathematicalOperator,
-          int>
-      get mathematicalOperator => $composableBuilder(
-          column: $table.mathematicalOperator,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
-
-  ColumnFilters<int> get value => $composableBuilder(
-      column: $table.value, builder: (column) => ColumnFilters(column));
-
   $$RoomSurfacesTableFilterComposer get roomSurfaceId {
     final $$RoomSurfacesTableFilterComposer composer = $composerBuilder(
         composer: this,
@@ -7836,26 +7884,6 @@ class $$RoomSurfaceBoostsTableFilterComposer
     final $$GameStatsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.gameStatId,
-        referencedTable: $db.gameStats,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$GameStatsTableFilterComposer(
-              $db: $db,
-              $table: $db.gameStats,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  $$GameStatsTableFilterComposer get maxGameStatId {
-    final $$GameStatsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.maxGameStatId,
         referencedTable: $db.gameStats,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
@@ -7931,13 +7959,6 @@ class $$RoomSurfaceBoostsTableOrderingComposer
   ColumnOrderings<int> get boost => $composableBuilder(
       column: $table.boost, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get mathematicalOperator => $composableBuilder(
-      column: $table.mathematicalOperator,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get value => $composableBuilder(
-      column: $table.value, builder: (column) => ColumnOrderings(column));
-
   $$RoomSurfacesTableOrderingComposer get roomSurfaceId {
     final $$RoomSurfacesTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -7962,26 +7983,6 @@ class $$RoomSurfaceBoostsTableOrderingComposer
     final $$GameStatsTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.gameStatId,
-        referencedTable: $db.gameStats,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$GameStatsTableOrderingComposer(
-              $db: $db,
-              $table: $db.gameStats,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  $$GameStatsTableOrderingComposer get maxGameStatId {
-    final $$GameStatsTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.maxGameStatId,
         referencedTable: $db.gameStats,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
@@ -8057,13 +8058,6 @@ class $$RoomSurfaceBoostsTableAnnotationComposer
   GeneratedColumn<int> get boost =>
       $composableBuilder(column: $table.boost, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<MathematicalOperator, int>
-      get mathematicalOperator => $composableBuilder(
-          column: $table.mathematicalOperator, builder: (column) => column);
-
-  GeneratedColumn<int> get value =>
-      $composableBuilder(column: $table.value, builder: (column) => column);
-
   $$RoomSurfacesTableAnnotationComposer get roomSurfaceId {
     final $$RoomSurfacesTableAnnotationComposer composer = $composerBuilder(
         composer: this,
@@ -8088,26 +8082,6 @@ class $$RoomSurfaceBoostsTableAnnotationComposer
     final $$GameStatsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.gameStatId,
-        referencedTable: $db.gameStats,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$GameStatsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.gameStats,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  $$GameStatsTableAnnotationComposer get maxGameStatId {
-    final $$GameStatsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.maxGameStatId,
         referencedTable: $db.gameStats,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
@@ -8179,7 +8153,6 @@ class $$RoomSurfaceBoostsTableTableManager extends RootTableManager<
     PrefetchHooks Function(
         {bool roomSurfaceId,
         bool gameStatId,
-        bool maxGameStatId,
         bool boostSoundId,
         bool maxedOutSoundId})> {
   $$RoomSurfaceBoostsTableTableManager(
@@ -8200,10 +8173,6 @@ class $$RoomSurfaceBoostsTableTableManager extends RootTableManager<
             Value<int> gameStatId = const Value.absent(),
             Value<int> interval = const Value.absent(),
             Value<int> boost = const Value.absent(),
-            Value<int?> maxGameStatId = const Value.absent(),
-            Value<MathematicalOperator> mathematicalOperator =
-                const Value.absent(),
-            Value<int> value = const Value.absent(),
             Value<int?> boostSoundId = const Value.absent(),
             Value<int?> maxedOutSoundId = const Value.absent(),
           }) =>
@@ -8213,9 +8182,6 @@ class $$RoomSurfaceBoostsTableTableManager extends RootTableManager<
             gameStatId: gameStatId,
             interval: interval,
             boost: boost,
-            maxGameStatId: maxGameStatId,
-            mathematicalOperator: mathematicalOperator,
-            value: value,
             boostSoundId: boostSoundId,
             maxedOutSoundId: maxedOutSoundId,
           ),
@@ -8225,10 +8191,6 @@ class $$RoomSurfaceBoostsTableTableManager extends RootTableManager<
             required int gameStatId,
             Value<int> interval = const Value.absent(),
             Value<int> boost = const Value.absent(),
-            Value<int?> maxGameStatId = const Value.absent(),
-            Value<MathematicalOperator> mathematicalOperator =
-                const Value.absent(),
-            Value<int> value = const Value.absent(),
             Value<int?> boostSoundId = const Value.absent(),
             Value<int?> maxedOutSoundId = const Value.absent(),
           }) =>
@@ -8238,9 +8200,6 @@ class $$RoomSurfaceBoostsTableTableManager extends RootTableManager<
             gameStatId: gameStatId,
             interval: interval,
             boost: boost,
-            maxGameStatId: maxGameStatId,
-            mathematicalOperator: mathematicalOperator,
-            value: value,
             boostSoundId: boostSoundId,
             maxedOutSoundId: maxedOutSoundId,
           ),
@@ -8253,7 +8212,6 @@ class $$RoomSurfaceBoostsTableTableManager extends RootTableManager<
           prefetchHooksCallback: (
               {roomSurfaceId = false,
               gameStatId = false,
-              maxGameStatId = false,
               boostSoundId = false,
               maxedOutSoundId = false}) {
             return PrefetchHooks(
@@ -8291,17 +8249,6 @@ class $$RoomSurfaceBoostsTableTableManager extends RootTableManager<
                         $$RoomSurfaceBoostsTableReferences._gameStatIdTable(db),
                     referencedColumn: $$RoomSurfaceBoostsTableReferences
                         ._gameStatIdTable(db)
-                        .id,
-                  ) as T;
-                }
-                if (maxGameStatId) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.maxGameStatId,
-                    referencedTable: $$RoomSurfaceBoostsTableReferences
-                        ._maxGameStatIdTable(db),
-                    referencedColumn: $$RoomSurfaceBoostsTableReferences
-                        ._maxGameStatIdTable(db)
                         .id,
                   ) as T;
                 }
@@ -8352,7 +8299,6 @@ typedef $$RoomSurfaceBoostsTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function(
         {bool roomSurfaceId,
         bool gameStatId,
-        bool maxGameStatId,
         bool boostSoundId,
         bool maxedOutSoundId})>;
 typedef $$RoomSurfaceCostsTableCreateCompanionBuilder

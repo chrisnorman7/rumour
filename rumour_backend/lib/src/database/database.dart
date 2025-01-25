@@ -29,7 +29,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// The schema version.
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   /// Migrate the database.
   @override
@@ -47,6 +47,16 @@ class AppDatabase extends _$AppDatabase {
           if (from < 3) {
             await m.createTable(roomSurfaceBoosts);
             await m.createTable(roomSurfaceCosts);
+          }
+          if (from < 4) {
+            await m.alterTable(TableMigration(roomSurfaceBoosts));
+            for (final column in <GeneratedColumn>[
+              this.gameStats.maxGameStatId,
+              this.gameStats.mathematicalOperator,
+              this.gameStats.maxValueMultiplier,
+            ]) {
+              await m.addColumn(this.gameStats, column);
+            }
           }
         },
       );

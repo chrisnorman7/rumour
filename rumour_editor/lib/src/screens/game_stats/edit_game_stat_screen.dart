@@ -3,8 +3,10 @@ import 'package:backstreets_widgets/widgets.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:recase/recase.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_editor/rumour_editor.dart';
+import 'package:rumour_editor/src/widgets/game_stat_list_tile.dart';
 
 /// A screen to edit a game stat.
 class EditGameStatScreen extends ConsumerWidget {
@@ -26,8 +28,9 @@ class EditGameStatScreen extends ConsumerWidget {
     return Cancel(
       child: SimpleScaffold(
         title: 'Edit Stat',
-        body: value.simpleWhen(
-          (final stat) => ListView(
+        body: value.simpleWhen((final gameStatContext) {
+          final stat = gameStatContext.gameStat;
+          return ListView(
             shrinkWrap: true,
             children: [
               TextListTile(
@@ -67,9 +70,42 @@ class EditGameStatScreen extends ConsumerWidget {
                 },
                 title: const Text('Visible in stats menu'),
               ),
+              GameStatListTile(
+                gameStatId: stat.maxGameStatId,
+                title: 'Max value game stat',
+                onChanged: (final value) async {
+                  await query.update(
+                    (final o) => o(maxGameStatId: Value(value?.id)),
+                  );
+                  invalidateProviders(ref);
+                },
+              ),
+              EnumListTile(
+                title: 'Max value mathematical operator',
+                values: MathematicalOperator.values,
+                onChanged: (final value) async {
+                  await query.update(
+                    (final o) => o(mathematicalOperator: Value(value!)),
+                  );
+                  invalidateProviders(ref);
+                },
+                nullable: false,
+                getEnumValueName: (final value) => value!.name.titleCase,
+                value: stat.mathematicalOperator,
+              ),
+              IntListTile(
+                value: stat.maxValueMultiplier,
+                onChanged: (final value) async {
+                  await query.update(
+                    (final o) => o(maxValueMultiplier: Value(value)),
+                  );
+                  invalidateProviders(ref);
+                },
+                title: 'Max value multiplier',
+              ),
             ],
-          ),
-        ),
+          );
+        }),
       ),
     );
   }

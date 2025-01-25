@@ -7,7 +7,7 @@ enum MathematicalOperator {
   minus,
 
   /// *
-  multiple,
+  multiply,
 
   /// /
   divide,

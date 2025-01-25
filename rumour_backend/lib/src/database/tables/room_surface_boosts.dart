@@ -10,21 +10,6 @@ class RoomSurfaceBoosts extends Table
   /// How much of this stat should be added each boost cycle.
   IntColumn get boost => integer().withDefault(const Constant(1))();
 
-  /// The ID of the game stat whose value should be treated as the max value for
-  /// this stat.
-  @ReferenceName('game_stat_max')
-  IntColumn get maxGameStatId => integer()
-      .references(GameStats, #id, onDelete: KeyAction.setNull)
-      .nullable()();
-
-  /// /// The mathematical operator to use.
-  IntColumn get mathematicalOperator => intEnum<MathematicalOperator>()
-      .withDefault(Constant(MathematicalOperator.plus.index))();
-
-  /// The value to combine with the [mathematicalOperator] and the max game stat
-  /// to get the final max value.
-  IntColumn get value => integer().withDefault(const Constant(1))();
-
   /// The ID of the sound which will play if and when this stat is boosted.
   @ReferenceName('roomSurfaceBoostBoostSounds')
   IntColumn get boostSoundId => integer()

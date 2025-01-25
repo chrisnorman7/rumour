@@ -618,21 +618,27 @@ Future<List<GameStat>> gameStats(final Ref ref) async {
   final manager = projectContext.database.managers.gameStats;
   final stats = await manager.orderBy((final o) => o.name.asc()).get();
   if (stats.isEmpty) {
+    final gold = await manager.createReturning(
+      (final f) => f(
+        name: 'Gold',
+        description: 'How much gold is currently being carried.',
+      ),
+    );
+    final maxHealth = await manager.createReturning(
+      (final f) =>
+          f(name: 'Max health', description: 'The maximum possible health.'),
+    );
+    final health = await manager.createReturning(
+      (final f) => f(
+        name: 'Health',
+        description: 'How healthy something is.',
+        maxGameStatId: Value(maxHealth.id),
+      ),
+    );
     stats.addAll([
-      await manager.createReturning(
-        (final f) => f(
-          name: 'Gold',
-          description: 'How much gold is currently being carried.',
-        ),
-      ),
-      await manager.createReturning(
-        (final f) =>
-            f(name: 'Max health', description: 'The maximum possible health.'),
-      ),
-      await manager.createReturning(
-        (final f) =>
-            f(name: 'Health', description: 'How healthy something is.'),
-      ),
+      gold,
+      maxHealth,
+      health,
     ]);
   }
   return stats;
@@ -640,9 +646,14 @@ Future<List<GameStat>> gameStats(final Ref ref) async {
 
 /// Provide a single game stat.
 @riverpod
-Future<GameStat> gameStat(final Ref ref, final int id) async {
+Future<GameStatContext> gameStat(final Ref ref, final int id) async {
   final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.gameStats
-      .filter((final f) => f.id.equals(id))
-      .getSingle();
+  final manager = projectContext.database.managers.gameStats;
+  final stat = await manager.filter((final f) => f.id.equals(id)).getSingle();
+  final maxGameStatId = stat.maxGameStatId;
+  if (maxGameStatId == null) {
+    return GameStatContext(gameStat: stat);
+  }
+  final value = await ref.watch(gameStatProvider(maxGameStatId).future);
+  return GameStatContext(gameStat: stat, maxValueGameStat: value.gameStat);
 }

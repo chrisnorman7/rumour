@@ -2252,7 +2252,7 @@ class _ProjectDataDirectoryProviderElement
   Project get project => (origin as ProjectDataDirectoryProvider).project;
 }
 
-String _$gameStatsHash() => r'59f67630988e360dbb1f4b42d9dddec25d82f9f6';
+String _$gameStatsHash() => r'5dacaeac9013308a88c5ddd0279ba5870528faae';
 
 /// Provide all game stats.
 ///
@@ -2270,7 +2270,7 @@ final gameStatsProvider = AutoDisposeFutureProvider<List<GameStat>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef GameStatsRef = AutoDisposeFutureProviderRef<List<GameStat>>;
-String _$gameStatHash() => r'ea9c769f8b516fc5f57cc830e8876afb1e1152b3';
+String _$gameStatHash() => r'1a409ba7ea33d83dc9936d5f22ada50ed3292832';
 
 /// Provide a single game stat.
 ///
@@ -2281,7 +2281,7 @@ const gameStatProvider = GameStatFamily();
 /// Provide a single game stat.
 ///
 /// Copied from [gameStat].
-class GameStatFamily extends Family<AsyncValue<GameStat>> {
+class GameStatFamily extends Family<AsyncValue<GameStatContext>> {
   /// Provide a single game stat.
   ///
   /// Copied from [gameStat].
@@ -2325,7 +2325,7 @@ class GameStatFamily extends Family<AsyncValue<GameStat>> {
 /// Provide a single game stat.
 ///
 /// Copied from [gameStat].
-class GameStatProvider extends AutoDisposeFutureProvider<GameStat> {
+class GameStatProvider extends AutoDisposeFutureProvider<GameStatContext> {
   /// Provide a single game stat.
   ///
   /// Copied from [gameStat].
@@ -2361,7 +2361,7 @@ class GameStatProvider extends AutoDisposeFutureProvider<GameStat> {
 
   @override
   Override overrideWith(
-    FutureOr<GameStat> Function(GameStatRef provider) create,
+    FutureOr<GameStatContext> Function(GameStatRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -2378,7 +2378,7 @@ class GameStatProvider extends AutoDisposeFutureProvider<GameStat> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<GameStat> createElement() {
+  AutoDisposeFutureProviderElement<GameStatContext> createElement() {
     return _GameStatProviderElement(this);
   }
 
@@ -2398,13 +2398,13 @@ class GameStatProvider extends AutoDisposeFutureProvider<GameStat> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin GameStatRef on AutoDisposeFutureProviderRef<GameStat> {
+mixin GameStatRef on AutoDisposeFutureProviderRef<GameStatContext> {
   /// The parameter `id` of this provider.
   int get id;
 }
 
 class _GameStatProviderElement
-    extends AutoDisposeFutureProviderElement<GameStat> with GameStatRef {
+    extends AutoDisposeFutureProviderElement<GameStatContext> with GameStatRef {
   _GameStatProviderElement(super.provider);
 
   @override
