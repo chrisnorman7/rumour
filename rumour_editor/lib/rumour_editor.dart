@@ -1,7 +1,6 @@
 /// Export everything.
 library;
 
-export 'src/extensions/async_value_x.dart';
 export 'src/extensions/build_context_x.dart';
 export 'src/extensions/int_x.dart';
 export 'src/extensions/list_x.dart';

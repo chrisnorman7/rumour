@@ -5,14 +5,19 @@ import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:rumour_backend/rumour_backend.dart';
-import 'package:rumour_player/src/widgets/audio_game_menu_list_view.dart';
+import 'package:rumour_player/rumour_player.dart';
+import 'package:rumour_player/src/widgets/pause_menu_tabs/player_stats_tab.dart';
 
 /// The pause menu.
 class PauseMenu extends ConsumerWidget {
   /// Create an instance.
   const PauseMenu({
+    required this.playerId,
     super.key,
   });
+
+  /// The ID of the game player context to use.
+  final String playerId;
 
   /// Build the widget.
   @override
@@ -29,16 +34,19 @@ class PauseMenu extends ConsumerWidget {
         ),
         fadeInTime: project.mainMenuMusicFadeIn,
         fadeOutTime: project.mainMenuMusicFadeOut,
-        builder: (final context) => SimpleScaffold(
-          title: project.pauseMenuTitle,
-          body: const AudioGameMenuListView(
-            menuItems: [
-              AudioGameMenuItem(
-                title: 'Return to game',
-                onActivate: Navigator.pop,
-              ),
-            ],
-          ),
+        builder: (final context) => TabbedScaffold(
+          tabs: [
+            TabbedScaffoldTab(
+              title: project.pauseMenuTitle,
+              icon: const Icon(Icons.pause),
+              builder: (final _) => PauseMenuTab(playerId: playerId),
+            ),
+            TabbedScaffoldTab(
+              title: 'Stats',
+              icon: const Icon(Icons.insert_chart_outlined),
+              builder: (final _) => PlayerStatsTab(playerId: playerId),
+            ),
+          ],
         ),
       ),
     );

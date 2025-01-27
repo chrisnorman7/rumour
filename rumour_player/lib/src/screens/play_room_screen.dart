@@ -210,7 +210,9 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
                         }
                         if (innerContext.mounted) {
                           await innerContext.fadeMusicAndPushWidget(
-                            (final _) => const PauseMenu(),
+                            (final _) => PauseMenu(
+                              playerId: widget.playerId,
+                            ),
                           );
                         }
                         if (state != null) {

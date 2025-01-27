@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recase/recase.dart';
 import 'package:rumour_backend/rumour_backend.dart';
-import 'package:rumour_editor/rumour_editor.dart';
 import 'package:rumour_editor/src/widgets/game_stat_list_tile.dart';
 
 /// A screen to edit a game stat.

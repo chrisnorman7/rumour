@@ -3337,6 +3337,167 @@ class _RoomSurfaceBoostsProviderElement
   int get id => (origin as RoomSurfaceBoostsProvider).id;
 }
 
+String _$gameStatValueHash() => r'08101fb79b7c40de0b5bcf927da94faf520ed1f7';
+
+/// Provide a game stat value.
+///
+/// Copied from [gameStatValue].
+@ProviderFor(gameStatValue)
+const gameStatValueProvider = GameStatValueFamily();
+
+/// Provide a game stat value.
+///
+/// Copied from [gameStatValue].
+class GameStatValueFamily extends Family<AsyncValue<GameStatValueContext>> {
+  /// Provide a game stat value.
+  ///
+  /// Copied from [gameStatValue].
+  const GameStatValueFamily();
+
+  /// Provide a game stat value.
+  ///
+  /// Copied from [gameStatValue].
+  GameStatValueProvider call(
+    String playerId,
+    int gameStatId,
+  ) {
+    return GameStatValueProvider(
+      playerId,
+      gameStatId,
+    );
+  }
+
+  @override
+  GameStatValueProvider getProviderOverride(
+    covariant GameStatValueProvider provider,
+  ) {
+    return call(
+      provider.playerId,
+      provider.gameStatId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'gameStatValueProvider';
+}
+
+/// Provide a game stat value.
+///
+/// Copied from [gameStatValue].
+class GameStatValueProvider
+    extends AutoDisposeFutureProvider<GameStatValueContext> {
+  /// Provide a game stat value.
+  ///
+  /// Copied from [gameStatValue].
+  GameStatValueProvider(
+    String playerId,
+    int gameStatId,
+  ) : this._internal(
+          (ref) => gameStatValue(
+            ref as GameStatValueRef,
+            playerId,
+            gameStatId,
+          ),
+          from: gameStatValueProvider,
+          name: r'gameStatValueProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$gameStatValueHash,
+          dependencies: GameStatValueFamily._dependencies,
+          allTransitiveDependencies:
+              GameStatValueFamily._allTransitiveDependencies,
+          playerId: playerId,
+          gameStatId: gameStatId,
+        );
+
+  GameStatValueProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.playerId,
+    required this.gameStatId,
+  }) : super.internal();
+
+  final String playerId;
+  final int gameStatId;
+
+  @override
+  Override overrideWith(
+    FutureOr<GameStatValueContext> Function(GameStatValueRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: GameStatValueProvider._internal(
+        (ref) => create(ref as GameStatValueRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        playerId: playerId,
+        gameStatId: gameStatId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<GameStatValueContext> createElement() {
+    return _GameStatValueProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is GameStatValueProvider &&
+        other.playerId == playerId &&
+        other.gameStatId == gameStatId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, playerId.hashCode);
+    hash = _SystemHash.combine(hash, gameStatId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin GameStatValueRef on AutoDisposeFutureProviderRef<GameStatValueContext> {
+  /// The parameter `playerId` of this provider.
+  String get playerId;
+
+  /// The parameter `gameStatId` of this provider.
+  int get gameStatId;
+}
+
+class _GameStatValueProviderElement
+    extends AutoDisposeFutureProviderElement<GameStatValueContext>
+    with GameStatValueRef {
+  _GameStatValueProviderElement(super.provider);
+
+  @override
+  String get playerId => (origin as GameStatValueProvider).playerId;
+  @override
+  int get gameStatId => (origin as GameStatValueProvider).gameStatId;
+}
+
 String _$currentProjectContextHash() =>
     r'4c8cc047a1a79eb695b9f390a99148ce921e1e5b';
 

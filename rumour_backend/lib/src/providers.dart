@@ -759,3 +759,33 @@ Future<List<RoomSurfaceBoost>> roomSurfaceBoosts(final Ref ref, final int id) {
       )
       .get();
 }
+
+/// Provide a game stat value.
+@riverpod
+Future<GameStatValueContext> gameStatValue(
+  final Ref ref,
+  final String playerId,
+  final int gameStatId,
+) async {
+  final gameStatContext = await ref.watch(
+    gameStatProvider(gameStatId).future,
+  );
+  final value = await ref.watch(
+    playerStatProvider(playerId, gameStatId).future,
+  );
+  final maxValueGameStat = gameStatContext.maxValueGameStat;
+  final int? maxValue;
+  if (maxValueGameStat != null) {
+    maxValue = await ref.watch(
+      playerStatProvider(playerId, maxValueGameStat.id).future,
+    );
+  } else {
+    maxValue = null;
+  }
+  return GameStatValueContext(
+    gameStat: gameStatContext.gameStat,
+    value: value,
+    maxValueGameStat: maxValueGameStat,
+    maxValue: maxValue,
+  );
+}
