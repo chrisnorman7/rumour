@@ -28,6 +28,15 @@ class ProjectSettingsTab extends ConsumerWidget {
           title: 'Rename Project',
           labelText: 'Project name',
         ),
+        IntListTile(
+          value: project.pauseSoundsVolumeReduction,
+          onChanged: (final value) {
+            project.pauseSoundsVolumeReduction = value;
+            _saveProject(ref, project);
+          },
+          title: 'Pause menu sound volume reduction',
+          min: 1,
+        ),
         ListTile(
           title: const Text('Sounds directory'),
           subtitle: Text(projectContext.soundsDirectory.path),
