@@ -644,6 +644,13 @@ Future<List<GameStat>> gameStats(final Ref ref) async {
   return stats;
 }
 
+/// Provide all visible game stats.
+@riverpod
+Future<List<GameStat>> visibleGameStats(final Ref ref) async {
+  final stats = await ref.watch(gameStatsProvider.future);
+  return stats.where((final s) => s.isVisible).toList();
+}
+
 /// Provide a single game stat.
 @riverpod
 Future<GameStatContext> gameStat(final Ref ref, final int id) async {

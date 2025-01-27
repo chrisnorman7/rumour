@@ -13,9 +13,8 @@ GamePlayer _$GamePlayerFromJson(Map<String, dynamic> json) => GamePlayer(
       x: (json['x'] as num).toInt(),
       y: (json['y'] as num).toInt(),
       stats: (json['stats'] as Map<String, dynamic>?)?.map(
-            (k, e) => MapEntry(int.parse(k), (e as num).toInt()),
-          ) ??
-          const {},
+        (k, e) => MapEntry(int.parse(k), (e as num).toInt()),
+      ),
     );
 
 Map<String, dynamic> _$GamePlayerToJson(GamePlayer instance) =>

@@ -14,8 +14,8 @@ class GamePlayer {
     required this.roomId,
     required this.x,
     required this.y,
-    this.stats = const {},
-  });
+    final Map<int, int>? stats,
+  }) : stats = stats ?? {};
 
   /// Create an instance from a JSON object.
   factory GamePlayer.fromJson(final Map<String, dynamic> json) =>

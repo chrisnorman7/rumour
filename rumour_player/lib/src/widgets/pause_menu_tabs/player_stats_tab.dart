@@ -17,7 +17,7 @@ class PlayerStatsTab extends ConsumerWidget {
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final value = ref.watch(gameStatsProvider);
+    final value = ref.watch(visibleGameStatsProvider);
     return value.simpleWhen(
       (final data) => ListView.builder(
         itemBuilder: (final context, final index) {

@@ -2270,6 +2270,26 @@ final gameStatsProvider = AutoDisposeFutureProvider<List<GameStat>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef GameStatsRef = AutoDisposeFutureProviderRef<List<GameStat>>;
+String _$visibleGameStatsHash() => r'e08aad7af5d3c3edb5bd50aaa26bb13084af2b9e';
+
+/// Provide all visible game stats.
+///
+/// Copied from [visibleGameStats].
+@ProviderFor(visibleGameStats)
+final visibleGameStatsProvider =
+    AutoDisposeFutureProvider<List<GameStat>>.internal(
+  visibleGameStats,
+  name: r'visibleGameStatsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$visibleGameStatsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef VisibleGameStatsRef = AutoDisposeFutureProviderRef<List<GameStat>>;
 String _$gameStatHash() => r'1a409ba7ea33d83dc9936d5f22ada50ed3292832';
 
 /// Provide a single game stat.
