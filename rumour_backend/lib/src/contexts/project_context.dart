@@ -117,6 +117,20 @@ class ProjectContext {
         );
   }
 
+  /// Get a sound reference with the given [id].
+  ///
+  /// If [id] is `null`, then `null` will be returned.
+  Future<SoundReference?> maybeGetSoundReference(final int? id) async {
+    if (id == null) {
+      return null;
+    }
+    return database.managers.soundReferences
+        .filter(
+          (final f) => f.id.equals(id),
+        )
+        .getSingle();
+  }
+
   /// Maybe call [getSound].
   Sound? maybeGetSound({
     required final SoundReference? soundReference,
