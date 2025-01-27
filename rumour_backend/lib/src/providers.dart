@@ -722,3 +722,25 @@ Future<int> playerStat(
   final gameStat = await ref.watch(gameStatProvider(gameStatId).future);
   return gameStat.gameStat.defaultValue;
 }
+
+/// Provide room surface costs.
+@riverpod
+Future<List<RoomSurfaceCost>> roomSurfaceCosts(final Ref ref, final int id) {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.roomSurfaceCosts
+      .filter(
+        (final f) => f.roomSurfaceId.id.equals(id),
+      )
+      .get();
+}
+
+/// Provide room surface boosts.
+@riverpod
+Future<List<RoomSurfaceBoost>> roomSurfaceBoosts(final Ref ref, final int id) {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.roomSurfaceBoosts
+      .filter(
+        (final f) => f.roomSurfaceId.id.equals(id),
+      )
+      .get();
+}
