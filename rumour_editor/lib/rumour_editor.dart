@@ -36,7 +36,6 @@ export 'src/screens/zone/tabs/zone_settings_tab.dart';
 export 'src/widgets/error_text.dart';
 export 'src/widgets/menu_button.dart';
 export 'src/widgets/performable_actions_tabbed_scaffold_tab.dart';
-export 'src/widgets/play_sound_reference_semantics.dart';
 export 'src/widgets/project_context_widget.dart';
 export 'src/widgets/room_list_tile.dart';
 export 'src/widgets/room_object_list_tile.dart';
