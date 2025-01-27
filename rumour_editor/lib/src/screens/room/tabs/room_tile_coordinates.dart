@@ -79,32 +79,35 @@ class _RoomTileCoordinates extends ConsumerWidget {
               () => context.pushWidgetBuilder(
                 (final builderContext) => SelectRoomScreen(
                   onChanged: (final room) async {
-                    final outObject = await manager.createReturning(
+                    final startRoom = await ref.read(
+                      roomProvider(roomId).future,
+                    );
+                    final backExit = await managers.roomExits.createReturning(
                       (final o) => o(
-                        name: 'Untitled Exit',
-                        description: 'A new exit to ${room.name}.',
                         roomId: roomId,
                         x: Value(coordinates.x),
                         y: Value(coordinates.y),
                       ),
                     );
-                    final backExit = await managers.roomExits.createReturning(
-                      (final o) => o(destinationObjectId: outObject.id),
-                    );
                     final backObject = await manager.createReturning(
                       (final o) => o(
-                        name: outObject.name,
-                        description: 'An exit out of ${room.name}.',
+                        name: 'Back Exit',
+                        description: 'An exit back to ${startRoom.name}.',
                         roomId: room.id,
                         roomExitId: Value(backExit.id),
                       ),
                     );
                     final outExit = await managers.roomExits.createReturning(
-                      (final o) => o(destinationObjectId: backObject.id),
+                      (final o) => o(roomId: room.id),
                     );
-                    await manager
-                        .filter((final f) => f.id.equals(outObject.id))
-                        .update((final o) => o(roomExitId: Value(outExit.id)));
+                    final outObject = await manager.createReturning(
+                      (final o) => o(
+                        name: 'Out Exit',
+                        description: 'Leads to ${room.name}.',
+                        roomId: roomId,
+                        roomExitId: Value(outExit.id),
+                      ),
+                    );
                     for (final object in [outObject, backObject]) {
                       ref.invalidate(
                         roomObjectsProvider(
@@ -113,6 +116,7 @@ class _RoomTileCoordinates extends ConsumerWidget {
                         ),
                       );
                     }
+                    ref.invalidate(roomProvider(room.id));
                     if (context.mounted) {
                       context.announce('Built exit to ${room.name}.');
                     }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:backstreets_widgets/screens.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:drift/drift.dart';
@@ -22,35 +24,51 @@ class EditRoomExitScreen extends ConsumerWidget {
       (final f) => f.id.equals(roomExitId),
     );
     final provider = roomExitProvider(roomExitId);
-    final value = ref.watch(provider);
+    final roomObjectValue = ref.watch(provider);
     return Cancel(
       child: SimpleScaffold(
         title: 'Edit Exit',
-        body: value.simpleWhen(
-          (final roomExit) => ListView(
-            shrinkWrap: true,
-            children: [
-              SoundReferenceListTile(
-                soundReferenceId: roomExit.useSoundId,
-                onChanged: (final value) async {
-                  await query.update((final o) => o(useSoundId: Value(value)));
-                  ref.invalidate(provider);
-                },
-                title: 'Use sound',
-                autofocus: true,
-              ),
-              RoomObjectListTile(
-                roomObjectId: roomExit.destinationObjectId,
-                onChanged: (final value) async {
-                  await query.update(
-                    (final o) => o(destinationObjectId: Value(value.id)),
-                  );
-                  ref.invalidate(provider);
-                },
-              ),
-            ],
-          ),
-        ),
+        body: roomObjectValue.simpleWhen((final roomExit) {
+          final destinationRoomValue = ref.watch(roomProvider(roomExit.roomId));
+          return destinationRoomValue.simpleWhen(
+            (final room) => ListView(
+              shrinkWrap: true,
+              children: [
+                SoundReferenceListTile(
+                  soundReferenceId: roomExit.useSoundId,
+                  onChanged: (final value) async {
+                    await query.update(
+                      (final o) => o(useSoundId: Value(value)),
+                    );
+                    ref.invalidate(provider);
+                  },
+                  title: 'Use sound',
+                  autofocus: true,
+                ),
+                RoomListTile(
+                  roomId: roomExit.roomId,
+                  onChanged: (final value) async {
+                    await query.update((final o) => o(roomId: Value(value.id)));
+                    ref.invalidate(provider);
+                  },
+                  title: 'Destination room',
+                ),
+                PointListTile(
+                  point: Point(roomExit.x, roomExit.y),
+                  onChanged: (final point) async {
+                    await query.update(
+                      (final o) => o(x: Value(point.x), y: Value(point.y)),
+                    );
+                    ref.invalidate(provider);
+                  },
+                  title: 'Destination coordinates',
+                  max: Point(room.maxX, room.maxY),
+                  min: const Point(0, 0),
+                ),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
