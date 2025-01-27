@@ -3,6 +3,7 @@
     "bools",
     "dialogs",
     "earcon",
+    "jinja",
     "NPC",
     "recase",
     "riverpod",

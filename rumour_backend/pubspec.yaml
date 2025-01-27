@@ -16,6 +16,7 @@ dependencies:
   flutter_audio_games: ^0.37.4
   flutter_riverpod: ^2.6.1
   flutter_soloud: ^2.1.7
+  jinja: ^0.6.0
   json_annotation: ^4.9.0
   path: ^1.9.1
   path_provider: ^2.1.5

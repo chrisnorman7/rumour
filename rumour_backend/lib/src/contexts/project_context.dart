@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_audio_games/flutter_audio_games.dart';
+import 'package:jinja/jinja.dart';
 import 'package:path/path.dart' as path;
 import 'package:rumour_backend/rumour_backend.dart';
 
@@ -51,6 +52,18 @@ class ProjectContext {
   /// If [loader] is not `null`, then [SoundType.asset] will be used when
   /// loading sounds.
   final ProjectContextLoader? loader;
+
+  /// The jinja environment to use.
+  Environment get jinjaEnvironment => Environment(
+        filters: {
+          'randomInt': (final int a, final int b) => random.nextInt(b) + a,
+        },
+        globals: {
+          'project': project,
+          'projectContext': this,
+          'now': DateTime.now(),
+        },
+      );
 
   /// Save the [project].
   void save(final Project project) {
