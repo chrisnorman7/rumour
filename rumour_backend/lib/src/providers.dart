@@ -747,13 +747,44 @@ Future<int> playerStat(
 
 /// Provide room surface costs.
 @riverpod
-Future<List<RoomSurfaceCost>> roomSurfaceCosts(final Ref ref, final int id) {
+Future<List<RoomSurfaceCost>> roomSurfaceCosts(
+  final Ref ref,
+  final int roomSurfaceId,
+) {
   final projectContext = ref.watch(projectContextProvider);
   return projectContext.database.managers.roomSurfaceCosts
       .filter(
-        (final f) => f.roomSurfaceId.id.equals(id),
+        (final f) => f.roomSurfaceId.id.equals(roomSurfaceId),
       )
       .get();
+}
+
+/// Provide a possible room surface cost.
+@riverpod
+Future<RoomSurfaceCost?> possibleRoomSurfaceCost(
+  final Ref ref,
+  final int roomSurfaceId,
+  final int gameStatId,
+) async {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.roomSurfaceCosts
+      .filter(
+        (final f) =>
+            f.roomSurfaceId.id.equals(roomSurfaceId) &
+            f.gameStatId.id.equals(gameStatId),
+      )
+      .getSingleOrNull();
+}
+
+/// Provide a single room surface cost.
+@riverpod
+Future<RoomSurfaceCost> roomSurfaceCost(final Ref ref, final int id) {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.roomSurfaceCosts
+      .filter(
+        (final f) => f.id.equals(id),
+      )
+      .getSingle();
 }
 
 /// Provide room surface boosts.
@@ -765,6 +796,34 @@ Future<List<RoomSurfaceBoost>> roomSurfaceBoosts(final Ref ref, final int id) {
         (final f) => f.roomSurfaceId.id.equals(id),
       )
       .get();
+}
+
+/// Provide a possible room surface boost.
+@riverpod
+Future<RoomSurfaceBoost?> possibleRoomSurfaceBoost(
+  final Ref ref,
+  final int roomSurfaceId,
+  final int gameStatId,
+) async {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.roomSurfaceBoosts
+      .filter(
+        (final f) =>
+            f.roomSurfaceId.id.equals(roomSurfaceId) &
+            f.gameStatId.id.equals(gameStatId),
+      )
+      .getSingleOrNull();
+}
+
+/// Provide a single room surface boost.
+@riverpod
+Future<RoomSurfaceBoost> roomSurfaceBoost(final Ref ref, final int id) {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.roomSurfaceBoosts
+      .filter(
+        (final f) => f.id.equals(id),
+      )
+      .getSingle();
 }
 
 /// Provide a game stat value.

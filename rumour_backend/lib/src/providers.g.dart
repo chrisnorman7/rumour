@@ -3064,7 +3064,7 @@ class _PlayerStatProviderElement extends AutoDisposeFutureProviderElement<int>
   int get gameStatId => (origin as PlayerStatProvider).gameStatId;
 }
 
-String _$roomSurfaceCostsHash() => r'fd123c9ff7ac468742b58e896fb28720a4b57252';
+String _$roomSurfaceCostsHash() => r'ff8fcae390d94871f06a5026977301be3a46a5c4';
 
 /// Provide room surface costs.
 ///
@@ -3085,10 +3085,10 @@ class RoomSurfaceCostsFamily extends Family<AsyncValue<List<RoomSurfaceCost>>> {
   ///
   /// Copied from [roomSurfaceCosts].
   RoomSurfaceCostsProvider call(
-    int id,
+    int roomSurfaceId,
   ) {
     return RoomSurfaceCostsProvider(
-      id,
+      roomSurfaceId,
     );
   }
 
@@ -3097,7 +3097,7 @@ class RoomSurfaceCostsFamily extends Family<AsyncValue<List<RoomSurfaceCost>>> {
     covariant RoomSurfaceCostsProvider provider,
   ) {
     return call(
-      provider.id,
+      provider.roomSurfaceId,
     );
   }
 
@@ -3125,11 +3125,11 @@ class RoomSurfaceCostsProvider
   ///
   /// Copied from [roomSurfaceCosts].
   RoomSurfaceCostsProvider(
-    int id,
+    int roomSurfaceId,
   ) : this._internal(
           (ref) => roomSurfaceCosts(
             ref as RoomSurfaceCostsRef,
-            id,
+            roomSurfaceId,
           ),
           from: roomSurfaceCostsProvider,
           name: r'roomSurfaceCostsProvider',
@@ -3140,7 +3140,7 @@ class RoomSurfaceCostsProvider
           dependencies: RoomSurfaceCostsFamily._dependencies,
           allTransitiveDependencies:
               RoomSurfaceCostsFamily._allTransitiveDependencies,
-          id: id,
+          roomSurfaceId: roomSurfaceId,
         );
 
   RoomSurfaceCostsProvider._internal(
@@ -3150,10 +3150,10 @@ class RoomSurfaceCostsProvider
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.id,
+    required this.roomSurfaceId,
   }) : super.internal();
 
-  final int id;
+  final int roomSurfaceId;
 
   @override
   Override overrideWith(
@@ -3169,7 +3169,7 @@ class RoomSurfaceCostsProvider
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        id: id,
+        roomSurfaceId: roomSurfaceId,
       ),
     );
   }
@@ -3181,7 +3181,319 @@ class RoomSurfaceCostsProvider
 
   @override
   bool operator ==(Object other) {
-    return other is RoomSurfaceCostsProvider && other.id == id;
+    return other is RoomSurfaceCostsProvider &&
+        other.roomSurfaceId == roomSurfaceId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, roomSurfaceId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin RoomSurfaceCostsRef
+    on AutoDisposeFutureProviderRef<List<RoomSurfaceCost>> {
+  /// The parameter `roomSurfaceId` of this provider.
+  int get roomSurfaceId;
+}
+
+class _RoomSurfaceCostsProviderElement
+    extends AutoDisposeFutureProviderElement<List<RoomSurfaceCost>>
+    with RoomSurfaceCostsRef {
+  _RoomSurfaceCostsProviderElement(super.provider);
+
+  @override
+  int get roomSurfaceId => (origin as RoomSurfaceCostsProvider).roomSurfaceId;
+}
+
+String _$possibleRoomSurfaceCostHash() =>
+    r'472b7a46a3e496c9f208eed7d90ee95c661d53a0';
+
+/// Provide a possible room surface cost.
+///
+/// Copied from [possibleRoomSurfaceCost].
+@ProviderFor(possibleRoomSurfaceCost)
+const possibleRoomSurfaceCostProvider = PossibleRoomSurfaceCostFamily();
+
+/// Provide a possible room surface cost.
+///
+/// Copied from [possibleRoomSurfaceCost].
+class PossibleRoomSurfaceCostFamily
+    extends Family<AsyncValue<RoomSurfaceCost?>> {
+  /// Provide a possible room surface cost.
+  ///
+  /// Copied from [possibleRoomSurfaceCost].
+  const PossibleRoomSurfaceCostFamily();
+
+  /// Provide a possible room surface cost.
+  ///
+  /// Copied from [possibleRoomSurfaceCost].
+  PossibleRoomSurfaceCostProvider call(
+    int roomSurfaceId,
+    int gameStatId,
+  ) {
+    return PossibleRoomSurfaceCostProvider(
+      roomSurfaceId,
+      gameStatId,
+    );
+  }
+
+  @override
+  PossibleRoomSurfaceCostProvider getProviderOverride(
+    covariant PossibleRoomSurfaceCostProvider provider,
+  ) {
+    return call(
+      provider.roomSurfaceId,
+      provider.gameStatId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'possibleRoomSurfaceCostProvider';
+}
+
+/// Provide a possible room surface cost.
+///
+/// Copied from [possibleRoomSurfaceCost].
+class PossibleRoomSurfaceCostProvider
+    extends AutoDisposeFutureProvider<RoomSurfaceCost?> {
+  /// Provide a possible room surface cost.
+  ///
+  /// Copied from [possibleRoomSurfaceCost].
+  PossibleRoomSurfaceCostProvider(
+    int roomSurfaceId,
+    int gameStatId,
+  ) : this._internal(
+          (ref) => possibleRoomSurfaceCost(
+            ref as PossibleRoomSurfaceCostRef,
+            roomSurfaceId,
+            gameStatId,
+          ),
+          from: possibleRoomSurfaceCostProvider,
+          name: r'possibleRoomSurfaceCostProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$possibleRoomSurfaceCostHash,
+          dependencies: PossibleRoomSurfaceCostFamily._dependencies,
+          allTransitiveDependencies:
+              PossibleRoomSurfaceCostFamily._allTransitiveDependencies,
+          roomSurfaceId: roomSurfaceId,
+          gameStatId: gameStatId,
+        );
+
+  PossibleRoomSurfaceCostProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.roomSurfaceId,
+    required this.gameStatId,
+  }) : super.internal();
+
+  final int roomSurfaceId;
+  final int gameStatId;
+
+  @override
+  Override overrideWith(
+    FutureOr<RoomSurfaceCost?> Function(PossibleRoomSurfaceCostRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: PossibleRoomSurfaceCostProvider._internal(
+        (ref) => create(ref as PossibleRoomSurfaceCostRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        roomSurfaceId: roomSurfaceId,
+        gameStatId: gameStatId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<RoomSurfaceCost?> createElement() {
+    return _PossibleRoomSurfaceCostProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PossibleRoomSurfaceCostProvider &&
+        other.roomSurfaceId == roomSurfaceId &&
+        other.gameStatId == gameStatId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, roomSurfaceId.hashCode);
+    hash = _SystemHash.combine(hash, gameStatId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin PossibleRoomSurfaceCostRef
+    on AutoDisposeFutureProviderRef<RoomSurfaceCost?> {
+  /// The parameter `roomSurfaceId` of this provider.
+  int get roomSurfaceId;
+
+  /// The parameter `gameStatId` of this provider.
+  int get gameStatId;
+}
+
+class _PossibleRoomSurfaceCostProviderElement
+    extends AutoDisposeFutureProviderElement<RoomSurfaceCost?>
+    with PossibleRoomSurfaceCostRef {
+  _PossibleRoomSurfaceCostProviderElement(super.provider);
+
+  @override
+  int get roomSurfaceId =>
+      (origin as PossibleRoomSurfaceCostProvider).roomSurfaceId;
+  @override
+  int get gameStatId => (origin as PossibleRoomSurfaceCostProvider).gameStatId;
+}
+
+String _$roomSurfaceCostHash() => r'e6eb6c6a1fd7abeafba88910afbd31f97312a9d9';
+
+/// Provide a single room surface cost.
+///
+/// Copied from [roomSurfaceCost].
+@ProviderFor(roomSurfaceCost)
+const roomSurfaceCostProvider = RoomSurfaceCostFamily();
+
+/// Provide a single room surface cost.
+///
+/// Copied from [roomSurfaceCost].
+class RoomSurfaceCostFamily extends Family<AsyncValue<RoomSurfaceCost>> {
+  /// Provide a single room surface cost.
+  ///
+  /// Copied from [roomSurfaceCost].
+  const RoomSurfaceCostFamily();
+
+  /// Provide a single room surface cost.
+  ///
+  /// Copied from [roomSurfaceCost].
+  RoomSurfaceCostProvider call(
+    int id,
+  ) {
+    return RoomSurfaceCostProvider(
+      id,
+    );
+  }
+
+  @override
+  RoomSurfaceCostProvider getProviderOverride(
+    covariant RoomSurfaceCostProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'roomSurfaceCostProvider';
+}
+
+/// Provide a single room surface cost.
+///
+/// Copied from [roomSurfaceCost].
+class RoomSurfaceCostProvider
+    extends AutoDisposeFutureProvider<RoomSurfaceCost> {
+  /// Provide a single room surface cost.
+  ///
+  /// Copied from [roomSurfaceCost].
+  RoomSurfaceCostProvider(
+    int id,
+  ) : this._internal(
+          (ref) => roomSurfaceCost(
+            ref as RoomSurfaceCostRef,
+            id,
+          ),
+          from: roomSurfaceCostProvider,
+          name: r'roomSurfaceCostProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$roomSurfaceCostHash,
+          dependencies: RoomSurfaceCostFamily._dependencies,
+          allTransitiveDependencies:
+              RoomSurfaceCostFamily._allTransitiveDependencies,
+          id: id,
+        );
+
+  RoomSurfaceCostProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
+  final int id;
+
+  @override
+  Override overrideWith(
+    FutureOr<RoomSurfaceCost> Function(RoomSurfaceCostRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: RoomSurfaceCostProvider._internal(
+        (ref) => create(ref as RoomSurfaceCostRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<RoomSurfaceCost> createElement() {
+    return _RoomSurfaceCostProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RoomSurfaceCostProvider && other.id == id;
   }
 
   @override
@@ -3195,19 +3507,18 @@ class RoomSurfaceCostsProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin RoomSurfaceCostsRef
-    on AutoDisposeFutureProviderRef<List<RoomSurfaceCost>> {
+mixin RoomSurfaceCostRef on AutoDisposeFutureProviderRef<RoomSurfaceCost> {
   /// The parameter `id` of this provider.
   int get id;
 }
 
-class _RoomSurfaceCostsProviderElement
-    extends AutoDisposeFutureProviderElement<List<RoomSurfaceCost>>
-    with RoomSurfaceCostsRef {
-  _RoomSurfaceCostsProviderElement(super.provider);
+class _RoomSurfaceCostProviderElement
+    extends AutoDisposeFutureProviderElement<RoomSurfaceCost>
+    with RoomSurfaceCostRef {
+  _RoomSurfaceCostProviderElement(super.provider);
 
   @override
-  int get id => (origin as RoomSurfaceCostsProvider).id;
+  int get id => (origin as RoomSurfaceCostProvider).id;
 }
 
 String _$roomSurfaceBoostsHash() => r'81417c7a43678a51f3beff09efbed6fa75fee33f';
@@ -3355,6 +3666,316 @@ class _RoomSurfaceBoostsProviderElement
 
   @override
   int get id => (origin as RoomSurfaceBoostsProvider).id;
+}
+
+String _$possibleRoomSurfaceBoostHash() =>
+    r'b7865e6808dc2fc9bf6c88349827a6f59d958e6b';
+
+/// Provide a possible room surface boost.
+///
+/// Copied from [possibleRoomSurfaceBoost].
+@ProviderFor(possibleRoomSurfaceBoost)
+const possibleRoomSurfaceBoostProvider = PossibleRoomSurfaceBoostFamily();
+
+/// Provide a possible room surface boost.
+///
+/// Copied from [possibleRoomSurfaceBoost].
+class PossibleRoomSurfaceBoostFamily
+    extends Family<AsyncValue<RoomSurfaceBoost?>> {
+  /// Provide a possible room surface boost.
+  ///
+  /// Copied from [possibleRoomSurfaceBoost].
+  const PossibleRoomSurfaceBoostFamily();
+
+  /// Provide a possible room surface boost.
+  ///
+  /// Copied from [possibleRoomSurfaceBoost].
+  PossibleRoomSurfaceBoostProvider call(
+    int roomSurfaceId,
+    int gameStatId,
+  ) {
+    return PossibleRoomSurfaceBoostProvider(
+      roomSurfaceId,
+      gameStatId,
+    );
+  }
+
+  @override
+  PossibleRoomSurfaceBoostProvider getProviderOverride(
+    covariant PossibleRoomSurfaceBoostProvider provider,
+  ) {
+    return call(
+      provider.roomSurfaceId,
+      provider.gameStatId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'possibleRoomSurfaceBoostProvider';
+}
+
+/// Provide a possible room surface boost.
+///
+/// Copied from [possibleRoomSurfaceBoost].
+class PossibleRoomSurfaceBoostProvider
+    extends AutoDisposeFutureProvider<RoomSurfaceBoost?> {
+  /// Provide a possible room surface boost.
+  ///
+  /// Copied from [possibleRoomSurfaceBoost].
+  PossibleRoomSurfaceBoostProvider(
+    int roomSurfaceId,
+    int gameStatId,
+  ) : this._internal(
+          (ref) => possibleRoomSurfaceBoost(
+            ref as PossibleRoomSurfaceBoostRef,
+            roomSurfaceId,
+            gameStatId,
+          ),
+          from: possibleRoomSurfaceBoostProvider,
+          name: r'possibleRoomSurfaceBoostProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$possibleRoomSurfaceBoostHash,
+          dependencies: PossibleRoomSurfaceBoostFamily._dependencies,
+          allTransitiveDependencies:
+              PossibleRoomSurfaceBoostFamily._allTransitiveDependencies,
+          roomSurfaceId: roomSurfaceId,
+          gameStatId: gameStatId,
+        );
+
+  PossibleRoomSurfaceBoostProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.roomSurfaceId,
+    required this.gameStatId,
+  }) : super.internal();
+
+  final int roomSurfaceId;
+  final int gameStatId;
+
+  @override
+  Override overrideWith(
+    FutureOr<RoomSurfaceBoost?> Function(PossibleRoomSurfaceBoostRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: PossibleRoomSurfaceBoostProvider._internal(
+        (ref) => create(ref as PossibleRoomSurfaceBoostRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        roomSurfaceId: roomSurfaceId,
+        gameStatId: gameStatId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<RoomSurfaceBoost?> createElement() {
+    return _PossibleRoomSurfaceBoostProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PossibleRoomSurfaceBoostProvider &&
+        other.roomSurfaceId == roomSurfaceId &&
+        other.gameStatId == gameStatId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, roomSurfaceId.hashCode);
+    hash = _SystemHash.combine(hash, gameStatId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin PossibleRoomSurfaceBoostRef
+    on AutoDisposeFutureProviderRef<RoomSurfaceBoost?> {
+  /// The parameter `roomSurfaceId` of this provider.
+  int get roomSurfaceId;
+
+  /// The parameter `gameStatId` of this provider.
+  int get gameStatId;
+}
+
+class _PossibleRoomSurfaceBoostProviderElement
+    extends AutoDisposeFutureProviderElement<RoomSurfaceBoost?>
+    with PossibleRoomSurfaceBoostRef {
+  _PossibleRoomSurfaceBoostProviderElement(super.provider);
+
+  @override
+  int get roomSurfaceId =>
+      (origin as PossibleRoomSurfaceBoostProvider).roomSurfaceId;
+  @override
+  int get gameStatId => (origin as PossibleRoomSurfaceBoostProvider).gameStatId;
+}
+
+String _$roomSurfaceBoostHash() => r'4afb29e0b3e52b2aaabdaa13d414d4f9ea2ea278';
+
+/// Provide a single room surface boost.
+///
+/// Copied from [roomSurfaceBoost].
+@ProviderFor(roomSurfaceBoost)
+const roomSurfaceBoostProvider = RoomSurfaceBoostFamily();
+
+/// Provide a single room surface boost.
+///
+/// Copied from [roomSurfaceBoost].
+class RoomSurfaceBoostFamily extends Family<AsyncValue<RoomSurfaceBoost>> {
+  /// Provide a single room surface boost.
+  ///
+  /// Copied from [roomSurfaceBoost].
+  const RoomSurfaceBoostFamily();
+
+  /// Provide a single room surface boost.
+  ///
+  /// Copied from [roomSurfaceBoost].
+  RoomSurfaceBoostProvider call(
+    int id,
+  ) {
+    return RoomSurfaceBoostProvider(
+      id,
+    );
+  }
+
+  @override
+  RoomSurfaceBoostProvider getProviderOverride(
+    covariant RoomSurfaceBoostProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'roomSurfaceBoostProvider';
+}
+
+/// Provide a single room surface boost.
+///
+/// Copied from [roomSurfaceBoost].
+class RoomSurfaceBoostProvider
+    extends AutoDisposeFutureProvider<RoomSurfaceBoost> {
+  /// Provide a single room surface boost.
+  ///
+  /// Copied from [roomSurfaceBoost].
+  RoomSurfaceBoostProvider(
+    int id,
+  ) : this._internal(
+          (ref) => roomSurfaceBoost(
+            ref as RoomSurfaceBoostRef,
+            id,
+          ),
+          from: roomSurfaceBoostProvider,
+          name: r'roomSurfaceBoostProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$roomSurfaceBoostHash,
+          dependencies: RoomSurfaceBoostFamily._dependencies,
+          allTransitiveDependencies:
+              RoomSurfaceBoostFamily._allTransitiveDependencies,
+          id: id,
+        );
+
+  RoomSurfaceBoostProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
+  final int id;
+
+  @override
+  Override overrideWith(
+    FutureOr<RoomSurfaceBoost> Function(RoomSurfaceBoostRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: RoomSurfaceBoostProvider._internal(
+        (ref) => create(ref as RoomSurfaceBoostRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<RoomSurfaceBoost> createElement() {
+    return _RoomSurfaceBoostProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RoomSurfaceBoostProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin RoomSurfaceBoostRef on AutoDisposeFutureProviderRef<RoomSurfaceBoost> {
+  /// The parameter `id` of this provider.
+  int get id;
+}
+
+class _RoomSurfaceBoostProviderElement
+    extends AutoDisposeFutureProviderElement<RoomSurfaceBoost>
+    with RoomSurfaceBoostRef {
+  _RoomSurfaceBoostProviderElement(super.provider);
+
+  @override
+  int get id => (origin as RoomSurfaceBoostProvider).id;
 }
 
 String _$gameStatValueHash() => r'08101fb79b7c40de0b5bcf927da94faf520ed1f7';

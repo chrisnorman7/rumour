@@ -1,4 +1,5 @@
 import 'package:backstreets_widgets/extensions.dart';
+import 'package:backstreets_widgets/shortcuts.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +13,7 @@ class GameStatListTile extends ConsumerWidget {
     required this.title,
     required this.onChanged,
     this.autofocus = false,
+    this.nullable = true,
     super.key,
   });
 
@@ -27,6 +29,9 @@ class GameStatListTile extends ConsumerWidget {
   /// Whether the [ListTile] should be autofocused.
   final bool autofocus;
 
+  /// Whether [onChanged] can ever be called with `null`.
+  final bool nullable;
+
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
@@ -39,16 +44,22 @@ class GameStatListTile extends ConsumerWidget {
                 ? null
                 : gameStats.firstWhere((final stat) => stat.id == id);
         return PerformableActionsBuilder(
-          actions:
-              gameStats
-                  .map(
-                    (final stat) => PerformableAction(
-                      name: '${stat.name}: ${stat.description}',
-                      invoke: () => onChanged(stat),
-                      checked: stat.id == id,
-                    ),
-                  )
-                  .toList(),
+          actions: [
+            if (nullable)
+              PerformableAction(
+                name: 'Clear',
+                invoke: () => onChanged(null),
+                activator: deleteShortcut,
+                checked: gameStatId == null,
+              ),
+            ...gameStats.map(
+              (final stat) => PerformableAction(
+                name: '${stat.name}: ${stat.description}',
+                invoke: () => onChanged(stat),
+                checked: stat.id == id,
+              ),
+            ),
+          ],
           builder:
               (final builderContext, final controller) => ListTile(
                 autofocus: autofocus,
