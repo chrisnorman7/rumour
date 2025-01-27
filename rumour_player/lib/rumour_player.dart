@@ -14,3 +14,4 @@ export 'src/screens/select_object.dart';
 export 'src/widgets/close_project.dart';
 export 'src/widgets/project_context_app.dart';
 export 'src/widgets/room_ambiances.dart';
+export 'src/widgets/room_surface_boost_timers.dart';
