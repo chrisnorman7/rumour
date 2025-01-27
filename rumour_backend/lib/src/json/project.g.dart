@@ -44,7 +44,7 @@ Project _$ProjectFromJson(Map<String, dynamic> json) => Project(
       organisationName: json['organisationName'] as String? ?? 'com.example',
       appName: json['appName'] as String? ?? 'game',
       pauseSoundsVolumeReduction:
-          (json['pauseSoundsVolumeReduction'] as num?)?.toInt() ?? 2,
+          (json['pauseSoundsVolumeReduction'] as num?)?.toInt() ?? 4,
       pauseMenuTitle: json['pauseMenuTitle'] as String? ?? 'Pause Menu',
       pauseMenuMusic: json['pauseMenuMusic'] == null
           ? null

@@ -25,7 +25,7 @@ class Project {
     this.savedPlayersEarcon,
     this.organisationName = 'com.example',
     this.appName = 'game',
-    this.pauseSoundsVolumeReduction = 2,
+    this.pauseSoundsVolumeReduction = 4,
     this.pauseMenuTitle = 'Pause Menu',
     this.pauseMenuMusic,
   });
