@@ -11,6 +11,7 @@ class RoomAmbiances extends ConsumerStatefulWidget {
   const RoomAmbiances({
     required this.roomId,
     required this.error,
+    required this.loading,
     required this.child,
     super.key,
   });
@@ -20,6 +21,9 @@ class RoomAmbiances extends ConsumerStatefulWidget {
 
   /// The error widget to show.
   final ErrorWidgetCallback error;
+
+  /// The function to call to build a loading widget.
+  final Widget Function() loading;
 
   /// The widget below this widget in the tree.
   final Widget child;
@@ -72,11 +76,11 @@ class RoomAmbiancesState extends ConsumerState<RoomAmbiances> {
             return widget.child;
           },
           error: widget.error,
-          loading: () => widget.child,
+          loading: widget.loading,
         );
       },
       error: widget.error,
-      loading: () => widget.child,
+      loading: widget.loading,
     );
   }
 

@@ -123,9 +123,11 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
           playerId: widget.playerId,
           roomSurfaceId: gamePlayerContext.roomSurface.id,
           error: ErrorScreen.withPositional,
+          loading: LoadingScreen.new,
           child: RoomAmbiances(
             roomId: _room.id,
             error: ErrorScreen.withPositional,
+            loading: LoadingScreen.new,
             child: MaybeMusic(
               music: projectContext.maybeGetSound(
                 soundReference: _zoneMusic,

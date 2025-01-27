@@ -15,6 +15,7 @@ class RoomSurfaceBoostTimers extends ConsumerWidget {
     required this.playerId,
     required this.roomSurfaceId,
     required this.error,
+    required this.loading,
     required this.child,
     super.key,
   });
@@ -27,6 +28,9 @@ class RoomSurfaceBoostTimers extends ConsumerWidget {
 
   /// The function to call to build an error widget.
   final ErrorWidgetCallback error;
+
+  /// The function to call to build a loading widget.
+  final Widget Function() loading;
 
   /// The widget below this widget in the tree.
   final Widget child;
@@ -89,11 +93,11 @@ class RoomSurfaceBoostTimers extends ConsumerWidget {
             child: child,
           ),
           error: error,
-          loading: () => child,
+          loading: loading,
         );
       },
       error: error,
-      loading: () => child,
+      loading: loading,
     );
   }
 }
