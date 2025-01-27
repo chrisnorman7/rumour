@@ -175,45 +175,50 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
     return value.when(
       data: (final gamePlayerContext) {
         _gamePlayerContext = gamePlayerContext;
-        return MaybeMusic(
-          music: projectContext.maybeGetSound(
-            soundReference: _zoneMusic,
-            destroy: false,
-            looping: true,
-          ),
-          fadeInTime: fadeIn,
-          fadeOutTime: fadeOut,
-          builder: (final context) => RoomAmbiances(
+        return RoomSurfaceBoostTimers(
+          playerId: widget.playerId,
+          roomSurfaceId: gamePlayerContext.roomSurface.id,
+          error: ErrorScreen.withPositional,
+          child: RoomAmbiances(
             roomId: _room.id,
             error: ErrorScreen.withPositional,
-            child: TimedCommands(
-              builder: (final context, final state) {
-                timedCommandsState = state;
-                state.registerCommand(
-                  walkPlayer,
-                  _roomSurface.moveInterval.milliseconds,
-                );
-                return SimpleScaffold(
-                  title: _room.name,
-                  body: GameShortcuts(
-                    shortcuts: [
-                      ...shortcuts,
-                      GameShortcut(
-                        title: 'Shortcut help',
-                        shortcut: GameShortcutsShortcut.slash,
-                        shiftKey: true,
-                        onStart: (final innerContext) =>
-                            innerContext.fadeMusicAndPushWidget(
-                          (final _) => GameShortcutsHelpScreen(
-                            shortcuts: shortcuts,
+            child: MaybeMusic(
+              music: projectContext.maybeGetSound(
+                soundReference: _zoneMusic,
+                destroy: false,
+                looping: true,
+              ),
+              fadeInTime: fadeIn,
+              fadeOutTime: fadeOut,
+              builder: (final context) => TimedCommands(
+                builder: (final context, final state) {
+                  timedCommandsState = state;
+                  state.registerCommand(
+                    walkPlayer,
+                    _roomSurface.moveInterval.milliseconds,
+                  );
+                  return SimpleScaffold(
+                    title: _room.name,
+                    body: GameShortcuts(
+                      shortcuts: [
+                        ...shortcuts,
+                        GameShortcut(
+                          title: 'Shortcut help',
+                          shortcut: GameShortcutsShortcut.slash,
+                          shiftKey: true,
+                          onStart: (final innerContext) =>
+                              innerContext.fadeMusicAndPushWidget(
+                            (final _) => GameShortcutsHelpScreen(
+                              shortcuts: shortcuts,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                    child: Text(_room.name),
-                  ),
-                );
-              },
+                      ],
+                      child: Text(_room.name),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         );
