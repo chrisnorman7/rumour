@@ -18,13 +18,22 @@ class ProjectMenuSettingsTab extends ConsumerWidget {
       shrinkWrap: true,
       children: [
         SerializableSoundReferenceListTile(
+          soundReference: project.pauseMenuMusic,
+          onChanged: (final value) {
+            project.pauseMenuMusic = value;
+            _saveProject(ref, project);
+          },
+          title: 'Pause menu music',
+          autofocus: true,
+          looping: true,
+        ),
+        SerializableSoundReferenceListTile(
           soundReference: music,
           onChanged: (final value) {
             project.mainMenuMusic = value;
             _saveProject(ref, project);
           },
           title: 'Main menu music',
-          autofocus: true,
         ),
         DurationListTile(
           duration: project.mainMenuMusicFadeIn ?? Duration.zero,

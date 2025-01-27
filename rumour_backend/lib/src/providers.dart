@@ -688,12 +688,32 @@ Future<Map<int, int>> gamePlayerStats(final Ref ref, final String id) async {
   for (final stat in gameStats) {
     if (!playerStats.containsKey(stat.id)) {
       final value = await ref.watch(
-        playerStatProvider(id, stat.id).future,
+        maxPlayerStatProvider(stat.id, player.classId).future,
       );
       playerStats[stat.id] = value;
     }
   }
   return playerStats;
+}
+
+/// Provide the maximum value for a player game stat.
+@riverpod
+Future<int> maxPlayerStat(
+  final Ref ref,
+  final int gameStatId,
+  final int playerClassId,
+) async {
+  final playerClassGameStat = await ref.watch(
+    playerClassGameStatProvider(
+      playerClassId,
+      gameStatId,
+    ).future,
+  );
+  if (playerClassGameStat != null) {
+    return playerClassGameStat.defaultValue;
+  }
+  final gameStat = await ref.watch(gameStatProvider(gameStatId).future);
+  return gameStat.gameStat.defaultValue;
 }
 
 /// Provide a single player stat.
@@ -708,19 +728,14 @@ Future<int> playerStat(
   if (value != null) {
     return value;
   }
-  final gamePlayerContext =
-      await ref.watch(gamePlayerContextProvider(playerId).future);
-  final playerClassGameStat = await ref.watch(
-    playerClassGameStatProvider(
-      gamePlayerContext.gamePlayer.classId,
-      gameStatId,
-    ).future,
+  final gamePlayerContext = await ref.watch(
+    gamePlayerContextProvider(playerId).future,
   );
-  if (playerClassGameStat != null) {
-    return playerClassGameStat.defaultValue;
-  }
-  final gameStat = await ref.watch(gameStatProvider(gameStatId).future);
-  return gameStat.gameStat.defaultValue;
+  final maxValue = await ref.watch(
+    maxPlayerStatProvider(gameStatId, gamePlayerContext.gamePlayer.classId)
+        .future,
+  );
+  return maxValue;
 }
 
 /// Provide room surface costs.

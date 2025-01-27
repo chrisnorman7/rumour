@@ -37,6 +37,14 @@ class ProjectSettingsTab extends ConsumerWidget {
           title: 'Pause menu sound volume reduction',
           min: 1,
         ),
+        TextListTile(
+          value: project.pauseMenuTitle,
+          onChanged: (final value) {
+            project.pauseMenuTitle = value;
+            _saveProject(ref, project);
+          },
+          header: 'Pause menu title',
+        ),
         ListTile(
           title: const Text('Sounds directory'),
           subtitle: Text(projectContext.soundsDirectory.path),

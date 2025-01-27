@@ -11,7 +11,7 @@ dependencies:
   backstreets_widgets: ^0.32.0
   flutter:
     sdk: flutter
-  flutter_audio_games: ^0.37.3
+  flutter_audio_games: ^0.37.4
   flutter_lints: ^5.0.0
   flutter_riverpod: ^2.6.1
   flutter_soloud: ^2.1.7

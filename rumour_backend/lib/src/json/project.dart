@@ -26,6 +26,8 @@ class Project {
     this.organisationName = 'com.example',
     this.appName = 'game',
     this.pauseSoundsVolumeReduction = 2,
+    this.pauseMenuTitle = 'Pause Menu',
+    this.pauseMenuMusic,
   });
 
   /// Create an instance from a JSON object.
@@ -88,6 +90,12 @@ class Project {
 
   /// The number to divide the volumes of sounds by when pausing the game.
   int pauseSoundsVolumeReduction;
+
+  /// The title of the pause menu.
+  String pauseMenuTitle;
+
+  /// The music to play for the pause menu.
+  SerializableSoundReference? pauseMenuMusic;
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$ProjectToJson(this);

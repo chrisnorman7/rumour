@@ -2583,7 +2583,7 @@ class _PlayerClassGameStatProviderElement
   int get gameStatId => (origin as PlayerClassGameStatProvider).gameStatId;
 }
 
-String _$gamePlayerStatsHash() => r'7b3767aa4ef9af914d4b5eb22ecf3210cf28938d';
+String _$gamePlayerStatsHash() => r'b30b68d17ba0b8ef0e4310c73b70e585aefe9ae9';
 
 /// Provide game stats for a player.
 ///
@@ -2726,7 +2726,166 @@ class _GamePlayerStatsProviderElement
   String get id => (origin as GamePlayerStatsProvider).id;
 }
 
-String _$playerStatHash() => r'658028eba4031e676c7682ca3dc100f71577cf25';
+String _$maxPlayerStatHash() => r'0cfa379a31dde93c932d07d2ef9c98cfcb9e70a9';
+
+/// Provide the maximum value for a player game stat.
+///
+/// Copied from [maxPlayerStat].
+@ProviderFor(maxPlayerStat)
+const maxPlayerStatProvider = MaxPlayerStatFamily();
+
+/// Provide the maximum value for a player game stat.
+///
+/// Copied from [maxPlayerStat].
+class MaxPlayerStatFamily extends Family<AsyncValue<int>> {
+  /// Provide the maximum value for a player game stat.
+  ///
+  /// Copied from [maxPlayerStat].
+  const MaxPlayerStatFamily();
+
+  /// Provide the maximum value for a player game stat.
+  ///
+  /// Copied from [maxPlayerStat].
+  MaxPlayerStatProvider call(
+    int gameStatId,
+    int playerClassId,
+  ) {
+    return MaxPlayerStatProvider(
+      gameStatId,
+      playerClassId,
+    );
+  }
+
+  @override
+  MaxPlayerStatProvider getProviderOverride(
+    covariant MaxPlayerStatProvider provider,
+  ) {
+    return call(
+      provider.gameStatId,
+      provider.playerClassId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'maxPlayerStatProvider';
+}
+
+/// Provide the maximum value for a player game stat.
+///
+/// Copied from [maxPlayerStat].
+class MaxPlayerStatProvider extends AutoDisposeFutureProvider<int> {
+  /// Provide the maximum value for a player game stat.
+  ///
+  /// Copied from [maxPlayerStat].
+  MaxPlayerStatProvider(
+    int gameStatId,
+    int playerClassId,
+  ) : this._internal(
+          (ref) => maxPlayerStat(
+            ref as MaxPlayerStatRef,
+            gameStatId,
+            playerClassId,
+          ),
+          from: maxPlayerStatProvider,
+          name: r'maxPlayerStatProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$maxPlayerStatHash,
+          dependencies: MaxPlayerStatFamily._dependencies,
+          allTransitiveDependencies:
+              MaxPlayerStatFamily._allTransitiveDependencies,
+          gameStatId: gameStatId,
+          playerClassId: playerClassId,
+        );
+
+  MaxPlayerStatProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.gameStatId,
+    required this.playerClassId,
+  }) : super.internal();
+
+  final int gameStatId;
+  final int playerClassId;
+
+  @override
+  Override overrideWith(
+    FutureOr<int> Function(MaxPlayerStatRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: MaxPlayerStatProvider._internal(
+        (ref) => create(ref as MaxPlayerStatRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        gameStatId: gameStatId,
+        playerClassId: playerClassId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<int> createElement() {
+    return _MaxPlayerStatProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is MaxPlayerStatProvider &&
+        other.gameStatId == gameStatId &&
+        other.playerClassId == playerClassId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, gameStatId.hashCode);
+    hash = _SystemHash.combine(hash, playerClassId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin MaxPlayerStatRef on AutoDisposeFutureProviderRef<int> {
+  /// The parameter `gameStatId` of this provider.
+  int get gameStatId;
+
+  /// The parameter `playerClassId` of this provider.
+  int get playerClassId;
+}
+
+class _MaxPlayerStatProviderElement
+    extends AutoDisposeFutureProviderElement<int> with MaxPlayerStatRef {
+  _MaxPlayerStatProviderElement(super.provider);
+
+  @override
+  int get gameStatId => (origin as MaxPlayerStatProvider).gameStatId;
+  @override
+  int get playerClassId => (origin as MaxPlayerStatProvider).playerClassId;
+}
+
+String _$playerStatHash() => r'8b84abba14eda09ec9f66205628f92f596c21645';
 
 /// Provide a single player stat.
 ///

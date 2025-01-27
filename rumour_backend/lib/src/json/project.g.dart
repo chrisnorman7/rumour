@@ -45,6 +45,11 @@ Project _$ProjectFromJson(Map<String, dynamic> json) => Project(
       appName: json['appName'] as String? ?? 'game',
       pauseSoundsVolumeReduction:
           (json['pauseSoundsVolumeReduction'] as num?)?.toInt() ?? 2,
+      pauseMenuTitle: json['pauseMenuTitle'] as String? ?? 'Pause Menu',
+      pauseMenuMusic: json['pauseMenuMusic'] == null
+          ? null
+          : SerializableSoundReference.fromJson(
+              json['pauseMenuMusic'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ProjectToJson(Project instance) => <String, dynamic>{
@@ -63,4 +68,6 @@ Map<String, dynamic> _$ProjectToJson(Project instance) => <String, dynamic>{
       'organisationName': instance.organisationName,
       'appName': instance.appName,
       'pauseSoundsVolumeReduction': instance.pauseSoundsVolumeReduction,
+      'pauseMenuTitle': instance.pauseMenuTitle,
+      'pauseMenuMusic': instance.pauseMenuMusic,
     };
