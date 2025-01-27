@@ -14,6 +14,7 @@ class GamePlayer {
     required this.roomId,
     required this.x,
     required this.y,
+    this.stats = const {},
   });
 
   /// Create an instance from a JSON object.
@@ -44,6 +45,9 @@ class GamePlayer {
     x = value.x;
     y = value.y;
   }
+
+  /// The stats for this player.
+  final Map<int, int> stats;
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$GamePlayerToJson(this);

@@ -2411,6 +2411,480 @@ class _GameStatProviderElement
   int get id => (origin as GameStatProvider).id;
 }
 
+String _$playerClassGameStatHash() =>
+    r'a9b7af6e8cdcf158b5033f3ad93248bff5e0a038';
+
+/// Return a player class game stat for the given [playerClassId] and
+/// [gameStatId].
+///
+/// Copied from [playerClassGameStat].
+@ProviderFor(playerClassGameStat)
+const playerClassGameStatProvider = PlayerClassGameStatFamily();
+
+/// Return a player class game stat for the given [playerClassId] and
+/// [gameStatId].
+///
+/// Copied from [playerClassGameStat].
+class PlayerClassGameStatFamily
+    extends Family<AsyncValue<PlayerClassGameStat?>> {
+  /// Return a player class game stat for the given [playerClassId] and
+  /// [gameStatId].
+  ///
+  /// Copied from [playerClassGameStat].
+  const PlayerClassGameStatFamily();
+
+  /// Return a player class game stat for the given [playerClassId] and
+  /// [gameStatId].
+  ///
+  /// Copied from [playerClassGameStat].
+  PlayerClassGameStatProvider call(
+    int playerClassId,
+    int gameStatId,
+  ) {
+    return PlayerClassGameStatProvider(
+      playerClassId,
+      gameStatId,
+    );
+  }
+
+  @override
+  PlayerClassGameStatProvider getProviderOverride(
+    covariant PlayerClassGameStatProvider provider,
+  ) {
+    return call(
+      provider.playerClassId,
+      provider.gameStatId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'playerClassGameStatProvider';
+}
+
+/// Return a player class game stat for the given [playerClassId] and
+/// [gameStatId].
+///
+/// Copied from [playerClassGameStat].
+class PlayerClassGameStatProvider
+    extends AutoDisposeFutureProvider<PlayerClassGameStat?> {
+  /// Return a player class game stat for the given [playerClassId] and
+  /// [gameStatId].
+  ///
+  /// Copied from [playerClassGameStat].
+  PlayerClassGameStatProvider(
+    int playerClassId,
+    int gameStatId,
+  ) : this._internal(
+          (ref) => playerClassGameStat(
+            ref as PlayerClassGameStatRef,
+            playerClassId,
+            gameStatId,
+          ),
+          from: playerClassGameStatProvider,
+          name: r'playerClassGameStatProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$playerClassGameStatHash,
+          dependencies: PlayerClassGameStatFamily._dependencies,
+          allTransitiveDependencies:
+              PlayerClassGameStatFamily._allTransitiveDependencies,
+          playerClassId: playerClassId,
+          gameStatId: gameStatId,
+        );
+
+  PlayerClassGameStatProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.playerClassId,
+    required this.gameStatId,
+  }) : super.internal();
+
+  final int playerClassId;
+  final int gameStatId;
+
+  @override
+  Override overrideWith(
+    FutureOr<PlayerClassGameStat?> Function(PlayerClassGameStatRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: PlayerClassGameStatProvider._internal(
+        (ref) => create(ref as PlayerClassGameStatRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        playerClassId: playerClassId,
+        gameStatId: gameStatId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<PlayerClassGameStat?> createElement() {
+    return _PlayerClassGameStatProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PlayerClassGameStatProvider &&
+        other.playerClassId == playerClassId &&
+        other.gameStatId == gameStatId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, playerClassId.hashCode);
+    hash = _SystemHash.combine(hash, gameStatId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin PlayerClassGameStatRef
+    on AutoDisposeFutureProviderRef<PlayerClassGameStat?> {
+  /// The parameter `playerClassId` of this provider.
+  int get playerClassId;
+
+  /// The parameter `gameStatId` of this provider.
+  int get gameStatId;
+}
+
+class _PlayerClassGameStatProviderElement
+    extends AutoDisposeFutureProviderElement<PlayerClassGameStat?>
+    with PlayerClassGameStatRef {
+  _PlayerClassGameStatProviderElement(super.provider);
+
+  @override
+  int get playerClassId =>
+      (origin as PlayerClassGameStatProvider).playerClassId;
+  @override
+  int get gameStatId => (origin as PlayerClassGameStatProvider).gameStatId;
+}
+
+String _$gamePlayerStatsHash() => r'7b3767aa4ef9af914d4b5eb22ecf3210cf28938d';
+
+/// Provide game stats for a player.
+///
+/// Copied from [gamePlayerStats].
+@ProviderFor(gamePlayerStats)
+const gamePlayerStatsProvider = GamePlayerStatsFamily();
+
+/// Provide game stats for a player.
+///
+/// Copied from [gamePlayerStats].
+class GamePlayerStatsFamily extends Family<AsyncValue<Map<int, int>>> {
+  /// Provide game stats for a player.
+  ///
+  /// Copied from [gamePlayerStats].
+  const GamePlayerStatsFamily();
+
+  /// Provide game stats for a player.
+  ///
+  /// Copied from [gamePlayerStats].
+  GamePlayerStatsProvider call(
+    String id,
+  ) {
+    return GamePlayerStatsProvider(
+      id,
+    );
+  }
+
+  @override
+  GamePlayerStatsProvider getProviderOverride(
+    covariant GamePlayerStatsProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'gamePlayerStatsProvider';
+}
+
+/// Provide game stats for a player.
+///
+/// Copied from [gamePlayerStats].
+class GamePlayerStatsProvider extends AutoDisposeFutureProvider<Map<int, int>> {
+  /// Provide game stats for a player.
+  ///
+  /// Copied from [gamePlayerStats].
+  GamePlayerStatsProvider(
+    String id,
+  ) : this._internal(
+          (ref) => gamePlayerStats(
+            ref as GamePlayerStatsRef,
+            id,
+          ),
+          from: gamePlayerStatsProvider,
+          name: r'gamePlayerStatsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$gamePlayerStatsHash,
+          dependencies: GamePlayerStatsFamily._dependencies,
+          allTransitiveDependencies:
+              GamePlayerStatsFamily._allTransitiveDependencies,
+          id: id,
+        );
+
+  GamePlayerStatsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
+  final String id;
+
+  @override
+  Override overrideWith(
+    FutureOr<Map<int, int>> Function(GamePlayerStatsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: GamePlayerStatsProvider._internal(
+        (ref) => create(ref as GamePlayerStatsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<Map<int, int>> createElement() {
+    return _GamePlayerStatsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is GamePlayerStatsProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin GamePlayerStatsRef on AutoDisposeFutureProviderRef<Map<int, int>> {
+  /// The parameter `id` of this provider.
+  String get id;
+}
+
+class _GamePlayerStatsProviderElement
+    extends AutoDisposeFutureProviderElement<Map<int, int>>
+    with GamePlayerStatsRef {
+  _GamePlayerStatsProviderElement(super.provider);
+
+  @override
+  String get id => (origin as GamePlayerStatsProvider).id;
+}
+
+String _$playerStatHash() => r'658028eba4031e676c7682ca3dc100f71577cf25';
+
+/// Provide a single player stat.
+///
+/// Copied from [playerStat].
+@ProviderFor(playerStat)
+const playerStatProvider = PlayerStatFamily();
+
+/// Provide a single player stat.
+///
+/// Copied from [playerStat].
+class PlayerStatFamily extends Family<AsyncValue<int>> {
+  /// Provide a single player stat.
+  ///
+  /// Copied from [playerStat].
+  const PlayerStatFamily();
+
+  /// Provide a single player stat.
+  ///
+  /// Copied from [playerStat].
+  PlayerStatProvider call(
+    String playerId,
+    int gameStatId,
+  ) {
+    return PlayerStatProvider(
+      playerId,
+      gameStatId,
+    );
+  }
+
+  @override
+  PlayerStatProvider getProviderOverride(
+    covariant PlayerStatProvider provider,
+  ) {
+    return call(
+      provider.playerId,
+      provider.gameStatId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'playerStatProvider';
+}
+
+/// Provide a single player stat.
+///
+/// Copied from [playerStat].
+class PlayerStatProvider extends AutoDisposeFutureProvider<int> {
+  /// Provide a single player stat.
+  ///
+  /// Copied from [playerStat].
+  PlayerStatProvider(
+    String playerId,
+    int gameStatId,
+  ) : this._internal(
+          (ref) => playerStat(
+            ref as PlayerStatRef,
+            playerId,
+            gameStatId,
+          ),
+          from: playerStatProvider,
+          name: r'playerStatProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$playerStatHash,
+          dependencies: PlayerStatFamily._dependencies,
+          allTransitiveDependencies:
+              PlayerStatFamily._allTransitiveDependencies,
+          playerId: playerId,
+          gameStatId: gameStatId,
+        );
+
+  PlayerStatProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.playerId,
+    required this.gameStatId,
+  }) : super.internal();
+
+  final String playerId;
+  final int gameStatId;
+
+  @override
+  Override overrideWith(
+    FutureOr<int> Function(PlayerStatRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: PlayerStatProvider._internal(
+        (ref) => create(ref as PlayerStatRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        playerId: playerId,
+        gameStatId: gameStatId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<int> createElement() {
+    return _PlayerStatProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PlayerStatProvider &&
+        other.playerId == playerId &&
+        other.gameStatId == gameStatId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, playerId.hashCode);
+    hash = _SystemHash.combine(hash, gameStatId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin PlayerStatRef on AutoDisposeFutureProviderRef<int> {
+  /// The parameter `playerId` of this provider.
+  String get playerId;
+
+  /// The parameter `gameStatId` of this provider.
+  int get gameStatId;
+}
+
+class _PlayerStatProviderElement extends AutoDisposeFutureProviderElement<int>
+    with PlayerStatRef {
+  _PlayerStatProviderElement(super.provider);
+
+  @override
+  String get playerId => (origin as PlayerStatProvider).playerId;
+  @override
+  int get gameStatId => (origin as PlayerStatProvider).gameStatId;
+}
+
 String _$currentProjectContextHash() =>
     r'4c8cc047a1a79eb695b9f390a99148ce921e1e5b';
 

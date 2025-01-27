@@ -657,3 +657,68 @@ Future<GameStatContext> gameStat(final Ref ref, final int id) async {
   final value = await ref.watch(gameStatProvider(maxGameStatId).future);
   return GameStatContext(gameStat: stat, maxValueGameStat: value.gameStat);
 }
+
+/// Return a player class game stat for the given [playerClassId] and
+/// [gameStatId].
+@riverpod
+Future<PlayerClassGameStat?> playerClassGameStat(
+  final Ref ref,
+  final int playerClassId,
+  final int gameStatId,
+) async {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database.managers.playerClassGameStats
+      .filter(
+        (final f) =>
+            f.gameStatId.id.equals(gameStatId) &
+            f.playerClassId.id.equals(playerClassId),
+      )
+      .getSingleOrNull();
+}
+
+/// Provide game stats for a player.
+@riverpod
+Future<Map<int, int>> gamePlayerStats(final Ref ref, final String id) async {
+  final gamePlayerContext = await ref.watch(
+    gamePlayerContextProvider(id).future,
+  );
+  final player = gamePlayerContext.gamePlayer;
+  final playerStats = player.stats;
+  final gameStats = await ref.watch(gameStatsProvider.future);
+  for (final stat in gameStats) {
+    if (!playerStats.containsKey(stat.id)) {
+      final value = await ref.watch(
+        playerStatProvider(id, stat.id).future,
+      );
+      playerStats[stat.id] = value;
+    }
+  }
+  return playerStats;
+}
+
+/// Provide a single player stat.
+@riverpod
+Future<int> playerStat(
+  final Ref ref,
+  final String playerId,
+  final int gameStatId,
+) async {
+  final stats = await ref.watch(gamePlayerStatsProvider(playerId).future);
+  final value = stats[gameStatId];
+  if (value != null) {
+    return value;
+  }
+  final gamePlayerContext =
+      await ref.watch(gamePlayerContextProvider(playerId).future);
+  final playerClassGameStat = await ref.watch(
+    playerClassGameStatProvider(
+      gamePlayerContext.gamePlayer.classId,
+      gameStatId,
+    ).future,
+  );
+  if (playerClassGameStat != null) {
+    return playerClassGameStat.defaultValue;
+  }
+  final gameStat = await ref.watch(gameStatProvider(gameStatId).future);
+  return gameStat.gameStat.defaultValue;
+}
