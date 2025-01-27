@@ -1,6 +1,7 @@
 /// The package which allows playing rumour games.
 library;
 
+export 'src/extensions/widget_ref_x.dart';
 export 'src/game_player_context.dart';
 export 'src/game_player_file.dart';
 export 'src/screens/new_player_screen.dart';

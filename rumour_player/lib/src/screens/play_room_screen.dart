@@ -81,73 +81,9 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
   /// The direction the player is moving in.
   MovingDirection? movingDirection;
 
-  /// Get a sound reference with the given [id].
-  ///
-  /// If [id] is `null`, then `null` will be returned.
-  Future<SoundReference?> getSoundReference(final int? id) async {
-    if (id == null) {
-      return null;
-    }
-    return projectContext.database.managers.soundReferences
-        .filter(
-          (final f) => f.id.equals(id),
-        )
-        .getSingle();
-  }
-
-  /// Get a [Sound] from [soundReference].
-  ///
-  /// If [soundReference] is `null`, then `null` will be returned.
-  Sound? getSound({
-    required final SoundReference? soundReference,
-    required final bool destroy,
-    final bool looping = false,
-    final Duration loopingStart = Duration.zero,
-    final bool paused = false,
-    final SoundPosition position = unpanned,
-  }) {
-    if (soundReference == null) {
-      return null;
-    }
-    return projectContext.getSound(
-      soundReference: soundReference,
-      destroy: destroy,
-      looping: looping,
-      loopingStart: loopingStart,
-      paused: paused,
-      position: position,
-    );
-  }
-
   /// Get nearby objects.
   Future<List<RoomObject>> getNearbyRoomObjects() =>
       ref.read(roomObjectsProvider(_room.id, coordinates).future);
-
-  /// Maybe play [soundReference].
-  ///
-  /// If [soundReference] is `null`, then nothing will happen.
-  Future<SoundHandle?> maybePlaySoundReference({
-    required final SoundReference? soundReference,
-    required final bool destroy,
-    final bool looping = false,
-    final Duration loopingStart = Duration.zero,
-    final bool paused = false,
-    final SoundPosition position = unpanned,
-  }) {
-    if (mounted) {
-      return context.maybePlaySound(
-        getSound(
-          soundReference: soundReference,
-          destroy: destroy,
-          looping: looping,
-          loopingStart: loopingStart,
-          paused: paused,
-          position: position,
-        ),
-      );
-    }
-    return Future.value();
-  }
 
   /// Build a widget.
   @override
@@ -240,7 +176,7 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
       data: (final gamePlayerContext) {
         _gamePlayerContext = gamePlayerContext;
         return MaybeMusic(
-          music: getSound(
+          music: projectContext.maybeGetSound(
             soundReference: _zoneMusic,
             destroy: false,
             looping: true,
@@ -329,11 +265,17 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
       MovingDirection.right => coordinates.east,
     };
     if (!validCoordinates(newCoordinates)) {
-      await maybePlaySoundReference(soundReference: _wallSound, destroy: true);
+      await ref.maybePlaySoundReference(
+        soundReference: _wallSound,
+        destroy: true,
+      );
       return;
     }
     setPlayerCoordinates(newCoordinates);
-    await maybePlaySoundReference(soundReference: _footsteps, destroy: true);
+    await ref.maybePlaySoundReference(
+      soundReference: _footsteps,
+      destroy: true,
+    );
   }
 
   /// Activate the given [object].
@@ -341,8 +283,9 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
     final exitId = object.roomExitId;
     if (exitId != null) {
       final exit = await ref.read(roomExitProvider(exitId).future);
-      await maybePlaySoundReference(
-        soundReference: await getSoundReference(exit.useSoundId),
+      await ref.maybePlaySoundReference(
+        soundReference:
+            await projectContext.maybeGetSoundReference(exit.useSoundId),
         destroy: true,
       );
       final destinationRoom = await ref.read(
