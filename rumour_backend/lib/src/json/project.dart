@@ -28,6 +28,8 @@ class Project {
     this.pauseSoundsVolumeReduction = 4,
     this.pauseMenuTitle = 'Pause Menu',
     this.pauseMenuMusic,
+    this.statMenuItemFormat =
+        '{{ statName }}: {{ statValue }}{% if maxValue %} / {{ maxValue }}{% endif %}',
   });
 
   /// Create an instance from a JSON object.
@@ -96,6 +98,9 @@ class Project {
 
   /// The music to play for the pause menu.
   SerializableSoundReference? pauseMenuMusic;
+
+  /// The format for entries in the player stats menu.
+  String statMenuItemFormat;
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$ProjectToJson(this);

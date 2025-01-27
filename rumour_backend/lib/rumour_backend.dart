@@ -20,5 +20,7 @@ export 'src/json/serializable_sound_reference.dart';
 export 'src/mathematical_operator.dart';
 export 'src/positioned_sound_reference.dart';
 export 'src/providers.dart';
+export 'src/rumour_template/rumour_template.dart';
+export 'src/rumour_template/rumour_template_value.dart';
 export 'src/shortcuts.dart';
 export 'src/widgets/play_sound_reference_semantics.dart';

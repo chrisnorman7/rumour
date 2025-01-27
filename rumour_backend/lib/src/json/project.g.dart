@@ -50,6 +50,8 @@ Project _$ProjectFromJson(Map<String, dynamic> json) => Project(
           ? null
           : SerializableSoundReference.fromJson(
               json['pauseMenuMusic'] as Map<String, dynamic>),
+      statMenuItemFormat: json['statMenuItemFormat'] as String? ??
+          '{{ statName }}: {{ statValue }}{% if maxValue %} / {{ maxValue }}{% endif %}',
     );
 
 Map<String, dynamic> _$ProjectToJson(Project instance) => <String, dynamic>{
@@ -70,4 +72,5 @@ Map<String, dynamic> _$ProjectToJson(Project instance) => <String, dynamic>{
       'pauseSoundsVolumeReduction': instance.pauseSoundsVolumeReduction,
       'pauseMenuTitle': instance.pauseMenuTitle,
       'pauseMenuMusic': instance.pauseMenuMusic,
+      'statMenuItemFormat': instance.statMenuItemFormat,
     };
