@@ -25,6 +25,7 @@ class Project {
     this.savedPlayersEarcon,
     this.organisationName = 'com.example',
     this.appName = 'game',
+    this.pauseSoundsVolumeReduction = 2,
   });
 
   /// Create an instance from a JSON object.
@@ -84,6 +85,9 @@ class Project {
   /// The [organisationName] and the [appName] will be combined to provide the
   /// path where game options are stored.
   String appName;
+
+  /// The number to divide the volumes of sounds by when pausing the game.
+  int pauseSoundsVolumeReduction;
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$ProjectToJson(this);

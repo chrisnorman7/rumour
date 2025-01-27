@@ -43,6 +43,8 @@ Project _$ProjectFromJson(Map<String, dynamic> json) => Project(
               json['savedPlayersEarcon'] as Map<String, dynamic>),
       organisationName: json['organisationName'] as String? ?? 'com.example',
       appName: json['appName'] as String? ?? 'game',
+      pauseSoundsVolumeReduction:
+          (json['pauseSoundsVolumeReduction'] as num?)?.toInt() ?? 2,
     );
 
 Map<String, dynamic> _$ProjectToJson(Project instance) => <String, dynamic>{
@@ -60,4 +62,5 @@ Map<String, dynamic> _$ProjectToJson(Project instance) => <String, dynamic>{
       'savedPlayersEarcon': instance.savedPlayersEarcon,
       'organisationName': instance.organisationName,
       'appName': instance.appName,
+      'pauseSoundsVolumeReduction': instance.pauseSoundsVolumeReduction,
     };
