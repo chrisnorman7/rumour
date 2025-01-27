@@ -1451,6 +1451,28 @@ class $RoomExitsTable extends RoomExits
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _roomIdMeta = const VerificationMeta('roomId');
+  @override
+  late final GeneratedColumn<int> roomId = GeneratedColumn<int>(
+      'room_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES rooms (id) ON DELETE CASCADE'));
+  static const VerificationMeta _xMeta = const VerificationMeta('x');
+  @override
+  late final GeneratedColumn<int> x = GeneratedColumn<int>(
+      'x', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _yMeta = const VerificationMeta('y');
+  @override
+  late final GeneratedColumn<int> y = GeneratedColumn<int>(
+      'y', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   static const VerificationMeta _useSoundIdMeta =
       const VerificationMeta('useSoundId');
   @override
@@ -1460,14 +1482,8 @@ class $RoomExitsTable extends RoomExits
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES sound_references (id)'));
-  static const VerificationMeta _destinationObjectIdMeta =
-      const VerificationMeta('destinationObjectId');
   @override
-  late final GeneratedColumn<int> destinationObjectId = GeneratedColumn<int>(
-      'destination_object_id', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns => [id, useSoundId, destinationObjectId];
+  List<GeneratedColumn> get $columns => [id, roomId, x, y, useSoundId];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1481,19 +1497,23 @@ class $RoomExitsTable extends RoomExits
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
+    if (data.containsKey('room_id')) {
+      context.handle(_roomIdMeta,
+          roomId.isAcceptableOrUnknown(data['room_id']!, _roomIdMeta));
+    } else if (isInserting) {
+      context.missing(_roomIdMeta);
+    }
+    if (data.containsKey('x')) {
+      context.handle(_xMeta, x.isAcceptableOrUnknown(data['x']!, _xMeta));
+    }
+    if (data.containsKey('y')) {
+      context.handle(_yMeta, y.isAcceptableOrUnknown(data['y']!, _yMeta));
+    }
     if (data.containsKey('use_sound_id')) {
       context.handle(
           _useSoundIdMeta,
           useSoundId.isAcceptableOrUnknown(
               data['use_sound_id']!, _useSoundIdMeta));
-    }
-    if (data.containsKey('destination_object_id')) {
-      context.handle(
-          _destinationObjectIdMeta,
-          destinationObjectId.isAcceptableOrUnknown(
-              data['destination_object_id']!, _destinationObjectIdMeta));
-    } else if (isInserting) {
-      context.missing(_destinationObjectIdMeta);
     }
     return context;
   }
@@ -1506,10 +1526,14 @@ class $RoomExitsTable extends RoomExits
     return RoomExit(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      roomId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}room_id'])!,
+      x: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}x'])!,
+      y: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}y'])!,
       useSoundId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}use_sound_id']),
-      destinationObjectId: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}destination_object_id'])!,
     );
   }
 
@@ -1523,31 +1547,45 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
   /// The primary key field.
   final int id;
 
+  /// The ID of the room this row is attached to.
+  final int roomId;
+
+  /// The x coordinate.
+  final int x;
+
+  /// The y coordinate.
+  final int y;
+
   /// The ID of the sound to play when using this exit.
   final int? useSoundId;
-
-  /// The ID of the object which makes up the other side of this exit.
-  final int destinationObjectId;
   const RoomExit(
-      {required this.id, this.useSoundId, required this.destinationObjectId});
+      {required this.id,
+      required this.roomId,
+      required this.x,
+      required this.y,
+      this.useSoundId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['room_id'] = Variable<int>(roomId);
+    map['x'] = Variable<int>(x);
+    map['y'] = Variable<int>(y);
     if (!nullToAbsent || useSoundId != null) {
       map['use_sound_id'] = Variable<int>(useSoundId);
     }
-    map['destination_object_id'] = Variable<int>(destinationObjectId);
     return map;
   }
 
   RoomExitsCompanion toCompanion(bool nullToAbsent) {
     return RoomExitsCompanion(
       id: Value(id),
+      roomId: Value(roomId),
+      x: Value(x),
+      y: Value(y),
       useSoundId: useSoundId == null && nullToAbsent
           ? const Value.absent()
           : Value(useSoundId),
-      destinationObjectId: Value(destinationObjectId),
     );
   }
 
@@ -1556,9 +1594,10 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return RoomExit(
       id: serializer.fromJson<int>(json['id']),
+      roomId: serializer.fromJson<int>(json['roomId']),
+      x: serializer.fromJson<int>(json['x']),
+      y: serializer.fromJson<int>(json['y']),
       useSoundId: serializer.fromJson<int?>(json['useSoundId']),
-      destinationObjectId:
-          serializer.fromJson<int>(json['destinationObjectId']),
     );
   }
   @override
@@ -1566,28 +1605,34 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'roomId': serializer.toJson<int>(roomId),
+      'x': serializer.toJson<int>(x),
+      'y': serializer.toJson<int>(y),
       'useSoundId': serializer.toJson<int?>(useSoundId),
-      'destinationObjectId': serializer.toJson<int>(destinationObjectId),
     };
   }
 
   RoomExit copyWith(
           {int? id,
-          Value<int?> useSoundId = const Value.absent(),
-          int? destinationObjectId}) =>
+          int? roomId,
+          int? x,
+          int? y,
+          Value<int?> useSoundId = const Value.absent()}) =>
       RoomExit(
         id: id ?? this.id,
+        roomId: roomId ?? this.roomId,
+        x: x ?? this.x,
+        y: y ?? this.y,
         useSoundId: useSoundId.present ? useSoundId.value : this.useSoundId,
-        destinationObjectId: destinationObjectId ?? this.destinationObjectId,
       );
   RoomExit copyWithCompanion(RoomExitsCompanion data) {
     return RoomExit(
       id: data.id.present ? data.id.value : this.id,
+      roomId: data.roomId.present ? data.roomId.value : this.roomId,
+      x: data.x.present ? data.x.value : this.x,
+      y: data.y.present ? data.y.value : this.y,
       useSoundId:
           data.useSoundId.present ? data.useSoundId.value : this.useSoundId,
-      destinationObjectId: data.destinationObjectId.present
-          ? data.destinationObjectId.value
-          : this.destinationObjectId,
     );
   }
 
@@ -1595,58 +1640,75 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
   String toString() {
     return (StringBuffer('RoomExit(')
           ..write('id: $id, ')
-          ..write('useSoundId: $useSoundId, ')
-          ..write('destinationObjectId: $destinationObjectId')
+          ..write('roomId: $roomId, ')
+          ..write('x: $x, ')
+          ..write('y: $y, ')
+          ..write('useSoundId: $useSoundId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, useSoundId, destinationObjectId);
+  int get hashCode => Object.hash(id, roomId, x, y, useSoundId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is RoomExit &&
           other.id == this.id &&
-          other.useSoundId == this.useSoundId &&
-          other.destinationObjectId == this.destinationObjectId);
+          other.roomId == this.roomId &&
+          other.x == this.x &&
+          other.y == this.y &&
+          other.useSoundId == this.useSoundId);
 }
 
 class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
   final Value<int> id;
+  final Value<int> roomId;
+  final Value<int> x;
+  final Value<int> y;
   final Value<int?> useSoundId;
-  final Value<int> destinationObjectId;
   const RoomExitsCompanion({
     this.id = const Value.absent(),
+    this.roomId = const Value.absent(),
+    this.x = const Value.absent(),
+    this.y = const Value.absent(),
     this.useSoundId = const Value.absent(),
-    this.destinationObjectId = const Value.absent(),
   });
   RoomExitsCompanion.insert({
     this.id = const Value.absent(),
+    required int roomId,
+    this.x = const Value.absent(),
+    this.y = const Value.absent(),
     this.useSoundId = const Value.absent(),
-    required int destinationObjectId,
-  }) : destinationObjectId = Value(destinationObjectId);
+  }) : roomId = Value(roomId);
   static Insertable<RoomExit> custom({
     Expression<int>? id,
+    Expression<int>? roomId,
+    Expression<int>? x,
+    Expression<int>? y,
     Expression<int>? useSoundId,
-    Expression<int>? destinationObjectId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (roomId != null) 'room_id': roomId,
+      if (x != null) 'x': x,
+      if (y != null) 'y': y,
       if (useSoundId != null) 'use_sound_id': useSoundId,
-      if (destinationObjectId != null)
-        'destination_object_id': destinationObjectId,
     });
   }
 
   RoomExitsCompanion copyWith(
       {Value<int>? id,
-      Value<int?>? useSoundId,
-      Value<int>? destinationObjectId}) {
+      Value<int>? roomId,
+      Value<int>? x,
+      Value<int>? y,
+      Value<int?>? useSoundId}) {
     return RoomExitsCompanion(
       id: id ?? this.id,
+      roomId: roomId ?? this.roomId,
+      x: x ?? this.x,
+      y: y ?? this.y,
       useSoundId: useSoundId ?? this.useSoundId,
-      destinationObjectId: destinationObjectId ?? this.destinationObjectId,
     );
   }
 
@@ -1656,11 +1718,17 @@ class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
+    if (roomId.present) {
+      map['room_id'] = Variable<int>(roomId.value);
+    }
+    if (x.present) {
+      map['x'] = Variable<int>(x.value);
+    }
+    if (y.present) {
+      map['y'] = Variable<int>(y.value);
+    }
     if (useSoundId.present) {
       map['use_sound_id'] = Variable<int>(useSoundId.value);
-    }
-    if (destinationObjectId.present) {
-      map['destination_object_id'] = Variable<int>(destinationObjectId.value);
     }
     return map;
   }
@@ -1669,8 +1737,10 @@ class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
   String toString() {
     return (StringBuffer('RoomExitsCompanion(')
           ..write('id: $id, ')
-          ..write('useSoundId: $useSoundId, ')
-          ..write('destinationObjectId: $destinationObjectId')
+          ..write('roomId: $roomId, ')
+          ..write('x: $x, ')
+          ..write('y: $y, ')
+          ..write('useSoundId: $useSoundId')
           ..write(')'))
         .toString();
   }
@@ -3697,6 +3767,337 @@ class RoomSurfaceCostsCompanion extends UpdateCompanion<RoomSurfaceCost> {
   }
 }
 
+class $PlayerClassGameStatsTable extends PlayerClassGameStats
+    with TableInfo<$PlayerClassGameStatsTable, PlayerClassGameStat> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PlayerClassGameStatsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _playerClassIdMeta =
+      const VerificationMeta('playerClassId');
+  @override
+  late final GeneratedColumn<int> playerClassId = GeneratedColumn<int>(
+      'player_class_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES player_classes (id) ON DELETE CASCADE'));
+  static const VerificationMeta _gameStatIdMeta =
+      const VerificationMeta('gameStatId');
+  @override
+  late final GeneratedColumn<int> gameStatId = GeneratedColumn<int>(
+      'game_stat_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES game_stats (id) ON DELETE CASCADE'));
+  static const VerificationMeta _roomIdMeta = const VerificationMeta('roomId');
+  @override
+  late final GeneratedColumn<int> roomId = GeneratedColumn<int>(
+      'room_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES rooms (id) ON DELETE CASCADE'));
+  static const VerificationMeta _defaultValueMeta =
+      const VerificationMeta('defaultValue');
+  @override
+  late final GeneratedColumn<int> defaultValue = GeneratedColumn<int>(
+      'default_value', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, playerClassId, gameStatId, roomId, defaultValue];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'player_class_game_stats';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<PlayerClassGameStat> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('player_class_id')) {
+      context.handle(
+          _playerClassIdMeta,
+          playerClassId.isAcceptableOrUnknown(
+              data['player_class_id']!, _playerClassIdMeta));
+    } else if (isInserting) {
+      context.missing(_playerClassIdMeta);
+    }
+    if (data.containsKey('game_stat_id')) {
+      context.handle(
+          _gameStatIdMeta,
+          gameStatId.isAcceptableOrUnknown(
+              data['game_stat_id']!, _gameStatIdMeta));
+    } else if (isInserting) {
+      context.missing(_gameStatIdMeta);
+    }
+    if (data.containsKey('room_id')) {
+      context.handle(_roomIdMeta,
+          roomId.isAcceptableOrUnknown(data['room_id']!, _roomIdMeta));
+    } else if (isInserting) {
+      context.missing(_roomIdMeta);
+    }
+    if (data.containsKey('default_value')) {
+      context.handle(
+          _defaultValueMeta,
+          defaultValue.isAcceptableOrUnknown(
+              data['default_value']!, _defaultValueMeta));
+    } else if (isInserting) {
+      context.missing(_defaultValueMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PlayerClassGameStat map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PlayerClassGameStat(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      playerClassId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}player_class_id'])!,
+      gameStatId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}game_stat_id'])!,
+      roomId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}room_id'])!,
+      defaultValue: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}default_value'])!,
+    );
+  }
+
+  @override
+  $PlayerClassGameStatsTable createAlias(String alias) {
+    return $PlayerClassGameStatsTable(attachedDatabase, alias);
+  }
+}
+
+class PlayerClassGameStat extends DataClass
+    implements Insertable<PlayerClassGameStat> {
+  /// The primary key field.
+  final int id;
+
+  /// The ID of a player class.
+  final int playerClassId;
+
+  /// The ID of the game stat to use.
+  final int gameStatId;
+
+  /// The ID of the room this row is attached to.
+  final int roomId;
+
+  /// The default value to use.
+  final int defaultValue;
+  const PlayerClassGameStat(
+      {required this.id,
+      required this.playerClassId,
+      required this.gameStatId,
+      required this.roomId,
+      required this.defaultValue});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['player_class_id'] = Variable<int>(playerClassId);
+    map['game_stat_id'] = Variable<int>(gameStatId);
+    map['room_id'] = Variable<int>(roomId);
+    map['default_value'] = Variable<int>(defaultValue);
+    return map;
+  }
+
+  PlayerClassGameStatsCompanion toCompanion(bool nullToAbsent) {
+    return PlayerClassGameStatsCompanion(
+      id: Value(id),
+      playerClassId: Value(playerClassId),
+      gameStatId: Value(gameStatId),
+      roomId: Value(roomId),
+      defaultValue: Value(defaultValue),
+    );
+  }
+
+  factory PlayerClassGameStat.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PlayerClassGameStat(
+      id: serializer.fromJson<int>(json['id']),
+      playerClassId: serializer.fromJson<int>(json['playerClassId']),
+      gameStatId: serializer.fromJson<int>(json['gameStatId']),
+      roomId: serializer.fromJson<int>(json['roomId']),
+      defaultValue: serializer.fromJson<int>(json['defaultValue']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'playerClassId': serializer.toJson<int>(playerClassId),
+      'gameStatId': serializer.toJson<int>(gameStatId),
+      'roomId': serializer.toJson<int>(roomId),
+      'defaultValue': serializer.toJson<int>(defaultValue),
+    };
+  }
+
+  PlayerClassGameStat copyWith(
+          {int? id,
+          int? playerClassId,
+          int? gameStatId,
+          int? roomId,
+          int? defaultValue}) =>
+      PlayerClassGameStat(
+        id: id ?? this.id,
+        playerClassId: playerClassId ?? this.playerClassId,
+        gameStatId: gameStatId ?? this.gameStatId,
+        roomId: roomId ?? this.roomId,
+        defaultValue: defaultValue ?? this.defaultValue,
+      );
+  PlayerClassGameStat copyWithCompanion(PlayerClassGameStatsCompanion data) {
+    return PlayerClassGameStat(
+      id: data.id.present ? data.id.value : this.id,
+      playerClassId: data.playerClassId.present
+          ? data.playerClassId.value
+          : this.playerClassId,
+      gameStatId:
+          data.gameStatId.present ? data.gameStatId.value : this.gameStatId,
+      roomId: data.roomId.present ? data.roomId.value : this.roomId,
+      defaultValue: data.defaultValue.present
+          ? data.defaultValue.value
+          : this.defaultValue,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlayerClassGameStat(')
+          ..write('id: $id, ')
+          ..write('playerClassId: $playerClassId, ')
+          ..write('gameStatId: $gameStatId, ')
+          ..write('roomId: $roomId, ')
+          ..write('defaultValue: $defaultValue')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, playerClassId, gameStatId, roomId, defaultValue);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PlayerClassGameStat &&
+          other.id == this.id &&
+          other.playerClassId == this.playerClassId &&
+          other.gameStatId == this.gameStatId &&
+          other.roomId == this.roomId &&
+          other.defaultValue == this.defaultValue);
+}
+
+class PlayerClassGameStatsCompanion
+    extends UpdateCompanion<PlayerClassGameStat> {
+  final Value<int> id;
+  final Value<int> playerClassId;
+  final Value<int> gameStatId;
+  final Value<int> roomId;
+  final Value<int> defaultValue;
+  const PlayerClassGameStatsCompanion({
+    this.id = const Value.absent(),
+    this.playerClassId = const Value.absent(),
+    this.gameStatId = const Value.absent(),
+    this.roomId = const Value.absent(),
+    this.defaultValue = const Value.absent(),
+  });
+  PlayerClassGameStatsCompanion.insert({
+    this.id = const Value.absent(),
+    required int playerClassId,
+    required int gameStatId,
+    required int roomId,
+    required int defaultValue,
+  })  : playerClassId = Value(playerClassId),
+        gameStatId = Value(gameStatId),
+        roomId = Value(roomId),
+        defaultValue = Value(defaultValue);
+  static Insertable<PlayerClassGameStat> custom({
+    Expression<int>? id,
+    Expression<int>? playerClassId,
+    Expression<int>? gameStatId,
+    Expression<int>? roomId,
+    Expression<int>? defaultValue,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (playerClassId != null) 'player_class_id': playerClassId,
+      if (gameStatId != null) 'game_stat_id': gameStatId,
+      if (roomId != null) 'room_id': roomId,
+      if (defaultValue != null) 'default_value': defaultValue,
+    });
+  }
+
+  PlayerClassGameStatsCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? playerClassId,
+      Value<int>? gameStatId,
+      Value<int>? roomId,
+      Value<int>? defaultValue}) {
+    return PlayerClassGameStatsCompanion(
+      id: id ?? this.id,
+      playerClassId: playerClassId ?? this.playerClassId,
+      gameStatId: gameStatId ?? this.gameStatId,
+      roomId: roomId ?? this.roomId,
+      defaultValue: defaultValue ?? this.defaultValue,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (playerClassId.present) {
+      map['player_class_id'] = Variable<int>(playerClassId.value);
+    }
+    if (gameStatId.present) {
+      map['game_stat_id'] = Variable<int>(gameStatId.value);
+    }
+    if (roomId.present) {
+      map['room_id'] = Variable<int>(roomId.value);
+    }
+    if (defaultValue.present) {
+      map['default_value'] = Variable<int>(defaultValue.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlayerClassGameStatsCompanion(')
+          ..write('id: $id, ')
+          ..write('playerClassId: $playerClassId, ')
+          ..write('gameStatId: $gameStatId, ')
+          ..write('roomId: $roomId, ')
+          ..write('defaultValue: $defaultValue')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3713,6 +4114,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $RoomSurfaceBoostsTable(this);
   late final $RoomSurfaceCostsTable roomSurfaceCosts =
       $RoomSurfaceCostsTable(this);
+  late final $PlayerClassGameStatsTable playerClassGameStats =
+      $PlayerClassGameStatsTable(this);
   late final Index roomObjectCoordinatesIndex = Index(
       'room_object_coordinates_index',
       'CREATE INDEX room_object_coordinates_index ON room_objects (x, y)');
@@ -3731,11 +4134,19 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         gameStats,
         roomSurfaceBoosts,
         roomSurfaceCosts,
+        playerClassGameStats,
         roomObjectCoordinatesIndex
       ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
         [
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('rooms',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_exits', kind: UpdateKind.delete),
+            ],
+          ),
           WritePropagation(
             on: TableUpdateQuery.onTableName('rooms',
                 limitUpdateKind: UpdateKind.delete),
@@ -3811,6 +4222,27 @@ abstract class _$AppDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.delete),
             result: [
               TableUpdate('room_surface_costs', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('player_classes',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('player_class_game_stats', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('game_stats',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('player_class_game_stats', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('rooms',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('player_class_game_stats', kind: UpdateKind.delete),
             ],
           ),
         ],
@@ -5655,6 +6087,20 @@ final class $$RoomsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
+  static MultiTypedResultKey<$RoomExitsTable, List<RoomExit>>
+      _roomExitsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+          db.roomExits,
+          aliasName: $_aliasNameGenerator(db.rooms.id, db.roomExits.roomId));
+
+  $$RoomExitsTableProcessedTableManager get roomExitsRefs {
+    final manager = $$RoomExitsTableTableManager($_db, $_db.roomExits)
+        .filter((f) => f.roomId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_roomExitsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
   static MultiTypedResultKey<$RoomObjectsTable, List<RoomObject>>
       _roomObjectsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
           db.roomObjects,
@@ -5680,6 +6126,25 @@ final class $$RoomsTableReferences
         .filter((f) => f.roomId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_playerClassesRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$PlayerClassGameStatsTable,
+      List<PlayerClassGameStat>> _playerClassGameStatsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.playerClassGameStats,
+          aliasName: $_aliasNameGenerator(
+              db.rooms.id, db.playerClassGameStats.roomId));
+
+  $$PlayerClassGameStatsTableProcessedTableManager
+      get playerClassGameStatsRefs {
+    final manager =
+        $$PlayerClassGameStatsTableTableManager($_db, $_db.playerClassGameStats)
+            .filter((f) => f.roomId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_playerClassGameStatsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -5771,6 +6236,27 @@ class $$RoomsTableFilterComposer extends Composer<_$AppDatabase, $RoomsTable> {
     return composer;
   }
 
+  Expression<bool> roomExitsRefs(
+      Expression<bool> Function($$RoomExitsTableFilterComposer f) f) {
+    final $$RoomExitsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomExits,
+        getReferencedColumn: (t) => t.roomId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomExitsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomExits,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
   Expression<bool> roomObjectsRefs(
       Expression<bool> Function($$RoomObjectsTableFilterComposer f) f) {
     final $$RoomObjectsTableFilterComposer composer = $composerBuilder(
@@ -5805,6 +6291,28 @@ class $$RoomsTableFilterComposer extends Composer<_$AppDatabase, $RoomsTable> {
             $$PlayerClassesTableFilterComposer(
               $db: $db,
               $table: $db.playerClasses,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> playerClassGameStatsRefs(
+      Expression<bool> Function($$PlayerClassGameStatsTableFilterComposer f)
+          f) {
+    final $$PlayerClassGameStatsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.playerClassGameStats,
+        getReferencedColumn: (t) => t.roomId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$PlayerClassGameStatsTableFilterComposer(
+              $db: $db,
+              $table: $db.playerClassGameStats,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -5989,6 +6497,27 @@ class $$RoomsTableAnnotationComposer
     return composer;
   }
 
+  Expression<T> roomExitsRefs<T extends Object>(
+      Expression<T> Function($$RoomExitsTableAnnotationComposer a) f) {
+    final $$RoomExitsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomExits,
+        getReferencedColumn: (t) => t.roomId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomExitsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roomExits,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
   Expression<T> roomObjectsRefs<T extends Object>(
       Expression<T> Function($$RoomObjectsTableAnnotationComposer a) f) {
     final $$RoomObjectsTableAnnotationComposer composer = $composerBuilder(
@@ -6030,6 +6559,29 @@ class $$RoomsTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> playerClassGameStatsRefs<T extends Object>(
+      Expression<T> Function($$PlayerClassGameStatsTableAnnotationComposer a)
+          f) {
+    final $$PlayerClassGameStatsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.playerClassGameStats,
+            getReferencedColumn: (t) => t.roomId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$PlayerClassGameStatsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.playerClassGameStats,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 }
 
 class $$RoomsTableTableManager extends RootTableManager<
@@ -6047,8 +6599,10 @@ class $$RoomsTableTableManager extends RootTableManager<
         {bool ambianceId,
         bool zoneId,
         bool surfaceId,
+        bool roomExitsRefs,
         bool roomObjectsRefs,
-        bool playerClassesRefs})> {
+        bool playerClassesRefs,
+        bool playerClassGameStatsRefs})> {
   $$RoomsTableTableManager(_$AppDatabase db, $RoomsTable table)
       : super(TableManagerState(
           db: db,
@@ -6111,13 +6665,17 @@ class $$RoomsTableTableManager extends RootTableManager<
               {ambianceId = false,
               zoneId = false,
               surfaceId = false,
+              roomExitsRefs = false,
               roomObjectsRefs = false,
-              playerClassesRefs = false}) {
+              playerClassesRefs = false,
+              playerClassGameStatsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
+                if (roomExitsRefs) db.roomExits,
                 if (roomObjectsRefs) db.roomObjects,
-                if (playerClassesRefs) db.playerClasses
+                if (playerClassesRefs) db.playerClasses,
+                if (playerClassGameStatsRefs) db.playerClassGameStats
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -6165,6 +6723,17 @@ class $$RoomsTableTableManager extends RootTableManager<
               },
               getPrefetchedDataCallback: (items) async {
                 return [
+                  if (roomExitsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable:
+                            $$RoomsTableReferences._roomExitsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$RoomsTableReferences(db, table, p0).roomExitsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.roomId == item.id),
+                        typedResults: items),
                   if (roomObjectsRefs)
                     await $_getPrefetchedData(
                         currentTable: table,
@@ -6185,6 +6754,18 @@ class $$RoomsTableTableManager extends RootTableManager<
                         managerFromTypedResult: (p0) =>
                             $$RoomsTableReferences(db, table, p0)
                                 .playerClassesRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.roomId == item.id),
+                        typedResults: items),
+                  if (playerClassGameStatsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$RoomsTableReferences
+                            ._playerClassGameStatsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$RoomsTableReferences(db, table, p0)
+                                .playerClassGameStatsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.roomId == item.id),
@@ -6211,22 +6792,42 @@ typedef $$RoomsTableProcessedTableManager = ProcessedTableManager<
         {bool ambianceId,
         bool zoneId,
         bool surfaceId,
+        bool roomExitsRefs,
         bool roomObjectsRefs,
-        bool playerClassesRefs})>;
+        bool playerClassesRefs,
+        bool playerClassGameStatsRefs})>;
 typedef $$RoomExitsTableCreateCompanionBuilder = RoomExitsCompanion Function({
   Value<int> id,
+  required int roomId,
+  Value<int> x,
+  Value<int> y,
   Value<int?> useSoundId,
-  required int destinationObjectId,
 });
 typedef $$RoomExitsTableUpdateCompanionBuilder = RoomExitsCompanion Function({
   Value<int> id,
+  Value<int> roomId,
+  Value<int> x,
+  Value<int> y,
   Value<int?> useSoundId,
-  Value<int> destinationObjectId,
 });
 
 final class $$RoomExitsTableReferences
     extends BaseReferences<_$AppDatabase, $RoomExitsTable, RoomExit> {
   $$RoomExitsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $RoomsTable _roomIdTable(_$AppDatabase db) => db.rooms
+      .createAlias($_aliasNameGenerator(db.roomExits.roomId, db.rooms.id));
+
+  $$RoomsTableProcessedTableManager get roomId {
+    final $_column = $_itemColumn<int>('room_id')!;
+
+    final manager = $$RoomsTableTableManager($_db, $_db.rooms)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_roomIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
 
   static $SoundReferencesTable _useSoundIdTable(_$AppDatabase db) =>
       db.soundReferences.createAlias(
@@ -6272,9 +6873,31 @@ class $$RoomExitsTableFilterComposer
   ColumnFilters<int> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get destinationObjectId => $composableBuilder(
-      column: $table.destinationObjectId,
-      builder: (column) => ColumnFilters(column));
+  ColumnFilters<int> get x => $composableBuilder(
+      column: $table.x, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get y => $composableBuilder(
+      column: $table.y, builder: (column) => ColumnFilters(column));
+
+  $$RoomsTableFilterComposer get roomId {
+    final $$RoomsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomId,
+        referencedTable: $db.rooms,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomsTableFilterComposer(
+              $db: $db,
+              $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 
   $$SoundReferencesTableFilterComposer get useSoundId {
     final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
@@ -6330,9 +6953,31 @@ class $$RoomExitsTableOrderingComposer
   ColumnOrderings<int> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get destinationObjectId => $composableBuilder(
-      column: $table.destinationObjectId,
-      builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<int> get x => $composableBuilder(
+      column: $table.x, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get y => $composableBuilder(
+      column: $table.y, builder: (column) => ColumnOrderings(column));
+
+  $$RoomsTableOrderingComposer get roomId {
+    final $$RoomsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomId,
+        referencedTable: $db.rooms,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomsTableOrderingComposer(
+              $db: $db,
+              $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 
   $$SoundReferencesTableOrderingComposer get useSoundId {
     final $$SoundReferencesTableOrderingComposer composer = $composerBuilder(
@@ -6367,8 +7012,31 @@ class $$RoomExitsTableAnnotationComposer
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<int> get destinationObjectId => $composableBuilder(
-      column: $table.destinationObjectId, builder: (column) => column);
+  GeneratedColumn<int> get x =>
+      $composableBuilder(column: $table.x, builder: (column) => column);
+
+  GeneratedColumn<int> get y =>
+      $composableBuilder(column: $table.y, builder: (column) => column);
+
+  $$RoomsTableAnnotationComposer get roomId {
+    final $$RoomsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomId,
+        referencedTable: $db.rooms,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 
   $$SoundReferencesTableAnnotationComposer get useSoundId {
     final $$SoundReferencesTableAnnotationComposer composer = $composerBuilder(
@@ -6423,7 +7091,8 @@ class $$RoomExitsTableTableManager extends RootTableManager<
     $$RoomExitsTableUpdateCompanionBuilder,
     (RoomExit, $$RoomExitsTableReferences),
     RoomExit,
-    PrefetchHooks Function({bool useSoundId, bool roomObjectsRefs})> {
+    PrefetchHooks Function(
+        {bool roomId, bool useSoundId, bool roomObjectsRefs})> {
   $$RoomExitsTableTableManager(_$AppDatabase db, $RoomExitsTable table)
       : super(TableManagerState(
           db: db,
@@ -6436,23 +7105,31 @@ class $$RoomExitsTableTableManager extends RootTableManager<
               $$RoomExitsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
+            Value<int> roomId = const Value.absent(),
+            Value<int> x = const Value.absent(),
+            Value<int> y = const Value.absent(),
             Value<int?> useSoundId = const Value.absent(),
-            Value<int> destinationObjectId = const Value.absent(),
           }) =>
               RoomExitsCompanion(
             id: id,
+            roomId: roomId,
+            x: x,
+            y: y,
             useSoundId: useSoundId,
-            destinationObjectId: destinationObjectId,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
+            required int roomId,
+            Value<int> x = const Value.absent(),
+            Value<int> y = const Value.absent(),
             Value<int?> useSoundId = const Value.absent(),
-            required int destinationObjectId,
           }) =>
               RoomExitsCompanion.insert(
             id: id,
+            roomId: roomId,
+            x: x,
+            y: y,
             useSoundId: useSoundId,
-            destinationObjectId: destinationObjectId,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
@@ -6461,7 +7138,7 @@ class $$RoomExitsTableTableManager extends RootTableManager<
                   ))
               .toList(),
           prefetchHooksCallback: (
-              {useSoundId = false, roomObjectsRefs = false}) {
+              {roomId = false, useSoundId = false, roomObjectsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [if (roomObjectsRefs) db.roomObjects],
@@ -6478,6 +7155,16 @@ class $$RoomExitsTableTableManager extends RootTableManager<
                       dynamic,
                       dynamic,
                       dynamic>>(state) {
+                if (roomId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.roomId,
+                    referencedTable:
+                        $$RoomExitsTableReferences._roomIdTable(db),
+                    referencedColumn:
+                        $$RoomExitsTableReferences._roomIdTable(db).id,
+                  ) as T;
+                }
                 if (useSoundId) {
                   state = state.withJoin(
                     currentTable: table,
@@ -6523,7 +7210,8 @@ typedef $$RoomExitsTableProcessedTableManager = ProcessedTableManager<
     $$RoomExitsTableUpdateCompanionBuilder,
     (RoomExit, $$RoomExitsTableReferences),
     RoomExit,
-    PrefetchHooks Function({bool useSoundId, bool roomObjectsRefs})>;
+    PrefetchHooks Function(
+        {bool roomId, bool useSoundId, bool roomObjectsRefs})>;
 typedef $$RoomObjectsTableCreateCompanionBuilder = RoomObjectsCompanion
     Function({
   Value<int> id,
@@ -7028,6 +7716,25 @@ final class $$PlayerClassesTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
   }
+
+  static MultiTypedResultKey<$PlayerClassGameStatsTable,
+      List<PlayerClassGameStat>> _playerClassGameStatsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.playerClassGameStats,
+          aliasName: $_aliasNameGenerator(
+              db.playerClasses.id, db.playerClassGameStats.playerClassId));
+
+  $$PlayerClassGameStatsTableProcessedTableManager
+      get playerClassGameStatsRefs {
+    final manager = $$PlayerClassGameStatsTableTableManager(
+            $_db, $_db.playerClassGameStats)
+        .filter((f) => f.playerClassId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_playerClassGameStatsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$PlayerClassesTableFilterComposer
@@ -7072,6 +7779,28 @@ class $$PlayerClassesTableFilterComposer
                   $removeJoinBuilderFromRootComposer,
             ));
     return composer;
+  }
+
+  Expression<bool> playerClassGameStatsRefs(
+      Expression<bool> Function($$PlayerClassGameStatsTableFilterComposer f)
+          f) {
+    final $$PlayerClassGameStatsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.playerClassGameStats,
+        getReferencedColumn: (t) => t.playerClassId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$PlayerClassGameStatsTableFilterComposer(
+              $db: $db,
+              $table: $db.playerClassGameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
   }
 }
 
@@ -7163,6 +7892,29 @@ class $$PlayerClassesTableAnnotationComposer
             ));
     return composer;
   }
+
+  Expression<T> playerClassGameStatsRefs<T extends Object>(
+      Expression<T> Function($$PlayerClassGameStatsTableAnnotationComposer a)
+          f) {
+    final $$PlayerClassGameStatsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.playerClassGameStats,
+            getReferencedColumn: (t) => t.playerClassId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$PlayerClassGameStatsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.playerClassGameStats,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 }
 
 class $$PlayerClassesTableTableManager extends RootTableManager<
@@ -7176,7 +7928,7 @@ class $$PlayerClassesTableTableManager extends RootTableManager<
     $$PlayerClassesTableUpdateCompanionBuilder,
     (PlayerClass, $$PlayerClassesTableReferences),
     PlayerClass,
-    PrefetchHooks Function({bool roomId})> {
+    PrefetchHooks Function({bool roomId, bool playerClassGameStatsRefs})> {
   $$PlayerClassesTableTableManager(_$AppDatabase db, $PlayerClassesTable table)
       : super(TableManagerState(
           db: db,
@@ -7225,10 +7977,13 @@ class $$PlayerClassesTableTableManager extends RootTableManager<
                     $$PlayerClassesTableReferences(db, table, e)
                   ))
               .toList(),
-          prefetchHooksCallback: ({roomId = false}) {
+          prefetchHooksCallback: (
+              {roomId = false, playerClassGameStatsRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [],
+              explicitlyWatchedTables: [
+                if (playerClassGameStatsRefs) db.playerClassGameStats
+              ],
               addJoins: <
                   T extends TableManagerState<
                       dynamic,
@@ -7256,7 +8011,20 @@ class $$PlayerClassesTableTableManager extends RootTableManager<
                 return state;
               },
               getPrefetchedDataCallback: (items) async {
-                return [];
+                return [
+                  if (playerClassGameStatsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$PlayerClassesTableReferences
+                            ._playerClassGameStatsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$PlayerClassesTableReferences(db, table, p0)
+                                .playerClassGameStatsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.playerClassId == item.id),
+                        typedResults: items)
+                ];
               },
             );
           },
@@ -7274,7 +8042,7 @@ typedef $$PlayerClassesTableProcessedTableManager = ProcessedTableManager<
     $$PlayerClassesTableUpdateCompanionBuilder,
     (PlayerClass, $$PlayerClassesTableReferences),
     PlayerClass,
-    PrefetchHooks Function({bool roomId})>;
+    PrefetchHooks Function({bool roomId, bool playerClassGameStatsRefs})>;
 typedef $$GameStatsTableCreateCompanionBuilder = GameStatsCompanion Function({
   Value<int> id,
   required String name,
@@ -7345,6 +8113,25 @@ final class $$GameStatsTableReferences
 
     final cache =
         $_typedResult.readTableOrNull(_roomSurfaceCostsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$PlayerClassGameStatsTable,
+      List<PlayerClassGameStat>> _playerClassGameStatsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.playerClassGameStats,
+          aliasName: $_aliasNameGenerator(
+              db.gameStats.id, db.playerClassGameStats.gameStatId));
+
+  $$PlayerClassGameStatsTableProcessedTableManager
+      get playerClassGameStatsRefs {
+    final manager =
+        $$PlayerClassGameStatsTableTableManager($_db, $_db.playerClassGameStats)
+            .filter((f) => f.gameStatId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_playerClassGameStatsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -7438,6 +8225,28 @@ class $$GameStatsTableFilterComposer
             $$RoomSurfaceCostsTableFilterComposer(
               $db: $db,
               $table: $db.roomSurfaceCosts,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> playerClassGameStatsRefs(
+      Expression<bool> Function($$PlayerClassGameStatsTableFilterComposer f)
+          f) {
+    final $$PlayerClassGameStatsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.playerClassGameStats,
+        getReferencedColumn: (t) => t.gameStatId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$PlayerClassGameStatsTableFilterComposer(
+              $db: $db,
+              $table: $db.playerClassGameStats,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -7594,6 +8403,29 @@ class $$GameStatsTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> playerClassGameStatsRefs<T extends Object>(
+      Expression<T> Function($$PlayerClassGameStatsTableAnnotationComposer a)
+          f) {
+    final $$PlayerClassGameStatsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.playerClassGameStats,
+            getReferencedColumn: (t) => t.gameStatId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$PlayerClassGameStatsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.playerClassGameStats,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 }
 
 class $$GameStatsTableTableManager extends RootTableManager<
@@ -7610,7 +8442,8 @@ class $$GameStatsTableTableManager extends RootTableManager<
     PrefetchHooks Function(
         {bool maxGameStatId,
         bool roomSurfaceBoostsRefs,
-        bool roomSurfaceCostsRefs})> {
+        bool roomSurfaceCostsRefs,
+        bool playerClassGameStatsRefs})> {
   $$GameStatsTableTableManager(_$AppDatabase db, $GameStatsTable table)
       : super(TableManagerState(
           db: db,
@@ -7672,12 +8505,14 @@ class $$GameStatsTableTableManager extends RootTableManager<
           prefetchHooksCallback: (
               {maxGameStatId = false,
               roomSurfaceBoostsRefs = false,
-              roomSurfaceCostsRefs = false}) {
+              roomSurfaceCostsRefs = false,
+              playerClassGameStatsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (roomSurfaceBoostsRefs) db.roomSurfaceBoosts,
-                if (roomSurfaceCostsRefs) db.roomSurfaceCosts
+                if (roomSurfaceCostsRefs) db.roomSurfaceCosts,
+                if (playerClassGameStatsRefs) db.playerClassGameStats
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -7730,6 +8565,18 @@ class $$GameStatsTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.gameStatId == item.id),
+                        typedResults: items),
+                  if (playerClassGameStatsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$GameStatsTableReferences
+                            ._playerClassGameStatsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$GameStatsTableReferences(db, table, p0)
+                                .playerClassGameStatsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.gameStatId == item.id),
                         typedResults: items)
                 ];
               },
@@ -7752,7 +8599,8 @@ typedef $$GameStatsTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function(
         {bool maxGameStatId,
         bool roomSurfaceBoostsRefs,
-        bool roomSurfaceCostsRefs})>;
+        bool roomSurfaceCostsRefs,
+        bool playerClassGameStatsRefs})>;
 typedef $$RoomSurfaceBoostsTableCreateCompanionBuilder
     = RoomSurfaceBoostsCompanion Function({
   Value<int> id,
@@ -8733,6 +9581,438 @@ typedef $$RoomSurfaceCostsTableProcessedTableManager = ProcessedTableManager<
     RoomSurfaceCost,
     PrefetchHooks Function(
         {bool roomSurfaceId, bool gameStatId, bool exhaustedSoundId})>;
+typedef $$PlayerClassGameStatsTableCreateCompanionBuilder
+    = PlayerClassGameStatsCompanion Function({
+  Value<int> id,
+  required int playerClassId,
+  required int gameStatId,
+  required int roomId,
+  required int defaultValue,
+});
+typedef $$PlayerClassGameStatsTableUpdateCompanionBuilder
+    = PlayerClassGameStatsCompanion Function({
+  Value<int> id,
+  Value<int> playerClassId,
+  Value<int> gameStatId,
+  Value<int> roomId,
+  Value<int> defaultValue,
+});
+
+final class $$PlayerClassGameStatsTableReferences extends BaseReferences<
+    _$AppDatabase, $PlayerClassGameStatsTable, PlayerClassGameStat> {
+  $$PlayerClassGameStatsTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $PlayerClassesTable _playerClassIdTable(_$AppDatabase db) =>
+      db.playerClasses.createAlias($_aliasNameGenerator(
+          db.playerClassGameStats.playerClassId, db.playerClasses.id));
+
+  $$PlayerClassesTableProcessedTableManager get playerClassId {
+    final $_column = $_itemColumn<int>('player_class_id')!;
+
+    final manager = $$PlayerClassesTableTableManager($_db, $_db.playerClasses)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_playerClassIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $GameStatsTable _gameStatIdTable(_$AppDatabase db) =>
+      db.gameStats.createAlias($_aliasNameGenerator(
+          db.playerClassGameStats.gameStatId, db.gameStats.id));
+
+  $$GameStatsTableProcessedTableManager get gameStatId {
+    final $_column = $_itemColumn<int>('game_stat_id')!;
+
+    final manager = $$GameStatsTableTableManager($_db, $_db.gameStats)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_gameStatIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $RoomsTable _roomIdTable(_$AppDatabase db) => db.rooms.createAlias(
+      $_aliasNameGenerator(db.playerClassGameStats.roomId, db.rooms.id));
+
+  $$RoomsTableProcessedTableManager get roomId {
+    final $_column = $_itemColumn<int>('room_id')!;
+
+    final manager = $$RoomsTableTableManager($_db, $_db.rooms)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_roomIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$PlayerClassGameStatsTableFilterComposer
+    extends Composer<_$AppDatabase, $PlayerClassGameStatsTable> {
+  $$PlayerClassGameStatsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get defaultValue => $composableBuilder(
+      column: $table.defaultValue, builder: (column) => ColumnFilters(column));
+
+  $$PlayerClassesTableFilterComposer get playerClassId {
+    final $$PlayerClassesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.playerClassId,
+        referencedTable: $db.playerClasses,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$PlayerClassesTableFilterComposer(
+              $db: $db,
+              $table: $db.playerClasses,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$GameStatsTableFilterComposer get gameStatId {
+    final $$GameStatsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.gameStatId,
+        referencedTable: $db.gameStats,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$GameStatsTableFilterComposer(
+              $db: $db,
+              $table: $db.gameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$RoomsTableFilterComposer get roomId {
+    final $$RoomsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomId,
+        referencedTable: $db.rooms,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomsTableFilterComposer(
+              $db: $db,
+              $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$PlayerClassGameStatsTableOrderingComposer
+    extends Composer<_$AppDatabase, $PlayerClassGameStatsTable> {
+  $$PlayerClassGameStatsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get defaultValue => $composableBuilder(
+      column: $table.defaultValue,
+      builder: (column) => ColumnOrderings(column));
+
+  $$PlayerClassesTableOrderingComposer get playerClassId {
+    final $$PlayerClassesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.playerClassId,
+        referencedTable: $db.playerClasses,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$PlayerClassesTableOrderingComposer(
+              $db: $db,
+              $table: $db.playerClasses,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$GameStatsTableOrderingComposer get gameStatId {
+    final $$GameStatsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.gameStatId,
+        referencedTable: $db.gameStats,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$GameStatsTableOrderingComposer(
+              $db: $db,
+              $table: $db.gameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$RoomsTableOrderingComposer get roomId {
+    final $$RoomsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomId,
+        referencedTable: $db.rooms,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomsTableOrderingComposer(
+              $db: $db,
+              $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$PlayerClassGameStatsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PlayerClassGameStatsTable> {
+  $$PlayerClassGameStatsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get defaultValue => $composableBuilder(
+      column: $table.defaultValue, builder: (column) => column);
+
+  $$PlayerClassesTableAnnotationComposer get playerClassId {
+    final $$PlayerClassesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.playerClassId,
+        referencedTable: $db.playerClasses,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$PlayerClassesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.playerClasses,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$GameStatsTableAnnotationComposer get gameStatId {
+    final $$GameStatsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.gameStatId,
+        referencedTable: $db.gameStats,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$GameStatsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.gameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$RoomsTableAnnotationComposer get roomId {
+    final $$RoomsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomId,
+        referencedTable: $db.rooms,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$PlayerClassGameStatsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $PlayerClassGameStatsTable,
+    PlayerClassGameStat,
+    $$PlayerClassGameStatsTableFilterComposer,
+    $$PlayerClassGameStatsTableOrderingComposer,
+    $$PlayerClassGameStatsTableAnnotationComposer,
+    $$PlayerClassGameStatsTableCreateCompanionBuilder,
+    $$PlayerClassGameStatsTableUpdateCompanionBuilder,
+    (PlayerClassGameStat, $$PlayerClassGameStatsTableReferences),
+    PlayerClassGameStat,
+    PrefetchHooks Function(
+        {bool playerClassId, bool gameStatId, bool roomId})> {
+  $$PlayerClassGameStatsTableTableManager(
+      _$AppDatabase db, $PlayerClassGameStatsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PlayerClassGameStatsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PlayerClassGameStatsTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PlayerClassGameStatsTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> playerClassId = const Value.absent(),
+            Value<int> gameStatId = const Value.absent(),
+            Value<int> roomId = const Value.absent(),
+            Value<int> defaultValue = const Value.absent(),
+          }) =>
+              PlayerClassGameStatsCompanion(
+            id: id,
+            playerClassId: playerClassId,
+            gameStatId: gameStatId,
+            roomId: roomId,
+            defaultValue: defaultValue,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int playerClassId,
+            required int gameStatId,
+            required int roomId,
+            required int defaultValue,
+          }) =>
+              PlayerClassGameStatsCompanion.insert(
+            id: id,
+            playerClassId: playerClassId,
+            gameStatId: gameStatId,
+            roomId: roomId,
+            defaultValue: defaultValue,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$PlayerClassGameStatsTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: (
+              {playerClassId = false, gameStatId = false, roomId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (playerClassId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.playerClassId,
+                    referencedTable: $$PlayerClassGameStatsTableReferences
+                        ._playerClassIdTable(db),
+                    referencedColumn: $$PlayerClassGameStatsTableReferences
+                        ._playerClassIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (gameStatId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.gameStatId,
+                    referencedTable: $$PlayerClassGameStatsTableReferences
+                        ._gameStatIdTable(db),
+                    referencedColumn: $$PlayerClassGameStatsTableReferences
+                        ._gameStatIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (roomId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.roomId,
+                    referencedTable:
+                        $$PlayerClassGameStatsTableReferences._roomIdTable(db),
+                    referencedColumn: $$PlayerClassGameStatsTableReferences
+                        ._roomIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$PlayerClassGameStatsTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $PlayerClassGameStatsTable,
+        PlayerClassGameStat,
+        $$PlayerClassGameStatsTableFilterComposer,
+        $$PlayerClassGameStatsTableOrderingComposer,
+        $$PlayerClassGameStatsTableAnnotationComposer,
+        $$PlayerClassGameStatsTableCreateCompanionBuilder,
+        $$PlayerClassGameStatsTableUpdateCompanionBuilder,
+        (PlayerClassGameStat, $$PlayerClassGameStatsTableReferences),
+        PlayerClassGameStat,
+        PrefetchHooks Function(
+            {bool playerClassId, bool gameStatId, bool roomId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -8757,4 +10037,6 @@ class $AppDatabaseManager {
       $$RoomSurfaceBoostsTableTableManager(_db, _db.roomSurfaceBoosts);
   $$RoomSurfaceCostsTableTableManager get roomSurfaceCosts =>
       $$RoomSurfaceCostsTableTableManager(_db, _db.roomSurfaceCosts);
+  $$PlayerClassGameStatsTableTableManager get playerClassGameStats =>
+      $$PlayerClassGameStatsTableTableManager(_db, _db.playerClassGameStats);
 }

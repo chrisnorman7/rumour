@@ -20,6 +20,7 @@ part 'database.g.dart';
     GameStats,
     RoomSurfaceBoosts,
     RoomSurfaceCosts,
+    PlayerClassGameStats,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -29,7 +30,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// The schema version.
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   /// Migrate the database.
   @override
@@ -57,6 +58,9 @@ class AppDatabase extends _$AppDatabase {
             ]) {
               await m.addColumn(this.gameStats, column);
             }
+          }
+          if (from < 5) {
+            await m.createTable(playerClassGameStats);
           }
         },
       );

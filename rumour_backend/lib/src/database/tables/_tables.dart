@@ -1,4 +1,5 @@
 export 'game_stats.dart';
+export 'player_class_game_stats.dart';
 export 'player_classes.dart';
 export 'room_exits.dart';
 export 'room_objects.dart';
