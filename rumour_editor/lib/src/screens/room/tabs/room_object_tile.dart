@@ -98,6 +98,27 @@ class RoomObjectTile extends ConsumerWidget {
                 );
               },
               activator: editExitShortcut,
+            )
+          else
+            PerformableAction(
+              name: 'Make exit',
+              invoke:
+                  () => context.pushWidgetBuilder(
+                    (_) => SelectRoomScreen(
+                      onChanged: (final value) async {
+                        final roomExit = await projectContext
+                            .database
+                            .managers
+                            .roomExits
+                            .createReturning((final o) => o(roomId: value.id));
+                        await query.update(
+                          (final o) => o(roomExitId: Value(roomExit.id)),
+                        );
+                        invalidateProviders(ref, object);
+                      },
+                    ),
+                  ),
+              activator: editExitShortcut,
             ),
           PerformableAction(
             name: 'Move',
