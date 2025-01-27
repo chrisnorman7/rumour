@@ -345,16 +345,16 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
         soundReference: await getSoundReference(exit.useSoundId),
         destroy: true,
       );
-      final destinationObject = await ref.read(
-        roomObjectProvider(exit.destinationObjectId).future,
+      final destinationRoom = await ref.read(
+        roomProvider(exit.roomId).future,
       );
       _player
-        ..roomId = destinationObject.roomId
-        ..x = destinationObject.x
-        ..y = destinationObject.y;
+        ..roomId = destinationRoom.id
+        ..x = exit.x
+        ..y = exit.y;
       _gamePlayerContext.save();
       stopPlayerMoving();
-      setPlayerCoordinates(Point(destinationObject.x, destinationObject.y));
+      setPlayerCoordinates(Point(exit.x, exit.y));
       ref.invalidate(gamePlayerContextProvider(widget.playerId));
     }
   }
