@@ -20,7 +20,7 @@ class EditPlayerClassScreen extends ConsumerWidget {
     child: TabbedScaffold(
       tabs: [
         TabbedScaffoldTab(
-          title: 'Player Class Settings',
+          title: 'Settings',
           icon: const Text('Settings for the player class'),
           builder: (_) => PlayerClassSettingsTab(playerClassId: playerClassId),
         ),
