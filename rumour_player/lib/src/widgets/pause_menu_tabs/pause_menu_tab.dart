@@ -37,7 +37,7 @@ class PauseMenuTab extends ConsumerWidget {
           AudioGameMenuItem(
             title: 'Exit game',
             onActivate: (final innerContext) {
-              for (var i = 0; i < 3; i++) {
+              for (var i = 0; i < 2; i++) {
                 Navigator.pop(innerContext);
               }
             },

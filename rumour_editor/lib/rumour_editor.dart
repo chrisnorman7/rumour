@@ -39,6 +39,7 @@ export 'src/widgets/performable_actions_tabbed_scaffold_tab.dart';
 export 'src/widgets/project_context_widget.dart';
 export 'src/widgets/room_list_tile.dart';
 export 'src/widgets/room_object_list_tile.dart';
+export 'src/widgets/rumour_template_list_tile.dart';
 export 'src/widgets/serializable_sound_reference_list_tile.dart';
 export 'src/widgets/sound_reference_list_tile.dart';
 export 'src/widgets/unset.dart';

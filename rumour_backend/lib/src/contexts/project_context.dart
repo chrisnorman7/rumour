@@ -57,6 +57,7 @@ class ProjectContext {
   Environment get jinjaEnvironment => Environment(
         filters: {
           'randomInt': (final int a, final int b) => random.nextInt(b) + a,
+          'floor': (final double a) => a.floor(),
         },
         globals: {
           'project': project,
@@ -64,6 +65,20 @@ class ProjectContext {
           'now': DateTime.now(),
         },
       );
+
+  /// Render [template] with [rumourTemplate] according to [value].
+  String renderTemplate<T>({
+    required final RumourTemplate<T> rumourTemplate,
+    required final Template template,
+    required final T value,
+  }) {
+    try {
+      return template.render(rumourTemplate.getLocals(value));
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e, s) {
+      return '$e\n$s';
+    }
+  }
 
   /// Save the [project].
   void save(final Project project) {

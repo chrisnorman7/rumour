@@ -29,7 +29,7 @@ class Project {
     this.pauseMenuTitle = 'Pause Menu',
     this.pauseMenuMusic,
     this.statMenuItemFormat =
-        '{{ statName }}: {{ statValue }}{% if maxValue %} / {{ maxValue }}{% endif %}',
+        '{{ statName }}: {% if maxValue %}{{ (100 / maxValue * statValue) | floor }}%{% else %}{{ statValue }}{% endif %}',
   });
 
   /// Create an instance from a JSON object.

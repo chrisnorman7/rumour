@@ -2,6 +2,7 @@ import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
+import 'package:rumour_editor/rumour_editor.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// The project settings tab.
@@ -44,6 +45,15 @@ class ProjectSettingsTab extends ConsumerWidget {
             _saveProject(ref, project);
           },
           header: 'Pause menu title',
+        ),
+        RumourTemplateListTile(
+          rumourTemplate: RumourTemplate.playerStatTemplate,
+          value: project.statMenuItemFormat,
+          onChanged: (final value) {
+            project.statMenuItemFormat = value;
+            _saveProject(ref, project);
+          },
+          title: 'Stat menu format',
         ),
         ListTile(
           title: const Text('Sounds directory'),

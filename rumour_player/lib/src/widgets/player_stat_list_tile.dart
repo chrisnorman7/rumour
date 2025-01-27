@@ -1,5 +1,6 @@
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 
@@ -25,23 +26,36 @@ class PlayerStatListTile extends ConsumerWidget {
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
+    final projectContext = ref.watch(projectContextProvider);
+    final project = projectContext.project;
+    final template = projectContext.jinjaEnvironment.fromString(
+      project.statMenuItemFormat,
+    );
     final value = ref.watch(gameStatProvider(gameStatId));
     return value.when(
       data: (final gameStatContext) {
         final gameStat = gameStatContext.gameStat;
         final value = ref.watch(gameStatValueProvider(playerId, gameStatId));
         return value.when(
-          data: (final value) {
-            final maxValue = value.maxValue;
-            return ListTile(
-              autofocus: autofocus,
-              title: Text(gameStat.name),
-              subtitle: Text(
-                '${value.value}${maxValue == null ? "" : " / $maxValue"}',
+          data: (final gameStatValueContext) => AudioGameMenuItemListTile(
+            menuItem: AudioGameMenuItem(
+              title: projectContext.renderTemplate(
+                rumourTemplate: RumourTemplate.playerStatTemplate,
+                template: template,
+                value: gameStatValueContext,
               ),
-              onTap: () {},
-            );
-          },
+              onActivate: (final innerContext) {},
+            ),
+            selectSound: projectContext.maybeGetSound(
+              soundReference: project.menuSelectSound?.getSoundReference(),
+              destroy: false,
+            ),
+            activateSound: projectContext.maybeGetSound(
+              soundReference: project.menuActivateSound?.getSoundReference(),
+              destroy: false,
+            ),
+            autofocus: autofocus,
+          ),
           error: ErrorListTile.withPositional,
           loading: () => ListTile(
             autofocus: autofocus,
