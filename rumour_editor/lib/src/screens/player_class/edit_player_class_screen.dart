@@ -1,12 +1,10 @@
-import 'dart:math';
-
 import 'package:backstreets_widgets/screens.dart';
 import 'package:backstreets_widgets/widgets.dart';
-import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_editor/rumour_editor.dart';
+import 'package:rumour_editor/src/screens/player_class/tabs/player_class_game_stats_tab.dart';
 
 /// A screen for editing player classes.
 class EditPlayerClassScreen extends ConsumerWidget {
@@ -18,61 +16,22 @@ class EditPlayerClassScreen extends ConsumerWidget {
 
   /// Build the widget.
   @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
-    final projectContext = ref.watch(projectContextProvider);
-    final query = projectContext.database.managers.playerClasses.filter(
-      (final f) => f.id.equals(playerClassId),
-    );
-    final value = ref.watch(playerClassProvider(playerClassId));
-    return Cancel(
-      child: SimpleScaffold(
-        title: 'Edit Player Class',
-        body: value.simpleWhen(
-          (final playerClass) => ListView(
-            shrinkWrap: true,
-            children: [
-              TextListTile(
-                value: playerClass.name,
-                onChanged: (final value) async {
-                  await query.update((final o) => o(name: Value(value)));
-                  invalidateProviders(ref);
-                },
-                header: 'Name',
-                autofocus: true,
-              ),
-              TextListTile(
-                value: playerClass.description,
-                onChanged: (final value) async {
-                  await query.update((final o) => o(description: Value(value)));
-                  invalidateProviders(ref);
-                },
-                header: 'Description',
-              ),
-              RoomListTile(
-                roomId: playerClass.roomId,
-                onChanged: (final room) async {
-                  await query.update((final o) => o(roomId: Value(room.id)));
-                  invalidateProviders(ref);
-                },
-                title: 'Starting room',
-              ),
-              PointListTile(
-                point: Point(playerClass.x, playerClass.y),
-                onChanged: (final point) async {
-                  await query.update(
-                    (final o) => o(x: Value(point.x), y: Value(point.y)),
-                  );
-                  ref.invalidate(PlayerClassProvider(playerClassId));
-                },
-                title: 'Starting coordinates',
-                min: const Point(0, 0),
-              ),
-            ],
-          ),
+  Widget build(final BuildContext context, final WidgetRef ref) => Cancel(
+    child: TabbedScaffold(
+      tabs: [
+        TabbedScaffoldTab(
+          title: 'Player Class Settings',
+          icon: const Text('Settings for the player class'),
+          builder: (_) => PlayerClassSettingsTab(playerClassId: playerClassId),
         ),
-      ),
-    );
-  }
+        TabbedScaffoldTab(
+          title: 'Stats',
+          icon: const Text('The stat defaults for this class'),
+          builder: (_) => PlayerClassGameStatsTab(playerClassId: playerClassId),
+        ),
+      ],
+    ),
+  );
 
   /// Invalidate providers.
   void invalidateProviders(final WidgetRef ref) =>
