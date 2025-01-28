@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:backstreets_widgets/extensions.dart';
 import 'package:backstreets_widgets/screens.dart';
+import 'package:backstreets_widgets/shortcuts.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -65,9 +66,17 @@ class ProjectsScreen extends ConsumerWidget {
                           ),
                   child: Builder(
                     builder:
-                        (final builderContext) => ListTile(
+                        (final builderContext) => PerformableActionsListTile(
+                          actions: [
+                            PerformableAction(
+                              name: 'Copy path',
+                              invoke: () => file.path.copyToClipboard,
+                              activator: copyOtherShortcut,
+                            ),
+                          ],
                           autofocus: index == 0,
                           title: Text(project.name),
+                          subtitle: Text(file.path),
                           onTap: () {
                             builderContext.stopPlaySoundSemantics();
                             _loadProjectFromFile(ref, file);
