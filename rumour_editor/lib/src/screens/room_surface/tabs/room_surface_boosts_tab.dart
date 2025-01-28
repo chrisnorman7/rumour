@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_editor/rumour_editor.dart';
-import 'package:rumour_editor/src/screens/room_surface_cost/edit_room_surface_cost_screen.dart';
 
 /// The room surface boosts tab.
 class RoomSurfaceBoostsTab extends ConsumerWidget {
@@ -82,8 +81,9 @@ class RoomSurfaceBoostsTab extends ConsumerWidget {
               subtitle: Text('${boost.boost}'),
               onTap:
                   () => context.pushWidgetBuilder(
-                    (_) =>
-                        EditRoomSurfaceCostScreen(roomSurfaceCostId: boost.id),
+                    (_) => EditRoomSurfaceBoostScreen(
+                      roomSurfaceBoostId: boost.id,
+                    ),
                   ),
             );
           },
