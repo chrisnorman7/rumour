@@ -658,20 +658,6 @@ Future<List<GameStat>> visibleGameStats(final Ref ref) async {
   return stats.where((final s) => s.isVisible).toList();
 }
 
-/// Provide a single game stat.
-@riverpod
-Future<GameStatContext> gameStatContext(final Ref ref, final int id) async {
-  final database = ref.watch(databaseProvider);
-  final manager = database.managers.gameStats;
-  final stat = await manager.filter((final f) => f.id.equals(id)).getSingle();
-  final maxGameStatId = stat.maxGameStatId;
-  if (maxGameStatId == null) {
-    return GameStatContext(gameStat: stat);
-  }
-  final value = await ref.watch(gameStatContextProvider(maxGameStatId).future);
-  return GameStatContext(gameStat: stat, maxValueGameStat: value.gameStat);
-}
-
 /// Return a player class game stat for the given [playerClassId] and
 /// [gameStatId].
 @riverpod
@@ -702,7 +688,7 @@ Future<Map<int, int>> gamePlayerStats(final Ref ref, final String id) async {
   for (final stat in gameStats) {
     if (!playerStats.containsKey(stat.id)) {
       final value = await ref.watch(
-        gamePlayerMaxStatProvider(stat.id, player.classId).future,
+        playerClassMaxStatProvider(stat.id, player.classId).future,
       );
       playerStats[stat.id] = value;
     }
@@ -710,9 +696,24 @@ Future<Map<int, int>> gamePlayerStats(final Ref ref, final String id) async {
   return playerStats;
 }
 
+/// Provide a single game stat.
+@riverpod
+Future<GameStatContext> gameStatContext(final Ref ref, final int id) async {
+  final database = ref.watch(databaseProvider);
+  final manager = database.managers.gameStats;
+  final stat = await manager.filter((final f) => f.id.equals(id)).getSingle();
+  final maxGameStatId = stat.maxGameStatId;
+  if (maxGameStatId == null) {
+    return GameStatContext(gameStat: stat);
+  }
+  final value =
+      await manager.filter((final f) => f.id.equals(maxGameStatId)).getSingle();
+  return GameStatContext(gameStat: stat, maxValueGameStat: value);
+}
+
 /// Provide the maximum value for a player game stat.
 @riverpod
-Future<int> gamePlayerMaxStat(
+Future<int> playerClassMaxStat(
   final Ref ref,
   final int gameStatId,
   final int playerClassId,
@@ -746,7 +747,7 @@ Future<int> gamePlayerStat(
     gamePlayerContextProvider(playerId).future,
   );
   final maxValue = await ref.watch(
-    gamePlayerMaxStatProvider(gameStatId, gamePlayerContext.gamePlayer.classId)
+    playerClassMaxStatProvider(gameStatId, gamePlayerContext.gamePlayer.classId)
         .future,
   );
   return maxValue;

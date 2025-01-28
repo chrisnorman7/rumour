@@ -19,16 +19,16 @@ class PlayerStatsTab extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     final value = ref.watch(visibleGameStatsProvider);
     return value.simpleWhen(
-      (final data) => ListView.builder(
+      (final stats) => ListView.builder(
         itemBuilder: (final context, final index) {
-          final stat = data[index];
+          final stat = stats[index];
           return PlayerStatListTile(
             autofocus: index == 0,
             playerId: playerId,
             gameStatId: stat.id,
           );
         },
-        itemCount: data.length,
+        itemCount: stats.length,
         shrinkWrap: true,
       ),
     );

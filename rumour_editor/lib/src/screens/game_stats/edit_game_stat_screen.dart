@@ -1,3 +1,4 @@
+import 'package:backstreets_widgets/extensions.dart';
 import 'package:backstreets_widgets/screens.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:drift/drift.dart';
@@ -73,6 +74,11 @@ class EditGameStatScreen extends ConsumerWidget {
                 gameStatId: stat.maxGameStatId,
                 title: 'Max value game stat',
                 onChanged: (final value) async {
+                  if (value?.id == gameStatId) {
+                    return context.showMessage(
+                      message: 'A stat cannot depend on itself.',
+                    );
+                  }
                   await query.update(
                     (final o) => o(maxGameStatId: Value(value?.id)),
                   );

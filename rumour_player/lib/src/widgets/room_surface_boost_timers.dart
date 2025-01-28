@@ -57,10 +57,13 @@ class RoomSurfaceBoostTimers extends ConsumerWidget {
                       final maxStat = stat.maxValueGameStat;
                       final maxValue = (maxStat == null)
                           ? null
-                          : (await ref.read(
-                              gamePlayerStatProvider(playerId, maxStat.id)
-                                  .future,
-                            ));
+                          : stats[maxStat.id] ??
+                              (await ref.read(
+                                gamePlayerStatProvider(
+                                  playerId,
+                                  maxStat.id,
+                                ).future,
+                              ));
                       final possibleValue = oldValue + boost.boost;
                       final newValue =
                           min(maxValue ?? possibleValue, possibleValue);
@@ -81,12 +84,13 @@ class RoomSurfaceBoostTimers extends ConsumerWidget {
                         await ref.maybePlaySoundReference(
                           soundReference:
                               await projectContext.maybeGetSoundReference(
-                            boost.maxedOutSoundId,
+                            boost.boostSoundId,
                           ),
                           destroy: true,
                         );
                       }
                       stats[boost.gameStatId] = newValue;
+                      ref.invalidate(gamePlayerStatsProvider);
                     },
                   ),
                 )

@@ -70,7 +70,7 @@ class ProjectsScreen extends ConsumerWidget {
                           actions: [
                             PerformableAction(
                               name: 'Copy path',
-                              invoke: () => file.path.copyToClipboard,
+                              invoke: file.path.copyToClipboard,
                               activator: copyOtherShortcut,
                             ),
                           ],

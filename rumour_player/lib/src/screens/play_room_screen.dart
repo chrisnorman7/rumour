@@ -301,6 +301,33 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
     if (direction == null) {
       return;
     }
+    final costs = await ref.read(
+      roomSurfaceCostsProvider(_roomSurface.id).future,
+    );
+    final alteredStats = <int, int>{};
+    for (final cost in costs) {
+      final stat = await ref.read(
+        gamePlayerStatProvider(widget.playerId, cost.gameStatId).future,
+      );
+      if (cost.surfaceCost > 0 && stat < cost.surfaceCost) {
+        await ref.maybePlaySoundReference(
+          soundReference: await projectContext.maybeGetSoundReference(
+            cost.exhaustedSoundId,
+          ),
+          destroy: true,
+        );
+        stopPlayerMoving();
+        return;
+      }
+      alteredStats[cost.gameStatId] = stat - cost.surfaceCost;
+    }
+    final stats = await ref.read(
+      gamePlayerStatsProvider(widget.playerId).future,
+    );
+    for (final MapEntry(key: gameStatId, value: value)
+        in alteredStats.entries) {
+      stats[gameStatId] = value;
+    }
     final newCoordinates = switch (direction) {
       MovingDirection.forwards => coordinates.north,
       MovingDirection.backwards => coordinates.south,
