@@ -25,4 +25,4 @@ Make audio-first RPG's with no code.
 - ⭕ Allow adding in-game entities to be added to the player's group.
 - ⭕ Create turn-by-turn combat between players and monsters.
 - ⭕ Add help pages for in-editor documentation.
-- ⭕ Allow room surfaces to take away stats when players move, and boost them at intervals.
+- ☑ Allow room surfaces to take away stats when players move, and boost them at intervals.
