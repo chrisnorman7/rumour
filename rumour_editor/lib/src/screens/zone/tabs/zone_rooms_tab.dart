@@ -19,8 +19,8 @@ class ZoneRoomsTab extends ConsumerWidget {
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final projectContext = ref.watch(projectContextProvider);
-    final roomsManager = projectContext.database.managers.rooms;
+    final database = ref.watch(databaseProvider);
+    final roomsManager = database.managers.rooms;
     final value = ref.watch(roomsProvider(zoneId));
     return value.simpleWhen(
       (final rooms) => ListView.builder(

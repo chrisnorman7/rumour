@@ -1,7 +1,6 @@
 /// Export everything.
 library;
 
-export 'src/extensions/build_context_x.dart';
 export 'src/extensions/int_x.dart';
 export 'src/extensions/list_x.dart';
 export 'src/screens/game_stats/edit_game_stat_screen.dart';
@@ -41,7 +40,6 @@ export 'src/widgets/error_text.dart';
 export 'src/widgets/game_stats_list_view.dart';
 export 'src/widgets/menu_button.dart';
 export 'src/widgets/performable_actions_tabbed_scaffold_tab.dart';
-export 'src/widgets/project_context_widget.dart';
 export 'src/widgets/room_list_tile.dart';
 export 'src/widgets/room_object_list_tile.dart';
 export 'src/widgets/rumour_template_list_tile.dart';

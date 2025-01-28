@@ -16,8 +16,7 @@ class ZoneSettingsTab extends ConsumerWidget {
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final projectContext = ref.watch(projectContextProvider);
-    final database = projectContext.database;
+    final database = ref.watch(databaseProvider);
     final zones = database.managers.zones;
     final query = zones.filter((final f) => f.id.equals(zoneId));
     final value = ref.watch(zoneProvider(zoneId));

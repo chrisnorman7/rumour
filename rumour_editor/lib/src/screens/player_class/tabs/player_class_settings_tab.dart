@@ -18,8 +18,8 @@ class PlayerClassSettingsTab extends ConsumerWidget {
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final projectContext = ref.watch(projectContextProvider);
-    final query = projectContext.database.managers.playerClasses.filter(
+    final database = ref.watch(databaseProvider);
+    final query = database.managers.playerClasses.filter(
       (final f) => f.id.equals(playerClassId),
     );
     final value = ref.watch(playerClassProvider(playerClassId));

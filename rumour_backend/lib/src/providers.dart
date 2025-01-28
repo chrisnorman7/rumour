@@ -60,7 +60,6 @@ class CurrentProjectContext extends _$CurrentProjectContext {
 /// Provide the current project context.
 @riverpod
 ProjectContext projectContext(final Ref ref) {
-  // ignore: avoid_manual_providers_as_generated_provider_dependency
   final project = ref.watch(currentProjectContextProvider);
   if (project == null) {
     throw StateError('No project has been loaded.');
@@ -69,6 +68,13 @@ ProjectContext projectContext(final Ref ref) {
     project.soundsDirectory.createSync(recursive: true);
   }
   return project;
+}
+
+/// Provide the database.
+@riverpod
+AppDatabase database(final Ref ref) {
+  final projectContext = ref.watch(projectContextProvider);
+  return projectContext.database;
 }
 
 /// Provide the current project.
@@ -81,8 +87,8 @@ Project project(final Ref ref) {
 /// Provide a singe sound reference.
 @riverpod
 Future<SoundReference> soundReference(final Ref ref, final int id) async {
-  final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.soundReferences
+  final database = ref.watch(databaseProvider);
+  return database.managers.soundReferences
       .filter((final f) => f.id.equals(id))
       .getSingle();
 }
@@ -90,8 +96,8 @@ Future<SoundReference> soundReference(final Ref ref, final int id) async {
 /// Provide all zones.
 @riverpod
 Future<List<Zone>> zones(final Ref ref) async {
-  final projectContext = ref.watch(projectContextProvider);
-  final manager = projectContext.database.managers.zones;
+  final database = ref.watch(databaseProvider);
+  final manager = database.managers.zones;
   final zones = await manager
       .orderBy(
         (final o) => o.name.asc(),
@@ -113,8 +119,8 @@ Future<List<Zone>> zones(final Ref ref) async {
 /// Provide a single zone with the given [id].
 @riverpod
 Future<Zone> zone(final Ref ref, final int id) async {
-  final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.zones
+  final database = ref.watch(databaseProvider);
+  return database.managers.zones
       .filter((final f) => f.id.equals(id))
       .getSingle();
 }
@@ -122,8 +128,8 @@ Future<Zone> zone(final Ref ref, final int id) async {
 /// Provide all rooms with the given [zoneId].
 @riverpod
 Future<List<Room>> rooms(final Ref ref, final int zoneId) async {
-  final projectContext = ref.watch(projectContextProvider);
-  final manager = projectContext.database.managers.rooms;
+  final database = ref.watch(databaseProvider);
+  final manager = database.managers.rooms;
   final rooms = await manager
       .filter((final f) => f.zoneId.id.equals(zoneId))
       .orderBy((final o) => o.name.asc())
@@ -147,8 +153,8 @@ Future<List<Room>> rooms(final Ref ref, final int zoneId) async {
 /// Provide a single room by its [id].
 @riverpod
 Future<Room> room(final Ref ref, final int id) async {
-  final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.rooms
+  final database = ref.watch(databaseProvider);
+  return database.managers.rooms
       .filter((final f) => f.id.equals(id))
       .getSingle();
 }
@@ -156,8 +162,8 @@ Future<Room> room(final Ref ref, final int id) async {
 /// Provide all room surfaces.
 @riverpod
 Future<List<RoomSurface>> roomSurfaces(final Ref ref) async {
-  final projectContext = ref.watch(projectContextProvider);
-  final manager = projectContext.database.managers.roomSurfaces;
+  final database = ref.watch(databaseProvider);
+  final manager = database.managers.roomSurfaces;
   final surfaces = await manager.orderBy((final o) => o.name.asc()).get();
   if (surfaces.isEmpty) {
     surfaces.add(
@@ -175,8 +181,8 @@ Future<List<RoomSurface>> roomSurfaces(final Ref ref) async {
 /// Provide a single room surface by its [id].
 @riverpod
 Future<RoomSurface> roomSurface(final Ref ref, final int id) {
-  final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.roomSurfaces
+  final database = ref.watch(databaseProvider);
+  return database.managers.roomSurfaces
       .filter((final f) => f.id.equals(id))
       .getSingle();
 }
@@ -188,8 +194,8 @@ Future<List<RoomObject>> roomObjects(
   final int roomId,
   final Point<int> coordinates,
 ) {
-  final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.roomObjects
+  final database = ref.watch(databaseProvider);
+  return database.managers.roomObjects
       .filter(
         (final t) =>
             t.roomId.id.equals(roomId) &
@@ -202,8 +208,8 @@ Future<List<RoomObject>> roomObjects(
 /// Provide a single room object.
 @riverpod
 Future<RoomObject> roomObject(final Ref ref, final int id) {
-  final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.roomObjects
+  final database = ref.watch(databaseProvider);
+  return database.managers.roomObjects
       .filter(
         (final f) => f.id.equals(id),
       )
@@ -213,8 +219,8 @@ Future<RoomObject> roomObject(final Ref ref, final int id) {
 /// Provide a room exit.
 @riverpod
 Future<RoomExit> roomExit(final Ref ref, final int id) {
-  final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.roomExits
+  final database = ref.watch(databaseProvider);
+  return database.managers.roomExits
       .filter((final f) => f.id.equals(id))
       .getSingle();
 }
@@ -222,8 +228,8 @@ Future<RoomExit> roomExit(final Ref ref, final int id) {
 /// Provide all objects in a room.
 @riverpod
 Future<List<RoomObject>> objectsInRoom(final Ref ref, final int id) {
-  final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.roomObjects
+  final database = ref.watch(databaseProvider);
+  return database.managers.roomObjects
       .filter((final f) => f.roomId.id.equals(id))
       .orderBy(
         (final o) => o.name.asc(),
@@ -242,8 +248,8 @@ Future<RoomObjectContext> roomObjectContext(final Ref ref, final int id) async {
 /// Provide all player classes.
 @riverpod
 Future<List<PlayerClass>> playerClasses(final Ref ref) async {
-  final projectContext = ref.watch(projectContextProvider);
-  final managers = projectContext.database.managers;
+  final database = ref.watch(databaseProvider);
+  final managers = database.managers;
   final classes = await managers.playerClasses
       .orderBy(
         (final o) => o.name.asc(),
@@ -269,8 +275,8 @@ Future<List<PlayerClass>> playerClasses(final Ref ref) async {
 /// Provide a single player class.
 @riverpod
 Future<PlayerClass> playerClass(final Ref ref, final int id) {
-  final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.playerClasses
+  final database = ref.watch(databaseProvider);
+  return database.managers.playerClasses
       .filter(
         (final f) => f.id.equals(id),
       )
@@ -398,7 +404,8 @@ Future<List<PositionedSoundReference>> roomAmbiances(
 @riverpod
 Stream<String> buildProject(final Ref ref) async* {
   final projectContext = ref.watch(projectContextProvider);
-  final project = projectContext.project;
+  final database = ref.watch(databaseProvider);
+  final project = ref.watch(projectProvider);
   yield 'Building ${project.name}';
   final flutterProjectPath = path.join(
     projectContext.directory.path,
@@ -463,7 +470,7 @@ Stream<String> buildProject(final Ref ref) async* {
     }
   }
   yield 'Loading sound references from database...';
-  final soundReferences = await projectContext.database.managers.soundReferences
+  final soundReferences = await database.managers.soundReferences
       .orderBy(
         (final o) => o.path.asc(),
       )
@@ -614,8 +621,8 @@ Future<Directory> projectDataDirectory(
 /// Provide all game stats.
 @riverpod
 Future<List<GameStat>> gameStats(final Ref ref) async {
-  final projectContext = ref.watch(projectContextProvider);
-  final manager = projectContext.database.managers.gameStats;
+  final database = ref.watch(databaseProvider);
+  final manager = database.managers.gameStats;
   final stats = await manager.orderBy((final o) => o.name.asc()).get();
   if (stats.isEmpty) {
     final gold = await manager.createReturning(
@@ -653,15 +660,15 @@ Future<List<GameStat>> visibleGameStats(final Ref ref) async {
 
 /// Provide a single game stat.
 @riverpod
-Future<GameStatContext> gameStat(final Ref ref, final int id) async {
-  final projectContext = ref.watch(projectContextProvider);
-  final manager = projectContext.database.managers.gameStats;
+Future<GameStatContext> gameStatContext(final Ref ref, final int id) async {
+  final database = ref.watch(databaseProvider);
+  final manager = database.managers.gameStats;
   final stat = await manager.filter((final f) => f.id.equals(id)).getSingle();
   final maxGameStatId = stat.maxGameStatId;
   if (maxGameStatId == null) {
     return GameStatContext(gameStat: stat);
   }
-  final value = await ref.watch(gameStatProvider(maxGameStatId).future);
+  final value = await ref.watch(gameStatContextProvider(maxGameStatId).future);
   return GameStatContext(gameStat: stat, maxValueGameStat: value.gameStat);
 }
 
@@ -673,8 +680,8 @@ Future<PlayerClassGameStat?> playerClassGameStat(
   final int playerClassId,
   final int gameStatId,
 ) async {
-  final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.playerClassGameStats
+  final database = ref.watch(databaseProvider);
+  return database.managers.playerClassGameStats
       .filter(
         (final f) =>
             f.gameStatId.id.equals(gameStatId) &
@@ -695,7 +702,7 @@ Future<Map<int, int>> gamePlayerStats(final Ref ref, final String id) async {
   for (final stat in gameStats) {
     if (!playerStats.containsKey(stat.id)) {
       final value = await ref.watch(
-        maxPlayerStatProvider(stat.id, player.classId).future,
+        gamePlayerMaxStatProvider(stat.id, player.classId).future,
       );
       playerStats[stat.id] = value;
     }
@@ -705,7 +712,7 @@ Future<Map<int, int>> gamePlayerStats(final Ref ref, final String id) async {
 
 /// Provide the maximum value for a player game stat.
 @riverpod
-Future<int> maxPlayerStat(
+Future<int> gamePlayerMaxStat(
   final Ref ref,
   final int gameStatId,
   final int playerClassId,
@@ -719,13 +726,13 @@ Future<int> maxPlayerStat(
   if (playerClassGameStat != null) {
     return playerClassGameStat.defaultValue;
   }
-  final gameStat = await ref.watch(gameStatProvider(gameStatId).future);
+  final gameStat = await ref.watch(gameStatContextProvider(gameStatId).future);
   return gameStat.gameStat.defaultValue;
 }
 
 /// Provide a single player stat.
 @riverpod
-Future<int> playerStat(
+Future<int> gamePlayerStat(
   final Ref ref,
   final String playerId,
   final int gameStatId,
@@ -739,7 +746,7 @@ Future<int> playerStat(
     gamePlayerContextProvider(playerId).future,
   );
   final maxValue = await ref.watch(
-    maxPlayerStatProvider(gameStatId, gamePlayerContext.gamePlayer.classId)
+    gamePlayerMaxStatProvider(gameStatId, gamePlayerContext.gamePlayer.classId)
         .future,
   );
   return maxValue;
@@ -751,23 +758,23 @@ Future<List<RoomSurfaceCost>> roomSurfaceCosts(
   final Ref ref,
   final int roomSurfaceId,
 ) {
-  final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.roomSurfaceCosts
+  final database = ref.watch(databaseProvider);
+  return database.managers.roomSurfaceCosts
       .filter(
         (final f) => f.roomSurfaceId.id.equals(roomSurfaceId),
       )
       .get();
 }
 
-/// Provide a possible room surface cost.
+/// Possibly provide a room surface cost.
 @riverpod
 Future<RoomSurfaceCost?> possibleRoomSurfaceCost(
   final Ref ref,
   final int roomSurfaceId,
   final int gameStatId,
 ) async {
-  final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.roomSurfaceCosts
+  final database = ref.watch(databaseProvider);
+  return database.managers.roomSurfaceCosts
       .filter(
         (final f) =>
             f.roomSurfaceId.id.equals(roomSurfaceId) &
@@ -779,8 +786,8 @@ Future<RoomSurfaceCost?> possibleRoomSurfaceCost(
 /// Provide a single room surface cost.
 @riverpod
 Future<RoomSurfaceCost> roomSurfaceCost(final Ref ref, final int id) {
-  final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.roomSurfaceCosts
+  final database = ref.watch(databaseProvider);
+  return database.managers.roomSurfaceCosts
       .filter(
         (final f) => f.id.equals(id),
       )
@@ -790,23 +797,23 @@ Future<RoomSurfaceCost> roomSurfaceCost(final Ref ref, final int id) {
 /// Provide room surface boosts.
 @riverpod
 Future<List<RoomSurfaceBoost>> roomSurfaceBoosts(final Ref ref, final int id) {
-  final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.roomSurfaceBoosts
+  final database = ref.watch(databaseProvider);
+  return database.managers.roomSurfaceBoosts
       .filter(
         (final f) => f.roomSurfaceId.id.equals(id),
       )
       .get();
 }
 
-/// Provide a possible room surface boost.
+/// Possibly provide a room surface boost.
 @riverpod
 Future<RoomSurfaceBoost?> possibleRoomSurfaceBoost(
   final Ref ref,
   final int roomSurfaceId,
   final int gameStatId,
 ) async {
-  final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.roomSurfaceBoosts
+  final database = ref.watch(databaseProvider);
+  return database.managers.roomSurfaceBoosts
       .filter(
         (final f) =>
             f.roomSurfaceId.id.equals(roomSurfaceId) &
@@ -818,8 +825,8 @@ Future<RoomSurfaceBoost?> possibleRoomSurfaceBoost(
 /// Provide a single room surface boost.
 @riverpod
 Future<RoomSurfaceBoost> roomSurfaceBoost(final Ref ref, final int id) {
-  final projectContext = ref.watch(projectContextProvider);
-  return projectContext.database.managers.roomSurfaceBoosts
+  final database = ref.watch(databaseProvider);
+  return database.managers.roomSurfaceBoosts
       .filter(
         (final f) => f.id.equals(id),
       )
@@ -828,22 +835,22 @@ Future<RoomSurfaceBoost> roomSurfaceBoost(final Ref ref, final int id) {
 
 /// Provide a game stat value.
 @riverpod
-Future<GameStatValueContext> gameStatValue(
+Future<GameStatValueContext> gameStatValueContext(
   final Ref ref,
   final String playerId,
   final int gameStatId,
 ) async {
   final gameStatContext = await ref.watch(
-    gameStatProvider(gameStatId).future,
+    gameStatContextProvider(gameStatId).future,
   );
   final value = await ref.watch(
-    playerStatProvider(playerId, gameStatId).future,
+    gamePlayerStatProvider(playerId, gameStatId).future,
   );
   final maxValueGameStat = gameStatContext.maxValueGameStat;
   final int? maxValue;
   if (maxValueGameStat != null) {
     maxValue = await ref.watch(
-      playerStatProvider(playerId, maxValueGameStat.id).future,
+      gamePlayerStatProvider(playerId, maxValueGameStat.id).future,
     );
   } else {
     maxValue = null;

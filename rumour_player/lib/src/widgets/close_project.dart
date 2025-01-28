@@ -18,19 +18,19 @@ class CloseProject extends ConsumerStatefulWidget {
 /// State for [CloseProject].
 class CloseProjectState extends ConsumerState<CloseProject> {
   /// The project context to work with.
-  late ProjectContext projectContext;
+  late AppDatabase database;
 
   /// Dispose of the widget.
   @override
   void dispose() {
     super.dispose();
-    projectContext.database.close();
+    database.close();
   }
 
   /// Build a widget.
   @override
   Widget build(final BuildContext context) {
-    projectContext = ref.watch(projectContextProvider);
+    database = ref.watch(databaseProvider);
     return widget.child;
   }
 }

@@ -63,6 +63,24 @@ final projectContextProvider = AutoDisposeProvider<ProjectContext>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ProjectContextRef = AutoDisposeProviderRef<ProjectContext>;
+String _$databaseHash() => r'87897a8d9a0865b8172a8b6999a4a7d005d93d41';
+
+/// Provide the database.
+///
+/// Copied from [database].
+@ProviderFor(database)
+final databaseProvider = AutoDisposeProvider<AppDatabase>.internal(
+  database,
+  name: r'databaseProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$databaseHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef DatabaseRef = AutoDisposeProviderRef<AppDatabase>;
 String _$projectHash() => r'458ea92a732d811b52536f1491db283fd04da821';
 
 /// Provide the current project.
@@ -81,7 +99,7 @@ final projectProvider = AutoDisposeProvider<Project>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ProjectRef = AutoDisposeProviderRef<Project>;
-String _$soundReferenceHash() => r'4db1c33365aeffab6692b34cc7ec9feeaacd7ab6';
+String _$soundReferenceHash() => r'8cf356cf55af940428b65d9fbc8d47ffd1e8d7fe';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -245,7 +263,7 @@ class _SoundReferenceProviderElement
   int get id => (origin as SoundReferenceProvider).id;
 }
 
-String _$zonesHash() => r'fb62e3420dfa6c3f88255cc6f92fdb4cbe51bfe9';
+String _$zonesHash() => r'c7f76ac8c03bfaafca976f77127c5fe307fb26aa';
 
 /// Provide all zones.
 ///
@@ -263,7 +281,7 @@ final zonesProvider = AutoDisposeFutureProvider<List<Zone>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ZonesRef = AutoDisposeFutureProviderRef<List<Zone>>;
-String _$zoneHash() => r'5ba174939d5f33617c94c255f707811a71e77aee';
+String _$zoneHash() => r'd4bea3ab6749892402667c139c2d7e4f5203c9a4';
 
 /// Provide a single zone with the given [id].
 ///
@@ -402,7 +420,7 @@ class _ZoneProviderElement extends AutoDisposeFutureProviderElement<Zone>
   int get id => (origin as ZoneProvider).id;
 }
 
-String _$roomsHash() => r'4505c8cddbcebe98d4e564e1ddaa22ae2635e829';
+String _$roomsHash() => r'055dffe9583c005f3dc019bc9718e8dd0abdfb07';
 
 /// Provide all rooms with the given [zoneId].
 ///
@@ -543,7 +561,7 @@ class _RoomsProviderElement extends AutoDisposeFutureProviderElement<List<Room>>
   int get zoneId => (origin as RoomsProvider).zoneId;
 }
 
-String _$roomHash() => r'63ec0b7d728c321f0f8515a423a8ba7165f95e33';
+String _$roomHash() => r'2ee5fefaa61b055c42e1f0aac59ef01462428ddd';
 
 /// Provide a single room by its [id].
 ///
@@ -682,7 +700,7 @@ class _RoomProviderElement extends AutoDisposeFutureProviderElement<Room>
   int get id => (origin as RoomProvider).id;
 }
 
-String _$roomSurfacesHash() => r'51d99ac9778cf0738d89376e295e7327a8ce1224';
+String _$roomSurfacesHash() => r'335cc10ce70ec86d903d9ddb5dfec52556d4a54e';
 
 /// Provide all room surfaces.
 ///
@@ -701,7 +719,7 @@ final roomSurfacesProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef RoomSurfacesRef = AutoDisposeFutureProviderRef<List<RoomSurface>>;
-String _$roomSurfaceHash() => r'7c9abaa7a20f04f19d2041cf7157bb2550cde0b9';
+String _$roomSurfaceHash() => r'f7f5ec485c0ff79ad40aecd8aab30c7c82567e1d';
 
 /// Provide a single room surface by its [id].
 ///
@@ -843,7 +861,7 @@ class _RoomSurfaceProviderElement
   int get id => (origin as RoomSurfaceProvider).id;
 }
 
-String _$roomObjectsHash() => r'd027afd6db05452f21d42197a3b9f6f4e6207aa6';
+String _$roomObjectsHash() => r'acef4bb244a68664d25c454359984a9e6bb11876';
 
 /// Provide room objects for a given room and coordinates.
 ///
@@ -1003,7 +1021,7 @@ class _RoomObjectsProviderElement
   Point<int> get coordinates => (origin as RoomObjectsProvider).coordinates;
 }
 
-String _$roomObjectHash() => r'2077ef867632460977f7dcc660fb3beef2a9afeb';
+String _$roomObjectHash() => r'fdd223fb56d3abd009b6e270b1e5fa5b72d24cc1';
 
 /// Provide a single room object.
 ///
@@ -1145,7 +1163,7 @@ class _RoomObjectProviderElement
   int get id => (origin as RoomObjectProvider).id;
 }
 
-String _$roomExitHash() => r'721a3b7ab4dd7f03daa7e2ad4e9ce39c20cf041b';
+String _$roomExitHash() => r'dbd744b30ab2a5d5cb9f62a9252207dcfd2ee28e';
 
 /// Provide a room exit.
 ///
@@ -1286,7 +1304,7 @@ class _RoomExitProviderElement
   int get id => (origin as RoomExitProvider).id;
 }
 
-String _$objectsInRoomHash() => r'a0de806ba4d2b1db2b8b6a762d70e6ba933948a5';
+String _$objectsInRoomHash() => r'36aae93db0064e43a1b196d063bdf5b5dfc5a7aa';
 
 /// Provide all objects in a room.
 ///
@@ -1574,7 +1592,7 @@ class _RoomObjectContextProviderElement
   int get id => (origin as RoomObjectContextProvider).id;
 }
 
-String _$playerClassesHash() => r'b8d905fa7078d569b555fee616a084861d29d9ed';
+String _$playerClassesHash() => r'ef89bcd9bda2716e7c6484b66b5282e45cfb4945';
 
 /// Provide all player classes.
 ///
@@ -1594,7 +1612,7 @@ final playerClassesProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef PlayerClassesRef = AutoDisposeFutureProviderRef<List<PlayerClass>>;
-String _$playerClassHash() => r'958320a03bb1064b773f271cf926bd41eb34b91d';
+String _$playerClassHash() => r'97091bec19d44186ad288d9bff948bcbeb3b6223';
 
 /// Provide a single player class.
 ///
@@ -2089,7 +2107,7 @@ class _RoomAmbiancesProviderElement
   int get id => (origin as RoomAmbiancesProvider).id;
 }
 
-String _$buildProjectHash() => r'45b98feb76f6843dac77b514250554cb1cdd3c4a';
+String _$buildProjectHash() => r'0c8dd3b25f8a3cf485f5f826dcb912556caf9355';
 
 /// Build the project context.
 ///
@@ -2252,7 +2270,7 @@ class _ProjectDataDirectoryProviderElement
   Project get project => (origin as ProjectDataDirectoryProvider).project;
 }
 
-String _$gameStatsHash() => r'5dacaeac9013308a88c5ddd0279ba5870528faae';
+String _$gameStatsHash() => r'e9b8d1e1e437e3c8624266b03680ef73ad752283';
 
 /// Provide all game stats.
 ///
@@ -2290,37 +2308,37 @@ final visibleGameStatsProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef VisibleGameStatsRef = AutoDisposeFutureProviderRef<List<GameStat>>;
-String _$gameStatHash() => r'1a409ba7ea33d83dc9936d5f22ada50ed3292832';
+String _$gameStatContextHash() => r'c9b95809f3fe235e53da2448c41c999c0c3838e1';
 
 /// Provide a single game stat.
 ///
-/// Copied from [gameStat].
-@ProviderFor(gameStat)
-const gameStatProvider = GameStatFamily();
+/// Copied from [gameStatContext].
+@ProviderFor(gameStatContext)
+const gameStatContextProvider = GameStatContextFamily();
 
 /// Provide a single game stat.
 ///
-/// Copied from [gameStat].
-class GameStatFamily extends Family<AsyncValue<GameStatContext>> {
+/// Copied from [gameStatContext].
+class GameStatContextFamily extends Family<AsyncValue<GameStatContext>> {
   /// Provide a single game stat.
   ///
-  /// Copied from [gameStat].
-  const GameStatFamily();
+  /// Copied from [gameStatContext].
+  const GameStatContextFamily();
 
   /// Provide a single game stat.
   ///
-  /// Copied from [gameStat].
-  GameStatProvider call(
+  /// Copied from [gameStatContext].
+  GameStatContextProvider call(
     int id,
   ) {
-    return GameStatProvider(
+    return GameStatContextProvider(
       id,
     );
   }
 
   @override
-  GameStatProvider getProviderOverride(
-    covariant GameStatProvider provider,
+  GameStatContextProvider getProviderOverride(
+    covariant GameStatContextProvider provider,
   ) {
     return call(
       provider.id,
@@ -2339,35 +2357,37 @@ class GameStatFamily extends Family<AsyncValue<GameStatContext>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'gameStatProvider';
+  String? get name => r'gameStatContextProvider';
 }
 
 /// Provide a single game stat.
 ///
-/// Copied from [gameStat].
-class GameStatProvider extends AutoDisposeFutureProvider<GameStatContext> {
+/// Copied from [gameStatContext].
+class GameStatContextProvider
+    extends AutoDisposeFutureProvider<GameStatContext> {
   /// Provide a single game stat.
   ///
-  /// Copied from [gameStat].
-  GameStatProvider(
+  /// Copied from [gameStatContext].
+  GameStatContextProvider(
     int id,
   ) : this._internal(
-          (ref) => gameStat(
-            ref as GameStatRef,
+          (ref) => gameStatContext(
+            ref as GameStatContextRef,
             id,
           ),
-          from: gameStatProvider,
-          name: r'gameStatProvider',
+          from: gameStatContextProvider,
+          name: r'gameStatContextProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$gameStatHash,
-          dependencies: GameStatFamily._dependencies,
-          allTransitiveDependencies: GameStatFamily._allTransitiveDependencies,
+                  : _$gameStatContextHash,
+          dependencies: GameStatContextFamily._dependencies,
+          allTransitiveDependencies:
+              GameStatContextFamily._allTransitiveDependencies,
           id: id,
         );
 
-  GameStatProvider._internal(
+  GameStatContextProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -2381,12 +2401,12 @@ class GameStatProvider extends AutoDisposeFutureProvider<GameStatContext> {
 
   @override
   Override overrideWith(
-    FutureOr<GameStatContext> Function(GameStatRef provider) create,
+    FutureOr<GameStatContext> Function(GameStatContextRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: GameStatProvider._internal(
-        (ref) => create(ref as GameStatRef),
+      override: GameStatContextProvider._internal(
+        (ref) => create(ref as GameStatContextRef),
         from: from,
         name: null,
         dependencies: null,
@@ -2399,12 +2419,12 @@ class GameStatProvider extends AutoDisposeFutureProvider<GameStatContext> {
 
   @override
   AutoDisposeFutureProviderElement<GameStatContext> createElement() {
-    return _GameStatProviderElement(this);
+    return _GameStatContextProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is GameStatProvider && other.id == id;
+    return other is GameStatContextProvider && other.id == id;
   }
 
   @override
@@ -2418,21 +2438,22 @@ class GameStatProvider extends AutoDisposeFutureProvider<GameStatContext> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin GameStatRef on AutoDisposeFutureProviderRef<GameStatContext> {
+mixin GameStatContextRef on AutoDisposeFutureProviderRef<GameStatContext> {
   /// The parameter `id` of this provider.
   int get id;
 }
 
-class _GameStatProviderElement
-    extends AutoDisposeFutureProviderElement<GameStatContext> with GameStatRef {
-  _GameStatProviderElement(super.provider);
+class _GameStatContextProviderElement
+    extends AutoDisposeFutureProviderElement<GameStatContext>
+    with GameStatContextRef {
+  _GameStatContextProviderElement(super.provider);
 
   @override
-  int get id => (origin as GameStatProvider).id;
+  int get id => (origin as GameStatContextProvider).id;
 }
 
 String _$playerClassGameStatHash() =>
-    r'a9b7af6e8cdcf158b5033f3ad93248bff5e0a038';
+    r'b705c73ebaf99e9fc852502161528ca1163b68a8';
 
 /// Return a player class game stat for the given [playerClassId] and
 /// [gameStatId].
@@ -2603,7 +2624,7 @@ class _PlayerClassGameStatProviderElement
   int get gameStatId => (origin as PlayerClassGameStatProvider).gameStatId;
 }
 
-String _$gamePlayerStatsHash() => r'b30b68d17ba0b8ef0e4310c73b70e585aefe9ae9';
+String _$gamePlayerStatsHash() => r'6c8e90aa6c250089ab7fb7076ccf296e52179508';
 
 /// Provide game stats for a player.
 ///
@@ -2746,39 +2767,39 @@ class _GamePlayerStatsProviderElement
   String get id => (origin as GamePlayerStatsProvider).id;
 }
 
-String _$maxPlayerStatHash() => r'0cfa379a31dde93c932d07d2ef9c98cfcb9e70a9';
+String _$gamePlayerMaxStatHash() => r'55d1534e52f9225b9ea1fc857b84698cb86ba042';
 
 /// Provide the maximum value for a player game stat.
 ///
-/// Copied from [maxPlayerStat].
-@ProviderFor(maxPlayerStat)
-const maxPlayerStatProvider = MaxPlayerStatFamily();
+/// Copied from [gamePlayerMaxStat].
+@ProviderFor(gamePlayerMaxStat)
+const gamePlayerMaxStatProvider = GamePlayerMaxStatFamily();
 
 /// Provide the maximum value for a player game stat.
 ///
-/// Copied from [maxPlayerStat].
-class MaxPlayerStatFamily extends Family<AsyncValue<int>> {
+/// Copied from [gamePlayerMaxStat].
+class GamePlayerMaxStatFamily extends Family<AsyncValue<int>> {
   /// Provide the maximum value for a player game stat.
   ///
-  /// Copied from [maxPlayerStat].
-  const MaxPlayerStatFamily();
+  /// Copied from [gamePlayerMaxStat].
+  const GamePlayerMaxStatFamily();
 
   /// Provide the maximum value for a player game stat.
   ///
-  /// Copied from [maxPlayerStat].
-  MaxPlayerStatProvider call(
+  /// Copied from [gamePlayerMaxStat].
+  GamePlayerMaxStatProvider call(
     int gameStatId,
     int playerClassId,
   ) {
-    return MaxPlayerStatProvider(
+    return GamePlayerMaxStatProvider(
       gameStatId,
       playerClassId,
     );
   }
 
   @override
-  MaxPlayerStatProvider getProviderOverride(
-    covariant MaxPlayerStatProvider provider,
+  GamePlayerMaxStatProvider getProviderOverride(
+    covariant GamePlayerMaxStatProvider provider,
   ) {
     return call(
       provider.gameStatId,
@@ -2798,39 +2819,39 @@ class MaxPlayerStatFamily extends Family<AsyncValue<int>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'maxPlayerStatProvider';
+  String? get name => r'gamePlayerMaxStatProvider';
 }
 
 /// Provide the maximum value for a player game stat.
 ///
-/// Copied from [maxPlayerStat].
-class MaxPlayerStatProvider extends AutoDisposeFutureProvider<int> {
+/// Copied from [gamePlayerMaxStat].
+class GamePlayerMaxStatProvider extends AutoDisposeFutureProvider<int> {
   /// Provide the maximum value for a player game stat.
   ///
-  /// Copied from [maxPlayerStat].
-  MaxPlayerStatProvider(
+  /// Copied from [gamePlayerMaxStat].
+  GamePlayerMaxStatProvider(
     int gameStatId,
     int playerClassId,
   ) : this._internal(
-          (ref) => maxPlayerStat(
-            ref as MaxPlayerStatRef,
+          (ref) => gamePlayerMaxStat(
+            ref as GamePlayerMaxStatRef,
             gameStatId,
             playerClassId,
           ),
-          from: maxPlayerStatProvider,
-          name: r'maxPlayerStatProvider',
+          from: gamePlayerMaxStatProvider,
+          name: r'gamePlayerMaxStatProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$maxPlayerStatHash,
-          dependencies: MaxPlayerStatFamily._dependencies,
+                  : _$gamePlayerMaxStatHash,
+          dependencies: GamePlayerMaxStatFamily._dependencies,
           allTransitiveDependencies:
-              MaxPlayerStatFamily._allTransitiveDependencies,
+              GamePlayerMaxStatFamily._allTransitiveDependencies,
           gameStatId: gameStatId,
           playerClassId: playerClassId,
         );
 
-  MaxPlayerStatProvider._internal(
+  GamePlayerMaxStatProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -2846,12 +2867,12 @@ class MaxPlayerStatProvider extends AutoDisposeFutureProvider<int> {
 
   @override
   Override overrideWith(
-    FutureOr<int> Function(MaxPlayerStatRef provider) create,
+    FutureOr<int> Function(GamePlayerMaxStatRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: MaxPlayerStatProvider._internal(
-        (ref) => create(ref as MaxPlayerStatRef),
+      override: GamePlayerMaxStatProvider._internal(
+        (ref) => create(ref as GamePlayerMaxStatRef),
         from: from,
         name: null,
         dependencies: null,
@@ -2865,12 +2886,12 @@ class MaxPlayerStatProvider extends AutoDisposeFutureProvider<int> {
 
   @override
   AutoDisposeFutureProviderElement<int> createElement() {
-    return _MaxPlayerStatProviderElement(this);
+    return _GamePlayerMaxStatProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is MaxPlayerStatProvider &&
+    return other is GamePlayerMaxStatProvider &&
         other.gameStatId == gameStatId &&
         other.playerClassId == playerClassId;
   }
@@ -2887,7 +2908,7 @@ class MaxPlayerStatProvider extends AutoDisposeFutureProvider<int> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin MaxPlayerStatRef on AutoDisposeFutureProviderRef<int> {
+mixin GamePlayerMaxStatRef on AutoDisposeFutureProviderRef<int> {
   /// The parameter `gameStatId` of this provider.
   int get gameStatId;
 
@@ -2895,49 +2916,49 @@ mixin MaxPlayerStatRef on AutoDisposeFutureProviderRef<int> {
   int get playerClassId;
 }
 
-class _MaxPlayerStatProviderElement
-    extends AutoDisposeFutureProviderElement<int> with MaxPlayerStatRef {
-  _MaxPlayerStatProviderElement(super.provider);
+class _GamePlayerMaxStatProviderElement
+    extends AutoDisposeFutureProviderElement<int> with GamePlayerMaxStatRef {
+  _GamePlayerMaxStatProviderElement(super.provider);
 
   @override
-  int get gameStatId => (origin as MaxPlayerStatProvider).gameStatId;
+  int get gameStatId => (origin as GamePlayerMaxStatProvider).gameStatId;
   @override
-  int get playerClassId => (origin as MaxPlayerStatProvider).playerClassId;
+  int get playerClassId => (origin as GamePlayerMaxStatProvider).playerClassId;
 }
 
-String _$playerStatHash() => r'8b84abba14eda09ec9f66205628f92f596c21645';
+String _$gamePlayerStatHash() => r'08c51dc847fb4c0981fe652a127c95cc09e3fffe';
 
 /// Provide a single player stat.
 ///
-/// Copied from [playerStat].
-@ProviderFor(playerStat)
-const playerStatProvider = PlayerStatFamily();
+/// Copied from [gamePlayerStat].
+@ProviderFor(gamePlayerStat)
+const gamePlayerStatProvider = GamePlayerStatFamily();
 
 /// Provide a single player stat.
 ///
-/// Copied from [playerStat].
-class PlayerStatFamily extends Family<AsyncValue<int>> {
+/// Copied from [gamePlayerStat].
+class GamePlayerStatFamily extends Family<AsyncValue<int>> {
   /// Provide a single player stat.
   ///
-  /// Copied from [playerStat].
-  const PlayerStatFamily();
+  /// Copied from [gamePlayerStat].
+  const GamePlayerStatFamily();
 
   /// Provide a single player stat.
   ///
-  /// Copied from [playerStat].
-  PlayerStatProvider call(
+  /// Copied from [gamePlayerStat].
+  GamePlayerStatProvider call(
     String playerId,
     int gameStatId,
   ) {
-    return PlayerStatProvider(
+    return GamePlayerStatProvider(
       playerId,
       gameStatId,
     );
   }
 
   @override
-  PlayerStatProvider getProviderOverride(
-    covariant PlayerStatProvider provider,
+  GamePlayerStatProvider getProviderOverride(
+    covariant GamePlayerStatProvider provider,
   ) {
     return call(
       provider.playerId,
@@ -2957,39 +2978,39 @@ class PlayerStatFamily extends Family<AsyncValue<int>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'playerStatProvider';
+  String? get name => r'gamePlayerStatProvider';
 }
 
 /// Provide a single player stat.
 ///
-/// Copied from [playerStat].
-class PlayerStatProvider extends AutoDisposeFutureProvider<int> {
+/// Copied from [gamePlayerStat].
+class GamePlayerStatProvider extends AutoDisposeFutureProvider<int> {
   /// Provide a single player stat.
   ///
-  /// Copied from [playerStat].
-  PlayerStatProvider(
+  /// Copied from [gamePlayerStat].
+  GamePlayerStatProvider(
     String playerId,
     int gameStatId,
   ) : this._internal(
-          (ref) => playerStat(
-            ref as PlayerStatRef,
+          (ref) => gamePlayerStat(
+            ref as GamePlayerStatRef,
             playerId,
             gameStatId,
           ),
-          from: playerStatProvider,
-          name: r'playerStatProvider',
+          from: gamePlayerStatProvider,
+          name: r'gamePlayerStatProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$playerStatHash,
-          dependencies: PlayerStatFamily._dependencies,
+                  : _$gamePlayerStatHash,
+          dependencies: GamePlayerStatFamily._dependencies,
           allTransitiveDependencies:
-              PlayerStatFamily._allTransitiveDependencies,
+              GamePlayerStatFamily._allTransitiveDependencies,
           playerId: playerId,
           gameStatId: gameStatId,
         );
 
-  PlayerStatProvider._internal(
+  GamePlayerStatProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -3005,12 +3026,12 @@ class PlayerStatProvider extends AutoDisposeFutureProvider<int> {
 
   @override
   Override overrideWith(
-    FutureOr<int> Function(PlayerStatRef provider) create,
+    FutureOr<int> Function(GamePlayerStatRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: PlayerStatProvider._internal(
-        (ref) => create(ref as PlayerStatRef),
+      override: GamePlayerStatProvider._internal(
+        (ref) => create(ref as GamePlayerStatRef),
         from: from,
         name: null,
         dependencies: null,
@@ -3024,12 +3045,12 @@ class PlayerStatProvider extends AutoDisposeFutureProvider<int> {
 
   @override
   AutoDisposeFutureProviderElement<int> createElement() {
-    return _PlayerStatProviderElement(this);
+    return _GamePlayerStatProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is PlayerStatProvider &&
+    return other is GamePlayerStatProvider &&
         other.playerId == playerId &&
         other.gameStatId == gameStatId;
   }
@@ -3046,7 +3067,7 @@ class PlayerStatProvider extends AutoDisposeFutureProvider<int> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin PlayerStatRef on AutoDisposeFutureProviderRef<int> {
+mixin GamePlayerStatRef on AutoDisposeFutureProviderRef<int> {
   /// The parameter `playerId` of this provider.
   String get playerId;
 
@@ -3054,17 +3075,17 @@ mixin PlayerStatRef on AutoDisposeFutureProviderRef<int> {
   int get gameStatId;
 }
 
-class _PlayerStatProviderElement extends AutoDisposeFutureProviderElement<int>
-    with PlayerStatRef {
-  _PlayerStatProviderElement(super.provider);
+class _GamePlayerStatProviderElement
+    extends AutoDisposeFutureProviderElement<int> with GamePlayerStatRef {
+  _GamePlayerStatProviderElement(super.provider);
 
   @override
-  String get playerId => (origin as PlayerStatProvider).playerId;
+  String get playerId => (origin as GamePlayerStatProvider).playerId;
   @override
-  int get gameStatId => (origin as PlayerStatProvider).gameStatId;
+  int get gameStatId => (origin as GamePlayerStatProvider).gameStatId;
 }
 
-String _$roomSurfaceCostsHash() => r'ff8fcae390d94871f06a5026977301be3a46a5c4';
+String _$roomSurfaceCostsHash() => r'418de69f8bef01d8c88b20bef6b9d29dfa0f86e1';
 
 /// Provide room surface costs.
 ///
@@ -3212,25 +3233,25 @@ class _RoomSurfaceCostsProviderElement
 }
 
 String _$possibleRoomSurfaceCostHash() =>
-    r'472b7a46a3e496c9f208eed7d90ee95c661d53a0';
+    r'1a2fc352045f6f4370598361367f4b69c814359e';
 
-/// Provide a possible room surface cost.
+/// Possibly provide a room surface cost.
 ///
 /// Copied from [possibleRoomSurfaceCost].
 @ProviderFor(possibleRoomSurfaceCost)
 const possibleRoomSurfaceCostProvider = PossibleRoomSurfaceCostFamily();
 
-/// Provide a possible room surface cost.
+/// Possibly provide a room surface cost.
 ///
 /// Copied from [possibleRoomSurfaceCost].
 class PossibleRoomSurfaceCostFamily
     extends Family<AsyncValue<RoomSurfaceCost?>> {
-  /// Provide a possible room surface cost.
+  /// Possibly provide a room surface cost.
   ///
   /// Copied from [possibleRoomSurfaceCost].
   const PossibleRoomSurfaceCostFamily();
 
-  /// Provide a possible room surface cost.
+  /// Possibly provide a room surface cost.
   ///
   /// Copied from [possibleRoomSurfaceCost].
   PossibleRoomSurfaceCostProvider call(
@@ -3268,12 +3289,12 @@ class PossibleRoomSurfaceCostFamily
   String? get name => r'possibleRoomSurfaceCostProvider';
 }
 
-/// Provide a possible room surface cost.
+/// Possibly provide a room surface cost.
 ///
 /// Copied from [possibleRoomSurfaceCost].
 class PossibleRoomSurfaceCostProvider
     extends AutoDisposeFutureProvider<RoomSurfaceCost?> {
-  /// Provide a possible room surface cost.
+  /// Possibly provide a room surface cost.
   ///
   /// Copied from [possibleRoomSurfaceCost].
   PossibleRoomSurfaceCostProvider(
@@ -3377,7 +3398,7 @@ class _PossibleRoomSurfaceCostProviderElement
   int get gameStatId => (origin as PossibleRoomSurfaceCostProvider).gameStatId;
 }
 
-String _$roomSurfaceCostHash() => r'e6eb6c6a1fd7abeafba88910afbd31f97312a9d9';
+String _$roomSurfaceCostHash() => r'9595538ded59447735abec63675b6f451c02d7a9';
 
 /// Provide a single room surface cost.
 ///
@@ -3521,7 +3542,7 @@ class _RoomSurfaceCostProviderElement
   int get id => (origin as RoomSurfaceCostProvider).id;
 }
 
-String _$roomSurfaceBoostsHash() => r'81417c7a43678a51f3beff09efbed6fa75fee33f';
+String _$roomSurfaceBoostsHash() => r'091b03228798532a3d679c6ec7ac2ff196e466ca';
 
 /// Provide room surface boosts.
 ///
@@ -3669,25 +3690,25 @@ class _RoomSurfaceBoostsProviderElement
 }
 
 String _$possibleRoomSurfaceBoostHash() =>
-    r'b7865e6808dc2fc9bf6c88349827a6f59d958e6b';
+    r'1f3a40dfd2ba9e61a66bd9e07cd70e7d3c6ca3be';
 
-/// Provide a possible room surface boost.
+/// Possibly provide a room surface boost.
 ///
 /// Copied from [possibleRoomSurfaceBoost].
 @ProviderFor(possibleRoomSurfaceBoost)
 const possibleRoomSurfaceBoostProvider = PossibleRoomSurfaceBoostFamily();
 
-/// Provide a possible room surface boost.
+/// Possibly provide a room surface boost.
 ///
 /// Copied from [possibleRoomSurfaceBoost].
 class PossibleRoomSurfaceBoostFamily
     extends Family<AsyncValue<RoomSurfaceBoost?>> {
-  /// Provide a possible room surface boost.
+  /// Possibly provide a room surface boost.
   ///
   /// Copied from [possibleRoomSurfaceBoost].
   const PossibleRoomSurfaceBoostFamily();
 
-  /// Provide a possible room surface boost.
+  /// Possibly provide a room surface boost.
   ///
   /// Copied from [possibleRoomSurfaceBoost].
   PossibleRoomSurfaceBoostProvider call(
@@ -3725,12 +3746,12 @@ class PossibleRoomSurfaceBoostFamily
   String? get name => r'possibleRoomSurfaceBoostProvider';
 }
 
-/// Provide a possible room surface boost.
+/// Possibly provide a room surface boost.
 ///
 /// Copied from [possibleRoomSurfaceBoost].
 class PossibleRoomSurfaceBoostProvider
     extends AutoDisposeFutureProvider<RoomSurfaceBoost?> {
-  /// Provide a possible room surface boost.
+  /// Possibly provide a room surface boost.
   ///
   /// Copied from [possibleRoomSurfaceBoost].
   PossibleRoomSurfaceBoostProvider(
@@ -3834,7 +3855,7 @@ class _PossibleRoomSurfaceBoostProviderElement
   int get gameStatId => (origin as PossibleRoomSurfaceBoostProvider).gameStatId;
 }
 
-String _$roomSurfaceBoostHash() => r'4afb29e0b3e52b2aaabdaa13d414d4f9ea2ea278';
+String _$roomSurfaceBoostHash() => r'5b1f833f6750313ce8bccf4025db959b20706e6c';
 
 /// Provide a single room surface boost.
 ///
@@ -3978,39 +3999,41 @@ class _RoomSurfaceBoostProviderElement
   int get id => (origin as RoomSurfaceBoostProvider).id;
 }
 
-String _$gameStatValueHash() => r'08101fb79b7c40de0b5bcf927da94faf520ed1f7';
+String _$gameStatValueContextHash() =>
+    r'37369f3dfeaf65960003e9434d56bde86a2254e8';
 
 /// Provide a game stat value.
 ///
-/// Copied from [gameStatValue].
-@ProviderFor(gameStatValue)
-const gameStatValueProvider = GameStatValueFamily();
+/// Copied from [gameStatValueContext].
+@ProviderFor(gameStatValueContext)
+const gameStatValueContextProvider = GameStatValueContextFamily();
 
 /// Provide a game stat value.
 ///
-/// Copied from [gameStatValue].
-class GameStatValueFamily extends Family<AsyncValue<GameStatValueContext>> {
+/// Copied from [gameStatValueContext].
+class GameStatValueContextFamily
+    extends Family<AsyncValue<GameStatValueContext>> {
   /// Provide a game stat value.
   ///
-  /// Copied from [gameStatValue].
-  const GameStatValueFamily();
+  /// Copied from [gameStatValueContext].
+  const GameStatValueContextFamily();
 
   /// Provide a game stat value.
   ///
-  /// Copied from [gameStatValue].
-  GameStatValueProvider call(
+  /// Copied from [gameStatValueContext].
+  GameStatValueContextProvider call(
     String playerId,
     int gameStatId,
   ) {
-    return GameStatValueProvider(
+    return GameStatValueContextProvider(
       playerId,
       gameStatId,
     );
   }
 
   @override
-  GameStatValueProvider getProviderOverride(
-    covariant GameStatValueProvider provider,
+  GameStatValueContextProvider getProviderOverride(
+    covariant GameStatValueContextProvider provider,
   ) {
     return call(
       provider.playerId,
@@ -4030,40 +4053,40 @@ class GameStatValueFamily extends Family<AsyncValue<GameStatValueContext>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'gameStatValueProvider';
+  String? get name => r'gameStatValueContextProvider';
 }
 
 /// Provide a game stat value.
 ///
-/// Copied from [gameStatValue].
-class GameStatValueProvider
+/// Copied from [gameStatValueContext].
+class GameStatValueContextProvider
     extends AutoDisposeFutureProvider<GameStatValueContext> {
   /// Provide a game stat value.
   ///
-  /// Copied from [gameStatValue].
-  GameStatValueProvider(
+  /// Copied from [gameStatValueContext].
+  GameStatValueContextProvider(
     String playerId,
     int gameStatId,
   ) : this._internal(
-          (ref) => gameStatValue(
-            ref as GameStatValueRef,
+          (ref) => gameStatValueContext(
+            ref as GameStatValueContextRef,
             playerId,
             gameStatId,
           ),
-          from: gameStatValueProvider,
-          name: r'gameStatValueProvider',
+          from: gameStatValueContextProvider,
+          name: r'gameStatValueContextProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$gameStatValueHash,
-          dependencies: GameStatValueFamily._dependencies,
+                  : _$gameStatValueContextHash,
+          dependencies: GameStatValueContextFamily._dependencies,
           allTransitiveDependencies:
-              GameStatValueFamily._allTransitiveDependencies,
+              GameStatValueContextFamily._allTransitiveDependencies,
           playerId: playerId,
           gameStatId: gameStatId,
         );
 
-  GameStatValueProvider._internal(
+  GameStatValueContextProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -4079,12 +4102,13 @@ class GameStatValueProvider
 
   @override
   Override overrideWith(
-    FutureOr<GameStatValueContext> Function(GameStatValueRef provider) create,
+    FutureOr<GameStatValueContext> Function(GameStatValueContextRef provider)
+        create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: GameStatValueProvider._internal(
-        (ref) => create(ref as GameStatValueRef),
+      override: GameStatValueContextProvider._internal(
+        (ref) => create(ref as GameStatValueContextRef),
         from: from,
         name: null,
         dependencies: null,
@@ -4098,12 +4122,12 @@ class GameStatValueProvider
 
   @override
   AutoDisposeFutureProviderElement<GameStatValueContext> createElement() {
-    return _GameStatValueProviderElement(this);
+    return _GameStatValueContextProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is GameStatValueProvider &&
+    return other is GameStatValueContextProvider &&
         other.playerId == playerId &&
         other.gameStatId == gameStatId;
   }
@@ -4120,7 +4144,8 @@ class GameStatValueProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin GameStatValueRef on AutoDisposeFutureProviderRef<GameStatValueContext> {
+mixin GameStatValueContextRef
+    on AutoDisposeFutureProviderRef<GameStatValueContext> {
   /// The parameter `playerId` of this provider.
   String get playerId;
 
@@ -4128,15 +4153,15 @@ mixin GameStatValueRef on AutoDisposeFutureProviderRef<GameStatValueContext> {
   int get gameStatId;
 }
 
-class _GameStatValueProviderElement
+class _GameStatValueContextProviderElement
     extends AutoDisposeFutureProviderElement<GameStatValueContext>
-    with GameStatValueRef {
-  _GameStatValueProviderElement(super.provider);
+    with GameStatValueContextRef {
+  _GameStatValueContextProviderElement(super.provider);
 
   @override
-  String get playerId => (origin as GameStatValueProvider).playerId;
+  String get playerId => (origin as GameStatValueContextProvider).playerId;
   @override
-  int get gameStatId => (origin as GameStatValueProvider).gameStatId;
+  int get gameStatId => (origin as GameStatValueContextProvider).gameStatId;
 }
 
 String _$currentProjectContextHash() =>

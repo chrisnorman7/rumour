@@ -37,8 +37,8 @@ class RoomObjectTile extends ConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final defaultTextStyle = Theme.of(context).textTheme.bodyMedium;
-    final projectContext = ref.watch(projectContextProvider);
-    final query = projectContext.database.managers.roomObjects.filter(
+    final database = ref.watch(databaseProvider);
+    final query = database.managers.roomObjects.filter(
       (final f) => f.id.equals(roomObjectId),
     );
     final value = ref.watch(roomObjectProvider(roomObjectId));
@@ -106,10 +106,7 @@ class RoomObjectTile extends ConsumerWidget {
                   () => context.pushWidgetBuilder(
                     (_) => SelectRoomScreen(
                       onChanged: (final value) async {
-                        final roomExit = await projectContext
-                            .database
-                            .managers
-                            .roomExits
+                        final roomExit = await database.managers.roomExits
                             .createReturning((final o) => o(roomId: value.id));
                         await query.update(
                           (final o) => o(roomExitId: Value(roomExit.id)),

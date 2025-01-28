@@ -117,8 +117,8 @@ class EditProjectScreen extends ConsumerWidget {
 
   /// Create a new zone.
   Future<void> _createZone(final WidgetRef ref) async {
-    final projectContext = ref.read(projectContextProvider);
-    final zone = await projectContext.database.managers.zones.createReturning(
+    final database = ref.watch(databaseProvider);
+    final zone = await database.managers.zones.createReturning(
       (final f) => f(name: 'Untitled Zone', description: 'This is a new zone.'),
     );
     ref.invalidate(zonesProvider);
@@ -132,14 +132,13 @@ class EditProjectScreen extends ConsumerWidget {
 
   /// Create a new room surface.
   Future<void> _createRoomSurface(final WidgetRef ref) async {
-    final projectContext = ref.read(projectContextProvider);
-    final surface = await projectContext.database.managers.roomSurfaces
-        .createReturning(
-          (final f) => f(
-            name: 'Untitled Room Surface',
-            description: 'An unremarkable room surface.',
-          ),
-        );
+    final database = ref.watch(databaseProvider);
+    final surface = await database.managers.roomSurfaces.createReturning(
+      (final f) => f(
+        name: 'Untitled Room Surface',
+        description: 'An unremarkable room surface.',
+      ),
+    );
     ref.invalidate(roomSurfaceProvider);
     final context = ref.context;
     if (context.mounted) {
@@ -151,11 +150,10 @@ class EditProjectScreen extends ConsumerWidget {
 
   /// Create a new game stat.
   Future<void> _createGameStat(final WidgetRef ref) async {
-    final projectContext = ref.watch(projectContextProvider);
-    final stat = await projectContext.database.managers.gameStats
-        .createReturning(
-          (final o) => o(name: 'Untitled Stat', description: 'A new stat.'),
-        );
+    final database = ref.watch(databaseProvider);
+    final stat = await database.managers.gameStats.createReturning(
+      (final o) => o(name: 'Untitled Stat', description: 'A new stat.'),
+    );
     ref.invalidate(gameStatsProvider);
     final context = ref.context;
     if (context.mounted) {

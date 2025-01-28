@@ -41,8 +41,8 @@ class SoundReferenceListTile extends ConsumerWidget {
   /// Build a widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final projectContext = ref.watch(projectContextProvider);
-    final soundReferences = projectContext.database.managers.soundReferences;
+    final database = ref.watch(databaseProvider);
+    final soundReferences = database.managers.soundReferences;
     final id = soundReferenceId;
     if (id == null) {
       return ListTile(

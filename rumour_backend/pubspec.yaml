@@ -1,7 +1,7 @@
 name: rumour_backend
 description: "Common code shared by the Rumour Editor and the Rumour Player."
 version: 0.0.1
-repository: https://github.com/chrisnorman7/rumour
+homepage: https://github.com/chrisnorman7/rumour
 publish_to: none
 
 environment:

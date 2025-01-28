@@ -15,8 +15,8 @@ class ProjectPlayerClassesTab extends ConsumerWidget {
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final projectContext = ref.watch(projectContextProvider);
-    final manager = projectContext.database.managers.playerClasses;
+    final database = ref.watch(databaseProvider);
+    final manager = database.managers.playerClasses;
     final value = ref.watch(playerClassesProvider);
     return value.simpleWhen(
       (final playerClasses) => ListView.builder(

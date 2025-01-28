@@ -16,8 +16,8 @@ class ProjectRoomSurfacesTab extends ConsumerWidget {
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final projectContext = ref.watch(projectContextProvider);
-    final managers = projectContext.database.managers;
+    final database = ref.watch(databaseProvider);
+    final managers = database.managers;
     final roomSurfacesManager = managers.roomSurfaces;
     final value = ref.watch(roomSurfacesProvider);
     return value.simpleWhen(

@@ -18,8 +18,8 @@ class RoomSurfaceBoostsTab extends ConsumerWidget {
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final projectContext = ref.watch(projectContextProvider);
-    final manager = projectContext.database.managers.roomSurfaceBoosts;
+    final database = ref.watch(databaseProvider);
+    final manager = database.managers.roomSurfaceBoosts;
     return GameStatsListView(
       itemBuilder: (final context, final index, final stat) {
         final autofocus = index == 0;

@@ -18,8 +18,8 @@ class EditRoomSurfaceCostScreen extends ConsumerWidget {
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final projectContext = ref.watch(projectContextProvider);
-    final query = projectContext.database.managers.roomSurfaceCosts.filter(
+    final database = ref.watch(databaseProvider);
+    final query = database.managers.roomSurfaceCosts.filter(
       (final f) => f.id.equals(roomSurfaceCostId),
     );
     final provider = roomSurfaceCostProvider(roomSurfaceCostId);

@@ -76,9 +76,9 @@ class RoomObjectsTabState extends ConsumerState<RoomObjectsTab> {
     _selectedObjectIds.clear();
     if (selectAll) {
       final names = <String>[];
-      final projectContext = ref.watch(projectContextProvider);
+      final database = ref.watch(databaseProvider);
       final objects =
-          await projectContext.database.managers.roomObjects
+          await database.managers.roomObjects
               .filter((final f) => f.roomId.id.equals(widget.roomId))
               .get();
       for (final object in objects) {

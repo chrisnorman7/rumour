@@ -18,8 +18,8 @@ class EditGameStatScreen extends ConsumerWidget {
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final projectContext = ref.watch(projectContextProvider);
-    final query = projectContext.database.managers.gameStats.filter(
+    final database = ref.watch(databaseProvider);
+    final query = database.managers.gameStats.filter(
       (final f) => f.id.equals(gameStatId),
     );
     final provider = gameStatProvider(gameStatId);

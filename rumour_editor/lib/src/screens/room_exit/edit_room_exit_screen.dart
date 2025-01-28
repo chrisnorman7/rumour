@@ -19,8 +19,8 @@ class EditRoomExitScreen extends ConsumerWidget {
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final projectContext = ref.watch(projectContextProvider);
-    final query = projectContext.database.managers.roomExits.filter(
+    final database = ref.watch(databaseProvider);
+    final query = database.managers.roomExits.filter(
       (final f) => f.id.equals(roomExitId),
     );
     final provider = roomExitProvider(roomExitId);

@@ -44,21 +44,20 @@ class EditZoneScreen extends ConsumerWidget {
   /// Create a new room.
   Future<void> _createRoom(final WidgetRef ref) async {
     final context = ref.context;
-    final projectContext = ref.watch(projectContextProvider);
+    final database = ref.read(databaseProvider);
     final surfaces = await ref.read(roomSurfacesProvider.future);
     final RoomSurface surface;
     if (surfaces.isEmpty) {
-      surface = await projectContext.database.managers.roomSurfaces
-          .createReturning(
-            (final f) => f(
-              name: 'Untitled Surface',
-              description: 'An unremarkable room surface.',
-            ),
-          );
+      surface = await database.managers.roomSurfaces.createReturning(
+        (final f) => f(
+          name: 'Untitled Surface',
+          description: 'An unremarkable room surface.',
+        ),
+      );
     } else {
       surface = surfaces.first;
     }
-    final room = await projectContext.database.managers.rooms.createReturning(
+    final room = await database.managers.rooms.createReturning(
       (final f) => f(
         zoneId: zoneId,
         name: 'Untitled Room',

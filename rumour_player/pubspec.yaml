@@ -1,7 +1,7 @@
 name: rumour_player
 description: "A package for playing rumour games."
 version: 0.0.1
-repository:  https://github.com/chrisnorman7/rumour
+homepage: https://github.com/chrisnorman7/rumour
 publish_to: none
 environment:
   sdk: ^3.6.1

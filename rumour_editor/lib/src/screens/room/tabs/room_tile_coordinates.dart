@@ -46,24 +46,23 @@ class _RoomTileCoordinates extends ConsumerWidget {
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final projectContext = ref.watch(projectContextProvider);
-    final managers = projectContext.database.managers;
+    final database = ref.watch(databaseProvider);
+    final managers = database.managers;
     final manager = managers.roomObjects;
     return PerformableActionsBuilder(
       actions: [
         PerformableAction(
           name: 'New object',
           invoke: () async {
-            final object = await projectContext.database.managers.roomObjects
-                .createReturning(
-                  (final f) => f(
-                    name: 'Untitled Object',
-                    description: 'A new room object.',
-                    roomId: roomId,
-                    x: Value(coordinates.x),
-                    y: Value(coordinates.y),
-                  ),
-                );
+            final object = await database.managers.roomObjects.createReturning(
+              (final f) => f(
+                name: 'Untitled Object',
+                description: 'A new room object.',
+                roomId: roomId,
+                x: Value(coordinates.x),
+                y: Value(coordinates.y),
+              ),
+            );
             ref.invalidate(roomObjectsProvider(roomId, coordinates));
             if (context.mounted) {
               await context.pushWidgetBuilder(
