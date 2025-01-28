@@ -22,7 +22,7 @@ class EditGameStatScreen extends ConsumerWidget {
     final query = database.managers.gameStats.filter(
       (final f) => f.id.equals(gameStatId),
     );
-    final provider = gameStatProvider(gameStatId);
+    final provider = gameStatContextProvider(gameStatId);
     final value = ref.watch(provider);
     return Cancel(
       child: SimpleScaffold(
@@ -113,5 +113,5 @@ class EditGameStatScreen extends ConsumerWidget {
   void invalidateProviders(final WidgetRef ref) =>
       ref
         ..invalidate(gameStatsProvider)
-        ..invalidate(gameStatProvider(gameStatId));
+        ..invalidate(gameStatContextProvider(gameStatId));
 }

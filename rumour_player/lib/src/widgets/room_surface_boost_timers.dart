@@ -51,14 +51,15 @@ class RoomSurfaceBoostTimers extends ConsumerWidget {
                     duration: boost.interval.seconds,
                     onTick: () async {
                       final stat = await ref.read(
-                        gameStatProvider(boost.gameStatId).future,
+                        gameStatContextProvider(boost.gameStatId).future,
                       );
                       final oldValue = stats[boost.gameStatId] ?? 0;
                       final maxStat = stat.maxValueGameStat;
                       final maxValue = (maxStat == null)
                           ? null
                           : (await ref.read(
-                              playerStatProvider(playerId, maxStat.id).future,
+                              gamePlayerStatProvider(playerId, maxStat.id)
+                                  .future,
                             ));
                       final possibleValue = oldValue + boost.boost;
                       final newValue =

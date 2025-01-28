@@ -89,5 +89,5 @@ class ProjectGameStatsTab extends ConsumerWidget {
   void invalidateProviders(final WidgetRef ref, final int id) =>
       ref
         ..invalidate(gameStatsProvider)
-        ..invalidate(gameStatProvider(id));
+        ..invalidate(gameStatContextProvider(id));
 }

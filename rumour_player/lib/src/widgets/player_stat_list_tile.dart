@@ -31,11 +31,12 @@ class PlayerStatListTile extends ConsumerWidget {
     final template = projectContext.jinjaEnvironment.fromString(
       project.statMenuItemFormat,
     );
-    final value = ref.watch(gameStatProvider(gameStatId));
+    final value = ref.watch(gameStatContextProvider(gameStatId));
     return value.when(
       data: (final gameStatContext) {
         final gameStat = gameStatContext.gameStat;
-        final value = ref.watch(gameStatValueProvider(playerId, gameStatId));
+        final value =
+            ref.watch(gameStatValueContextProvider(playerId, gameStatId));
         return value.when(
           data: (final gameStatValueContext) => AudioGameMenuItemListTile(
             menuItem: AudioGameMenuItem(
