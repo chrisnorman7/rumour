@@ -15,14 +15,14 @@ class ProjectSettingsScreen extends ConsumerWidget {
     child: TabbedScaffold(
       tabs: [
         TabbedScaffoldTab(
-          title: 'Settings',
-          icon: const Text('Project settings'),
-          builder: (final context) => const ProjectSettingsTab(),
-        ),
-        TabbedScaffoldTab(
           title: 'Menus',
           icon: const Text('Settings for game menus'),
           builder: (final context) => const ProjectMenuSettingsTab(),
+        ),
+        TabbedScaffoldTab(
+          title: 'Settings',
+          icon: const Text('Project settings'),
+          builder: (final context) => const ProjectSettingsTab(),
         ),
       ],
     ),

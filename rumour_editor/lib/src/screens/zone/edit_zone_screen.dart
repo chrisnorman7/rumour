@@ -20,11 +20,6 @@ class EditZoneScreen extends ConsumerWidget {
     child: TabbedScaffold(
       tabs: [
         TabbedScaffoldTab(
-          title: 'Settings',
-          icon: const Text('Zone settings'),
-          builder: (final _) => ZoneSettingsTab(zoneId: zoneId),
-        ),
-        TabbedScaffoldTab(
           title: 'Rooms',
           icon: const Text('The rooms in this zone'),
           builder:
@@ -36,6 +31,11 @@ class EditZoneScreen extends ConsumerWidget {
             onPressed: () => _createRoom(ref),
             tooltip: 'New room',
           ),
+        ),
+        TabbedScaffoldTab(
+          title: 'Settings',
+          icon: const Text('Zone settings'),
+          builder: (final _) => ZoneSettingsTab(zoneId: zoneId),
         ),
       ],
     ),

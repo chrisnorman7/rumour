@@ -18,14 +18,14 @@ class EditRoomScreen extends ConsumerWidget {
     child: TabbedScaffold(
       tabs: [
         TabbedScaffoldTab(
-          title: 'Settings',
-          icon: const Text('Room settings'),
-          builder: (final _) => RoomSettingsTab(roomId: roomId),
-        ),
-        TabbedScaffoldTab(
           title: 'Objects',
           icon: const Text('The objects in this room.'),
           builder: (final _) => RoomObjectsTab(roomId: roomId),
+        ),
+        TabbedScaffoldTab(
+          title: 'Settings',
+          icon: const Text('Room settings'),
+          builder: (final _) => RoomSettingsTab(roomId: roomId),
         ),
       ],
     ),
