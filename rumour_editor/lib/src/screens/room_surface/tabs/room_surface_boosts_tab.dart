@@ -8,10 +8,10 @@ import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_editor/rumour_editor.dart';
 import 'package:rumour_editor/src/screens/room_surface_cost/edit_room_surface_cost_screen.dart';
 
-/// The room surface costs tab.
-class RoomSurfaceCostsTab extends ConsumerWidget {
+/// The room surface boosts tab.
+class RoomSurfaceBoostsTab extends ConsumerWidget {
   /// Create an instance.
-  const RoomSurfaceCostsTab({required this.roomSurfaceId, super.key});
+  const RoomSurfaceBoostsTab({required this.roomSurfaceId, super.key});
 
   /// The ID of the room surface to edit.
   final int roomSurfaceId;
@@ -20,18 +20,18 @@ class RoomSurfaceCostsTab extends ConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final projectContext = ref.watch(projectContextProvider);
-    final manager = projectContext.database.managers.roomSurfaceCosts;
+    final manager = projectContext.database.managers.roomSurfaceBoosts;
     return GameStatsListView(
       itemBuilder: (final context, final index, final stat) {
         final autofocus = index == 0;
-        final provider = possibleRoomSurfaceCostProvider(
+        final provider = possibleRoomSurfaceBoostProvider(
           roomSurfaceId,
           stat.id,
         );
         final value = ref.watch(provider);
         return value.when(
-          data: (final cost) {
-            if (cost == null) {
+          data: (final boost) {
+            if (boost == null) {
               return IntListTile(
                 value: 0,
                 onChanged: (final value) async {
@@ -39,7 +39,7 @@ class RoomSurfaceCostsTab extends ConsumerWidget {
                     (final o) => o(
                       roomSurfaceId: roomSurfaceId,
                       gameStatId: stat.id,
-                      surfaceCost: Value(value),
+                      boost: Value(value),
                     ),
                   );
                   ref.invalidate(provider);
@@ -49,10 +49,10 @@ class RoomSurfaceCostsTab extends ConsumerWidget {
                 subtitle: unsetMessage,
               );
             }
-            final query = manager.filter((final f) => f.id.equals(cost.id));
+            final query = manager.filter((final f) => f.id.equals(boost.id));
 
             Future<void> updateValue(final int value) async {
-              await query.update((final o) => o(surfaceCost: Value(value)));
+              await query.update((final o) => o(boost: Value(value)));
               ref.invalidate(provider);
             }
 
@@ -60,12 +60,12 @@ class RoomSurfaceCostsTab extends ConsumerWidget {
               actions: [
                 PerformableAction(
                   name: 'Increase',
-                  invoke: () => updateValue(cost.surfaceCost + 1),
+                  invoke: () => updateValue(boost.boost + 1),
                   activator: moveUpShortcut,
                 ),
                 PerformableAction(
                   name: 'Decrease',
-                  invoke: () => updateValue(cost.surfaceCost - 1),
+                  invoke: () => updateValue(boost.boost - 1),
                   activator: moveDownShortcut,
                 ),
                 PerformableAction(
@@ -79,11 +79,11 @@ class RoomSurfaceCostsTab extends ConsumerWidget {
               ],
               autofocus: autofocus,
               title: Text(stat.name),
-              subtitle: Text('${cost.surfaceCost}'),
+              subtitle: Text('${boost.boost}'),
               onTap:
                   () => context.pushWidgetBuilder(
                     (_) =>
-                        EditRoomSurfaceCostScreen(roomSurfaceCostId: cost.id),
+                        EditRoomSurfaceCostScreen(roomSurfaceCostId: boost.id),
                   ),
             );
           },

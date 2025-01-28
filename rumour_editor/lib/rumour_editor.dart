@@ -27,6 +27,7 @@ export 'src/screens/room/tabs/room_tile_coordinates.dart';
 export 'src/screens/room_exit/edit_room_exit_screen.dart';
 export 'src/screens/room_object/edit_room_object_screen.dart';
 export 'src/screens/room_surface/edit_room_surface_screen.dart';
+export 'src/screens/room_surface/tabs/room_surface_boosts_tab.dart';
 export 'src/screens/room_surface/tabs/room_surface_settings_tab.dart';
 export 'src/screens/select_player_class.dart';
 export 'src/screens/select_room_screen.dart';
