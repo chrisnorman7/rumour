@@ -25,6 +25,8 @@ export 'src/screens/room/tabs/room_tile.dart';
 export 'src/screens/room/tabs/room_tile_coordinates.dart';
 export 'src/screens/room_exit/edit_room_exit_screen.dart';
 export 'src/screens/room_object/edit_room_object_screen.dart';
+export 'src/screens/room_object/tabs/room_object_settings_tab.dart';
+export 'src/screens/room_object_random_sound/edit_room_object_random_sound_screen.dart';
 export 'src/screens/room_surface/edit_room_surface_screen.dart';
 export 'src/screens/room_surface/tabs/room_surface_boosts_tab.dart';
 export 'src/screens/room_surface/tabs/room_surface_settings_tab.dart';

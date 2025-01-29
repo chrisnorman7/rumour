@@ -1,12 +1,8 @@
-import 'dart:math';
-
 import 'package:backstreets_widgets/screens.dart';
-import 'package:backstreets_widgets/widgets.dart';
-import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_editor/rumour_editor.dart';
+import 'package:rumour_editor/src/screens/room_object/tabs/room_object_random_sounds_tab.dart';
 
 /// A screen for editing a room object.
 class EditRoomObjectScreen extends ConsumerWidget {
@@ -18,63 +14,20 @@ class EditRoomObjectScreen extends ConsumerWidget {
 
   /// Build the widget.
   @override
-  Widget build(final BuildContext context, final WidgetRef ref) {
-    final database = ref.watch(databaseProvider);
-    final query = database.managers.roomObjects.filter(
-      (final f) => f.id.equals(roomObjectId),
-    );
-    final value = ref.watch(roomObjectProvider(roomObjectId));
-    return Cancel(
-      child: SimpleScaffold(
-        title: 'Edit Room Object',
-        body: value.simpleWhen(
-          (final object) => ListView(
-            shrinkWrap: true,
-            children: [
-              TextListTile(
-                value: object.name,
-                onChanged: (final name) async {
-                  await query.update((final o) => o(name: Value(name)));
-                  invalidateProviders(ref, object);
-                },
-                header: 'Name',
-                autofocus: true,
-                labelText: 'Object name',
-                title: 'Rename Object',
-              ),
-              TextListTile(
-                value: object.description,
-                onChanged: (final description) async {
-                  await query.update(
-                    (final o) => o(description: Value(description)),
-                  );
-                  invalidateProviders(ref, object);
-                },
-                header: 'Description',
-                labelText: 'Object description',
-                title: 'Describe Object',
-              ),
-              SoundReferenceListTile(
-                soundReferenceId: object.ambianceId,
-                onChanged: (final value) async {
-                  await query.update((final o) => o(ambianceId: Value(value)));
-                  invalidateProviders(ref, object);
-                },
-                title: 'Ambiance',
-                looping: true,
-              ),
-            ],
+  Widget build(final BuildContext context, final WidgetRef ref) =>
+      TabbedScaffold(
+        tabs: [
+          TabbedScaffoldTab(
+            title: 'Random Sounds',
+            icon: const Text('The random sounds that this object plays'),
+            builder:
+                (_) => RoomObjectRandomSoundsTab(roomObjectId: roomObjectId),
           ),
-        ),
-      ),
-    );
-  }
-
-  /// Invalidate providers.
-  void invalidateProviders(final WidgetRef ref, final RoomObject object) =>
-      ref
-        ..invalidate(
-          roomObjectsProvider(object.roomId, Point(object.x, object.y)),
-        )
-        ..invalidate(roomObjectProvider(roomObjectId));
+          TabbedScaffoldTab(
+            title: 'Settings',
+            icon: const Text('Room object settings'),
+            builder: (_) => RoomObjectSettingsTab(roomObjectId: roomObjectId),
+          ),
+        ],
+      );
 }
