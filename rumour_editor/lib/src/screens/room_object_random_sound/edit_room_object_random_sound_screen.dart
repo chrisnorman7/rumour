@@ -36,7 +36,6 @@ class EditRoomObjectRandomSoundScreen extends ConsumerWidget {
           return ListView(
             shrinkWrap: true,
             children: [
-              // TODO(chrisnorman7): Make sure the sound reference can't be deleted.
               SoundReferenceListTile(
                 soundReferenceId: randomSound.soundId,
                 onChanged: (final value) async {
@@ -45,6 +44,7 @@ class EditRoomObjectRandomSoundScreen extends ConsumerWidget {
                 },
                 title: 'Sound',
                 autofocus: true,
+                nullable: false,
               ),
               IntListTile(
                 value: minSeconds,

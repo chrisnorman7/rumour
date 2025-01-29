@@ -20,6 +20,7 @@ class SoundReferenceListTile extends ConsumerWidget {
     required this.title,
     this.autofocus = false,
     this.looping = false,
+    this.nullable = true,
     super.key,
   });
 
@@ -37,6 +38,9 @@ class SoundReferenceListTile extends ConsumerWidget {
 
   /// Whether the sound should loop.
   final bool looping;
+
+  /// Whether the sound reference can be deleted.
+  final bool nullable;
 
   /// Build a widget.
   @override
@@ -111,14 +115,15 @@ class SoundReferenceListTile extends ConsumerWidget {
                           state?.handle?.volume.value = volume;
                         },
                       ),
-                    PerformableAction(
-                      name: 'Delete',
-                      activator: deleteShortcut,
-                      invoke: () async {
-                        onChanged(null);
-                        await query.delete();
-                      },
-                    ),
+                    if (nullable)
+                      PerformableAction(
+                        name: 'Delete',
+                        activator: deleteShortcut,
+                        invoke: () async {
+                          onChanged(null);
+                          await query.delete();
+                        },
+                      ),
                     for (final loadMode in LoadMode.values)
                       PerformableAction(
                         name: switch (loadMode) {
