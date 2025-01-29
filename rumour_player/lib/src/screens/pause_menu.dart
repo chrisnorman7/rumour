@@ -13,11 +13,15 @@ class PauseMenu extends ConsumerWidget {
   /// Create an instance.
   const PauseMenu({
     required this.playerId,
+    required this.shortcuts,
     super.key,
   });
 
   /// The ID of the game player context to use.
   final String playerId;
+
+  /// The keyboard shortcuts to show.
+  final List<GameShortcut> shortcuts;
 
   /// Build the widget.
   @override
@@ -39,7 +43,10 @@ class PauseMenu extends ConsumerWidget {
             TabbedScaffoldTab(
               title: project.pauseMenuTitle,
               icon: const Icon(Icons.pause),
-              builder: (final _) => PauseMenuTab(playerId: playerId),
+              builder: (final _) => PauseMenuTab(
+                playerId: playerId,
+                shortcuts: shortcuts,
+              ),
             ),
             TabbedScaffoldTab(
               title: 'Stats',

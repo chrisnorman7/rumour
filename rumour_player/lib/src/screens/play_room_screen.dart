@@ -5,6 +5,7 @@ import 'package:backstreets_widgets/screens.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
+import 'package:flutter_audio_games/touch.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:rumour_backend/rumour_backend.dart';
@@ -143,116 +144,145 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
                     walkPlayer,
                     _roomSurface.moveInterval.milliseconds,
                   );
-                  final shortcuts = [
-                    GameShortcut(
-                      title: 'Walk north',
-                      shortcut: GameShortcutsShortcut.keyW,
-                      onStart: (final innerContext) => startPlayerMoving(
-                        MovingDirection.forwards,
-                      ),
-                      onStop: (final innerContext) => stopPlayerMoving(),
-                    ),
-                    GameShortcut(
-                      title: 'Walk east',
-                      shortcut: GameShortcutsShortcut.keyD,
-                      onStart: (final innerContext) => startPlayerMoving(
-                        MovingDirection.right,
-                      ),
-                      onStop: (final innerContext) => stopPlayerMoving(),
-                    ),
-                    GameShortcut(
-                      title: 'Walk south',
-                      shortcut: GameShortcutsShortcut.keyS,
-                      onStart: (final innerContext) => startPlayerMoving(
-                        MovingDirection.backwards,
-                      ),
-                      onStop: (final innerContext) => stopPlayerMoving(),
-                    ),
-                    GameShortcut(
-                      title: 'Walk west',
-                      shortcut: GameShortcutsShortcut.keyA,
-                      onStart: (final innerContext) => startPlayerMoving(
-                        MovingDirection.left,
-                      ),
-                      onStop: (final innerContext) => stopPlayerMoving(),
-                    ),
-                    GameShortcut(
-                      title: 'Activate nearby object',
-                      shortcut: GameShortcutsShortcut.enter,
-                      onStart: (final innerContext) async {
-                        final objects = await getNearbyRoomObjects();
-                        if (objects.isEmpty) {
-                          return;
-                        }
-                        stopPlayerMoving();
-                        if (objects.length > 1) {
-                          if (innerContext.mounted) {
-                            await innerContext.pushWidgetBuilder(
-                              (final _) => SelectObject(
-                                objects: objects,
-                                onObjectSelect: activateObject,
+                  return Semantics(
+                    label: project.name,
+                    child: TouchSurfaceBuilder(
+                      commands: [
+                        [
+                          TouchSurfaceBuilderCommand(
+                            title: 'Walk north',
+                            shortcut: GameShortcutsShortcut.keyW,
+                            onStart: (final innerContext) => startPlayerMoving(
+                              MovingDirection.forwards,
+                            ),
+                            onStop: (final innerContext) => stopPlayerMoving(),
+                          ),
+                          TouchSurfaceBuilderCommand(
+                            title: 'Examine previous object',
+                            shortcut: GameShortcutsShortcut.bracketLeft,
+                            onStart: (final innerContext) =>
+                                innerContext.announce(
+                              'Previous object.',
+                            ),
+                          ),
+                          TouchSurfaceBuilderCommand(
+                            title: 'Examine next command',
+                            shortcut: GameShortcutsShortcut.bracketRight,
+                            onStart: (final innerContext) =>
+                                innerContext.announce(
+                              'Next object.',
+                            ),
+                          ),
+                          TouchSurfaceBuilderCommand(
+                            title: 'Pause menu',
+                            shortcut: GameShortcutsShortcut.escape,
+                            onStart: (final innerContext) async {
+                              final state =
+                                  innerContext.findAncestorStateOfType<
+                                      RoomAmbiancesState>();
+                              state?.fadeOut();
+                              if (innerContext.mounted) {
+                                final shortcuts = innerContext
+                                        .dependOnInheritedWidgetOfExactType<
+                                            InheritedGameShortcuts>()
+                                        ?.shortcuts ??
+                                    [];
+                                await innerContext.fadeMusicAndPushWidget(
+                                  (final _) => PauseMenu(
+                                    playerId: widget.playerId,
+                                    shortcuts: shortcuts,
+                                  ),
+                                );
+                              }
+                              state?.fadeIn();
+                            },
+                          ),
+                        ],
+                        [
+                          TouchSurfaceBuilderCommand(
+                            title: 'Walk south',
+                            shortcut: GameShortcutsShortcut.keyS,
+                            onStart: (final innerContext) => startPlayerMoving(
+                              MovingDirection.backwards,
+                            ),
+                            onStop: (final innerContext) => stopPlayerMoving(),
+                          ),
+                          TouchSurfaceBuilderCommand(
+                            title: 'Activate nearby object',
+                            shortcut: GameShortcutsShortcut.enter,
+                            onStart: (final innerContext) async {
+                              final objects = await getNearbyRoomObjects();
+                              if (objects.isEmpty) {
+                                return;
+                              }
+                              stopPlayerMoving();
+                              if (objects.length > 1) {
+                                if (innerContext.mounted) {
+                                  await innerContext.pushWidgetBuilder(
+                                    (final _) => SelectObject(
+                                      objects: objects,
+                                      onObjectSelect: activateObject,
+                                    ),
+                                  );
+                                }
+                              } else {
+                                await activateObject(objects.single);
+                              }
+                            },
+                          ),
+                          TouchSurfaceBuilderCommand(
+                            title: 'Walk west',
+                            shortcut: GameShortcutsShortcut.keyA,
+                            onStart: (final innerContext) => startPlayerMoving(
+                              MovingDirection.left,
+                            ),
+                            onStop: (final innerContext) => stopPlayerMoving(),
+                          ),
+                          TouchSurfaceBuilderCommand(
+                            title: 'Walk east',
+                            shortcut: GameShortcutsShortcut.keyD,
+                            onStart: (final innerContext) => startPlayerMoving(
+                              MovingDirection.right,
+                            ),
+                            onStop: (final innerContext) => stopPlayerMoving(),
+                          ),
+                        ],
+                      ],
+                      extraShortcuts: [
+                        GameShortcut(
+                          title: 'Speak coordinates',
+                          shortcut: GameShortcutsShortcut.keyC,
+                          onStart: (final innerContext) =>
+                              innerContext.announce(
+                            '${coordinates.x}, ${coordinates.y}',
+                          ),
+                        ),
+                        GameShortcut(
+                          title: 'Speak room name',
+                          shortcut: GameShortcutsShortcut.keyR,
+                          onStart: (final innerContext) =>
+                              innerContext.announce(
+                            _room.name,
+                          ),
+                        ),
+                        GameShortcut(
+                          title: 'Shortcut help',
+                          shortcut: GameShortcutsShortcut.slash,
+                          shiftKey: true,
+                          onStart: (final innerContext) {
+                            final shortcuts = innerContext
+                                    .dependOnInheritedWidgetOfExactType<
+                                        InheritedGameShortcuts>()
+                                    ?.shortcuts ??
+                                [];
+                            innerContext.fadeMusicAndPushWidget(
+                              (final _) => GameShortcutsHelpScreen(
+                                shortcuts: shortcuts,
                               ),
                             );
-                          }
-                        } else {
-                          await activateObject(objects.single);
-                        }
-                      },
-                    ),
-                    GameShortcut(
-                      title: 'Pause game',
-                      shortcut: GameShortcutsShortcut.escape,
-                      onStart: (final innerContext) async {
-                        final state = innerContext
-                            .findAncestorStateOfType<RoomAmbiancesState>();
-                        if (state != null) {
-                          state.fadeOut();
-                        }
-                        if (innerContext.mounted) {
-                          await innerContext.fadeMusicAndPushWidget(
-                            (final _) => PauseMenu(
-                              playerId: widget.playerId,
-                            ),
-                          );
-                        }
-                        if (state != null) {
-                          state.fadeIn();
-                        }
-                      },
-                    ),
-                    GameShortcut(
-                      title: 'Speak coordinates',
-                      shortcut: GameShortcutsShortcut.keyC,
-                      onStart: (final innerContext) => innerContext
-                          .announce('${coordinates.x}, ${coordinates.y}.'),
-                    ),
-                    GameShortcut(
-                      title: 'Save player',
-                      shortcut: GameShortcutsShortcut.f4,
-                      onStart: (final innerContext) {
-                        _gamePlayerContext.save();
-                        innerContext.announce('${_player.name} Saved.');
-                      },
-                    ),
-                  ];
-                  shortcuts.add(
-                    GameShortcut(
-                      title: 'Shortcut help',
-                      shortcut: GameShortcutsShortcut.slash,
-                      shiftKey: true,
-                      onStart: (final innerContext) =>
-                          innerContext.fadeMusicAndPushWidget(
-                        (final _) => GameShortcutsHelpScreen(
-                          shortcuts: shortcuts,
+                          },
                         ),
-                      ),
-                    ),
-                  );
-                  return SimpleScaffold(
-                    title: _room.name,
-                    body: GameShortcuts(
-                      shortcuts: shortcuts,
-                      child: Text(_room.name),
+                      ],
                     ),
                   );
                 },
