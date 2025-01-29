@@ -57,6 +57,16 @@ class RoomObjectSettingsTab extends ConsumerWidget {
             title: 'Ambiance',
             looping: true,
           ),
+          CheckboxListTile(
+            value: object.visible,
+            onChanged: (final value) async {
+              await query.update(
+                (final o) => o(visible: Value(value ?? false)),
+              );
+              invalidateProviders(ref, object);
+            },
+            title: const Text('Visible to player'),
+          ),
         ],
       ),
     );
