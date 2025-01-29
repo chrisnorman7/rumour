@@ -863,3 +863,51 @@ Future<GameStatValueContext> gameStatValueContext(
     maxValue: maxValue,
   );
 }
+
+/// Provide all random sounds for an object with the given [roomObjectId].
+@riverpod
+Future<List<RoomObjectRandomSound>> roomObjectRandomSounds(
+  final Ref ref,
+  final int roomObjectId,
+) {
+  final database = ref.watch(databaseProvider);
+  return database.managers.roomObjectRandomSounds
+      .filter(
+        (final f) => f.roomObjectId.id.equals(roomObjectId),
+      )
+      .get();
+}
+
+/// Provide a single random sound by [id].
+@riverpod
+Future<RoomObjectRandomSound> randomSound(final Ref ref, final int id) {
+  final database = ref.watch(databaseProvider);
+  return database.managers.roomObjectRandomSounds
+      .filter(
+        (final f) => f.id.equals(id),
+      )
+      .getSingle();
+}
+
+/// Provide all random sounds for a room with the given [roomId].
+@riverpod
+Future<List<RoomObjectRandomSoundContext>> roomObjectRandomSoundsForRoom(
+  final Ref ref,
+  final int roomId,
+) async {
+  final database = ref.watch(databaseProvider);
+  final randomSounds = await database.managers.roomObjectRandomSounds
+      .filter(
+        (final f) => f.roomObjectId.roomExitId.id.equals(roomId),
+      )
+      .get();
+  final contexts = <RoomObjectRandomSoundContext>[];
+  for (final randomSound in randomSounds) {
+    final sound =
+        await ref.watch(soundReferenceProvider(randomSound.soundId).future);
+    contexts.add(
+      RoomObjectRandomSoundContext(randomSound: randomSound, sound: sound),
+    );
+  }
+  return contexts;
+}

@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:rumour_backend/src/database/tables/_tables.dart';
+import 'package:rumour_backend/_tables.dart';
 
 /// A mixin to add a unique [id] column.
 mixin IdMixin on Table {

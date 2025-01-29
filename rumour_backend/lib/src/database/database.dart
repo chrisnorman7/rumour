@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_soloud/flutter_soloud.dart';
+import 'package:rumour_backend/_tables.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 
 part 'database.g.dart';
@@ -21,6 +22,7 @@ part 'database.g.dart';
     RoomSurfaceBoosts,
     RoomSurfaceCosts,
     PlayerClassGameStats,
+    RoomObjectRandomSounds,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -30,7 +32,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// The schema version.
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   /// Migrate the database.
   @override
@@ -41,6 +43,10 @@ class AppDatabase extends _$AppDatabase {
         onCreate: (final m) async {
           await m.createAll();
         },
-        onUpgrade: (final m, final from, final to) async {},
+        onUpgrade: (final m, final from, final to) async {
+          if (from < 2) {
+            await m.createTable(this.roomObjectRandomSounds);
+          }
+        },
       );
 }

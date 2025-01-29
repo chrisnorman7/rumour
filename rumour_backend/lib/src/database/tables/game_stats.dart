@@ -1,7 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:rumour_backend/rumour_backend.dart'
-    show RoomSurfaceBoosts, RoomSurfaces;
-import 'package:rumour_backend/src/database/tables/_tables.dart'
+import 'package:rumour_backend/_tables.dart'
     show RoomSurfaceBoosts, RoomSurfaces;
 import 'package:rumour_backend/src/database/tables/mixins.dart';
 import 'package:rumour_backend/src/mathematical_operator.dart';

@@ -4053,6 +4053,335 @@ class PlayerClassGameStatsCompanion
   }
 }
 
+class $RoomObjectRandomSoundsTable extends RoomObjectRandomSounds
+    with TableInfo<$RoomObjectRandomSoundsTable, RoomObjectRandomSound> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RoomObjectRandomSoundsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _roomObjectIdMeta =
+      const VerificationMeta('roomObjectId');
+  @override
+  late final GeneratedColumn<int> roomObjectId = GeneratedColumn<int>(
+      'room_object_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES room_objects (id) ON DELETE CASCADE'));
+  static const VerificationMeta _soundIdMeta =
+      const VerificationMeta('soundId');
+  @override
+  late final GeneratedColumn<int> soundId = GeneratedColumn<int>(
+      'sound_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES sound_references (id) ON DELETE CASCADE'));
+  static const VerificationMeta _minIntervalMeta =
+      const VerificationMeta('minInterval');
+  @override
+  late final GeneratedColumn<int> minInterval = GeneratedColumn<int>(
+      'min_interval', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(5));
+  static const VerificationMeta _maxIntervalMeta =
+      const VerificationMeta('maxInterval');
+  @override
+  late final GeneratedColumn<int> maxInterval = GeneratedColumn<int>(
+      'max_interval', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(30));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, roomObjectId, soundId, minInterval, maxInterval];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'room_object_random_sounds';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<RoomObjectRandomSound> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('room_object_id')) {
+      context.handle(
+          _roomObjectIdMeta,
+          roomObjectId.isAcceptableOrUnknown(
+              data['room_object_id']!, _roomObjectIdMeta));
+    } else if (isInserting) {
+      context.missing(_roomObjectIdMeta);
+    }
+    if (data.containsKey('sound_id')) {
+      context.handle(_soundIdMeta,
+          soundId.isAcceptableOrUnknown(data['sound_id']!, _soundIdMeta));
+    } else if (isInserting) {
+      context.missing(_soundIdMeta);
+    }
+    if (data.containsKey('min_interval')) {
+      context.handle(
+          _minIntervalMeta,
+          minInterval.isAcceptableOrUnknown(
+              data['min_interval']!, _minIntervalMeta));
+    }
+    if (data.containsKey('max_interval')) {
+      context.handle(
+          _maxIntervalMeta,
+          maxInterval.isAcceptableOrUnknown(
+              data['max_interval']!, _maxIntervalMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RoomObjectRandomSound map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RoomObjectRandomSound(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      roomObjectId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}room_object_id'])!,
+      soundId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sound_id'])!,
+      minInterval: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}min_interval'])!,
+      maxInterval: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}max_interval'])!,
+    );
+  }
+
+  @override
+  $RoomObjectRandomSoundsTable createAlias(String alias) {
+    return $RoomObjectRandomSoundsTable(attachedDatabase, alias);
+  }
+}
+
+class RoomObjectRandomSound extends DataClass
+    implements Insertable<RoomObjectRandomSound> {
+  /// The primary key field.
+  final int id;
+
+  /// The ID of the room object which will emit this sound.
+  final int roomObjectId;
+
+  /// The ID of the sound which will be played.
+  final int soundId;
+
+  /// The minimum number of seconds which will elapse between plays of this
+  /// sound.
+  final int minInterval;
+
+  /// The maximum number of seconds which will elapse between plays of this
+  /// sound.
+  final int maxInterval;
+  const RoomObjectRandomSound(
+      {required this.id,
+      required this.roomObjectId,
+      required this.soundId,
+      required this.minInterval,
+      required this.maxInterval});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['room_object_id'] = Variable<int>(roomObjectId);
+    map['sound_id'] = Variable<int>(soundId);
+    map['min_interval'] = Variable<int>(minInterval);
+    map['max_interval'] = Variable<int>(maxInterval);
+    return map;
+  }
+
+  RoomObjectRandomSoundsCompanion toCompanion(bool nullToAbsent) {
+    return RoomObjectRandomSoundsCompanion(
+      id: Value(id),
+      roomObjectId: Value(roomObjectId),
+      soundId: Value(soundId),
+      minInterval: Value(minInterval),
+      maxInterval: Value(maxInterval),
+    );
+  }
+
+  factory RoomObjectRandomSound.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RoomObjectRandomSound(
+      id: serializer.fromJson<int>(json['id']),
+      roomObjectId: serializer.fromJson<int>(json['roomObjectId']),
+      soundId: serializer.fromJson<int>(json['soundId']),
+      minInterval: serializer.fromJson<int>(json['minInterval']),
+      maxInterval: serializer.fromJson<int>(json['maxInterval']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'roomObjectId': serializer.toJson<int>(roomObjectId),
+      'soundId': serializer.toJson<int>(soundId),
+      'minInterval': serializer.toJson<int>(minInterval),
+      'maxInterval': serializer.toJson<int>(maxInterval),
+    };
+  }
+
+  RoomObjectRandomSound copyWith(
+          {int? id,
+          int? roomObjectId,
+          int? soundId,
+          int? minInterval,
+          int? maxInterval}) =>
+      RoomObjectRandomSound(
+        id: id ?? this.id,
+        roomObjectId: roomObjectId ?? this.roomObjectId,
+        soundId: soundId ?? this.soundId,
+        minInterval: minInterval ?? this.minInterval,
+        maxInterval: maxInterval ?? this.maxInterval,
+      );
+  RoomObjectRandomSound copyWithCompanion(
+      RoomObjectRandomSoundsCompanion data) {
+    return RoomObjectRandomSound(
+      id: data.id.present ? data.id.value : this.id,
+      roomObjectId: data.roomObjectId.present
+          ? data.roomObjectId.value
+          : this.roomObjectId,
+      soundId: data.soundId.present ? data.soundId.value : this.soundId,
+      minInterval:
+          data.minInterval.present ? data.minInterval.value : this.minInterval,
+      maxInterval:
+          data.maxInterval.present ? data.maxInterval.value : this.maxInterval,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoomObjectRandomSound(')
+          ..write('id: $id, ')
+          ..write('roomObjectId: $roomObjectId, ')
+          ..write('soundId: $soundId, ')
+          ..write('minInterval: $minInterval, ')
+          ..write('maxInterval: $maxInterval')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, roomObjectId, soundId, minInterval, maxInterval);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RoomObjectRandomSound &&
+          other.id == this.id &&
+          other.roomObjectId == this.roomObjectId &&
+          other.soundId == this.soundId &&
+          other.minInterval == this.minInterval &&
+          other.maxInterval == this.maxInterval);
+}
+
+class RoomObjectRandomSoundsCompanion
+    extends UpdateCompanion<RoomObjectRandomSound> {
+  final Value<int> id;
+  final Value<int> roomObjectId;
+  final Value<int> soundId;
+  final Value<int> minInterval;
+  final Value<int> maxInterval;
+  const RoomObjectRandomSoundsCompanion({
+    this.id = const Value.absent(),
+    this.roomObjectId = const Value.absent(),
+    this.soundId = const Value.absent(),
+    this.minInterval = const Value.absent(),
+    this.maxInterval = const Value.absent(),
+  });
+  RoomObjectRandomSoundsCompanion.insert({
+    this.id = const Value.absent(),
+    required int roomObjectId,
+    required int soundId,
+    this.minInterval = const Value.absent(),
+    this.maxInterval = const Value.absent(),
+  })  : roomObjectId = Value(roomObjectId),
+        soundId = Value(soundId);
+  static Insertable<RoomObjectRandomSound> custom({
+    Expression<int>? id,
+    Expression<int>? roomObjectId,
+    Expression<int>? soundId,
+    Expression<int>? minInterval,
+    Expression<int>? maxInterval,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (roomObjectId != null) 'room_object_id': roomObjectId,
+      if (soundId != null) 'sound_id': soundId,
+      if (minInterval != null) 'min_interval': minInterval,
+      if (maxInterval != null) 'max_interval': maxInterval,
+    });
+  }
+
+  RoomObjectRandomSoundsCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? roomObjectId,
+      Value<int>? soundId,
+      Value<int>? minInterval,
+      Value<int>? maxInterval}) {
+    return RoomObjectRandomSoundsCompanion(
+      id: id ?? this.id,
+      roomObjectId: roomObjectId ?? this.roomObjectId,
+      soundId: soundId ?? this.soundId,
+      minInterval: minInterval ?? this.minInterval,
+      maxInterval: maxInterval ?? this.maxInterval,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (roomObjectId.present) {
+      map['room_object_id'] = Variable<int>(roomObjectId.value);
+    }
+    if (soundId.present) {
+      map['sound_id'] = Variable<int>(soundId.value);
+    }
+    if (minInterval.present) {
+      map['min_interval'] = Variable<int>(minInterval.value);
+    }
+    if (maxInterval.present) {
+      map['max_interval'] = Variable<int>(maxInterval.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoomObjectRandomSoundsCompanion(')
+          ..write('id: $id, ')
+          ..write('roomObjectId: $roomObjectId, ')
+          ..write('soundId: $soundId, ')
+          ..write('minInterval: $minInterval, ')
+          ..write('maxInterval: $maxInterval')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4071,6 +4400,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $RoomSurfaceCostsTable(this);
   late final $PlayerClassGameStatsTable playerClassGameStats =
       $PlayerClassGameStatsTable(this);
+  late final $RoomObjectRandomSoundsTable roomObjectRandomSounds =
+      $RoomObjectRandomSoundsTable(this);
   late final Index roomObjectCoordinatesIndex = Index(
       'room_object_coordinates_index',
       'CREATE INDEX room_object_coordinates_index ON room_objects (x, y)');
@@ -4090,6 +4421,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         roomSurfaceBoosts,
         roomSurfaceCosts,
         playerClassGameStats,
+        roomObjectRandomSounds,
         roomObjectCoordinatesIndex
       ];
   @override
@@ -4191,6 +4523,20 @@ abstract class _$AppDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.delete),
             result: [
               TableUpdate('player_class_game_stats', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('room_objects',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_object_random_sounds', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('sound_references',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_object_random_sounds', kind: UpdateKind.delete),
             ],
           ),
         ],
@@ -4358,6 +4704,25 @@ final class $$SoundReferencesTableReferences extends BaseReferences<
 
     final cache =
         $_typedResult.readTableOrNull(_roomSurfaceCostsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$RoomObjectRandomSoundsTable,
+      List<RoomObjectRandomSound>> _roomObjectRandomSoundsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.roomObjectRandomSounds,
+          aliasName: $_aliasNameGenerator(
+              db.soundReferences.id, db.roomObjectRandomSounds.soundId));
+
+  $$RoomObjectRandomSoundsTableProcessedTableManager
+      get roomObjectRandomSoundsRefs {
+    final manager = $$RoomObjectRandomSoundsTableTableManager(
+            $_db, $_db.roomObjectRandomSounds)
+        .filter((f) => f.soundId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_roomObjectRandomSoundsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -4572,6 +4937,29 @@ class $$SoundReferencesTableFilterComposer
               $removeJoinBuilderFromRootComposer:
                   $removeJoinBuilderFromRootComposer,
             ));
+    return f(composer);
+  }
+
+  Expression<bool> roomObjectRandomSoundsRefs(
+      Expression<bool> Function($$RoomObjectRandomSoundsTableFilterComposer f)
+          f) {
+    final $$RoomObjectRandomSoundsTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomObjectRandomSounds,
+            getReferencedColumn: (t) => t.soundId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomObjectRandomSoundsTableFilterComposer(
+                  $db: $db,
+                  $table: $db.roomObjectRandomSounds,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
     return f(composer);
   }
 }
@@ -4809,6 +5197,29 @@ class $$SoundReferencesTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> roomObjectRandomSoundsRefs<T extends Object>(
+      Expression<T> Function($$RoomObjectRandomSoundsTableAnnotationComposer a)
+          f) {
+    final $$RoomObjectRandomSoundsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomObjectRandomSounds,
+            getReferencedColumn: (t) => t.soundId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomObjectRandomSoundsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.roomObjectRandomSounds,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 }
 
 class $$SoundReferencesTableTableManager extends RootTableManager<
@@ -4831,7 +5242,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
         bool roomObjectsRefs,
         bool roomSurfaceBoostBoostSounds,
         bool roomSurfaceBoostMaxedOutSounds,
-        bool roomSurfaceCostsRefs})> {
+        bool roomSurfaceCostsRefs,
+        bool roomObjectRandomSoundsRefs})> {
   $$SoundReferencesTableTableManager(
       _$AppDatabase db, $SoundReferencesTable table)
       : super(TableManagerState(
@@ -4882,7 +5294,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
               roomObjectsRefs = false,
               roomSurfaceBoostBoostSounds = false,
               roomSurfaceBoostMaxedOutSounds = false,
-              roomSurfaceCostsRefs = false}) {
+              roomSurfaceCostsRefs = false,
+              roomObjectRandomSoundsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
@@ -4894,7 +5307,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                 if (roomObjectsRefs) db.roomObjects,
                 if (roomSurfaceBoostBoostSounds) db.roomSurfaceBoosts,
                 if (roomSurfaceBoostMaxedOutSounds) db.roomSurfaceBoosts,
-                if (roomSurfaceCostsRefs) db.roomSurfaceCosts
+                if (roomSurfaceCostsRefs) db.roomSurfaceCosts,
+                if (roomObjectRandomSoundsRefs) db.roomObjectRandomSounds
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
@@ -5006,6 +5420,18 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.exhaustedSoundId == item.id),
+                        typedResults: items),
+                  if (roomObjectRandomSoundsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$SoundReferencesTableReferences
+                            ._roomObjectRandomSoundsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$SoundReferencesTableReferences(db, table, p0)
+                                .roomObjectRandomSoundsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.soundId == item.id),
                         typedResults: items)
                 ];
               },
@@ -5034,7 +5460,8 @@ typedef $$SoundReferencesTableProcessedTableManager = ProcessedTableManager<
         bool roomObjectsRefs,
         bool roomSurfaceBoostBoostSounds,
         bool roomSurfaceBoostMaxedOutSounds,
-        bool roomSurfaceCostsRefs})>;
+        bool roomSurfaceCostsRefs,
+        bool roomObjectRandomSoundsRefs})>;
 typedef $$ZonesTableCreateCompanionBuilder = ZonesCompanion Function({
   Value<int> id,
   required String name,
@@ -7151,6 +7578,25 @@ final class $$RoomObjectsTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
   }
+
+  static MultiTypedResultKey<$RoomObjectRandomSoundsTable,
+      List<RoomObjectRandomSound>> _roomObjectRandomSoundsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.roomObjectRandomSounds,
+          aliasName: $_aliasNameGenerator(
+              db.roomObjects.id, db.roomObjectRandomSounds.roomObjectId));
+
+  $$RoomObjectRandomSoundsTableProcessedTableManager
+      get roomObjectRandomSoundsRefs {
+    final manager = $$RoomObjectRandomSoundsTableTableManager(
+            $_db, $_db.roomObjectRandomSounds)
+        .filter((f) => f.roomObjectId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_roomObjectRandomSoundsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$RoomObjectsTableFilterComposer
@@ -7235,6 +7681,29 @@ class $$RoomObjectsTableFilterComposer
                   $removeJoinBuilderFromRootComposer,
             ));
     return composer;
+  }
+
+  Expression<bool> roomObjectRandomSoundsRefs(
+      Expression<bool> Function($$RoomObjectRandomSoundsTableFilterComposer f)
+          f) {
+    final $$RoomObjectRandomSoundsTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomObjectRandomSounds,
+            getReferencedColumn: (t) => t.roomObjectId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomObjectRandomSoundsTableFilterComposer(
+                  $db: $db,
+                  $table: $db.roomObjectRandomSounds,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
   }
 }
 
@@ -7406,6 +7875,29 @@ class $$RoomObjectsTableAnnotationComposer
             ));
     return composer;
   }
+
+  Expression<T> roomObjectRandomSoundsRefs<T extends Object>(
+      Expression<T> Function($$RoomObjectRandomSoundsTableAnnotationComposer a)
+          f) {
+    final $$RoomObjectRandomSoundsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomObjectRandomSounds,
+            getReferencedColumn: (t) => t.roomObjectId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomObjectRandomSoundsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.roomObjectRandomSounds,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 }
 
 class $$RoomObjectsTableTableManager extends RootTableManager<
@@ -7419,7 +7911,11 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
     $$RoomObjectsTableUpdateCompanionBuilder,
     (RoomObject, $$RoomObjectsTableReferences),
     RoomObject,
-    PrefetchHooks Function({bool ambianceId, bool roomId, bool roomExitId})> {
+    PrefetchHooks Function(
+        {bool ambianceId,
+        bool roomId,
+        bool roomExitId,
+        bool roomObjectRandomSoundsRefs})> {
   $$RoomObjectsTableTableManager(_$AppDatabase db, $RoomObjectsTable table)
       : super(TableManagerState(
           db: db,
@@ -7477,10 +7973,15 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
                   ))
               .toList(),
           prefetchHooksCallback: (
-              {ambianceId = false, roomId = false, roomExitId = false}) {
+              {ambianceId = false,
+              roomId = false,
+              roomExitId = false,
+              roomObjectRandomSoundsRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [],
+              explicitlyWatchedTables: [
+                if (roomObjectRandomSoundsRefs) db.roomObjectRandomSounds
+              ],
               addJoins: <
                   T extends TableManagerState<
                       dynamic,
@@ -7528,7 +8029,20 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
                 return state;
               },
               getPrefetchedDataCallback: (items) async {
-                return [];
+                return [
+                  if (roomObjectRandomSoundsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$RoomObjectsTableReferences
+                            ._roomObjectRandomSoundsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$RoomObjectsTableReferences(db, table, p0)
+                                .roomObjectRandomSoundsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.roomObjectId == item.id),
+                        typedResults: items)
+                ];
               },
             );
           },
@@ -7546,7 +8060,11 @@ typedef $$RoomObjectsTableProcessedTableManager = ProcessedTableManager<
     $$RoomObjectsTableUpdateCompanionBuilder,
     (RoomObject, $$RoomObjectsTableReferences),
     RoomObject,
-    PrefetchHooks Function({bool ambianceId, bool roomId, bool roomExitId})>;
+    PrefetchHooks Function(
+        {bool ambianceId,
+        bool roomId,
+        bool roomExitId,
+        bool roomObjectRandomSoundsRefs})>;
 typedef $$PlayerClassesTableCreateCompanionBuilder = PlayerClassesCompanion
     Function({
   Value<int> id,
@@ -9787,6 +10305,360 @@ typedef $$PlayerClassGameStatsTableProcessedTableManager
         (PlayerClassGameStat, $$PlayerClassGameStatsTableReferences),
         PlayerClassGameStat,
         PrefetchHooks Function({bool playerClassId, bool gameStatId})>;
+typedef $$RoomObjectRandomSoundsTableCreateCompanionBuilder
+    = RoomObjectRandomSoundsCompanion Function({
+  Value<int> id,
+  required int roomObjectId,
+  required int soundId,
+  Value<int> minInterval,
+  Value<int> maxInterval,
+});
+typedef $$RoomObjectRandomSoundsTableUpdateCompanionBuilder
+    = RoomObjectRandomSoundsCompanion Function({
+  Value<int> id,
+  Value<int> roomObjectId,
+  Value<int> soundId,
+  Value<int> minInterval,
+  Value<int> maxInterval,
+});
+
+final class $$RoomObjectRandomSoundsTableReferences extends BaseReferences<
+    _$AppDatabase, $RoomObjectRandomSoundsTable, RoomObjectRandomSound> {
+  $$RoomObjectRandomSoundsTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $RoomObjectsTable _roomObjectIdTable(_$AppDatabase db) =>
+      db.roomObjects.createAlias($_aliasNameGenerator(
+          db.roomObjectRandomSounds.roomObjectId, db.roomObjects.id));
+
+  $$RoomObjectsTableProcessedTableManager get roomObjectId {
+    final $_column = $_itemColumn<int>('room_object_id')!;
+
+    final manager = $$RoomObjectsTableTableManager($_db, $_db.roomObjects)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_roomObjectIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $SoundReferencesTable _soundIdTable(_$AppDatabase db) =>
+      db.soundReferences.createAlias($_aliasNameGenerator(
+          db.roomObjectRandomSounds.soundId, db.soundReferences.id));
+
+  $$SoundReferencesTableProcessedTableManager get soundId {
+    final $_column = $_itemColumn<int>('sound_id')!;
+
+    final manager =
+        $$SoundReferencesTableTableManager($_db, $_db.soundReferences)
+            .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_soundIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$RoomObjectRandomSoundsTableFilterComposer
+    extends Composer<_$AppDatabase, $RoomObjectRandomSoundsTable> {
+  $$RoomObjectRandomSoundsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get minInterval => $composableBuilder(
+      column: $table.minInterval, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get maxInterval => $composableBuilder(
+      column: $table.maxInterval, builder: (column) => ColumnFilters(column));
+
+  $$RoomObjectsTableFilterComposer get roomObjectId {
+    final $$RoomObjectsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomObjectId,
+        referencedTable: $db.roomObjects,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableFilterComposer get soundId {
+    final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.soundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableFilterComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RoomObjectRandomSoundsTableOrderingComposer
+    extends Composer<_$AppDatabase, $RoomObjectRandomSoundsTable> {
+  $$RoomObjectRandomSoundsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get minInterval => $composableBuilder(
+      column: $table.minInterval, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get maxInterval => $composableBuilder(
+      column: $table.maxInterval, builder: (column) => ColumnOrderings(column));
+
+  $$RoomObjectsTableOrderingComposer get roomObjectId {
+    final $$RoomObjectsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomObjectId,
+        referencedTable: $db.roomObjects,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectsTableOrderingComposer(
+              $db: $db,
+              $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableOrderingComposer get soundId {
+    final $$SoundReferencesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.soundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableOrderingComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RoomObjectRandomSoundsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RoomObjectRandomSoundsTable> {
+  $$RoomObjectRandomSoundsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get minInterval => $composableBuilder(
+      column: $table.minInterval, builder: (column) => column);
+
+  GeneratedColumn<int> get maxInterval => $composableBuilder(
+      column: $table.maxInterval, builder: (column) => column);
+
+  $$RoomObjectsTableAnnotationComposer get roomObjectId {
+    final $$RoomObjectsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomObjectId,
+        referencedTable: $db.roomObjects,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableAnnotationComposer get soundId {
+    final $$SoundReferencesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.soundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RoomObjectRandomSoundsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $RoomObjectRandomSoundsTable,
+    RoomObjectRandomSound,
+    $$RoomObjectRandomSoundsTableFilterComposer,
+    $$RoomObjectRandomSoundsTableOrderingComposer,
+    $$RoomObjectRandomSoundsTableAnnotationComposer,
+    $$RoomObjectRandomSoundsTableCreateCompanionBuilder,
+    $$RoomObjectRandomSoundsTableUpdateCompanionBuilder,
+    (RoomObjectRandomSound, $$RoomObjectRandomSoundsTableReferences),
+    RoomObjectRandomSound,
+    PrefetchHooks Function({bool roomObjectId, bool soundId})> {
+  $$RoomObjectRandomSoundsTableTableManager(
+      _$AppDatabase db, $RoomObjectRandomSoundsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RoomObjectRandomSoundsTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RoomObjectRandomSoundsTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RoomObjectRandomSoundsTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> roomObjectId = const Value.absent(),
+            Value<int> soundId = const Value.absent(),
+            Value<int> minInterval = const Value.absent(),
+            Value<int> maxInterval = const Value.absent(),
+          }) =>
+              RoomObjectRandomSoundsCompanion(
+            id: id,
+            roomObjectId: roomObjectId,
+            soundId: soundId,
+            minInterval: minInterval,
+            maxInterval: maxInterval,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int roomObjectId,
+            required int soundId,
+            Value<int> minInterval = const Value.absent(),
+            Value<int> maxInterval = const Value.absent(),
+          }) =>
+              RoomObjectRandomSoundsCompanion.insert(
+            id: id,
+            roomObjectId: roomObjectId,
+            soundId: soundId,
+            minInterval: minInterval,
+            maxInterval: maxInterval,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$RoomObjectRandomSoundsTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({roomObjectId = false, soundId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (roomObjectId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.roomObjectId,
+                    referencedTable: $$RoomObjectRandomSoundsTableReferences
+                        ._roomObjectIdTable(db),
+                    referencedColumn: $$RoomObjectRandomSoundsTableReferences
+                        ._roomObjectIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (soundId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.soundId,
+                    referencedTable: $$RoomObjectRandomSoundsTableReferences
+                        ._soundIdTable(db),
+                    referencedColumn: $$RoomObjectRandomSoundsTableReferences
+                        ._soundIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$RoomObjectRandomSoundsTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $RoomObjectRandomSoundsTable,
+        RoomObjectRandomSound,
+        $$RoomObjectRandomSoundsTableFilterComposer,
+        $$RoomObjectRandomSoundsTableOrderingComposer,
+        $$RoomObjectRandomSoundsTableAnnotationComposer,
+        $$RoomObjectRandomSoundsTableCreateCompanionBuilder,
+        $$RoomObjectRandomSoundsTableUpdateCompanionBuilder,
+        (RoomObjectRandomSound, $$RoomObjectRandomSoundsTableReferences),
+        RoomObjectRandomSound,
+        PrefetchHooks Function({bool roomObjectId, bool soundId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -9813,4 +10685,7 @@ class $AppDatabaseManager {
       $$RoomSurfaceCostsTableTableManager(_db, _db.roomSurfaceCosts);
   $$PlayerClassGameStatsTableTableManager get playerClassGameStats =>
       $$PlayerClassGameStatsTableTableManager(_db, _db.playerClassGameStats);
+  $$RoomObjectRandomSoundsTableTableManager get roomObjectRandomSounds =>
+      $$RoomObjectRandomSoundsTableTableManager(
+          _db, _db.roomObjectRandomSounds);
 }

@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:rumour_backend/_tables.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 
 /// The room exits table.
