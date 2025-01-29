@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as path;
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_editor/rumour_editor.dart';
-import 'package:rumour_editor/src/screens/room_object_random_sound/edit_room_object_random_sound_screen.dart';
 
 /// The room object random sounds tab.
 class RoomObjectRandomSoundsTab extends ConsumerWidget {
@@ -24,8 +23,11 @@ class RoomObjectRandomSoundsTab extends ConsumerWidget {
     final value = ref.watch(provider);
     final database = ref.watch(databaseProvider);
     final manager = database.managers.roomObjectRandomSounds;
-    return value.simpleWhen(
-      (final randomSounds) => ListView.builder(
+    return value.simpleWhen((final randomSounds) {
+      if (randomSounds.isEmpty) {
+        return const NothingToSee();
+      }
+      return ListView.builder(
         itemBuilder: (final context, final index) {
           final randomSound = randomSounds[index];
           final query = manager.filter(
@@ -82,7 +84,7 @@ class RoomObjectRandomSoundsTab extends ConsumerWidget {
         },
         itemCount: randomSounds.length,
         shrinkWrap: true,
-      ),
-    );
+      );
+    });
   }
 }
