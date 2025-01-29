@@ -30,10 +30,13 @@ class EditRoomObjectRandomSoundScreen extends ConsumerWidget {
     return Cancel(
       child: SimpleScaffold(
         title: 'Edit Random Sound',
-        body: value.simpleWhen(
-          (final randomSound) => ListView(
+        body: value.simpleWhen((final randomSound) {
+          final minSeconds = randomSound.minInterval;
+          final maxSeconds = randomSound.maxInterval;
+          return ListView(
             shrinkWrap: true,
             children: [
+              // TODO(chrisnorman7): Make sure the sound reference can't be deleted.
               SoundReferenceListTile(
                 soundReferenceId: randomSound.soundId,
                 onChanged: (final value) async {
@@ -44,7 +47,7 @@ class EditRoomObjectRandomSoundScreen extends ConsumerWidget {
                 autofocus: true,
               ),
               IntListTile(
-                value: randomSound.minInterval,
+                value: minSeconds,
                 onChanged: (final value) async {
                   await query.update((final o) => o(minInterval: Value(value)));
                   invalidateProviders(ref, randomSound.roomObjectId);
@@ -52,13 +55,21 @@ class EditRoomObjectRandomSoundScreen extends ConsumerWidget {
                 max: randomSound.maxInterval,
                 min: 1,
                 title: 'Minimum interval',
-                subtitle:
-                    // ignore: lines_longer_than_80_chars
-                    '${randomSound.minInterval} ${"second".pluralise(randomSound.minInterval)}',
+                subtitle: '$minSeconds ${"second".pluralise(minSeconds)}',
+              ),
+              IntListTile(
+                value: maxSeconds,
+                onChanged: (final value) async {
+                  await query.update((final o) => o(maxInterval: Value(value)));
+                  invalidateProviders(ref, randomSound.roomObjectId);
+                },
+                min: randomSound.minInterval,
+                title: 'Maximum interval',
+                subtitle: '$maxSeconds ${"second".pluralise(maxSeconds)}',
               ),
             ],
-          ),
-        ),
+          );
+        }),
       ),
     );
   }
