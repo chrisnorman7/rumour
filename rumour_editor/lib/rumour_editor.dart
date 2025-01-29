@@ -41,6 +41,7 @@ export 'src/screens/zone/tabs/zone_settings_tab.dart';
 export 'src/widgets/error_text.dart';
 export 'src/widgets/game_stats_list_view.dart';
 export 'src/widgets/menu_button.dart';
+export 'src/widgets/nothing_to_see.dart';
 export 'src/widgets/performable_actions_tabbed_scaffold_tab.dart';
 export 'src/widgets/room_list_tile.dart';
 export 'src/widgets/room_object_list_tile.dart';
