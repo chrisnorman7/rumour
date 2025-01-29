@@ -48,9 +48,14 @@ class RoomRandomSounds extends ConsumerWidget {
             final roomObject = randomSoundContext.roomObject;
             return RandomTask(
               getDuration: () {
-                final seed = random.nextInt(
-                  maxSeconds - minSeconds,
-                );
+                final int seed;
+                if (minSeconds == maxSeconds) {
+                  seed = maxSeconds;
+                } else {
+                  seed = random.nextInt(
+                    maxSeconds - minSeconds,
+                  );
+                }
                 return (seed + minSeconds).seconds;
               },
               onTick: () {
