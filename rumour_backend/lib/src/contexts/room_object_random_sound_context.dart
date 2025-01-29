@@ -6,6 +6,7 @@ class RoomObjectRandomSoundContext {
   /// Create an instance.
   const RoomObjectRandomSoundContext({
     required this.randomSound,
+    required this.roomObject,
     required this.sound,
   });
 
@@ -17,6 +18,9 @@ class RoomObjectRandomSoundContext {
 
   /// The maximum interval.
   Duration get maxInterval => randomSound.maxInterval.seconds;
+
+  /// The object which will be emitting this sound.
+  final RoomObject roomObject;
 
   /// The loaded sound reference for [randomSound].
   final SoundReference sound;

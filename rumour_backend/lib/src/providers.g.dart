@@ -4462,7 +4462,7 @@ class _RandomSoundProviderElement
 }
 
 String _$roomObjectRandomSoundsForRoomHash() =>
-    r'95682866f5fb5c57fd179d196c419ceae6c636f2';
+    r'baaf0a6abe4834b42a36fec236fe9736817f3de6';
 
 /// Provide all random sounds for a room with the given [roomId].
 ///

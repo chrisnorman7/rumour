@@ -903,10 +903,18 @@ Future<List<RoomObjectRandomSoundContext>> roomObjectRandomSoundsForRoom(
       .get();
   final contexts = <RoomObjectRandomSoundContext>[];
   for (final randomSound in randomSounds) {
-    final sound =
-        await ref.watch(soundReferenceProvider(randomSound.soundId).future);
+    final roomObject = await ref.watch(
+      roomObjectProvider(randomSound.roomObjectId).future,
+    );
+    final sound = await ref.watch(
+      soundReferenceProvider(randomSound.soundId).future,
+    );
     contexts.add(
-      RoomObjectRandomSoundContext(randomSound: randomSound, sound: sound),
+      RoomObjectRandomSoundContext(
+        randomSound: randomSound,
+        roomObject: roomObject,
+        sound: sound,
+      ),
     );
   }
   return contexts;
