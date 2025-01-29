@@ -880,7 +880,10 @@ Future<List<RoomObjectRandomSound>> roomObjectRandomSounds(
 
 /// Provide a single random sound by [id].
 @riverpod
-Future<RoomObjectRandomSound> randomSound(final Ref ref, final int id) {
+Future<RoomObjectRandomSound> roomObjectRandomSound(
+  final Ref ref,
+  final int id,
+) {
   final database = ref.watch(databaseProvider);
   return database.managers.roomObjectRandomSounds
       .filter(

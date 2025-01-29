@@ -4317,37 +4317,39 @@ class _RoomObjectRandomSoundsProviderElement
       (origin as RoomObjectRandomSoundsProvider).roomObjectId;
 }
 
-String _$randomSoundHash() => r'0102e4546bd3c1ed1c0c10849d76c7be7114491b';
+String _$roomObjectRandomSoundHash() =>
+    r'aa876911443d4b9230431c0b993138a7e655e06a';
 
 /// Provide a single random sound by [id].
 ///
-/// Copied from [randomSound].
-@ProviderFor(randomSound)
-const randomSoundProvider = RandomSoundFamily();
+/// Copied from [roomObjectRandomSound].
+@ProviderFor(roomObjectRandomSound)
+const roomObjectRandomSoundProvider = RoomObjectRandomSoundFamily();
 
 /// Provide a single random sound by [id].
 ///
-/// Copied from [randomSound].
-class RandomSoundFamily extends Family<AsyncValue<RoomObjectRandomSound>> {
+/// Copied from [roomObjectRandomSound].
+class RoomObjectRandomSoundFamily
+    extends Family<AsyncValue<RoomObjectRandomSound>> {
   /// Provide a single random sound by [id].
   ///
-  /// Copied from [randomSound].
-  const RandomSoundFamily();
+  /// Copied from [roomObjectRandomSound].
+  const RoomObjectRandomSoundFamily();
 
   /// Provide a single random sound by [id].
   ///
-  /// Copied from [randomSound].
-  RandomSoundProvider call(
+  /// Copied from [roomObjectRandomSound].
+  RoomObjectRandomSoundProvider call(
     int id,
   ) {
-    return RandomSoundProvider(
+    return RoomObjectRandomSoundProvider(
       id,
     );
   }
 
   @override
-  RandomSoundProvider getProviderOverride(
-    covariant RandomSoundProvider provider,
+  RoomObjectRandomSoundProvider getProviderOverride(
+    covariant RoomObjectRandomSoundProvider provider,
   ) {
     return call(
       provider.id,
@@ -4366,37 +4368,37 @@ class RandomSoundFamily extends Family<AsyncValue<RoomObjectRandomSound>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'randomSoundProvider';
+  String? get name => r'roomObjectRandomSoundProvider';
 }
 
 /// Provide a single random sound by [id].
 ///
-/// Copied from [randomSound].
-class RandomSoundProvider
+/// Copied from [roomObjectRandomSound].
+class RoomObjectRandomSoundProvider
     extends AutoDisposeFutureProvider<RoomObjectRandomSound> {
   /// Provide a single random sound by [id].
   ///
-  /// Copied from [randomSound].
-  RandomSoundProvider(
+  /// Copied from [roomObjectRandomSound].
+  RoomObjectRandomSoundProvider(
     int id,
   ) : this._internal(
-          (ref) => randomSound(
-            ref as RandomSoundRef,
+          (ref) => roomObjectRandomSound(
+            ref as RoomObjectRandomSoundRef,
             id,
           ),
-          from: randomSoundProvider,
-          name: r'randomSoundProvider',
+          from: roomObjectRandomSoundProvider,
+          name: r'roomObjectRandomSoundProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$randomSoundHash,
-          dependencies: RandomSoundFamily._dependencies,
+                  : _$roomObjectRandomSoundHash,
+          dependencies: RoomObjectRandomSoundFamily._dependencies,
           allTransitiveDependencies:
-              RandomSoundFamily._allTransitiveDependencies,
+              RoomObjectRandomSoundFamily._allTransitiveDependencies,
           id: id,
         );
 
-  RandomSoundProvider._internal(
+  RoomObjectRandomSoundProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -4410,12 +4412,13 @@ class RandomSoundProvider
 
   @override
   Override overrideWith(
-    FutureOr<RoomObjectRandomSound> Function(RandomSoundRef provider) create,
+    FutureOr<RoomObjectRandomSound> Function(RoomObjectRandomSoundRef provider)
+        create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: RandomSoundProvider._internal(
-        (ref) => create(ref as RandomSoundRef),
+      override: RoomObjectRandomSoundProvider._internal(
+        (ref) => create(ref as RoomObjectRandomSoundRef),
         from: from,
         name: null,
         dependencies: null,
@@ -4428,12 +4431,12 @@ class RandomSoundProvider
 
   @override
   AutoDisposeFutureProviderElement<RoomObjectRandomSound> createElement() {
-    return _RandomSoundProviderElement(this);
+    return _RoomObjectRandomSoundProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is RandomSoundProvider && other.id == id;
+    return other is RoomObjectRandomSoundProvider && other.id == id;
   }
 
   @override
@@ -4447,18 +4450,19 @@ class RandomSoundProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin RandomSoundRef on AutoDisposeFutureProviderRef<RoomObjectRandomSound> {
+mixin RoomObjectRandomSoundRef
+    on AutoDisposeFutureProviderRef<RoomObjectRandomSound> {
   /// The parameter `id` of this provider.
   int get id;
 }
 
-class _RandomSoundProviderElement
+class _RoomObjectRandomSoundProviderElement
     extends AutoDisposeFutureProviderElement<RoomObjectRandomSound>
-    with RandomSoundRef {
-  _RandomSoundProviderElement(super.provider);
+    with RoomObjectRandomSoundRef {
+  _RoomObjectRandomSoundProviderElement(super.provider);
 
   @override
-  int get id => (origin as RandomSoundProvider).id;
+  int get id => (origin as RoomObjectRandomSoundProvider).id;
 }
 
 String _$roomObjectRandomSoundsForRoomHash() =>
