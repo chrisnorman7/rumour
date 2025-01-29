@@ -22,7 +22,8 @@ class RoomObjectRandomSoundsTab extends ConsumerWidget {
     final provider = roomObjectRandomSoundsProvider(roomObjectId);
     final value = ref.watch(provider);
     final database = ref.watch(databaseProvider);
-    final manager = database.managers.roomObjectRandomSounds;
+    final managers = database.managers;
+    final manager = managers.roomObjectRandomSounds;
     return value.simpleWhen((final randomSounds) {
       if (randomSounds.isEmpty) {
         return const NothingToSee();
@@ -46,6 +47,9 @@ class RoomObjectRandomSoundsTab extends ConsumerWidget {
                       PerformableAction(
                         name: 'Delete',
                         invoke: () async {
+                          managers.soundReferences.filter(
+                            (final f) => f.id.equals(randomSound.soundId),
+                          );
                           await query.delete();
                           ref.invalidate(provider);
                         },
