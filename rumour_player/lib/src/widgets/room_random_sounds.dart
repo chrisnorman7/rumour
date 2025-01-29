@@ -14,11 +14,15 @@ class RoomRandomSounds extends ConsumerWidget {
     required this.error,
     required this.loading,
     required this.child,
+    required this.getPaused,
     super.key,
   });
 
   /// The ID of the room to load random sounds for.
   final int roomId;
+
+  /// The function to call to check if the game is paused.
+  final bool Function() getPaused;
 
   /// The function to call to build an error widget.
   final ErrorWidgetCallback error;
@@ -49,17 +53,22 @@ class RoomRandomSounds extends ConsumerWidget {
                 );
                 return (seed + minSeconds).seconds;
               },
-              onTick: () => context.playSound(
-                projectContext.getSound(
-                  soundReference: randomSoundContext.sound,
-                  destroy: true,
-                  position: SoundPosition3d(
-                    roomObject.x.toDouble(),
-                    roomObject.y.toDouble(),
-                    0,
+              onTick: () {
+                if (getPaused()) {
+                  return;
+                }
+                context.playSound(
+                  projectContext.getSound(
+                    soundReference: randomSoundContext.sound,
+                    destroy: true,
+                    position: SoundPosition3d(
+                      roomObject.x.toDouble(),
+                      roomObject.y.toDouble(),
+                      0,
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             );
           },
         ).toList(),

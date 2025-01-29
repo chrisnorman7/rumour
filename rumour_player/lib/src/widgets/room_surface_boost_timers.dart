@@ -14,6 +14,7 @@ class RoomSurfaceBoostTimers extends ConsumerWidget {
   const RoomSurfaceBoostTimers({
     required this.playerId,
     required this.roomSurfaceId,
+    required this.getPaused,
     required this.error,
     required this.loading,
     required this.child,
@@ -25,6 +26,9 @@ class RoomSurfaceBoostTimers extends ConsumerWidget {
 
   /// The ID of the room surface to get boosts for.
   final int roomSurfaceId;
+
+  /// The function to call to check if the game is paused.
+  final bool Function() getPaused;
 
   /// The function to call to build an error widget.
   final ErrorWidgetCallback error;
@@ -50,6 +54,9 @@ class RoomSurfaceBoostTimers extends ConsumerWidget {
                   (final boost) => TickingTask(
                     duration: boost.interval.seconds,
                     onTick: () async {
+                      if (getPaused()) {
+                        return;
+                      }
                       final stat = await ref.read(
                         gameStatContextProvider(boost.gameStatId).future,
                       );

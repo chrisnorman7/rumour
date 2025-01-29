@@ -15,6 +15,7 @@ export 'src/screens/select_object.dart';
 export 'src/widgets/audio_game_menu_list_view.dart';
 export 'src/widgets/close_project.dart';
 export 'src/widgets/pause_menu_tabs/pause_menu_tab.dart';
+export 'src/widgets/pause_menu_tabs/player_stats_tab.dart';
 export 'src/widgets/player_context_sounds.dart';
 export 'src/widgets/project_context_app.dart';
 export 'src/widgets/room_ambiances.dart';

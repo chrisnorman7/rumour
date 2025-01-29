@@ -33,6 +33,9 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
   /// Whether this is the first load.
   late bool _firstLoad;
 
+  /// Whether the game is paused.
+  late bool _paused;
+
   /// An error object.
   Object? _error;
 
@@ -91,6 +94,7 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
   void initState() {
     super.initState();
     _firstLoad = true;
+    _paused = false;
   }
 
   /// Build a widget.
@@ -116,6 +120,7 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
         }
         return PlayerContextSounds(
           playerId: widget.playerId,
+          getPaused: () => _paused,
           error: ErrorScreen.withPositional,
           loading: LoadingScreen.new,
           builder: (final context) => TimedCommands(
@@ -159,6 +164,7 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
                           final state = innerContext
                               .findAncestorStateOfType<RoomAmbiancesState>();
                           state?.fadeOut();
+                          _paused = true;
                           if (innerContext.mounted) {
                             final shortcuts = innerContext
                                     .dependOnInheritedWidgetOfExactType<
@@ -173,6 +179,7 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
                             );
                           }
                           state?.fadeIn();
+                          _paused = false;
                         },
                       ),
                     ],
