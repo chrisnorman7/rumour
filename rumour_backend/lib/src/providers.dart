@@ -922,3 +922,13 @@ Future<List<RoomObjectRandomSoundContext>> roomObjectRandomSoundsForRoom(
   }
   return contexts;
 }
+
+/// Get visible room objects in a room with the given [roomId].
+@riverpod
+Future<List<RoomObject>> visibleRoomObjects(
+  final Ref ref,
+  final int roomId,
+) async {
+  final roomObjects = await ref.watch(objectsInRoomProvider(roomId).future);
+  return roomObjects.where((final o) => o.visible).toList();
+}

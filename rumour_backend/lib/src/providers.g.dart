@@ -4617,6 +4617,151 @@ class _RoomObjectRandomSoundsForRoomProviderElement
   int get roomId => (origin as RoomObjectRandomSoundsForRoomProvider).roomId;
 }
 
+String _$visibleRoomObjectsHash() =>
+    r'7d951666708d8c6dfe6c0074044a6a1273862cd7';
+
+/// Get visible room objects in a room with the given [roomId].
+///
+/// Copied from [visibleRoomObjects].
+@ProviderFor(visibleRoomObjects)
+const visibleRoomObjectsProvider = VisibleRoomObjectsFamily();
+
+/// Get visible room objects in a room with the given [roomId].
+///
+/// Copied from [visibleRoomObjects].
+class VisibleRoomObjectsFamily extends Family<AsyncValue<List<RoomObject>>> {
+  /// Get visible room objects in a room with the given [roomId].
+  ///
+  /// Copied from [visibleRoomObjects].
+  const VisibleRoomObjectsFamily();
+
+  /// Get visible room objects in a room with the given [roomId].
+  ///
+  /// Copied from [visibleRoomObjects].
+  VisibleRoomObjectsProvider call(
+    int roomId,
+  ) {
+    return VisibleRoomObjectsProvider(
+      roomId,
+    );
+  }
+
+  @override
+  VisibleRoomObjectsProvider getProviderOverride(
+    covariant VisibleRoomObjectsProvider provider,
+  ) {
+    return call(
+      provider.roomId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'visibleRoomObjectsProvider';
+}
+
+/// Get visible room objects in a room with the given [roomId].
+///
+/// Copied from [visibleRoomObjects].
+class VisibleRoomObjectsProvider
+    extends AutoDisposeFutureProvider<List<RoomObject>> {
+  /// Get visible room objects in a room with the given [roomId].
+  ///
+  /// Copied from [visibleRoomObjects].
+  VisibleRoomObjectsProvider(
+    int roomId,
+  ) : this._internal(
+          (ref) => visibleRoomObjects(
+            ref as VisibleRoomObjectsRef,
+            roomId,
+          ),
+          from: visibleRoomObjectsProvider,
+          name: r'visibleRoomObjectsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$visibleRoomObjectsHash,
+          dependencies: VisibleRoomObjectsFamily._dependencies,
+          allTransitiveDependencies:
+              VisibleRoomObjectsFamily._allTransitiveDependencies,
+          roomId: roomId,
+        );
+
+  VisibleRoomObjectsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.roomId,
+  }) : super.internal();
+
+  final int roomId;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<RoomObject>> Function(VisibleRoomObjectsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: VisibleRoomObjectsProvider._internal(
+        (ref) => create(ref as VisibleRoomObjectsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        roomId: roomId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<RoomObject>> createElement() {
+    return _VisibleRoomObjectsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is VisibleRoomObjectsProvider && other.roomId == roomId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, roomId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin VisibleRoomObjectsRef on AutoDisposeFutureProviderRef<List<RoomObject>> {
+  /// The parameter `roomId` of this provider.
+  int get roomId;
+}
+
+class _VisibleRoomObjectsProviderElement
+    extends AutoDisposeFutureProviderElement<List<RoomObject>>
+    with VisibleRoomObjectsRef {
+  _VisibleRoomObjectsProviderElement(super.provider);
+
+  @override
+  int get roomId => (origin as VisibleRoomObjectsProvider).roomId;
+}
+
 String _$currentProjectContextHash() =>
     r'4c8cc047a1a79eb695b9f390a99148ce921e1e5b';
 

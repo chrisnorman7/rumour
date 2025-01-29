@@ -18,4 +18,9 @@ class RoomObjects extends Table
   IntColumn get roomExitId => integer()
       .references(RoomExits, #id, onDelete: KeyAction.setNull)
       .nullable()();
+
+  /// Whether or not this object is visible to the player.
+  ///
+  /// If [visible] is `false`, then the player will still hear the ambiance.
+  BoolColumn get visible => boolean().withDefault(const Constant(true))();
 }

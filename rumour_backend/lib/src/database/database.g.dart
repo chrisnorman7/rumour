@@ -1812,9 +1812,19 @@ class $RoomObjectsTable extends RoomObjects
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES room_exits (id) ON DELETE SET NULL'));
+  static const VerificationMeta _visibleMeta =
+      const VerificationMeta('visible');
+  @override
+  late final GeneratedColumn<bool> visible = GeneratedColumn<bool>(
+      'visible', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("visible" IN (0, 1))'),
+      defaultValue: const Constant(true));
   @override
   List<GeneratedColumn> get $columns =>
-      [id, name, description, ambianceId, roomId, x, y, roomExitId];
+      [id, name, description, ambianceId, roomId, x, y, roomExitId, visible];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1866,6 +1876,10 @@ class $RoomObjectsTable extends RoomObjects
           roomExitId.isAcceptableOrUnknown(
               data['room_exit_id']!, _roomExitIdMeta));
     }
+    if (data.containsKey('visible')) {
+      context.handle(_visibleMeta,
+          visible.isAcceptableOrUnknown(data['visible']!, _visibleMeta));
+    }
     return context;
   }
 
@@ -1891,6 +1905,8 @@ class $RoomObjectsTable extends RoomObjects
           .read(DriftSqlType.int, data['${effectivePrefix}y'])!,
       roomExitId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}room_exit_id']),
+      visible: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}visible'])!,
     );
   }
 
@@ -1924,6 +1940,11 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
 
   /// The ID of a room exit object.
   final int? roomExitId;
+
+  /// Whether or not this object is visible to the player.
+  ///
+  /// If [visible] is `false`, then the player will still hear the ambiance.
+  final bool visible;
   const RoomObject(
       {required this.id,
       required this.name,
@@ -1932,7 +1953,8 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
       required this.roomId,
       required this.x,
       required this.y,
-      this.roomExitId});
+      this.roomExitId,
+      required this.visible});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1948,6 +1970,7 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
     if (!nullToAbsent || roomExitId != null) {
       map['room_exit_id'] = Variable<int>(roomExitId);
     }
+    map['visible'] = Variable<bool>(visible);
     return map;
   }
 
@@ -1965,6 +1988,7 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
       roomExitId: roomExitId == null && nullToAbsent
           ? const Value.absent()
           : Value(roomExitId),
+      visible: Value(visible),
     );
   }
 
@@ -1980,6 +2004,7 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
       x: serializer.fromJson<int>(json['x']),
       y: serializer.fromJson<int>(json['y']),
       roomExitId: serializer.fromJson<int?>(json['roomExitId']),
+      visible: serializer.fromJson<bool>(json['visible']),
     );
   }
   @override
@@ -1994,6 +2019,7 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
       'x': serializer.toJson<int>(x),
       'y': serializer.toJson<int>(y),
       'roomExitId': serializer.toJson<int?>(roomExitId),
+      'visible': serializer.toJson<bool>(visible),
     };
   }
 
@@ -2005,7 +2031,8 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
           int? roomId,
           int? x,
           int? y,
-          Value<int?> roomExitId = const Value.absent()}) =>
+          Value<int?> roomExitId = const Value.absent(),
+          bool? visible}) =>
       RoomObject(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -2015,6 +2042,7 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
         x: x ?? this.x,
         y: y ?? this.y,
         roomExitId: roomExitId.present ? roomExitId.value : this.roomExitId,
+        visible: visible ?? this.visible,
       );
   RoomObject copyWithCompanion(RoomObjectsCompanion data) {
     return RoomObject(
@@ -2029,6 +2057,7 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
       y: data.y.present ? data.y.value : this.y,
       roomExitId:
           data.roomExitId.present ? data.roomExitId.value : this.roomExitId,
+      visible: data.visible.present ? data.visible.value : this.visible,
     );
   }
 
@@ -2042,14 +2071,15 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
           ..write('roomId: $roomId, ')
           ..write('x: $x, ')
           ..write('y: $y, ')
-          ..write('roomExitId: $roomExitId')
+          ..write('roomExitId: $roomExitId, ')
+          ..write('visible: $visible')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, name, description, ambianceId, roomId, x, y, roomExitId);
+  int get hashCode => Object.hash(
+      id, name, description, ambianceId, roomId, x, y, roomExitId, visible);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2061,7 +2091,8 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
           other.roomId == this.roomId &&
           other.x == this.x &&
           other.y == this.y &&
-          other.roomExitId == this.roomExitId);
+          other.roomExitId == this.roomExitId &&
+          other.visible == this.visible);
 }
 
 class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
@@ -2073,6 +2104,7 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
   final Value<int> x;
   final Value<int> y;
   final Value<int?> roomExitId;
+  final Value<bool> visible;
   const RoomObjectsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -2082,6 +2114,7 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
     this.x = const Value.absent(),
     this.y = const Value.absent(),
     this.roomExitId = const Value.absent(),
+    this.visible = const Value.absent(),
   });
   RoomObjectsCompanion.insert({
     this.id = const Value.absent(),
@@ -2092,6 +2125,7 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
     this.x = const Value.absent(),
     this.y = const Value.absent(),
     this.roomExitId = const Value.absent(),
+    this.visible = const Value.absent(),
   })  : name = Value(name),
         description = Value(description),
         roomId = Value(roomId);
@@ -2104,6 +2138,7 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
     Expression<int>? x,
     Expression<int>? y,
     Expression<int>? roomExitId,
+    Expression<bool>? visible,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2114,6 +2149,7 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
       if (x != null) 'x': x,
       if (y != null) 'y': y,
       if (roomExitId != null) 'room_exit_id': roomExitId,
+      if (visible != null) 'visible': visible,
     });
   }
 
@@ -2125,7 +2161,8 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
       Value<int>? roomId,
       Value<int>? x,
       Value<int>? y,
-      Value<int?>? roomExitId}) {
+      Value<int?>? roomExitId,
+      Value<bool>? visible}) {
     return RoomObjectsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -2135,6 +2172,7 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
       x: x ?? this.x,
       y: y ?? this.y,
       roomExitId: roomExitId ?? this.roomExitId,
+      visible: visible ?? this.visible,
     );
   }
 
@@ -2165,6 +2203,9 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
     if (roomExitId.present) {
       map['room_exit_id'] = Variable<int>(roomExitId.value);
     }
+    if (visible.present) {
+      map['visible'] = Variable<bool>(visible.value);
+    }
     return map;
   }
 
@@ -2178,7 +2219,8 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
           ..write('roomId: $roomId, ')
           ..write('x: $x, ')
           ..write('y: $y, ')
-          ..write('roomExitId: $roomExitId')
+          ..write('roomExitId: $roomExitId, ')
+          ..write('visible: $visible')
           ..write(')'))
         .toString();
   }
@@ -7517,6 +7559,7 @@ typedef $$RoomObjectsTableCreateCompanionBuilder = RoomObjectsCompanion
   Value<int> x,
   Value<int> y,
   Value<int?> roomExitId,
+  Value<bool> visible,
 });
 typedef $$RoomObjectsTableUpdateCompanionBuilder = RoomObjectsCompanion
     Function({
@@ -7528,6 +7571,7 @@ typedef $$RoomObjectsTableUpdateCompanionBuilder = RoomObjectsCompanion
   Value<int> x,
   Value<int> y,
   Value<int?> roomExitId,
+  Value<bool> visible,
 });
 
 final class $$RoomObjectsTableReferences
@@ -7622,6 +7666,9 @@ class $$RoomObjectsTableFilterComposer
 
   ColumnFilters<int> get y => $composableBuilder(
       column: $table.y, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get visible => $composableBuilder(
+      column: $table.visible, builder: (column) => ColumnFilters(column));
 
   $$SoundReferencesTableFilterComposer get ambianceId {
     final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
@@ -7731,6 +7778,9 @@ class $$RoomObjectsTableOrderingComposer
   ColumnOrderings<int> get y => $composableBuilder(
       column: $table.y, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<bool> get visible => $composableBuilder(
+      column: $table.visible, builder: (column) => ColumnOrderings(column));
+
   $$SoundReferencesTableOrderingComposer get ambianceId {
     final $$SoundReferencesTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -7815,6 +7865,9 @@ class $$RoomObjectsTableAnnotationComposer
 
   GeneratedColumn<int> get y =>
       $composableBuilder(column: $table.y, builder: (column) => column);
+
+  GeneratedColumn<bool> get visible =>
+      $composableBuilder(column: $table.visible, builder: (column) => column);
 
   $$SoundReferencesTableAnnotationComposer get ambianceId {
     final $$SoundReferencesTableAnnotationComposer composer = $composerBuilder(
@@ -7935,6 +7988,7 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
             Value<int> x = const Value.absent(),
             Value<int> y = const Value.absent(),
             Value<int?> roomExitId = const Value.absent(),
+            Value<bool> visible = const Value.absent(),
           }) =>
               RoomObjectsCompanion(
             id: id,
@@ -7945,6 +7999,7 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
             x: x,
             y: y,
             roomExitId: roomExitId,
+            visible: visible,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -7955,6 +8010,7 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
             Value<int> x = const Value.absent(),
             Value<int> y = const Value.absent(),
             Value<int?> roomExitId = const Value.absent(),
+            Value<bool> visible = const Value.absent(),
           }) =>
               RoomObjectsCompanion.insert(
             id: id,
@@ -7965,6 +8021,7 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
             x: x,
             y: y,
             roomExitId: roomExitId,
+            visible: visible,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (

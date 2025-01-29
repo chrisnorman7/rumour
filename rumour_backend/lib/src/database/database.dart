@@ -32,7 +32,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// The schema version.
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   /// Migrate the database.
   @override
@@ -46,6 +46,9 @@ class AppDatabase extends _$AppDatabase {
         onUpgrade: (final m, final from, final to) async {
           if (from < 2) {
             await m.createTable(this.roomObjectRandomSounds);
+          }
+          if (from < 3) {
+            await m.addColumn(this.roomObjects, this.roomObjects.visible);
           }
         },
       );
