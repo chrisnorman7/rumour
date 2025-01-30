@@ -81,7 +81,8 @@ class _RoomTileCoordinates extends ConsumerWidget {
                     final startRoom = await ref.read(
                       roomProvider(roomId).future,
                     );
-                    final backExit = await managers.roomExits.createReturning(
+                    final roomExits = managers.roomExits;
+                    final backExit = await roomExits.createReturning(
                       (final o) => o(
                         roomId: roomId,
                         x: Value(coordinates.x),
@@ -105,6 +106,8 @@ class _RoomTileCoordinates extends ConsumerWidget {
                         description: 'Leads to ${room.name}.',
                         roomId: roomId,
                         roomExitId: Value(outExit.id),
+                        x: Value(coordinates.x),
+                        y: Value(coordinates.y),
                       ),
                     );
                     for (final object in [outObject, backObject]) {
