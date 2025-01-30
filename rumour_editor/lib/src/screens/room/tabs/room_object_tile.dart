@@ -38,7 +38,8 @@ class RoomObjectTile extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     final defaultTextStyle = Theme.of(context).textTheme.bodyMedium;
     final database = ref.watch(databaseProvider);
-    final query = database.managers.roomObjects.filter(
+    final managers = database.managers;
+    final query = managers.roomObjects.filter(
       (final f) => f.id.equals(roomObjectId),
     );
     final value = ref.watch(roomObjectProvider(roomObjectId));
@@ -116,6 +117,22 @@ class RoomObjectTile extends ConsumerWidget {
                     ),
                   ),
               activator: editExitShortcut,
+            ),
+          if (roomExitId != null)
+            PerformableAction(
+              name: 'Delete exit',
+              invoke:
+                  () => context.confirm(
+                    message: 'Really delete the exit?',
+                    title: confirmDeleteTitle,
+                    yesCallback: () async {
+                      Navigator.pop(context);
+                      await managers.roomExits
+                          .filter((final f) => f.id.equals(roomExitId))
+                          .delete();
+                      invalidateProviders(ref, object);
+                    },
+                  ),
             ),
           PerformableAction(
             name: 'Move',
