@@ -30,38 +30,36 @@ class RoomObjectTile extends ConsumerWidget {
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
     final defaultTextStyle = Theme.of(context).textTheme.bodyMedium;
-    return MergeSemantics(
-      child: RoomObjectPerformableActionsBuilder(
-        roomObjectId: roomObjectId,
-        builder:
-            (final context, final object, final controller) => Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: DefaultTextStyle(
-                    style: defaultTextStyle!.copyWith(
-                      fontSize: selected ? 18.0 : null,
-                      fontWeight: selected ? FontWeight.bold : null,
-                      color: selected ? Colors.blue : null,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(child: Text(object.name)),
-                        Flexible(flex: 2, child: Text(object.description)),
-                      ],
-                    ),
+    return RoomObjectPerformableActionsBuilder(
+      roomObjectId: roomObjectId,
+      builder:
+          (final context, final object, final controller) => Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: DefaultTextStyle(
+                  style: defaultTextStyle!.copyWith(
+                    fontSize: selected ? 18.0 : null,
+                    fontWeight: selected ? FontWeight.bold : null,
+                    color: selected ? Colors.blue : null,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(child: Text(object.name)),
+                      Flexible(flex: 2, child: Text(object.description)),
+                    ],
                   ),
                 ),
-                Expanded(child: MenuButton(menuController: controller)),
-              ],
-            ),
-        isSelected: selected,
-        onSelectChange: onSelectChange,
-        error: ErrorText.withPositional,
-      ),
+              ),
+              Expanded(child: MenuButton(menuController: controller)),
+            ],
+          ),
+      isSelected: selected,
+      onSelectChange: onSelectChange,
+      error: ErrorText.withPositional,
     );
   }
 }
