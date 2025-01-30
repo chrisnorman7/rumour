@@ -7,4 +7,9 @@ class RoomExits extends Table with IdMixin, RoomIdMixin, CoordinatesMixin {
   /// The ID of the sound to play when using this exit.
   IntColumn get useSoundId =>
       integer().references(SoundReferences, #id).nullable()();
+
+  /// The label of this exit.
+  ///
+  /// The [label] will be used in the object actions menu.
+  TextColumn get label => text().withDefault(const Constant('Use exit'))();
 }

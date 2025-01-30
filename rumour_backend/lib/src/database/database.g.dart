@@ -1482,8 +1482,15 @@ class $RoomExitsTable extends RoomExits
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES sound_references (id)'));
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
   @override
-  List<GeneratedColumn> get $columns => [id, roomId, x, y, useSoundId];
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+      'label', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('Use exit'));
+  @override
+  List<GeneratedColumn> get $columns => [id, roomId, x, y, useSoundId, label];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1515,6 +1522,10 @@ class $RoomExitsTable extends RoomExits
           useSoundId.isAcceptableOrUnknown(
               data['use_sound_id']!, _useSoundIdMeta));
     }
+    if (data.containsKey('label')) {
+      context.handle(
+          _labelMeta, label.isAcceptableOrUnknown(data['label']!, _labelMeta));
+    }
     return context;
   }
 
@@ -1534,6 +1545,8 @@ class $RoomExitsTable extends RoomExits
           .read(DriftSqlType.int, data['${effectivePrefix}y'])!,
       useSoundId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}use_sound_id']),
+      label: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}label'])!,
     );
   }
 
@@ -1558,12 +1571,18 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
 
   /// The ID of the sound to play when using this exit.
   final int? useSoundId;
+
+  /// The label of this exit.
+  ///
+  /// The [label] will be used in the object actions menu.
+  final String label;
   const RoomExit(
       {required this.id,
       required this.roomId,
       required this.x,
       required this.y,
-      this.useSoundId});
+      this.useSoundId,
+      required this.label});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1574,6 +1593,7 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
     if (!nullToAbsent || useSoundId != null) {
       map['use_sound_id'] = Variable<int>(useSoundId);
     }
+    map['label'] = Variable<String>(label);
     return map;
   }
 
@@ -1586,6 +1606,7 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
       useSoundId: useSoundId == null && nullToAbsent
           ? const Value.absent()
           : Value(useSoundId),
+      label: Value(label),
     );
   }
 
@@ -1598,6 +1619,7 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
       x: serializer.fromJson<int>(json['x']),
       y: serializer.fromJson<int>(json['y']),
       useSoundId: serializer.fromJson<int?>(json['useSoundId']),
+      label: serializer.fromJson<String>(json['label']),
     );
   }
   @override
@@ -1609,6 +1631,7 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
       'x': serializer.toJson<int>(x),
       'y': serializer.toJson<int>(y),
       'useSoundId': serializer.toJson<int?>(useSoundId),
+      'label': serializer.toJson<String>(label),
     };
   }
 
@@ -1617,13 +1640,15 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
           int? roomId,
           int? x,
           int? y,
-          Value<int?> useSoundId = const Value.absent()}) =>
+          Value<int?> useSoundId = const Value.absent(),
+          String? label}) =>
       RoomExit(
         id: id ?? this.id,
         roomId: roomId ?? this.roomId,
         x: x ?? this.x,
         y: y ?? this.y,
         useSoundId: useSoundId.present ? useSoundId.value : this.useSoundId,
+        label: label ?? this.label,
       );
   RoomExit copyWithCompanion(RoomExitsCompanion data) {
     return RoomExit(
@@ -1633,6 +1658,7 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
       y: data.y.present ? data.y.value : this.y,
       useSoundId:
           data.useSoundId.present ? data.useSoundId.value : this.useSoundId,
+      label: data.label.present ? data.label.value : this.label,
     );
   }
 
@@ -1643,13 +1669,14 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
           ..write('roomId: $roomId, ')
           ..write('x: $x, ')
           ..write('y: $y, ')
-          ..write('useSoundId: $useSoundId')
+          ..write('useSoundId: $useSoundId, ')
+          ..write('label: $label')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, roomId, x, y, useSoundId);
+  int get hashCode => Object.hash(id, roomId, x, y, useSoundId, label);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1658,7 +1685,8 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
           other.roomId == this.roomId &&
           other.x == this.x &&
           other.y == this.y &&
-          other.useSoundId == this.useSoundId);
+          other.useSoundId == this.useSoundId &&
+          other.label == this.label);
 }
 
 class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
@@ -1667,12 +1695,14 @@ class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
   final Value<int> x;
   final Value<int> y;
   final Value<int?> useSoundId;
+  final Value<String> label;
   const RoomExitsCompanion({
     this.id = const Value.absent(),
     this.roomId = const Value.absent(),
     this.x = const Value.absent(),
     this.y = const Value.absent(),
     this.useSoundId = const Value.absent(),
+    this.label = const Value.absent(),
   });
   RoomExitsCompanion.insert({
     this.id = const Value.absent(),
@@ -1680,6 +1710,7 @@ class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
     this.x = const Value.absent(),
     this.y = const Value.absent(),
     this.useSoundId = const Value.absent(),
+    this.label = const Value.absent(),
   }) : roomId = Value(roomId);
   static Insertable<RoomExit> custom({
     Expression<int>? id,
@@ -1687,6 +1718,7 @@ class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
     Expression<int>? x,
     Expression<int>? y,
     Expression<int>? useSoundId,
+    Expression<String>? label,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1694,6 +1726,7 @@ class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
       if (x != null) 'x': x,
       if (y != null) 'y': y,
       if (useSoundId != null) 'use_sound_id': useSoundId,
+      if (label != null) 'label': label,
     });
   }
 
@@ -1702,13 +1735,15 @@ class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
       Value<int>? roomId,
       Value<int>? x,
       Value<int>? y,
-      Value<int?>? useSoundId}) {
+      Value<int?>? useSoundId,
+      Value<String>? label}) {
     return RoomExitsCompanion(
       id: id ?? this.id,
       roomId: roomId ?? this.roomId,
       x: x ?? this.x,
       y: y ?? this.y,
       useSoundId: useSoundId ?? this.useSoundId,
+      label: label ?? this.label,
     );
   }
 
@@ -1730,6 +1765,9 @@ class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
     if (useSoundId.present) {
       map['use_sound_id'] = Variable<int>(useSoundId.value);
     }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
     return map;
   }
 
@@ -1740,7 +1778,8 @@ class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
           ..write('roomId: $roomId, ')
           ..write('x: $x, ')
           ..write('y: $y, ')
-          ..write('useSoundId: $useSoundId')
+          ..write('useSoundId: $useSoundId, ')
+          ..write('label: $label')
           ..write(')'))
         .toString();
   }
@@ -7139,6 +7178,7 @@ typedef $$RoomExitsTableCreateCompanionBuilder = RoomExitsCompanion Function({
   Value<int> x,
   Value<int> y,
   Value<int?> useSoundId,
+  Value<String> label,
 });
 typedef $$RoomExitsTableUpdateCompanionBuilder = RoomExitsCompanion Function({
   Value<int> id,
@@ -7146,6 +7186,7 @@ typedef $$RoomExitsTableUpdateCompanionBuilder = RoomExitsCompanion Function({
   Value<int> x,
   Value<int> y,
   Value<int?> useSoundId,
+  Value<String> label,
 });
 
 final class $$RoomExitsTableReferences
@@ -7215,6 +7256,9 @@ class $$RoomExitsTableFilterComposer
 
   ColumnFilters<int> get y => $composableBuilder(
       column: $table.y, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get label => $composableBuilder(
+      column: $table.label, builder: (column) => ColumnFilters(column));
 
   $$RoomsTableFilterComposer get roomId {
     final $$RoomsTableFilterComposer composer = $composerBuilder(
@@ -7296,6 +7340,9 @@ class $$RoomExitsTableOrderingComposer
   ColumnOrderings<int> get y => $composableBuilder(
       column: $table.y, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get label => $composableBuilder(
+      column: $table.label, builder: (column) => ColumnOrderings(column));
+
   $$RoomsTableOrderingComposer get roomId {
     final $$RoomsTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -7354,6 +7401,9 @@ class $$RoomExitsTableAnnotationComposer
 
   GeneratedColumn<int> get y =>
       $composableBuilder(column: $table.y, builder: (column) => column);
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
 
   $$RoomsTableAnnotationComposer get roomId {
     final $$RoomsTableAnnotationComposer composer = $composerBuilder(
@@ -7446,6 +7496,7 @@ class $$RoomExitsTableTableManager extends RootTableManager<
             Value<int> x = const Value.absent(),
             Value<int> y = const Value.absent(),
             Value<int?> useSoundId = const Value.absent(),
+            Value<String> label = const Value.absent(),
           }) =>
               RoomExitsCompanion(
             id: id,
@@ -7453,6 +7504,7 @@ class $$RoomExitsTableTableManager extends RootTableManager<
             x: x,
             y: y,
             useSoundId: useSoundId,
+            label: label,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -7460,6 +7512,7 @@ class $$RoomExitsTableTableManager extends RootTableManager<
             Value<int> x = const Value.absent(),
             Value<int> y = const Value.absent(),
             Value<int?> useSoundId = const Value.absent(),
+            Value<String> label = const Value.absent(),
           }) =>
               RoomExitsCompanion.insert(
             id: id,
@@ -7467,6 +7520,7 @@ class $$RoomExitsTableTableManager extends RootTableManager<
             x: x,
             y: y,
             useSoundId: useSoundId,
+            label: label,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
