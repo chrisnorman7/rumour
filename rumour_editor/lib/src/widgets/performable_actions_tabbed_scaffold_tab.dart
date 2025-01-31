@@ -30,15 +30,17 @@ class PerformableActionsTabbedScaffoldTab extends TabbedScaffoldTab {
                      MenuButton(menuController: controller),
            ),
          ],
-         builder:
-             (final context) => CallbackShortcuts(
-               bindings: {
-                 for (final action in performableActions)
-                   if (action.activator != null)
-                     action.activator!: action.invoke,
-               },
-               child: builder(context),
-             ),
+         child: Builder(
+           builder:
+               (final context) => CallbackShortcuts(
+                 bindings: {
+                   for (final action in performableActions)
+                     if (action.activator != null)
+                       action.activator!: action.invoke,
+                 },
+                 child: builder(context),
+               ),
+         ),
        );
 
   /// The actions to use.

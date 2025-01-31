@@ -78,7 +78,6 @@ class ProjectsScreen extends ConsumerWidget {
                           title: Text(project.name),
                           subtitle: Text(file.path),
                           onTap: () {
-                            builderContext.stopPlaySoundSemantics();
                             _loadProjectFromFile(ref, file);
                           },
                         ),

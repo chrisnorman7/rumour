@@ -2,7 +2,6 @@ import 'package:backstreets_widgets/extensions.dart';
 import 'package:backstreets_widgets/shortcuts.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as path;
 import 'package:rumour_backend/rumour_backend.dart';
@@ -73,15 +72,12 @@ class RoomObjectRandomSoundsTab extends ConsumerWidget {
                           ? '$maxSeconds ${"second".pluralise(maxSeconds)}'
                           : 'Between $minSeconds and $maxSeconds $seconds',
                     ),
-                    onTap: () {
-                      builderContext
-                        ..stopPlaySoundSemantics()
-                        ..pushWidgetBuilder(
+                    onTap:
+                        () => builderContext.pushWidgetBuilder(
                           (_) => EditRoomObjectRandomSoundScreen(
                             roomObjectRandomSoundId: randomSound.id,
                           ),
-                        );
-                    },
+                        ),
                   ),
             ),
           );

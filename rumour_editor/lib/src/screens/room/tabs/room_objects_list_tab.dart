@@ -1,6 +1,5 @@
 import 'package:backstreets_widgets/extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_editor/rumour_editor.dart';
@@ -31,13 +30,10 @@ class RoomObjectsListTab extends ConsumerWidget {
                   autofocus: index == 0,
                   title: Text(object.name),
                   subtitle: Text(object.description),
-                  onTap: () {
-                    context
-                      ..stopPlaySoundSemantics()
-                      ..pushWidgetBuilder(
+                  onTap:
+                      () => context.pushWidgetBuilder(
                         (_) => EditRoomObjectScreen(roomObjectId: object.id),
-                      );
-                  },
+                      ),
                   trailing: MenuButton(menuController: controller),
                 ),
           );

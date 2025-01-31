@@ -23,11 +23,10 @@ class EditRoomObjectScreen extends ConsumerWidget {
         TabbedScaffoldTab(
           title: 'Random Sounds',
           icon: const Text('The random sounds that this object plays'),
-          builder:
-              (_) => CommonShortcuts(
-                newCallback: () => _createRandomSound(ref),
-                child: RoomObjectRandomSoundsTab(roomObjectId: roomObjectId),
-              ),
+          child: CommonShortcuts(
+            newCallback: () => _createRandomSound(ref),
+            child: RoomObjectRandomSoundsTab(roomObjectId: roomObjectId),
+          ),
           floatingActionButton: NewButton(
             onPressed: () => _createRandomSound(ref),
           ),
@@ -35,7 +34,7 @@ class EditRoomObjectScreen extends ConsumerWidget {
         TabbedScaffoldTab(
           title: 'Settings',
           icon: const Text('Room object settings'),
-          builder: (_) => RoomObjectSettingsTab(roomObjectId: roomObjectId),
+          child: RoomObjectSettingsTab(roomObjectId: roomObjectId),
         ),
       ],
     ),

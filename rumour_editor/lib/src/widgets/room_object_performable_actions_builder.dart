@@ -4,7 +4,6 @@ import 'package:backstreets_widgets/typedefs.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_editor/rumour_editor.dart';
@@ -56,7 +55,6 @@ class RoomObjectPerformableActionsBuilder extends ConsumerWidget {
       (final f) => f.id.equals(roomObjectId),
     );
     final value = ref.watch(roomObjectProvider(roomObjectId));
-    PlaySoundSemanticsState? semanticsState;
     return Semantics(
       selected: selected,
       child: value.when(
@@ -69,13 +67,11 @@ class RoomObjectPerformableActionsBuilder extends ConsumerWidget {
               actions: [
                 PerformableAction(
                   name: 'Edit',
-                  invoke: () {
-                    semanticsState?.stop();
-                    context.pushWidgetBuilder(
-                      (final e) =>
-                          EditRoomObjectScreen(roomObjectId: object.id),
-                    );
-                  },
+                  invoke:
+                      () => context.pushWidgetBuilder(
+                        (final e) =>
+                            EditRoomObjectScreen(roomObjectId: object.id),
+                      ),
                   activator: editShortcut,
                 ),
                 RenameAction(
@@ -114,12 +110,11 @@ class RoomObjectPerformableActionsBuilder extends ConsumerWidget {
                 if (roomExitId != null)
                   PerformableAction(
                     name: 'Configure exit',
-                    invoke: () {
-                      semanticsState?.stop();
-                      context.pushWidgetBuilder(
-                        (final _) => EditRoomExitScreen(roomExitId: roomExitId),
-                      );
-                    },
+                    invoke:
+                        () => context.pushWidgetBuilder(
+                          (final _) =>
+                              EditRoomExitScreen(roomExitId: roomExitId),
+                        ),
                     activator: editExitShortcut,
                   )
                 else
@@ -160,59 +155,50 @@ class RoomObjectPerformableActionsBuilder extends ConsumerWidget {
                   ),
                 PerformableAction(
                   name: 'Move',
-                  invoke: () {
-                    semanticsState?.stop();
-                    context.pushWidgetBuilder(
-                      (final context) => SelectRoomScreen(
-                        onChanged: (final value) async {
-                          await query.update(
-                            (final o) => o(roomId: Value(value.id)),
-                          );
-                          invalidateProviders(ref, object);
-                          ref.invalidate(
-                            roomObjectsProvider(value.id, object.coordinates),
-                          );
-                        },
+                  invoke:
+                      () => context.pushWidgetBuilder(
+                        (final context) => SelectRoomScreen(
+                          onChanged: (final value) async {
+                            await query.update(
+                              (final o) => o(roomId: Value(value.id)),
+                            );
+                            invalidateProviders(ref, object);
+                            ref.invalidate(
+                              roomObjectsProvider(value.id, object.coordinates),
+                            );
+                          },
+                        ),
                       ),
-                    );
-                  },
                   activator: moveShortcut,
                 ),
                 PerformableAction(
                   name: 'Delete',
-                  invoke: () {
-                    semanticsState?.stop();
-                    context.confirm(
-                      message: 'Really delete ${object.name}?',
-                      title: confirmDeleteTitle,
-                      yesCallback: () async {
-                        Navigator.pop(context);
-                        if (selected ?? false) {
-                          onSelectChange?.call(object);
-                        }
-                        await query.delete();
-                        ref.invalidate(
-                          roomObjectsProvider(
-                            object.roomId,
-                            object.coordinates,
-                          ),
-                        );
-                      },
-                    );
-                  },
+                  invoke:
+                      () => context.confirm(
+                        message: 'Really delete ${object.name}?',
+                        title: confirmDeleteTitle,
+                        yesCallback: () async {
+                          Navigator.pop(context);
+                          if (selected ?? false) {
+                            onSelectChange?.call(object);
+                          }
+                          await query.delete();
+                          ref.invalidate(
+                            roomObjectsProvider(
+                              object.roomId,
+                              object.coordinates,
+                            ),
+                          );
+                        },
+                      ),
                   activator: deleteShortcut,
                 ),
               ],
               builder:
                   (final builderContext, final controller) => Builder(
-                    builder: (final builderContext) {
-                      semanticsState =
-                          builderContext
-                              .findAncestorStateOfType<
-                                PlaySoundSemanticsState
-                              >();
-                      return builder(builderContext, object, controller);
-                    },
+                    builder:
+                        (final builderContext) =>
+                            builder(builderContext, object, controller),
                   ),
             ),
           );

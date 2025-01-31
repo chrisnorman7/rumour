@@ -22,17 +22,17 @@ class EditRoomSurfaceScreen extends ConsumerWidget {
         TabbedScaffoldTab(
           title: 'Stat Costs',
           icon: const Text('The stat costs for walking on this surface'),
-          builder: (_) => RoomSurfaceCostsTab(roomSurfaceId: roomSurfaceId),
+          child: RoomSurfaceCostsTab(roomSurfaceId: roomSurfaceId),
         ),
         TabbedScaffoldTab(
           title: 'Boosts',
           icon: const Text('The stat boosts that happen when on this surface'),
-          builder: (_) => RoomSurfaceBoostsTab(roomSurfaceId: roomSurfaceId),
+          child: RoomSurfaceBoostsTab(roomSurfaceId: roomSurfaceId),
         ),
         TabbedScaffoldTab(
           title: 'Settings',
           icon: const Text('Room surface settings'),
-          builder: (_) => RoomSurfaceSettingsTab(roomSurfaceId: roomSurfaceId),
+          child: RoomSurfaceSettingsTab(roomSurfaceId: roomSurfaceId),
         ),
       ],
     ),

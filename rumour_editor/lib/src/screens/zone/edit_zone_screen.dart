@@ -22,11 +22,10 @@ class EditZoneScreen extends ConsumerWidget {
         TabbedScaffoldTab(
           title: 'Rooms',
           icon: const Text('The rooms in this zone'),
-          builder:
-              (final _) => CommonShortcuts(
-                newCallback: () => _createRoom(ref),
-                child: ZoneRoomsTab(zoneId: zoneId),
-              ),
+          child: CommonShortcuts(
+            newCallback: () => _createRoom(ref),
+            child: ZoneRoomsTab(zoneId: zoneId),
+          ),
           floatingActionButton: NewButton(
             onPressed: () => _createRoom(ref),
             tooltip: 'New room',
@@ -35,7 +34,7 @@ class EditZoneScreen extends ConsumerWidget {
         TabbedScaffoldTab(
           title: 'Settings',
           icon: const Text('Zone settings'),
-          builder: (final _) => ZoneSettingsTab(zoneId: zoneId),
+          child: ZoneSettingsTab(zoneId: zoneId),
         ),
       ],
     ),

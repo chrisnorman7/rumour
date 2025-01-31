@@ -22,12 +22,12 @@ class EditPlayerClassScreen extends ConsumerWidget {
         TabbedScaffoldTab(
           title: 'Stats',
           icon: const Text('The stat defaults for this class'),
-          builder: (_) => PlayerClassGameStatsTab(playerClassId: playerClassId),
+          child: PlayerClassGameStatsTab(playerClassId: playerClassId),
         ),
         TabbedScaffoldTab(
           title: 'Settings',
           icon: const Text('Settings for the player class'),
-          builder: (_) => PlayerClassSettingsTab(playerClassId: playerClassId),
+          child: PlayerClassSettingsTab(playerClassId: playerClassId),
         ),
       ],
     ),

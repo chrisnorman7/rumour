@@ -107,10 +107,8 @@ class SerializableSoundReferenceListTile extends ConsumerWidget {
               subtitle: Text(
                 '${reference.path} (${reference.volume.toStringAsFixed(1)})',
               ),
-              onTap: () {
-                builderContext
-                  ..stopPlaySoundSemantics()
-                  ..pushWidgetBuilder(
+              onTap:
+                  () => builderContext.pushWidgetBuilder(
                     (final context) => SelectSoundScreen(
                       onChanged:
                           (final value) => onChanged(
@@ -123,8 +121,7 @@ class SerializableSoundReferenceListTile extends ConsumerWidget {
                       volume: reference.volume,
                       looping: looping,
                     ),
-                  );
-              },
+                  ),
             );
           },
         ),

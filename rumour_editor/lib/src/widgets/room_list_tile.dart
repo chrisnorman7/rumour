@@ -1,7 +1,6 @@
 import 'package:backstreets_widgets/extensions.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_editor/rumour_editor.dart';
@@ -45,15 +44,13 @@ class RoomListTile extends ConsumerWidget {
                     subtitle: Text(room.name),
                     onTap:
                         () =>
-                            builderContext
-                              ..stopPlaySoundSemantics()
-                              ..pushWidgetBuilder(
-                                (final _) => SelectRoomScreen(
-                                  onChanged: onChanged,
-                                  roomId: roomId,
-                                  zoneId: room.zoneId,
-                                ),
+                            builderContext..pushWidgetBuilder(
+                              (final _) => SelectRoomScreen(
+                                onChanged: onChanged,
+                                roomId: roomId,
+                                zoneId: room.zoneId,
                               ),
+                            ),
                   ),
             ),
           ),

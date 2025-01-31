@@ -145,10 +145,8 @@ class SoundReferenceListTile extends ConsumerWidget {
                     // ignore: lines_longer_than_80_chars
                     '${reference.path} (${reference.volume.toStringAsFixed(1)})',
                   ),
-                  onTap: () {
-                    builderContext
-                      ..stopPlaySoundSemantics()
-                      ..pushWidgetBuilder(
+                  onTap:
+                      () => builderContext.pushWidgetBuilder(
                         (final context) => SelectSoundScreen(
                           onChanged: (final value) async {
                             await query.update(
@@ -161,8 +159,7 @@ class SoundReferenceListTile extends ConsumerWidget {
                           volume: reference.volume,
                           looping: looping,
                         ),
-                      );
-                  },
+                      ),
                 );
               },
             ),

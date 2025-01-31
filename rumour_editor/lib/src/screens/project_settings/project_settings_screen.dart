@@ -11,18 +11,18 @@ class ProjectSettingsScreen extends ConsumerWidget {
 
   /// Build the widget.
   @override
-  Widget build(final BuildContext context, final WidgetRef ref) => Cancel(
+  Widget build(final BuildContext context, final WidgetRef ref) => const Cancel(
     child: TabbedScaffold(
       tabs: [
         TabbedScaffoldTab(
           title: 'Menus',
-          icon: const Text('Settings for game menus'),
-          builder: (final context) => const ProjectMenuSettingsTab(),
+          icon: Text('Settings for game menus'),
+          child: ProjectMenuSettingsTab(),
         ),
         TabbedScaffoldTab(
           title: 'Settings',
-          icon: const Text('Project settings'),
-          builder: (final context) => const ProjectSettingsTab(),
+          icon: Text('Project settings'),
+          child: ProjectSettingsTab(),
         ),
       ],
     ),

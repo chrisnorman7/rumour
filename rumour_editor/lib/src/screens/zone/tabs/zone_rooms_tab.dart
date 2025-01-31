@@ -3,7 +3,6 @@ import 'package:backstreets_widgets/shortcuts.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_editor/rumour_editor.dart';
@@ -63,21 +62,19 @@ class ZoneRoomsTab extends ConsumerWidget {
                         activator: moveShortcut,
                         invoke:
                             () =>
-                                builderContext
-                                  ..stopPlaySoundSemantics()
-                                  ..pushWidgetBuilder(
-                                    (final _) => SelectZoneScreen(
-                                      onChanged: (final id) async {
-                                        await query.update(
-                                          (final f) => f(zoneId: Value(id)),
-                                        );
-                                        ref
-                                          ..invalidate(roomsProvider)
-                                          ..invalidate(roomProvider(room.id));
-                                      },
-                                      currentZoneId: room.zoneId,
-                                    ),
+                                builderContext..pushWidgetBuilder(
+                                  (final _) => SelectZoneScreen(
+                                    onChanged: (final id) async {
+                                      await query.update(
+                                        (final f) => f(zoneId: Value(id)),
+                                      );
+                                      ref
+                                        ..invalidate(roomsProvider)
+                                        ..invalidate(roomProvider(room.id));
+                                    },
+                                    currentZoneId: room.zoneId,
                                   ),
+                                ),
                       ),
                       PerformableAction(
                         name: 'Delete',
@@ -99,11 +96,9 @@ class ZoneRoomsTab extends ConsumerWidget {
                     subtitle: Text(room.description),
                     onTap:
                         () =>
-                            builderContext
-                              ..stopPlaySoundSemantics()
-                              ..pushWidgetBuilder(
-                                (final _) => EditRoomScreen(roomId: room.id),
-                              ),
+                            builderContext..pushWidgetBuilder(
+                              (final _) => EditRoomScreen(roomId: room.id),
+                            ),
                   ),
             ),
           );
