@@ -940,3 +940,23 @@ Future<List<RoomObject>> visibleRoomObjects(
   final roomObjects = await ref.watch(objectsInRoomProvider(roomId).future);
   return roomObjects.where((final o) => o.visible).toList();
 }
+
+/// Provide a command.
+@riverpod
+Future<Command> command(final Ref ref, final int id) {
+  final database = ref.watch(databaseProvider);
+  return database.managers.commands
+      .filter(
+        (final f) => f.id.equals(id),
+      )
+      .getSingle();
+}
+
+/// Provide a single call command.
+@riverpod
+Future<CommandCaller> commandCaller(final Ref ref, final int id) {
+  final database = ref.watch(databaseProvider);
+  return database.managers.commandCallers
+      .filter((final f) => f.id.equals(id))
+      .getSingle();
+}
