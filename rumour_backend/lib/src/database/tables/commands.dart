@@ -4,7 +4,7 @@ import 'package:rumour_backend/src/database/tables/mixins.dart';
 
 /// The commands table.
 class Commands extends Table with IdMixin, DescriptionMixin {
-  /// The text to show.
+  /// The text to announce.
   TextColumn get spokenMessage => text()
       .withDefault(const Constant('This command needs configuring.'))
       .nullable()();
@@ -13,6 +13,9 @@ class Commands extends Table with IdMixin, DescriptionMixin {
   IntColumn get soundId => integer()
       .references(SoundReferences, #id, onDelete: KeyAction.setNull)
       .nullable()();
+
+  /// A URL to open.
+  TextColumn get url => text().nullable()();
 
   /// The ID of a command caller to call another command.
   IntColumn get commandCallerId => integer()

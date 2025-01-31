@@ -7,4 +7,7 @@ class CommandCallers extends Table with IdMixin {
   /// The ID of the command to call.
   IntColumn get commandId =>
       integer().references(Commands, #id, onDelete: KeyAction.cascade)();
+
+  /// How many seconds to wait before calling the command.
+  IntColumn get callAfter => integer().nullable()();
 }

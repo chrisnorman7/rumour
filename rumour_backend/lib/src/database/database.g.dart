@@ -4484,8 +4484,14 @@ class $CommandCallersTable extends CommandCallers
   late final GeneratedColumn<int> commandId = GeneratedColumn<int>(
       'command_id', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _callAfterMeta =
+      const VerificationMeta('callAfter');
   @override
-  List<GeneratedColumn> get $columns => [id, commandId];
+  late final GeneratedColumn<int> callAfter = GeneratedColumn<int>(
+      'call_after', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [id, commandId, callAfter];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -4505,6 +4511,10 @@ class $CommandCallersTable extends CommandCallers
     } else if (isInserting) {
       context.missing(_commandIdMeta);
     }
+    if (data.containsKey('call_after')) {
+      context.handle(_callAfterMeta,
+          callAfter.isAcceptableOrUnknown(data['call_after']!, _callAfterMeta));
+    }
     return context;
   }
 
@@ -4518,6 +4528,8 @@ class $CommandCallersTable extends CommandCallers
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       commandId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}command_id'])!,
+      callAfter: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}call_after']),
     );
   }
 
@@ -4533,12 +4545,19 @@ class CommandCaller extends DataClass implements Insertable<CommandCaller> {
 
   /// The ID of the command to call.
   final int commandId;
-  const CommandCaller({required this.id, required this.commandId});
+
+  /// How many seconds to wait before calling the command.
+  final int? callAfter;
+  const CommandCaller(
+      {required this.id, required this.commandId, this.callAfter});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['command_id'] = Variable<int>(commandId);
+    if (!nullToAbsent || callAfter != null) {
+      map['call_after'] = Variable<int>(callAfter);
+    }
     return map;
   }
 
@@ -4546,6 +4565,9 @@ class CommandCaller extends DataClass implements Insertable<CommandCaller> {
     return CommandCallersCompanion(
       id: Value(id),
       commandId: Value(commandId),
+      callAfter: callAfter == null && nullToAbsent
+          ? const Value.absent()
+          : Value(callAfter),
     );
   }
 
@@ -4555,6 +4577,7 @@ class CommandCaller extends DataClass implements Insertable<CommandCaller> {
     return CommandCaller(
       id: serializer.fromJson<int>(json['id']),
       commandId: serializer.fromJson<int>(json['commandId']),
+      callAfter: serializer.fromJson<int?>(json['callAfter']),
     );
   }
   @override
@@ -4563,17 +4586,24 @@ class CommandCaller extends DataClass implements Insertable<CommandCaller> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'commandId': serializer.toJson<int>(commandId),
+      'callAfter': serializer.toJson<int?>(callAfter),
     };
   }
 
-  CommandCaller copyWith({int? id, int? commandId}) => CommandCaller(
+  CommandCaller copyWith(
+          {int? id,
+          int? commandId,
+          Value<int?> callAfter = const Value.absent()}) =>
+      CommandCaller(
         id: id ?? this.id,
         commandId: commandId ?? this.commandId,
+        callAfter: callAfter.present ? callAfter.value : this.callAfter,
       );
   CommandCaller copyWithCompanion(CommandCallersCompanion data) {
     return CommandCaller(
       id: data.id.present ? data.id.value : this.id,
       commandId: data.commandId.present ? data.commandId.value : this.commandId,
+      callAfter: data.callAfter.present ? data.callAfter.value : this.callAfter,
     );
   }
 
@@ -4581,46 +4611,55 @@ class CommandCaller extends DataClass implements Insertable<CommandCaller> {
   String toString() {
     return (StringBuffer('CommandCaller(')
           ..write('id: $id, ')
-          ..write('commandId: $commandId')
+          ..write('commandId: $commandId, ')
+          ..write('callAfter: $callAfter')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, commandId);
+  int get hashCode => Object.hash(id, commandId, callAfter);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is CommandCaller &&
           other.id == this.id &&
-          other.commandId == this.commandId);
+          other.commandId == this.commandId &&
+          other.callAfter == this.callAfter);
 }
 
 class CommandCallersCompanion extends UpdateCompanion<CommandCaller> {
   final Value<int> id;
   final Value<int> commandId;
+  final Value<int?> callAfter;
   const CommandCallersCompanion({
     this.id = const Value.absent(),
     this.commandId = const Value.absent(),
+    this.callAfter = const Value.absent(),
   });
   CommandCallersCompanion.insert({
     this.id = const Value.absent(),
     required int commandId,
+    this.callAfter = const Value.absent(),
   }) : commandId = Value(commandId);
   static Insertable<CommandCaller> custom({
     Expression<int>? id,
     Expression<int>? commandId,
+    Expression<int>? callAfter,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (commandId != null) 'command_id': commandId,
+      if (callAfter != null) 'call_after': callAfter,
     });
   }
 
-  CommandCallersCompanion copyWith({Value<int>? id, Value<int>? commandId}) {
+  CommandCallersCompanion copyWith(
+      {Value<int>? id, Value<int>? commandId, Value<int?>? callAfter}) {
     return CommandCallersCompanion(
       id: id ?? this.id,
       commandId: commandId ?? this.commandId,
+      callAfter: callAfter ?? this.callAfter,
     );
   }
 
@@ -4633,6 +4672,9 @@ class CommandCallersCompanion extends UpdateCompanion<CommandCaller> {
     if (commandId.present) {
       map['command_id'] = Variable<int>(commandId.value);
     }
+    if (callAfter.present) {
+      map['call_after'] = Variable<int>(callAfter.value);
+    }
     return map;
   }
 
@@ -4640,7 +4682,8 @@ class CommandCallersCompanion extends UpdateCompanion<CommandCaller> {
   String toString() {
     return (StringBuffer('CommandCallersCompanion(')
           ..write('id: $id, ')
-          ..write('commandId: $commandId')
+          ..write('commandId: $commandId, ')
+          ..write('callAfter: $callAfter')
           ..write(')'))
         .toString();
   }
@@ -4683,6 +4726,11 @@ class $CommandsTable extends Commands with TableInfo<$CommandsTable, Command> {
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES sound_references (id) ON DELETE SET NULL'));
+  static const VerificationMeta _urlMeta = const VerificationMeta('url');
+  @override
+  late final GeneratedColumn<String> url = GeneratedColumn<String>(
+      'url', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _commandCallerIdMeta =
       const VerificationMeta('commandCallerId');
   @override
@@ -4694,7 +4742,7 @@ class $CommandsTable extends Commands with TableInfo<$CommandsTable, Command> {
           'REFERENCES command_callers (id) ON DELETE SET NULL'));
   @override
   List<GeneratedColumn> get $columns =>
-      [id, description, spokenMessage, soundId, commandCallerId];
+      [id, description, spokenMessage, soundId, url, commandCallerId];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -4726,6 +4774,10 @@ class $CommandsTable extends Commands with TableInfo<$CommandsTable, Command> {
       context.handle(_soundIdMeta,
           soundId.isAcceptableOrUnknown(data['sound_id']!, _soundIdMeta));
     }
+    if (data.containsKey('url')) {
+      context.handle(
+          _urlMeta, url.isAcceptableOrUnknown(data['url']!, _urlMeta));
+    }
     if (data.containsKey('command_caller_id')) {
       context.handle(
           _commandCallerIdMeta,
@@ -4749,6 +4801,8 @@ class $CommandsTable extends Commands with TableInfo<$CommandsTable, Command> {
           .read(DriftSqlType.string, data['${effectivePrefix}spoken_message']),
       soundId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}sound_id']),
+      url: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}url']),
       commandCallerId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}command_caller_id']),
     );
@@ -4767,11 +4821,14 @@ class Command extends DataClass implements Insertable<Command> {
   /// The description column.
   final String description;
 
-  /// The text to show.
+  /// The text to announce.
   final String? spokenMessage;
 
   /// The ID of a sound to play.
   final int? soundId;
+
+  /// A URL to open.
+  final String? url;
 
   /// The ID of a command caller to call another command.
   final int? commandCallerId;
@@ -4780,6 +4837,7 @@ class Command extends DataClass implements Insertable<Command> {
       required this.description,
       this.spokenMessage,
       this.soundId,
+      this.url,
       this.commandCallerId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -4791,6 +4849,9 @@ class Command extends DataClass implements Insertable<Command> {
     }
     if (!nullToAbsent || soundId != null) {
       map['sound_id'] = Variable<int>(soundId);
+    }
+    if (!nullToAbsent || url != null) {
+      map['url'] = Variable<String>(url);
     }
     if (!nullToAbsent || commandCallerId != null) {
       map['command_caller_id'] = Variable<int>(commandCallerId);
@@ -4808,6 +4869,7 @@ class Command extends DataClass implements Insertable<Command> {
       soundId: soundId == null && nullToAbsent
           ? const Value.absent()
           : Value(soundId),
+      url: url == null && nullToAbsent ? const Value.absent() : Value(url),
       commandCallerId: commandCallerId == null && nullToAbsent
           ? const Value.absent()
           : Value(commandCallerId),
@@ -4822,6 +4884,7 @@ class Command extends DataClass implements Insertable<Command> {
       description: serializer.fromJson<String>(json['description']),
       spokenMessage: serializer.fromJson<String?>(json['spokenMessage']),
       soundId: serializer.fromJson<int?>(json['soundId']),
+      url: serializer.fromJson<String?>(json['url']),
       commandCallerId: serializer.fromJson<int?>(json['commandCallerId']),
     );
   }
@@ -4833,6 +4896,7 @@ class Command extends DataClass implements Insertable<Command> {
       'description': serializer.toJson<String>(description),
       'spokenMessage': serializer.toJson<String?>(spokenMessage),
       'soundId': serializer.toJson<int?>(soundId),
+      'url': serializer.toJson<String?>(url),
       'commandCallerId': serializer.toJson<int?>(commandCallerId),
     };
   }
@@ -4842,6 +4906,7 @@ class Command extends DataClass implements Insertable<Command> {
           String? description,
           Value<String?> spokenMessage = const Value.absent(),
           Value<int?> soundId = const Value.absent(),
+          Value<String?> url = const Value.absent(),
           Value<int?> commandCallerId = const Value.absent()}) =>
       Command(
         id: id ?? this.id,
@@ -4849,6 +4914,7 @@ class Command extends DataClass implements Insertable<Command> {
         spokenMessage:
             spokenMessage.present ? spokenMessage.value : this.spokenMessage,
         soundId: soundId.present ? soundId.value : this.soundId,
+        url: url.present ? url.value : this.url,
         commandCallerId: commandCallerId.present
             ? commandCallerId.value
             : this.commandCallerId,
@@ -4862,6 +4928,7 @@ class Command extends DataClass implements Insertable<Command> {
           ? data.spokenMessage.value
           : this.spokenMessage,
       soundId: data.soundId.present ? data.soundId.value : this.soundId,
+      url: data.url.present ? data.url.value : this.url,
       commandCallerId: data.commandCallerId.present
           ? data.commandCallerId.value
           : this.commandCallerId,
@@ -4875,14 +4942,15 @@ class Command extends DataClass implements Insertable<Command> {
           ..write('description: $description, ')
           ..write('spokenMessage: $spokenMessage, ')
           ..write('soundId: $soundId, ')
+          ..write('url: $url, ')
           ..write('commandCallerId: $commandCallerId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, description, spokenMessage, soundId, commandCallerId);
+  int get hashCode => Object.hash(
+      id, description, spokenMessage, soundId, url, commandCallerId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4891,6 +4959,7 @@ class Command extends DataClass implements Insertable<Command> {
           other.description == this.description &&
           other.spokenMessage == this.spokenMessage &&
           other.soundId == this.soundId &&
+          other.url == this.url &&
           other.commandCallerId == this.commandCallerId);
 }
 
@@ -4899,12 +4968,14 @@ class CommandsCompanion extends UpdateCompanion<Command> {
   final Value<String> description;
   final Value<String?> spokenMessage;
   final Value<int?> soundId;
+  final Value<String?> url;
   final Value<int?> commandCallerId;
   const CommandsCompanion({
     this.id = const Value.absent(),
     this.description = const Value.absent(),
     this.spokenMessage = const Value.absent(),
     this.soundId = const Value.absent(),
+    this.url = const Value.absent(),
     this.commandCallerId = const Value.absent(),
   });
   CommandsCompanion.insert({
@@ -4912,6 +4983,7 @@ class CommandsCompanion extends UpdateCompanion<Command> {
     required String description,
     this.spokenMessage = const Value.absent(),
     this.soundId = const Value.absent(),
+    this.url = const Value.absent(),
     this.commandCallerId = const Value.absent(),
   }) : description = Value(description);
   static Insertable<Command> custom({
@@ -4919,6 +4991,7 @@ class CommandsCompanion extends UpdateCompanion<Command> {
     Expression<String>? description,
     Expression<String>? spokenMessage,
     Expression<int>? soundId,
+    Expression<String>? url,
     Expression<int>? commandCallerId,
   }) {
     return RawValuesInsertable({
@@ -4926,6 +4999,7 @@ class CommandsCompanion extends UpdateCompanion<Command> {
       if (description != null) 'description': description,
       if (spokenMessage != null) 'spoken_message': spokenMessage,
       if (soundId != null) 'sound_id': soundId,
+      if (url != null) 'url': url,
       if (commandCallerId != null) 'command_caller_id': commandCallerId,
     });
   }
@@ -4935,12 +5009,14 @@ class CommandsCompanion extends UpdateCompanion<Command> {
       Value<String>? description,
       Value<String?>? spokenMessage,
       Value<int?>? soundId,
+      Value<String?>? url,
       Value<int?>? commandCallerId}) {
     return CommandsCompanion(
       id: id ?? this.id,
       description: description ?? this.description,
       spokenMessage: spokenMessage ?? this.spokenMessage,
       soundId: soundId ?? this.soundId,
+      url: url ?? this.url,
       commandCallerId: commandCallerId ?? this.commandCallerId,
     );
   }
@@ -4960,6 +5036,9 @@ class CommandsCompanion extends UpdateCompanion<Command> {
     if (soundId.present) {
       map['sound_id'] = Variable<int>(soundId.value);
     }
+    if (url.present) {
+      map['url'] = Variable<String>(url.value);
+    }
     if (commandCallerId.present) {
       map['command_caller_id'] = Variable<int>(commandCallerId.value);
     }
@@ -4973,6 +5052,7 @@ class CommandsCompanion extends UpdateCompanion<Command> {
           ..write('description: $description, ')
           ..write('spokenMessage: $spokenMessage, ')
           ..write('soundId: $soundId, ')
+          ..write('url: $url, ')
           ..write('commandCallerId: $commandCallerId')
           ..write(')'))
         .toString();
@@ -11381,11 +11461,13 @@ typedef $$CommandCallersTableCreateCompanionBuilder = CommandCallersCompanion
     Function({
   Value<int> id,
   required int commandId,
+  Value<int?> callAfter,
 });
 typedef $$CommandCallersTableUpdateCompanionBuilder = CommandCallersCompanion
     Function({
   Value<int> id,
   Value<int> commandId,
+  Value<int?> callAfter,
 });
 
 final class $$CommandCallersTableReferences
@@ -11424,6 +11506,9 @@ class $$CommandCallersTableFilterComposer
   ColumnFilters<int> get commandId => $composableBuilder(
       column: $table.commandId, builder: (column) => ColumnFilters(column));
 
+  ColumnFilters<int> get callAfter => $composableBuilder(
+      column: $table.callAfter, builder: (column) => ColumnFilters(column));
+
   Expression<bool> commandsRefs(
       Expression<bool> Function($$CommandsTableFilterComposer f) f) {
     final $$CommandsTableFilterComposer composer = $composerBuilder(
@@ -11460,6 +11545,9 @@ class $$CommandCallersTableOrderingComposer
 
   ColumnOrderings<int> get commandId => $composableBuilder(
       column: $table.commandId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get callAfter => $composableBuilder(
+      column: $table.callAfter, builder: (column) => ColumnOrderings(column));
 }
 
 class $$CommandCallersTableAnnotationComposer
@@ -11476,6 +11564,9 @@ class $$CommandCallersTableAnnotationComposer
 
   GeneratedColumn<int> get commandId =>
       $composableBuilder(column: $table.commandId, builder: (column) => column);
+
+  GeneratedColumn<int> get callAfter =>
+      $composableBuilder(column: $table.callAfter, builder: (column) => column);
 
   Expression<T> commandsRefs<T extends Object>(
       Expression<T> Function($$CommandsTableAnnotationComposer a) f) {
@@ -11525,18 +11616,22 @@ class $$CommandCallersTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> commandId = const Value.absent(),
+            Value<int?> callAfter = const Value.absent(),
           }) =>
               CommandCallersCompanion(
             id: id,
             commandId: commandId,
+            callAfter: callAfter,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required int commandId,
+            Value<int?> callAfter = const Value.absent(),
           }) =>
               CommandCallersCompanion.insert(
             id: id,
             commandId: commandId,
+            callAfter: callAfter,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
@@ -11587,6 +11682,7 @@ typedef $$CommandsTableCreateCompanionBuilder = CommandsCompanion Function({
   required String description,
   Value<String?> spokenMessage,
   Value<int?> soundId,
+  Value<String?> url,
   Value<int?> commandCallerId,
 });
 typedef $$CommandsTableUpdateCompanionBuilder = CommandsCompanion Function({
@@ -11594,6 +11690,7 @@ typedef $$CommandsTableUpdateCompanionBuilder = CommandsCompanion Function({
   Value<String> description,
   Value<String?> spokenMessage,
   Value<int?> soundId,
+  Value<String?> url,
   Value<int?> commandCallerId,
 });
 
@@ -11650,6 +11747,9 @@ class $$CommandsTableFilterComposer
 
   ColumnFilters<String> get spokenMessage => $composableBuilder(
       column: $table.spokenMessage, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get url => $composableBuilder(
+      column: $table.url, builder: (column) => ColumnFilters(column));
 
   $$SoundReferencesTableFilterComposer get soundId {
     final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
@@ -11711,6 +11811,9 @@ class $$CommandsTableOrderingComposer
       column: $table.spokenMessage,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get url => $composableBuilder(
+      column: $table.url, builder: (column) => ColumnOrderings(column));
+
   $$SoundReferencesTableOrderingComposer get soundId {
     final $$SoundReferencesTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -11769,6 +11872,9 @@ class $$CommandsTableAnnotationComposer
 
   GeneratedColumn<String> get spokenMessage => $composableBuilder(
       column: $table.spokenMessage, builder: (column) => column);
+
+  GeneratedColumn<String> get url =>
+      $composableBuilder(column: $table.url, builder: (column) => column);
 
   $$SoundReferencesTableAnnotationComposer get soundId {
     final $$SoundReferencesTableAnnotationComposer composer = $composerBuilder(
@@ -11838,6 +11944,7 @@ class $$CommandsTableTableManager extends RootTableManager<
             Value<String> description = const Value.absent(),
             Value<String?> spokenMessage = const Value.absent(),
             Value<int?> soundId = const Value.absent(),
+            Value<String?> url = const Value.absent(),
             Value<int?> commandCallerId = const Value.absent(),
           }) =>
               CommandsCompanion(
@@ -11845,6 +11952,7 @@ class $$CommandsTableTableManager extends RootTableManager<
             description: description,
             spokenMessage: spokenMessage,
             soundId: soundId,
+            url: url,
             commandCallerId: commandCallerId,
           ),
           createCompanionCallback: ({
@@ -11852,6 +11960,7 @@ class $$CommandsTableTableManager extends RootTableManager<
             required String description,
             Value<String?> spokenMessage = const Value.absent(),
             Value<int?> soundId = const Value.absent(),
+            Value<String?> url = const Value.absent(),
             Value<int?> commandCallerId = const Value.absent(),
           }) =>
               CommandsCompanion.insert(
@@ -11859,6 +11968,7 @@ class $$CommandsTableTableManager extends RootTableManager<
             description: description,
             spokenMessage: spokenMessage,
             soundId: soundId,
+            url: url,
             commandCallerId: commandCallerId,
           ),
           withReferenceMapper: (p0) => p0
