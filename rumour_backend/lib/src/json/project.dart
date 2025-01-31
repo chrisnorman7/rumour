@@ -113,7 +113,7 @@ class Project {
   String statMenuItemFormat;
 
   /// The text style to use.
-  final TextStyleSettings textStyleSettings;
+  TextStyleSettings textStyleSettings;
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$ProjectToJson(this);

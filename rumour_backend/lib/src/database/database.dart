@@ -23,6 +23,8 @@ part 'database.g.dart';
     RoomSurfaceCosts,
     PlayerClassGameStats,
     RoomObjectRandomSounds,
+    Commands,
+    CommandCallers,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -32,7 +34,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// The schema version.
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   /// Migrate the database.
   @override
@@ -52,6 +54,10 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 4) {
             await m.addColumn(roomExits, roomExits.label);
+          }
+          if (from < 5) {
+            await m.createTable(commands);
+            await m.createTable(commandCallers);
           }
         },
       );
