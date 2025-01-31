@@ -25,6 +25,7 @@ part 'database.g.dart';
     RoomObjectRandomSounds,
     Commands,
     CommandCallers,
+    RoomObjectCommandCallers,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -62,6 +63,7 @@ class AppDatabase extends _$AppDatabase {
           if (from < 6) {
             await m.addColumn(commands, commands.url);
             await m.addColumn(commandCallers, commandCallers.callAfter);
+            await m.createTable(this.roomObjectCommandCallers);
           }
         },
       );

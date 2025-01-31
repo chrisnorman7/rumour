@@ -5065,6 +5065,305 @@ class _CommandCallerProviderElement
   int get id => (origin as CommandCallerProvider).id;
 }
 
+String _$roomObjectCommandCallersHash() =>
+    r'aa85b462f7b05ec0b0a0f667d2502cfa3f5fd518';
+
+/// Provide all command callers for the room object with the given [id].
+///
+/// Copied from [roomObjectCommandCallers].
+@ProviderFor(roomObjectCommandCallers)
+const roomObjectCommandCallersProvider = RoomObjectCommandCallersFamily();
+
+/// Provide all command callers for the room object with the given [id].
+///
+/// Copied from [roomObjectCommandCallers].
+class RoomObjectCommandCallersFamily
+    extends Family<AsyncValue<List<RoomObjectCommandCaller>>> {
+  /// Provide all command callers for the room object with the given [id].
+  ///
+  /// Copied from [roomObjectCommandCallers].
+  const RoomObjectCommandCallersFamily();
+
+  /// Provide all command callers for the room object with the given [id].
+  ///
+  /// Copied from [roomObjectCommandCallers].
+  RoomObjectCommandCallersProvider call(
+    int id,
+  ) {
+    return RoomObjectCommandCallersProvider(
+      id,
+    );
+  }
+
+  @override
+  RoomObjectCommandCallersProvider getProviderOverride(
+    covariant RoomObjectCommandCallersProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'roomObjectCommandCallersProvider';
+}
+
+/// Provide all command callers for the room object with the given [id].
+///
+/// Copied from [roomObjectCommandCallers].
+class RoomObjectCommandCallersProvider
+    extends AutoDisposeFutureProvider<List<RoomObjectCommandCaller>> {
+  /// Provide all command callers for the room object with the given [id].
+  ///
+  /// Copied from [roomObjectCommandCallers].
+  RoomObjectCommandCallersProvider(
+    int id,
+  ) : this._internal(
+          (ref) => roomObjectCommandCallers(
+            ref as RoomObjectCommandCallersRef,
+            id,
+          ),
+          from: roomObjectCommandCallersProvider,
+          name: r'roomObjectCommandCallersProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$roomObjectCommandCallersHash,
+          dependencies: RoomObjectCommandCallersFamily._dependencies,
+          allTransitiveDependencies:
+              RoomObjectCommandCallersFamily._allTransitiveDependencies,
+          id: id,
+        );
+
+  RoomObjectCommandCallersProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
+  final int id;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<RoomObjectCommandCaller>> Function(
+            RoomObjectCommandCallersRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: RoomObjectCommandCallersProvider._internal(
+        (ref) => create(ref as RoomObjectCommandCallersRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<RoomObjectCommandCaller>>
+      createElement() {
+    return _RoomObjectCommandCallersProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RoomObjectCommandCallersProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin RoomObjectCommandCallersRef
+    on AutoDisposeFutureProviderRef<List<RoomObjectCommandCaller>> {
+  /// The parameter `id` of this provider.
+  int get id;
+}
+
+class _RoomObjectCommandCallersProviderElement
+    extends AutoDisposeFutureProviderElement<List<RoomObjectCommandCaller>>
+    with RoomObjectCommandCallersRef {
+  _RoomObjectCommandCallersProviderElement(super.provider);
+
+  @override
+  int get id => (origin as RoomObjectCommandCallersProvider).id;
+}
+
+String _$roomObjectCommandCallerHash() =>
+    r'fb5acce416a57a5bb30ee1bbb420dfa62e05297e';
+
+/// Provide a single room object command caller.
+///
+/// Copied from [roomObjectCommandCaller].
+@ProviderFor(roomObjectCommandCaller)
+const roomObjectCommandCallerProvider = RoomObjectCommandCallerFamily();
+
+/// Provide a single room object command caller.
+///
+/// Copied from [roomObjectCommandCaller].
+class RoomObjectCommandCallerFamily
+    extends Family<AsyncValue<RoomObjectCommandCaller>> {
+  /// Provide a single room object command caller.
+  ///
+  /// Copied from [roomObjectCommandCaller].
+  const RoomObjectCommandCallerFamily();
+
+  /// Provide a single room object command caller.
+  ///
+  /// Copied from [roomObjectCommandCaller].
+  RoomObjectCommandCallerProvider call(
+    int id,
+  ) {
+    return RoomObjectCommandCallerProvider(
+      id,
+    );
+  }
+
+  @override
+  RoomObjectCommandCallerProvider getProviderOverride(
+    covariant RoomObjectCommandCallerProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'roomObjectCommandCallerProvider';
+}
+
+/// Provide a single room object command caller.
+///
+/// Copied from [roomObjectCommandCaller].
+class RoomObjectCommandCallerProvider
+    extends AutoDisposeFutureProvider<RoomObjectCommandCaller> {
+  /// Provide a single room object command caller.
+  ///
+  /// Copied from [roomObjectCommandCaller].
+  RoomObjectCommandCallerProvider(
+    int id,
+  ) : this._internal(
+          (ref) => roomObjectCommandCaller(
+            ref as RoomObjectCommandCallerRef,
+            id,
+          ),
+          from: roomObjectCommandCallerProvider,
+          name: r'roomObjectCommandCallerProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$roomObjectCommandCallerHash,
+          dependencies: RoomObjectCommandCallerFamily._dependencies,
+          allTransitiveDependencies:
+              RoomObjectCommandCallerFamily._allTransitiveDependencies,
+          id: id,
+        );
+
+  RoomObjectCommandCallerProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
+  final int id;
+
+  @override
+  Override overrideWith(
+    FutureOr<RoomObjectCommandCaller> Function(
+            RoomObjectCommandCallerRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: RoomObjectCommandCallerProvider._internal(
+        (ref) => create(ref as RoomObjectCommandCallerRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<RoomObjectCommandCaller> createElement() {
+    return _RoomObjectCommandCallerProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RoomObjectCommandCallerProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin RoomObjectCommandCallerRef
+    on AutoDisposeFutureProviderRef<RoomObjectCommandCaller> {
+  /// The parameter `id` of this provider.
+  int get id;
+}
+
+class _RoomObjectCommandCallerProviderElement
+    extends AutoDisposeFutureProviderElement<RoomObjectCommandCaller>
+    with RoomObjectCommandCallerRef {
+  _RoomObjectCommandCallerProviderElement(super.provider);
+
+  @override
+  int get id => (origin as RoomObjectCommandCallerProvider).id;
+}
+
 String _$currentProjectContextHash() =>
     r'4c8cc047a1a79eb695b9f390a99148ce921e1e5b';
 

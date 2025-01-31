@@ -5059,6 +5059,337 @@ class CommandsCompanion extends UpdateCompanion<Command> {
   }
 }
 
+class $RoomObjectCommandCallersTable extends RoomObjectCommandCallers
+    with TableInfo<$RoomObjectCommandCallersTable, RoomObjectCommandCaller> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RoomObjectCommandCallersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _roomObjectIdMeta =
+      const VerificationMeta('roomObjectId');
+  @override
+  late final GeneratedColumn<int> roomObjectId = GeneratedColumn<int>(
+      'room_object_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES room_objects (id) ON DELETE CASCADE'));
+  static const VerificationMeta _commandCallerIdMeta =
+      const VerificationMeta('commandCallerId');
+  @override
+  late final GeneratedColumn<int> commandCallerId = GeneratedColumn<int>(
+      'command_caller_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES command_callers (id) ON DELETE CASCADE'));
+  static const VerificationMeta _earconIdMeta =
+      const VerificationMeta('earconId');
+  @override
+  late final GeneratedColumn<int> earconId = GeneratedColumn<int>(
+      'earcon_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES sound_references (id) ON DELETE SET NULL'));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, name, roomObjectId, commandCallerId, earconId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'room_object_command_callers';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<RoomObjectCommandCaller> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('room_object_id')) {
+      context.handle(
+          _roomObjectIdMeta,
+          roomObjectId.isAcceptableOrUnknown(
+              data['room_object_id']!, _roomObjectIdMeta));
+    } else if (isInserting) {
+      context.missing(_roomObjectIdMeta);
+    }
+    if (data.containsKey('command_caller_id')) {
+      context.handle(
+          _commandCallerIdMeta,
+          commandCallerId.isAcceptableOrUnknown(
+              data['command_caller_id']!, _commandCallerIdMeta));
+    } else if (isInserting) {
+      context.missing(_commandCallerIdMeta);
+    }
+    if (data.containsKey('earcon_id')) {
+      context.handle(_earconIdMeta,
+          earconId.isAcceptableOrUnknown(data['earcon_id']!, _earconIdMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RoomObjectCommandCaller map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RoomObjectCommandCaller(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      roomObjectId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}room_object_id'])!,
+      commandCallerId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}command_caller_id'])!,
+      earconId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}earcon_id']),
+    );
+  }
+
+  @override
+  $RoomObjectCommandCallersTable createAlias(String alias) {
+    return $RoomObjectCommandCallersTable(attachedDatabase, alias);
+  }
+}
+
+class RoomObjectCommandCaller extends DataClass
+    implements Insertable<RoomObjectCommandCaller> {
+  /// The primary key field.
+  final int id;
+
+  /// The name column.
+  final String name;
+
+  /// The ID of the room object to bind this command to.
+  final int roomObjectId;
+
+  /// The ID of the command caller to call.
+  final int commandCallerId;
+
+  /// The ID of the sound label to use for this command.
+  final int? earconId;
+  const RoomObjectCommandCaller(
+      {required this.id,
+      required this.name,
+      required this.roomObjectId,
+      required this.commandCallerId,
+      this.earconId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['room_object_id'] = Variable<int>(roomObjectId);
+    map['command_caller_id'] = Variable<int>(commandCallerId);
+    if (!nullToAbsent || earconId != null) {
+      map['earcon_id'] = Variable<int>(earconId);
+    }
+    return map;
+  }
+
+  RoomObjectCommandCallersCompanion toCompanion(bool nullToAbsent) {
+    return RoomObjectCommandCallersCompanion(
+      id: Value(id),
+      name: Value(name),
+      roomObjectId: Value(roomObjectId),
+      commandCallerId: Value(commandCallerId),
+      earconId: earconId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(earconId),
+    );
+  }
+
+  factory RoomObjectCommandCaller.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RoomObjectCommandCaller(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      roomObjectId: serializer.fromJson<int>(json['roomObjectId']),
+      commandCallerId: serializer.fromJson<int>(json['commandCallerId']),
+      earconId: serializer.fromJson<int?>(json['earconId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'roomObjectId': serializer.toJson<int>(roomObjectId),
+      'commandCallerId': serializer.toJson<int>(commandCallerId),
+      'earconId': serializer.toJson<int?>(earconId),
+    };
+  }
+
+  RoomObjectCommandCaller copyWith(
+          {int? id,
+          String? name,
+          int? roomObjectId,
+          int? commandCallerId,
+          Value<int?> earconId = const Value.absent()}) =>
+      RoomObjectCommandCaller(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        roomObjectId: roomObjectId ?? this.roomObjectId,
+        commandCallerId: commandCallerId ?? this.commandCallerId,
+        earconId: earconId.present ? earconId.value : this.earconId,
+      );
+  RoomObjectCommandCaller copyWithCompanion(
+      RoomObjectCommandCallersCompanion data) {
+    return RoomObjectCommandCaller(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      roomObjectId: data.roomObjectId.present
+          ? data.roomObjectId.value
+          : this.roomObjectId,
+      commandCallerId: data.commandCallerId.present
+          ? data.commandCallerId.value
+          : this.commandCallerId,
+      earconId: data.earconId.present ? data.earconId.value : this.earconId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoomObjectCommandCaller(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('roomObjectId: $roomObjectId, ')
+          ..write('commandCallerId: $commandCallerId, ')
+          ..write('earconId: $earconId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, roomObjectId, commandCallerId, earconId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RoomObjectCommandCaller &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.roomObjectId == this.roomObjectId &&
+          other.commandCallerId == this.commandCallerId &&
+          other.earconId == this.earconId);
+}
+
+class RoomObjectCommandCallersCompanion
+    extends UpdateCompanion<RoomObjectCommandCaller> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<int> roomObjectId;
+  final Value<int> commandCallerId;
+  final Value<int?> earconId;
+  const RoomObjectCommandCallersCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.roomObjectId = const Value.absent(),
+    this.commandCallerId = const Value.absent(),
+    this.earconId = const Value.absent(),
+  });
+  RoomObjectCommandCallersCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required int roomObjectId,
+    required int commandCallerId,
+    this.earconId = const Value.absent(),
+  })  : name = Value(name),
+        roomObjectId = Value(roomObjectId),
+        commandCallerId = Value(commandCallerId);
+  static Insertable<RoomObjectCommandCaller> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<int>? roomObjectId,
+    Expression<int>? commandCallerId,
+    Expression<int>? earconId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (roomObjectId != null) 'room_object_id': roomObjectId,
+      if (commandCallerId != null) 'command_caller_id': commandCallerId,
+      if (earconId != null) 'earcon_id': earconId,
+    });
+  }
+
+  RoomObjectCommandCallersCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<int>? roomObjectId,
+      Value<int>? commandCallerId,
+      Value<int?>? earconId}) {
+    return RoomObjectCommandCallersCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      roomObjectId: roomObjectId ?? this.roomObjectId,
+      commandCallerId: commandCallerId ?? this.commandCallerId,
+      earconId: earconId ?? this.earconId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (roomObjectId.present) {
+      map['room_object_id'] = Variable<int>(roomObjectId.value);
+    }
+    if (commandCallerId.present) {
+      map['command_caller_id'] = Variable<int>(commandCallerId.value);
+    }
+    if (earconId.present) {
+      map['earcon_id'] = Variable<int>(earconId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoomObjectCommandCallersCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('roomObjectId: $roomObjectId, ')
+          ..write('commandCallerId: $commandCallerId, ')
+          ..write('earconId: $earconId')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5081,6 +5412,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $RoomObjectRandomSoundsTable(this);
   late final $CommandCallersTable commandCallers = $CommandCallersTable(this);
   late final $CommandsTable commands = $CommandsTable(this);
+  late final $RoomObjectCommandCallersTable roomObjectCommandCallers =
+      $RoomObjectCommandCallersTable(this);
   late final Index roomObjectCoordinatesIndex = Index(
       'room_object_coordinates_index',
       'CREATE INDEX room_object_coordinates_index ON room_objects (x, y)');
@@ -5103,6 +5436,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         roomObjectRandomSounds,
         commandCallers,
         commands,
+        roomObjectCommandCallers,
         roomObjectCoordinatesIndex
       ];
   @override
@@ -5232,6 +5566,30 @@ abstract class _$AppDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.delete),
             result: [
               TableUpdate('commands', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('room_objects',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_object_command_callers',
+                  kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('command_callers',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_object_command_callers',
+                  kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('sound_references',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_object_command_callers',
+                  kind: UpdateKind.update),
             ],
           ),
         ],
@@ -5433,6 +5791,25 @@ final class $$SoundReferencesTableReferences extends BaseReferences<
         .filter((f) => f.soundId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_commandsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$RoomObjectCommandCallersTable,
+      List<RoomObjectCommandCaller>> _roomObjectCommandCallersRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.roomObjectCommandCallers,
+          aliasName: $_aliasNameGenerator(
+              db.soundReferences.id, db.roomObjectCommandCallers.earconId));
+
+  $$RoomObjectCommandCallersTableProcessedTableManager
+      get roomObjectCommandCallersRefs {
+    final manager = $$RoomObjectCommandCallersTableTableManager(
+            $_db, $_db.roomObjectCommandCallers)
+        .filter((f) => f.earconId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_roomObjectCommandCallersRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -5691,6 +6068,29 @@ class $$SoundReferencesTableFilterComposer
               $removeJoinBuilderFromRootComposer:
                   $removeJoinBuilderFromRootComposer,
             ));
+    return f(composer);
+  }
+
+  Expression<bool> roomObjectCommandCallersRefs(
+      Expression<bool> Function($$RoomObjectCommandCallersTableFilterComposer f)
+          f) {
+    final $$RoomObjectCommandCallersTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomObjectCommandCallers,
+            getReferencedColumn: (t) => t.earconId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomObjectCommandCallersTableFilterComposer(
+                  $db: $db,
+                  $table: $db.roomObjectCommandCallers,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
     return f(composer);
   }
 }
@@ -5972,6 +6372,30 @@ class $$SoundReferencesTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> roomObjectCommandCallersRefs<T extends Object>(
+      Expression<T> Function(
+              $$RoomObjectCommandCallersTableAnnotationComposer a)
+          f) {
+    final $$RoomObjectCommandCallersTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomObjectCommandCallers,
+            getReferencedColumn: (t) => t.earconId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomObjectCommandCallersTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.roomObjectCommandCallers,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 }
 
 class $$SoundReferencesTableTableManager extends RootTableManager<
@@ -5996,7 +6420,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
         bool roomSurfaceBoostMaxedOutSounds,
         bool roomSurfaceCostsRefs,
         bool roomObjectRandomSoundsRefs,
-        bool commandsRefs})> {
+        bool commandsRefs,
+        bool roomObjectCommandCallersRefs})> {
   $$SoundReferencesTableTableManager(
       _$AppDatabase db, $SoundReferencesTable table)
       : super(TableManagerState(
@@ -6049,7 +6474,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
               roomSurfaceBoostMaxedOutSounds = false,
               roomSurfaceCostsRefs = false,
               roomObjectRandomSoundsRefs = false,
-              commandsRefs = false}) {
+              commandsRefs = false,
+              roomObjectCommandCallersRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
@@ -6063,7 +6489,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                 if (roomSurfaceBoostMaxedOutSounds) db.roomSurfaceBoosts,
                 if (roomSurfaceCostsRefs) db.roomSurfaceCosts,
                 if (roomObjectRandomSoundsRefs) db.roomObjectRandomSounds,
-                if (commandsRefs) db.commands
+                if (commandsRefs) db.commands,
+                if (roomObjectCommandCallersRefs) db.roomObjectCommandCallers
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
@@ -6199,6 +6626,18 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.soundId == item.id),
+                        typedResults: items),
+                  if (roomObjectCommandCallersRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$SoundReferencesTableReferences
+                            ._roomObjectCommandCallersRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$SoundReferencesTableReferences(db, table, p0)
+                                .roomObjectCommandCallersRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.earconId == item.id),
                         typedResults: items)
                 ];
               },
@@ -6229,7 +6668,8 @@ typedef $$SoundReferencesTableProcessedTableManager = ProcessedTableManager<
         bool roomSurfaceBoostMaxedOutSounds,
         bool roomSurfaceCostsRefs,
         bool roomObjectRandomSoundsRefs,
-        bool commandsRefs})>;
+        bool commandsRefs,
+        bool roomObjectCommandCallersRefs})>;
 typedef $$ZonesTableCreateCompanionBuilder = ZonesCompanion Function({
   Value<int> id,
   required String name,
@@ -8382,6 +8822,25 @@ final class $$RoomObjectsTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$RoomObjectCommandCallersTable,
+      List<RoomObjectCommandCaller>> _roomObjectCommandCallersRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.roomObjectCommandCallers,
+          aliasName: $_aliasNameGenerator(
+              db.roomObjects.id, db.roomObjectCommandCallers.roomObjectId));
+
+  $$RoomObjectCommandCallersTableProcessedTableManager
+      get roomObjectCommandCallersRefs {
+    final manager = $$RoomObjectCommandCallersTableTableManager(
+            $_db, $_db.roomObjectCommandCallers)
+        .filter((f) => f.roomObjectId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_roomObjectCommandCallersRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$RoomObjectsTableFilterComposer
@@ -8486,6 +8945,29 @@ class $$RoomObjectsTableFilterComposer
                 $$RoomObjectRandomSoundsTableFilterComposer(
                   $db: $db,
                   $table: $db.roomObjectRandomSounds,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+
+  Expression<bool> roomObjectCommandCallersRefs(
+      Expression<bool> Function($$RoomObjectCommandCallersTableFilterComposer f)
+          f) {
+    final $$RoomObjectCommandCallersTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomObjectCommandCallers,
+            getReferencedColumn: (t) => t.roomObjectId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomObjectCommandCallersTableFilterComposer(
+                  $db: $db,
+                  $table: $db.roomObjectCommandCallers,
                   $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
                   joinBuilder: joinBuilder,
                   $removeJoinBuilderFromRootComposer:
@@ -8692,6 +9174,30 @@ class $$RoomObjectsTableAnnotationComposer
                 ));
     return f(composer);
   }
+
+  Expression<T> roomObjectCommandCallersRefs<T extends Object>(
+      Expression<T> Function(
+              $$RoomObjectCommandCallersTableAnnotationComposer a)
+          f) {
+    final $$RoomObjectCommandCallersTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomObjectCommandCallers,
+            getReferencedColumn: (t) => t.roomObjectId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomObjectCommandCallersTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.roomObjectCommandCallers,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 }
 
 class $$RoomObjectsTableTableManager extends RootTableManager<
@@ -8709,7 +9215,8 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
         {bool ambianceId,
         bool roomId,
         bool roomExitId,
-        bool roomObjectRandomSoundsRefs})> {
+        bool roomObjectRandomSoundsRefs,
+        bool roomObjectCommandCallersRefs})> {
   $$RoomObjectsTableTableManager(_$AppDatabase db, $RoomObjectsTable table)
       : super(TableManagerState(
           db: db,
@@ -8774,11 +9281,13 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
               {ambianceId = false,
               roomId = false,
               roomExitId = false,
-              roomObjectRandomSoundsRefs = false}) {
+              roomObjectRandomSoundsRefs = false,
+              roomObjectCommandCallersRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (roomObjectRandomSoundsRefs) db.roomObjectRandomSounds
+                if (roomObjectRandomSoundsRefs) db.roomObjectRandomSounds,
+                if (roomObjectCommandCallersRefs) db.roomObjectCommandCallers
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -8839,6 +9348,18 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.roomObjectId == item.id),
+                        typedResults: items),
+                  if (roomObjectCommandCallersRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$RoomObjectsTableReferences
+                            ._roomObjectCommandCallersRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$RoomObjectsTableReferences(db, table, p0)
+                                .roomObjectCommandCallersRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.roomObjectId == item.id),
                         typedResults: items)
                 ];
               },
@@ -8862,7 +9383,8 @@ typedef $$RoomObjectsTableProcessedTableManager = ProcessedTableManager<
         {bool ambianceId,
         bool roomId,
         bool roomExitId,
-        bool roomObjectRandomSoundsRefs})>;
+        bool roomObjectRandomSoundsRefs,
+        bool roomObjectCommandCallersRefs})>;
 typedef $$PlayerClassesTableCreateCompanionBuilder = PlayerClassesCompanion
     Function({
   Value<int> id,
@@ -11489,6 +12011,26 @@ final class $$CommandCallersTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$RoomObjectCommandCallersTable,
+      List<RoomObjectCommandCaller>> _roomObjectCommandCallersRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.roomObjectCommandCallers,
+          aliasName: $_aliasNameGenerator(db.commandCallers.id,
+              db.roomObjectCommandCallers.commandCallerId));
+
+  $$RoomObjectCommandCallersTableProcessedTableManager
+      get roomObjectCommandCallersRefs {
+    final manager = $$RoomObjectCommandCallersTableTableManager(
+            $_db, $_db.roomObjectCommandCallers)
+        .filter(
+            (f) => f.commandCallerId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_roomObjectCommandCallersRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$CommandCallersTableFilterComposer
@@ -11527,6 +12069,29 @@ class $$CommandCallersTableFilterComposer
               $removeJoinBuilderFromRootComposer:
                   $removeJoinBuilderFromRootComposer,
             ));
+    return f(composer);
+  }
+
+  Expression<bool> roomObjectCommandCallersRefs(
+      Expression<bool> Function($$RoomObjectCommandCallersTableFilterComposer f)
+          f) {
+    final $$RoomObjectCommandCallersTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomObjectCommandCallers,
+            getReferencedColumn: (t) => t.commandCallerId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomObjectCommandCallersTableFilterComposer(
+                  $db: $db,
+                  $table: $db.roomObjectCommandCallers,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
     return f(composer);
   }
 }
@@ -11588,6 +12153,30 @@ class $$CommandCallersTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> roomObjectCommandCallersRefs<T extends Object>(
+      Expression<T> Function(
+              $$RoomObjectCommandCallersTableAnnotationComposer a)
+          f) {
+    final $$RoomObjectCommandCallersTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomObjectCommandCallers,
+            getReferencedColumn: (t) => t.commandCallerId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomObjectCommandCallersTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.roomObjectCommandCallers,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 }
 
 class $$CommandCallersTableTableManager extends RootTableManager<
@@ -11601,7 +12190,8 @@ class $$CommandCallersTableTableManager extends RootTableManager<
     $$CommandCallersTableUpdateCompanionBuilder,
     (CommandCaller, $$CommandCallersTableReferences),
     CommandCaller,
-    PrefetchHooks Function({bool commandsRefs})> {
+    PrefetchHooks Function(
+        {bool commandsRefs, bool roomObjectCommandCallersRefs})> {
   $$CommandCallersTableTableManager(
       _$AppDatabase db, $CommandCallersTable table)
       : super(TableManagerState(
@@ -11639,10 +12229,14 @@ class $$CommandCallersTableTableManager extends RootTableManager<
                     $$CommandCallersTableReferences(db, table, e)
                   ))
               .toList(),
-          prefetchHooksCallback: ({commandsRefs = false}) {
+          prefetchHooksCallback: (
+              {commandsRefs = false, roomObjectCommandCallersRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (commandsRefs) db.commands],
+              explicitlyWatchedTables: [
+                if (commandsRefs) db.commands,
+                if (roomObjectCommandCallersRefs) db.roomObjectCommandCallers
+              ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
@@ -11654,6 +12248,18 @@ class $$CommandCallersTableTableManager extends RootTableManager<
                         managerFromTypedResult: (p0) =>
                             $$CommandCallersTableReferences(db, table, p0)
                                 .commandsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.commandCallerId == item.id),
+                        typedResults: items),
+                  if (roomObjectCommandCallersRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$CommandCallersTableReferences
+                            ._roomObjectCommandCallersRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CommandCallersTableReferences(db, table, p0)
+                                .roomObjectCommandCallersRefs,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.commandCallerId == item.id),
@@ -11676,7 +12282,8 @@ typedef $$CommandCallersTableProcessedTableManager = ProcessedTableManager<
     $$CommandCallersTableUpdateCompanionBuilder,
     (CommandCaller, $$CommandCallersTableReferences),
     CommandCaller,
-    PrefetchHooks Function({bool commandsRefs})>;
+    PrefetchHooks Function(
+        {bool commandsRefs, bool roomObjectCommandCallersRefs})>;
 typedef $$CommandsTableCreateCompanionBuilder = CommandsCompanion Function({
   Value<int> id,
   required String description,
@@ -12035,6 +12642,442 @@ typedef $$CommandsTableProcessedTableManager = ProcessedTableManager<
     (Command, $$CommandsTableReferences),
     Command,
     PrefetchHooks Function({bool soundId, bool commandCallerId})>;
+typedef $$RoomObjectCommandCallersTableCreateCompanionBuilder
+    = RoomObjectCommandCallersCompanion Function({
+  Value<int> id,
+  required String name,
+  required int roomObjectId,
+  required int commandCallerId,
+  Value<int?> earconId,
+});
+typedef $$RoomObjectCommandCallersTableUpdateCompanionBuilder
+    = RoomObjectCommandCallersCompanion Function({
+  Value<int> id,
+  Value<String> name,
+  Value<int> roomObjectId,
+  Value<int> commandCallerId,
+  Value<int?> earconId,
+});
+
+final class $$RoomObjectCommandCallersTableReferences extends BaseReferences<
+    _$AppDatabase, $RoomObjectCommandCallersTable, RoomObjectCommandCaller> {
+  $$RoomObjectCommandCallersTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $RoomObjectsTable _roomObjectIdTable(_$AppDatabase db) =>
+      db.roomObjects.createAlias($_aliasNameGenerator(
+          db.roomObjectCommandCallers.roomObjectId, db.roomObjects.id));
+
+  $$RoomObjectsTableProcessedTableManager get roomObjectId {
+    final $_column = $_itemColumn<int>('room_object_id')!;
+
+    final manager = $$RoomObjectsTableTableManager($_db, $_db.roomObjects)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_roomObjectIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $CommandCallersTable _commandCallerIdTable(_$AppDatabase db) =>
+      db.commandCallers.createAlias($_aliasNameGenerator(
+          db.roomObjectCommandCallers.commandCallerId, db.commandCallers.id));
+
+  $$CommandCallersTableProcessedTableManager get commandCallerId {
+    final $_column = $_itemColumn<int>('command_caller_id')!;
+
+    final manager = $$CommandCallersTableTableManager($_db, $_db.commandCallers)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_commandCallerIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $SoundReferencesTable _earconIdTable(_$AppDatabase db) =>
+      db.soundReferences.createAlias($_aliasNameGenerator(
+          db.roomObjectCommandCallers.earconId, db.soundReferences.id));
+
+  $$SoundReferencesTableProcessedTableManager? get earconId {
+    final $_column = $_itemColumn<int>('earcon_id');
+    if ($_column == null) return null;
+    final manager =
+        $$SoundReferencesTableTableManager($_db, $_db.soundReferences)
+            .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_earconIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$RoomObjectCommandCallersTableFilterComposer
+    extends Composer<_$AppDatabase, $RoomObjectCommandCallersTable> {
+  $$RoomObjectCommandCallersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  $$RoomObjectsTableFilterComposer get roomObjectId {
+    final $$RoomObjectsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomObjectId,
+        referencedTable: $db.roomObjects,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$CommandCallersTableFilterComposer get commandCallerId {
+    final $$CommandCallersTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.commandCallerId,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableFilterComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableFilterComposer get earconId {
+    final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.earconId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableFilterComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RoomObjectCommandCallersTableOrderingComposer
+    extends Composer<_$AppDatabase, $RoomObjectCommandCallersTable> {
+  $$RoomObjectCommandCallersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  $$RoomObjectsTableOrderingComposer get roomObjectId {
+    final $$RoomObjectsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomObjectId,
+        referencedTable: $db.roomObjects,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectsTableOrderingComposer(
+              $db: $db,
+              $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$CommandCallersTableOrderingComposer get commandCallerId {
+    final $$CommandCallersTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.commandCallerId,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableOrderingComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableOrderingComposer get earconId {
+    final $$SoundReferencesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.earconId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableOrderingComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RoomObjectCommandCallersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RoomObjectCommandCallersTable> {
+  $$RoomObjectCommandCallersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  $$RoomObjectsTableAnnotationComposer get roomObjectId {
+    final $$RoomObjectsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomObjectId,
+        referencedTable: $db.roomObjects,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$CommandCallersTableAnnotationComposer get commandCallerId {
+    final $$CommandCallersTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.commandCallerId,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableAnnotationComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableAnnotationComposer get earconId {
+    final $$SoundReferencesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.earconId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RoomObjectCommandCallersTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $RoomObjectCommandCallersTable,
+    RoomObjectCommandCaller,
+    $$RoomObjectCommandCallersTableFilterComposer,
+    $$RoomObjectCommandCallersTableOrderingComposer,
+    $$RoomObjectCommandCallersTableAnnotationComposer,
+    $$RoomObjectCommandCallersTableCreateCompanionBuilder,
+    $$RoomObjectCommandCallersTableUpdateCompanionBuilder,
+    (RoomObjectCommandCaller, $$RoomObjectCommandCallersTableReferences),
+    RoomObjectCommandCaller,
+    PrefetchHooks Function(
+        {bool roomObjectId, bool commandCallerId, bool earconId})> {
+  $$RoomObjectCommandCallersTableTableManager(
+      _$AppDatabase db, $RoomObjectCommandCallersTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RoomObjectCommandCallersTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RoomObjectCommandCallersTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RoomObjectCommandCallersTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<int> roomObjectId = const Value.absent(),
+            Value<int> commandCallerId = const Value.absent(),
+            Value<int?> earconId = const Value.absent(),
+          }) =>
+              RoomObjectCommandCallersCompanion(
+            id: id,
+            name: name,
+            roomObjectId: roomObjectId,
+            commandCallerId: commandCallerId,
+            earconId: earconId,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            required int roomObjectId,
+            required int commandCallerId,
+            Value<int?> earconId = const Value.absent(),
+          }) =>
+              RoomObjectCommandCallersCompanion.insert(
+            id: id,
+            name: name,
+            roomObjectId: roomObjectId,
+            commandCallerId: commandCallerId,
+            earconId: earconId,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$RoomObjectCommandCallersTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: (
+              {roomObjectId = false,
+              commandCallerId = false,
+              earconId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (roomObjectId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.roomObjectId,
+                    referencedTable: $$RoomObjectCommandCallersTableReferences
+                        ._roomObjectIdTable(db),
+                    referencedColumn: $$RoomObjectCommandCallersTableReferences
+                        ._roomObjectIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (commandCallerId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.commandCallerId,
+                    referencedTable: $$RoomObjectCommandCallersTableReferences
+                        ._commandCallerIdTable(db),
+                    referencedColumn: $$RoomObjectCommandCallersTableReferences
+                        ._commandCallerIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (earconId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.earconId,
+                    referencedTable: $$RoomObjectCommandCallersTableReferences
+                        ._earconIdTable(db),
+                    referencedColumn: $$RoomObjectCommandCallersTableReferences
+                        ._earconIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$RoomObjectCommandCallersTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $RoomObjectCommandCallersTable,
+        RoomObjectCommandCaller,
+        $$RoomObjectCommandCallersTableFilterComposer,
+        $$RoomObjectCommandCallersTableOrderingComposer,
+        $$RoomObjectCommandCallersTableAnnotationComposer,
+        $$RoomObjectCommandCallersTableCreateCompanionBuilder,
+        $$RoomObjectCommandCallersTableUpdateCompanionBuilder,
+        (RoomObjectCommandCaller, $$RoomObjectCommandCallersTableReferences),
+        RoomObjectCommandCaller,
+        PrefetchHooks Function(
+            {bool roomObjectId, bool commandCallerId, bool earconId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -12068,4 +13111,7 @@ class $AppDatabaseManager {
       $$CommandCallersTableTableManager(_db, _db.commandCallers);
   $$CommandsTableTableManager get commands =>
       $$CommandsTableTableManager(_db, _db.commands);
+  $$RoomObjectCommandCallersTableTableManager get roomObjectCommandCallers =>
+      $$RoomObjectCommandCallersTableTableManager(
+          _db, _db.roomObjectCommandCallers);
 }

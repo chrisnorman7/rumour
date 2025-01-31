@@ -55,7 +55,7 @@ class EditRoomObjectRandomSoundScreen extends ConsumerWidget {
                 max: randomSound.maxInterval,
                 min: 1,
                 title: 'Minimum interval',
-                subtitle: '$minSeconds ${"second".pluralise(minSeconds)}',
+                subtitle: '$minSeconds ${minSeconds.pluralise("second")}',
               ),
               IntListTile(
                 value: maxSeconds,
@@ -65,7 +65,7 @@ class EditRoomObjectRandomSoundScreen extends ConsumerWidget {
                 },
                 min: randomSound.minInterval,
                 title: 'Maximum interval',
-                subtitle: '$maxSeconds ${"second".pluralise(maxSeconds)}',
+                subtitle: '$maxSeconds ${maxSeconds.pluralise("second")}',
               ),
             ],
           );

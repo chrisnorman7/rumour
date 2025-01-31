@@ -21,6 +21,17 @@ class EditRoomObjectScreen extends ConsumerWidget {
     child: TabbedScaffold(
       tabs: [
         TabbedScaffoldTab(
+          title: 'Commands',
+          icon: const Text('The commands which the player can call'),
+          child: CommonShortcuts(
+            newCallback: () => _createRoomObjectCommandCaller(ref),
+            child: RoomObjectCommandsTab(roomObjectId: roomObjectId),
+          ),
+          floatingActionButton: NewButton(
+            onPressed: () => _createRoomObjectCommandCaller(ref),
+          ),
+        ),
+        TabbedScaffoldTab(
           title: 'Random Sounds',
           icon: const Text('The random sounds that this object plays'),
           child: CommonShortcuts(
@@ -67,5 +78,33 @@ class EditRoomObjectScreen extends ConsumerWidget {
         },
       ),
     );
+  }
+
+  /// Create a new object command.
+  Future<void> _createRoomObjectCommandCaller(final WidgetRef ref) async {
+    final database = ref.watch(databaseProvider);
+    final managers = database.managers;
+    final command = await managers.commands.createReturning(
+      (final o) => o(description: 'New command'),
+    );
+    final caller = await managers.commandCallers.createReturning(
+      (final o) => o(commandId: command.id),
+    );
+    final roomObjectCommand = await managers.roomObjectCommandCallers
+        .createReturning(
+          (final o) => o(
+            roomObjectId: roomObjectId,
+            commandCallerId: caller.id,
+            name: 'Untitled command',
+          ),
+        );
+    ref.invalidate(roomObjectCommandCallersProvider(roomObjectId));
+    if (ref.context.mounted) {
+      await ref.context.pushWidgetBuilder(
+        (_) => EditRoomObjectCommandCallerScreen(
+          roomObjectCommandCallerId: roomObjectCommand.id,
+        ),
+      );
+    }
   }
 }

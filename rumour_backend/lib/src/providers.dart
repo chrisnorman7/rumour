@@ -960,3 +960,30 @@ Future<CommandCaller> commandCaller(final Ref ref, final int id) {
       .filter((final f) => f.id.equals(id))
       .getSingle();
 }
+
+/// Provide all command callers for the room object with the given [id].
+@riverpod
+Future<List<RoomObjectCommandCaller>> roomObjectCommandCallers(
+  final Ref ref,
+  final int id,
+) {
+  final database = ref.watch(databaseProvider);
+  return database.managers.roomObjectCommandCallers
+      .filter((final f) => f.roomObjectId.id.equals(id))
+      .orderBy(
+        (final o) => o.name.asc(),
+      )
+      .get();
+}
+
+/// Provide a single room object command caller.
+@riverpod
+Future<RoomObjectCommandCaller> roomObjectCommandCaller(
+  final Ref ref,
+  final int id,
+) {
+  final database = ref.watch(databaseProvider);
+  return database.managers.roomObjectCommandCallers
+      .filter((final f) => f.id.equals(id))
+      .getSingle();
+}

@@ -36,7 +36,7 @@ class RoomObjectRandomSoundsTab extends ConsumerWidget {
           final value = ref.watch(soundReferenceProvider(randomSound.soundId));
           final minSeconds = randomSound.minInterval;
           final maxSeconds = randomSound.maxInterval;
-          final seconds = 'second'.pluralise(maxSeconds);
+          final seconds = maxSeconds.pluralise('second');
           return PlaySoundReferenceSemantics(
             soundReferenceId: randomSound.soundId,
             child: Builder(
@@ -69,7 +69,7 @@ class RoomObjectRandomSoundsTab extends ConsumerWidget {
                     ),
                     subtitle: Text(
                       minSeconds == maxSeconds
-                          ? '$maxSeconds ${"second".pluralise(maxSeconds)}'
+                          ? '$maxSeconds ${maxSeconds.pluralise("second")}'
                           : 'Between $minSeconds and $maxSeconds $seconds',
                     ),
                     onTap:

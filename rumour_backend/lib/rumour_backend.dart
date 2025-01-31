@@ -13,7 +13,6 @@ export 'src/database/database.dart';
 export 'src/database/tables/mixins.dart';
 export 'src/extensions/async_value_x.dart';
 export 'src/extensions/room_object_x.dart';
-export 'src/extensions/string_x.dart';
 export 'src/json/app_preferences.dart';
 export 'src/json/game_player.dart';
 export 'src/json/project.dart';

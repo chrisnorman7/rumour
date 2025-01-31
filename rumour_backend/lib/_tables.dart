@@ -4,6 +4,7 @@ export 'src/database/tables/game_stats.dart';
 export 'src/database/tables/player_class_game_stats.dart';
 export 'src/database/tables/player_classes.dart';
 export 'src/database/tables/room_exits.dart';
+export 'src/database/tables/room_object_command_callers.dart';
 export 'src/database/tables/room_object_random_sounds.dart';
 export 'src/database/tables/room_objects.dart';
 export 'src/database/tables/room_surface_boosts.dart';
