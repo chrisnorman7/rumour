@@ -42,7 +42,7 @@ class PauseMenu extends ConsumerWidget {
             TabbedScaffoldTab(
               title: project.pauseMenuTitle,
               icon: const Icon(Icons.pause),
-              builder: (final _) => PauseMenuTab(
+              child: PauseMenuTab(
                 playerId: playerId,
                 shortcuts: shortcuts,
               ),
@@ -50,7 +50,7 @@ class PauseMenu extends ConsumerWidget {
             TabbedScaffoldTab(
               title: 'Stats',
               icon: const Icon(Icons.insert_chart_outlined),
-              builder: (final _) => PlayerStatsTab(playerId: playerId),
+              child: PlayerStatsTab(playerId: playerId),
             ),
           ],
         ),
