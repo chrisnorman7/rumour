@@ -99,6 +99,25 @@ final projectProvider = AutoDisposeProvider<Project>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ProjectRef = AutoDisposeProviderRef<Project>;
+String _$projectTextStyleHash() => r'2dd82621f9c8ccf27024efa424481f3aedcfed67';
+
+/// The text style to use for widgets.
+///
+/// Copied from [projectTextStyle].
+@ProviderFor(projectTextStyle)
+final projectTextStyleProvider = AutoDisposeProvider<TextStyle>.internal(
+  projectTextStyle,
+  name: r'projectTextStyleProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$projectTextStyleHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ProjectTextStyleRef = AutoDisposeProviderRef<TextStyle>;
 String _$soundReferenceHash() => r'8cf356cf55af940428b65d9fbc8d47ffd1e8d7fe';
 
 /// Copied from Dart SDK

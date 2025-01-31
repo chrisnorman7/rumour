@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:drift/drift.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as path;
@@ -82,6 +83,13 @@ AppDatabase database(final Ref ref) {
 Project project(final Ref ref) {
   final projectContext = ref.watch(projectContextProvider);
   return projectContext.project;
+}
+
+/// The text style to use for widgets.
+@riverpod
+TextStyle projectTextStyle(final Ref ref) {
+  final project = ref.watch(projectProvider);
+  return project.textStyleSettings.textStyle;
 }
 
 /// Provide a singe sound reference.
