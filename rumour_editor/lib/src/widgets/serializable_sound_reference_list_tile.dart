@@ -122,6 +122,7 @@ class SerializableSoundReferenceListTile extends ConsumerWidget {
                       looping: looping,
                     ),
                   ),
+              autofocus: autofocus,
             );
           },
         ),

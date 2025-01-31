@@ -29,8 +29,11 @@ class ProjectSettingsScreen extends ConsumerWidget {
               'The font size and other settings for use when playing your game',
             ),
             child: TextStyleSettingsPage(
-              project.textStyleSettings,
-              onChanged: onChanged,
+              textStyleSettings: project.textStyleSettings,
+              onChanged: (final value) {
+                project.textStyleSettings = value;
+                _saveProject(ref, project);
+              },
             ),
           ),
           const TabbedScaffoldTab(
@@ -41,5 +44,13 @@ class ProjectSettingsScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  /// Invalidate providers.
+  void _saveProject(final WidgetRef ref, final Project project) {
+    ref.read(projectContextProvider).save(project);
+    ref
+      ..invalidate(recentFilesProvider)
+      ..invalidate(projectProvider);
   }
 }
