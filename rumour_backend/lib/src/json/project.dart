@@ -38,7 +38,7 @@ class Project {
               fontSize: 24,
               colorValue: Colors.black.serializableColor,
               backgroundColorValue: Colors.yellow.serializableColor,
-              fontWeightValue: FontWeight.normal.index,
+              fontWeightValue: FontWeight.normal.value,
               fontStyle: FontStyle.normal,
             );
 
