@@ -52,6 +52,10 @@ Project _$ProjectFromJson(Map<String, dynamic> json) => Project(
               json['pauseMenuMusic'] as Map<String, dynamic>),
       statMenuItemFormat: json['statMenuItemFormat'] as String? ??
           '{{ statName }}: {% if maxValue %}{{ (100 / maxValue * statValue) | floor }}%{% else %}{{ statValue }}{% endif %}',
+      textStyleSettings: json['textStyleSettings'] == null
+          ? null
+          : TextStyleSettings.fromJson(
+              json['textStyleSettings'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ProjectToJson(Project instance) => <String, dynamic>{
@@ -73,4 +77,5 @@ Map<String, dynamic> _$ProjectToJson(Project instance) => <String, dynamic>{
       'pauseMenuTitle': instance.pauseMenuTitle,
       'pauseMenuMusic': instance.pauseMenuMusic,
       'statMenuItemFormat': instance.statMenuItemFormat,
+      'textStyleSettings': instance.textStyleSettings,
     };

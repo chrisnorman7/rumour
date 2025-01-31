@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_text_style_settings/flutter_text_style_settings.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:rumour_backend/src/json/serializable_sound_reference.dart';
 
@@ -30,7 +32,15 @@ class Project {
     this.pauseMenuMusic,
     this.statMenuItemFormat =
         '{{ statName }}: {% if maxValue %}{{ (100 / maxValue * statValue) | floor }}%{% else %}{{ statValue }}{% endif %}',
-  });
+    final TextStyleSettings? textStyleSettings,
+  }) : textStyleSettings = textStyleSettings ??
+            TextStyleSettings(
+              fontSize: 24,
+              colorValue: Colors.black.serializableColor,
+              backgroundColorValue: Colors.yellow.serializableColor,
+              fontWeightValue: FontWeight.normal.index,
+              fontStyle: FontStyle.normal,
+            );
 
   /// Create an instance from a JSON object.
   factory Project.fromJson(final Map<String, dynamic> json) =>
@@ -101,6 +111,9 @@ class Project {
 
   /// The format for entries in the player stats menu.
   String statMenuItemFormat;
+
+  /// The text style to use.
+  final TextStyleSettings textStyleSettings;
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$ProjectToJson(this);
