@@ -26,6 +26,7 @@ dependencies:
     path: ../rumour_player
   shared_preferences: ^2.3.5
   time: ^2.1.5
+  url_launcher: ^6.3.1
   uuid: ^4.5.1
 
 dev_dependencies:
