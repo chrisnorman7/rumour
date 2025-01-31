@@ -51,44 +51,48 @@ class PlayProjectScreen extends ConsumerWidget {
       destroy: false,
     );
     final value = ref.watch(gamePlayersProvider);
-    return ProtectSounds(
-      sounds: [
-        activateItemSound,
-        selectItemSound,
-        music,
-        newPlayerEarcon,
-        savedPlayersEarcon,
-      ].whereType<Sound>().toList(),
-      child: value.when(
-        data: (final players) => AudioGameMenu(
-          title: project.name,
-          menuItems: [
-            AudioGameMenuItem(
-              title: project.newPlayerLabel,
-              onActivate: (final innerContext) =>
-                  innerContext.fadeMusicAndPushWidget(
-                (final _) => const NewPlayerScreen(),
-              ),
-              earcon: newPlayerEarcon,
-            ),
-            if (players.isNotEmpty)
+    final textStyle = ref.watch(projectTextStyleProvider);
+    return DefaultTextStyle(
+      style: textStyle,
+      child: ProtectSounds(
+        sounds: [
+          activateItemSound,
+          selectItemSound,
+          music,
+          newPlayerEarcon,
+          savedPlayersEarcon,
+        ].whereType<Sound>().toList(),
+        child: value.when(
+          data: (final players) => AudioGameMenu(
+            title: project.name,
+            menuItems: [
               AudioGameMenuItem(
-                title: project.savedPlayersLabel,
+                title: project.newPlayerLabel,
                 onActivate: (final innerContext) =>
                     innerContext.fadeMusicAndPushWidget(
-                  (final _) => const PlaySavedPlayerScreen(),
+                  (final _) => const NewPlayerScreen(),
                 ),
-                earcon: savedPlayersEarcon,
+                earcon: newPlayerEarcon,
               ),
-          ],
-          activateItemSound: activateItemSound,
-          selectItemSound: selectItemSound,
-          music: music,
-          musicFadeInTime: project.mainMenuMusicFadeIn,
-          musicFadeOutTime: project.mainMenuMusicFadeOut,
+              if (players.isNotEmpty)
+                AudioGameMenuItem(
+                  title: project.savedPlayersLabel,
+                  onActivate: (final innerContext) =>
+                      innerContext.fadeMusicAndPushWidget(
+                    (final _) => const PlaySavedPlayerScreen(),
+                  ),
+                  earcon: savedPlayersEarcon,
+                ),
+            ],
+            activateItemSound: activateItemSound,
+            selectItemSound: selectItemSound,
+            music: music,
+            musicFadeInTime: project.mainMenuMusicFadeIn,
+            musicFadeOutTime: project.mainMenuMusicFadeOut,
+          ),
+          error: ErrorScreen.withPositional,
+          loading: LoadingScreen.new,
         ),
-        error: ErrorScreen.withPositional,
-        loading: LoadingScreen.new,
       ),
     );
   }
