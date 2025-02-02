@@ -166,6 +166,69 @@ class ProjectContext {
         );
   }
 
+  /// Get all sounds that match [soundReference].
+  List<Sound> getSounds({
+    required final SoundReference soundReference,
+    required final bool destroy,
+    final bool looping = false,
+    final Duration loopingStart = Duration.zero,
+    final bool paused = false,
+    final SoundPosition position = unpanned,
+  }) {
+    final directories = loader?.directories;
+    if (directories == null) {
+      final fullPath = path.join(soundsDirectory.path, soundReference.path);
+      final List<File> soundFiles;
+      final directory = Directory(fullPath);
+      if (directory.existsSync()) {
+        final files = directory.listSync().whereType<File>().toList();
+        if (files.isEmpty) {
+          throw StateError('The directory $fullPath is empty.');
+        }
+        soundFiles = files;
+      } else {
+        soundFiles = [File(fullPath)];
+      }
+      return soundFiles
+          .map(
+            (final file) => file.asSound(
+              destroy: destroy,
+              loadMode: soundReference.loadMode,
+              looping: looping,
+              loopingStart: loopingStart,
+              paused: paused,
+              position: position,
+              volume: soundReference.volume,
+            ),
+          )
+          .toList();
+    }
+    final keys = directories[soundReference.path];
+    final List<String> soundKeys;
+    if (keys == null) {
+      soundKeys = [soundReference.path];
+    } else {
+      soundKeys = keys;
+    }
+    return soundKeys
+        .map(
+          (final key) => path
+              .join(project.soundsDirectoryName, key)
+              .replaceAll(r'\', '/')
+              .asSound(
+                destroy: destroy,
+                soundType: SoundType.asset,
+                loadMode: soundReference.loadMode,
+                looping: looping,
+                loopingStart: loopingStart,
+                paused: paused,
+                position: position,
+                volume: soundReference.volume,
+              ),
+        )
+        .toList();
+  }
+
   /// Get a sound reference with the given [id].
   ///
   /// If [id] is `null`, then `null` will be returned.
