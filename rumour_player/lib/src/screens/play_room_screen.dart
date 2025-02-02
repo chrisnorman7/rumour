@@ -129,7 +129,6 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
   /// Build a widget.
   @override
   Widget build(final BuildContext context) {
-    movingDirection = null;
     final error = _error;
     if (error != null) {
       return Cancel(
@@ -419,6 +418,7 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
               ..x = exit.x
               ..y = exit.y;
             stopPlayerMoving();
+            movingDirection = null;
             setPlayerCoordinates(exit.coordinates);
             ref.invalidate(gamePlayerContextProvider(widget.playerId));
           },
@@ -480,10 +480,9 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
   /// Examine an object.
   Future<void> examineObject(final RoomObject object) async {
     _lastExaminedObjectIndex = object.id;
-    final string = projectContext.renderTemplate(
+    final string = projectContext.renderString(
       rumourTemplate: RumourTemplate.roomObjectTemplate,
-      template: projectContext.jinjaEnvironment
-          .fromString(project.examineRoomObjectFormat),
+      string: project.examineRoomObjectFormat,
       value: RoomObjectLocation(
         roomObject: object,
         playerCoordinates: coordinates,

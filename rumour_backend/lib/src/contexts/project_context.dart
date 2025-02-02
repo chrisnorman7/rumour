@@ -80,6 +80,27 @@ class ProjectContext {
     }
   }
 
+  /// Render [string] with [rumourTemplate] according to [value].
+  ///
+  /// This function uses [renderTemplate] under the hood.
+  String renderString<T>({
+    required final RumourTemplate<T> rumourTemplate,
+    required final String string,
+    required final T value,
+  }) {
+    try {
+      final template = jinjaEnvironment.fromString(string);
+      return renderTemplate(
+        rumourTemplate: rumourTemplate,
+        template: template,
+        value: value,
+      );
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e, s) {
+      return '$e\n$s';
+    }
+  }
+
   /// Save the [project].
   void save(final Project project) {
     final json = project.toJson();

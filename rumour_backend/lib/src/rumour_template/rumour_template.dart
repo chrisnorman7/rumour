@@ -44,7 +44,7 @@ class RumourTemplate<T> {
   static RumourTemplate<RoomObjectLocation> roomObjectTemplate = RumourTemplate(
     values: [
       RumourTemplateValue(
-        name: 'objectName',
+        name: 'name',
         description: 'The name of this object.',
         getValue: (final value) => value.roomObject.name,
       ),
