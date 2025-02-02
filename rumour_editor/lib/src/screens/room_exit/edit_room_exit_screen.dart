@@ -65,6 +65,14 @@ class EditRoomExitScreen extends ConsumerWidget {
                   max: Point(room.maxX, room.maxY),
                   min: const Point(0, 0),
                 ),
+                SoundReferenceListTile(
+                  soundReferenceId: roomExit.earconId,
+                  onChanged: (final value) async {
+                    await query.update((final o) => o(earconId: Value(value)));
+                    ref.invalidate(provider);
+                  },
+                  title: 'Earcon',
+                ),
               ],
             ),
           );
