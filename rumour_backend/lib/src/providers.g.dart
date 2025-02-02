@@ -5065,6 +5065,158 @@ class _CommandCallerProviderElement
   int get id => (origin as CommandCallerProvider).id;
 }
 
+String _$commandCallerFromParentCommandIdHash() =>
+    r'931710a6cc2edb9349d8a0bddd09e147f388fa80';
+
+/// Provide a command caller by [callingCommandId].
+///
+/// Copied from [commandCallerFromParentCommandId].
+@ProviderFor(commandCallerFromParentCommandId)
+const commandCallerFromParentCommandIdProvider =
+    CommandCallerFromParentCommandIdFamily();
+
+/// Provide a command caller by [callingCommandId].
+///
+/// Copied from [commandCallerFromParentCommandId].
+class CommandCallerFromParentCommandIdFamily
+    extends Family<AsyncValue<CommandCaller?>> {
+  /// Provide a command caller by [callingCommandId].
+  ///
+  /// Copied from [commandCallerFromParentCommandId].
+  const CommandCallerFromParentCommandIdFamily();
+
+  /// Provide a command caller by [callingCommandId].
+  ///
+  /// Copied from [commandCallerFromParentCommandId].
+  CommandCallerFromParentCommandIdProvider call(
+    int callingCommandId,
+  ) {
+    return CommandCallerFromParentCommandIdProvider(
+      callingCommandId,
+    );
+  }
+
+  @override
+  CommandCallerFromParentCommandIdProvider getProviderOverride(
+    covariant CommandCallerFromParentCommandIdProvider provider,
+  ) {
+    return call(
+      provider.callingCommandId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'commandCallerFromParentCommandIdProvider';
+}
+
+/// Provide a command caller by [callingCommandId].
+///
+/// Copied from [commandCallerFromParentCommandId].
+class CommandCallerFromParentCommandIdProvider
+    extends AutoDisposeFutureProvider<CommandCaller?> {
+  /// Provide a command caller by [callingCommandId].
+  ///
+  /// Copied from [commandCallerFromParentCommandId].
+  CommandCallerFromParentCommandIdProvider(
+    int callingCommandId,
+  ) : this._internal(
+          (ref) => commandCallerFromParentCommandId(
+            ref as CommandCallerFromParentCommandIdRef,
+            callingCommandId,
+          ),
+          from: commandCallerFromParentCommandIdProvider,
+          name: r'commandCallerFromParentCommandIdProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$commandCallerFromParentCommandIdHash,
+          dependencies: CommandCallerFromParentCommandIdFamily._dependencies,
+          allTransitiveDependencies:
+              CommandCallerFromParentCommandIdFamily._allTransitiveDependencies,
+          callingCommandId: callingCommandId,
+        );
+
+  CommandCallerFromParentCommandIdProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.callingCommandId,
+  }) : super.internal();
+
+  final int callingCommandId;
+
+  @override
+  Override overrideWith(
+    FutureOr<CommandCaller?> Function(
+            CommandCallerFromParentCommandIdRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: CommandCallerFromParentCommandIdProvider._internal(
+        (ref) => create(ref as CommandCallerFromParentCommandIdRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        callingCommandId: callingCommandId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<CommandCaller?> createElement() {
+    return _CommandCallerFromParentCommandIdProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is CommandCallerFromParentCommandIdProvider &&
+        other.callingCommandId == callingCommandId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, callingCommandId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin CommandCallerFromParentCommandIdRef
+    on AutoDisposeFutureProviderRef<CommandCaller?> {
+  /// The parameter `callingCommandId` of this provider.
+  int get callingCommandId;
+}
+
+class _CommandCallerFromParentCommandIdProviderElement
+    extends AutoDisposeFutureProviderElement<CommandCaller?>
+    with CommandCallerFromParentCommandIdRef {
+  _CommandCallerFromParentCommandIdProviderElement(super.provider);
+
+  @override
+  int get callingCommandId =>
+      (origin as CommandCallerFromParentCommandIdProvider).callingCommandId;
+}
+
 String _$roomObjectCommandCallersHash() =>
     r'aa85b462f7b05ec0b0a0f667d2502cfa3f5fd518';
 

@@ -14,6 +14,7 @@ extension WidgetRefX on WidgetRef {
     if (callAfter != null) {
       await Future<void>.delayed(callAfter.seconds);
     }
+    return runCommand(caller.childCommandId);
   }
 
   /// Call a command by its [id].
@@ -42,9 +43,11 @@ extension WidgetRefX on WidgetRef {
           );
         }
       }
-      final callerId = command.commandCallerId;
-      if (callerId != null && context.mounted) {
-        return runCommandCaller(callerId);
+      final possibleCommandCaller = await read(
+        commandCallerFromParentCommandIdProvider(id).future,
+      );
+      if (possibleCommandCaller != null) {
+        return runCommandCaller(possibleCommandCaller.id);
       }
     }
   }

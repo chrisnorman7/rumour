@@ -961,6 +961,20 @@ Future<CommandCaller> commandCaller(final Ref ref, final int id) {
       .getSingle();
 }
 
+/// Provide a command caller by [callingCommandId].
+@riverpod
+Future<CommandCaller?> commandCallerFromParentCommandId(
+  final Ref ref,
+  final int callingCommandId,
+) {
+  final database = ref.watch(databaseProvider);
+  return database.managers.commandCallers
+      .filter(
+        (final f) => f.parentCommandId.id.equals(callingCommandId),
+      )
+      .getSingleOrNull();
+}
+
 /// Provide all command callers for the room object with the given [id].
 @riverpod
 Future<List<RoomObjectCommandCaller>> roomObjectCommandCallers(

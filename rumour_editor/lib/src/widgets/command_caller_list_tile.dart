@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_editor/rumour_editor.dart';
+import 'package:rumour_editor/src/screens/command/edit_command_screen.dart';
 
 /// A list tile for editing a command caller.
 class CommandCallerListTile extends ConsumerWidget {
@@ -45,7 +46,7 @@ class CommandCallerListTile extends ConsumerWidget {
     final value = ref.watch(commandCallerProvider(commandCallerId));
     return value.when(
       data: (final commandCaller) {
-        final value = ref.watch(commandProvider(commandCaller.commandId));
+        final value = ref.watch(commandProvider(commandCaller.childCommandId));
         return value.when(
           data: (final command) {
             final commandQuery = managers.commands.filter(
@@ -68,16 +69,17 @@ class CommandCallerListTile extends ConsumerWidget {
             }
             return PerformableActionsListTile(
               actions: [
-                RenameAction(
+                DescribeAction(
                   context: context,
-                  oldName: command.description,
-                  onRename: (final name) async {
+                  oldDescription: command.description,
+                  onDescribe: (final description) async {
                     await commandQuery.update(
-                      (final o) => o(description: Value(name)),
+                      (final o) => o(description: Value(description)),
                     );
                     invalidateProviders();
+                    onChanged(commandCaller.id);
                   },
-                  title: title,
+                  title: 'Describe Command',
                 ),
                 if (canDelete)
                   PerformableAction(
@@ -87,8 +89,14 @@ class CommandCallerListTile extends ConsumerWidget {
                           message: 'Really delete ${command.description}?',
                           title: confirmDeleteTitle,
                           yesCallback: () async {
+                            final soundId = command.soundId;
+                            if (soundId != null) {
+                              managers.soundReferences.filter(
+                                (final f) => f.id.equals(soundId),
+                              );
+                            }
                             await commandQuery.delete();
-                            invalidateProviders();
+                            onChanged(null);
                           },
                         ),
                     activator: deleteShortcut,
@@ -100,6 +108,7 @@ class CommandCallerListTile extends ConsumerWidget {
                       (final o) => o(callAfter: Value((callAfter ?? 0) + 1)),
                     );
                     invalidateProviders();
+                    onChanged(commandCaller.id);
                   },
                   activator: moveUpShortcut,
                 ),
@@ -115,6 +124,7 @@ class CommandCallerListTile extends ConsumerWidget {
                         ),
                       );
                       invalidateProviders();
+                      onChanged(commandCaller.id);
                     },
                     activator: moveDownShortcut,
                   ),
@@ -123,28 +133,18 @@ class CommandCallerListTile extends ConsumerWidget {
               title: Text(title),
               subtitle: Text(subtitle),
               onTap: () {
-                // TODO(chrisnorman7): Write the `EditCommandScreen` widget.
+                context.pushWidgetBuilder(
+                  (_) => EditCommandScreen(commandId: command.id),
+                );
               },
             );
           },
           error: ErrorListTile.withPositional,
-          loading:
-              () => ListTile(
-                autofocus: autofocus,
-                title: Text(title),
-                subtitle: const LoadingWidget(),
-                onTap: () {},
-              ),
+          loading: () => LoadingListTile(title: title, autofocus: autofocus),
         );
       },
       error: ErrorListTile.withPositional,
-      loading:
-          () => ListTile(
-            autofocus: autofocus,
-            title: Text(title),
-            subtitle: const LoadingWidget(),
-            onTap: () {},
-          ),
+      loading: () => LoadingListTile(title: title, autofocus: autofocus),
     );
   }
 }

@@ -68,7 +68,7 @@ class RoomObjectCommandsTab extends ConsumerWidget {
                 data: (final commandCaller) {
                   final callAfter = commandCaller.callAfter;
                   if (callAfter == null) {
-                    return const Text(unsetMessage);
+                    return const Text('Call immediately');
                   }
                   return Text('$callAfter ${callAfter.pluralise("second")}');
                 },

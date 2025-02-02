@@ -16,9 +16,4 @@ class Commands extends Table with IdMixin, DescriptionMixin {
 
   /// A URL to open.
   TextColumn get url => text().nullable()();
-
-  /// The ID of a command caller to call another command.
-  IntColumn get commandCallerId => integer()
-      .references(CommandCallers, #id, onDelete: KeyAction.setNull)
-      .nullable()();
 }

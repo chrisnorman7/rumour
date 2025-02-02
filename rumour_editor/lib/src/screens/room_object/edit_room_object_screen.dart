@@ -88,7 +88,7 @@ class EditRoomObjectScreen extends ConsumerWidget {
       (final o) => o(description: 'New command'),
     );
     final caller = await managers.commandCallers.createReturning(
-      (final o) => o(commandId: command.id),
+      (final o) => o(childCommandId: command.id),
     );
     final roomObjectCommand = await managers.roomObjectCommandCallers
         .createReturning(
