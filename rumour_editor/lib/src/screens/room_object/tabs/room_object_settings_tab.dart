@@ -67,6 +67,14 @@ class RoomObjectSettingsTab extends ConsumerWidget {
             },
             title: const Text('Visible to player'),
           ),
+          SoundReferenceListTile(
+            soundReferenceId: object.earconId,
+            onChanged: (final value) async {
+              await query.update((final o) => o(earconId: Value(value)));
+              invalidateProviders(ref, object);
+            },
+            title: 'Earcon',
+          ),
         ],
       ),
     );

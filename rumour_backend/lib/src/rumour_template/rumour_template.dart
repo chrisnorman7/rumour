@@ -1,4 +1,5 @@
 import 'package:rumour_backend/rumour_backend.dart';
+import 'package:rumour_player/rumour_player.dart';
 
 /// A rumour template.
 class RumourTemplate<T> {
@@ -35,6 +36,57 @@ class RumourTemplate<T> {
         name: 'maxValue',
         description: 'The value of the max stat.',
         getValue: (final value) => value.maxValue,
+      ),
+    ],
+  );
+
+  /// A template for showing room objects.
+  static RumourTemplate<RoomObjectLocation> roomObjectTemplate = RumourTemplate(
+    values: [
+      RumourTemplateValue(
+        name: 'objectName',
+        description: 'The name of this object.',
+        getValue: (final value) => value.roomObject.name,
+      ),
+      RumourTemplateValue(
+        name: 'description',
+        description: 'The description of this object.',
+        getValue: (final value) => value.roomObject.description,
+      ),
+      RumourTemplateValue(
+        name: 'x',
+        description: 'The x coordinate of the object.',
+        getValue: (final value) => value.roomObject.x,
+      ),
+      RumourTemplateValue(
+        name: 'y',
+        description: 'The y coordinate of the object.',
+        getValue: (final value) => value.roomObject.y,
+      ),
+      RumourTemplateValue(
+        name: 'north',
+        description: 'How many units north this object is.',
+        getValue: (final value) => value.north,
+      ),
+      RumourTemplateValue(
+        name: 'east',
+        description: 'How many units east this object is.',
+        getValue: (final value) => value.east,
+      ),
+      RumourTemplateValue(
+        name: 'south',
+        description: 'How many units south this object is.',
+        getValue: (final value) => value.south,
+      ),
+      RumourTemplateValue(
+        name: 'west',
+        description: 'How many units west this object is.',
+        getValue: (final value) => value.west,
+      ),
+      RumourTemplateValue(
+        name: 'distance',
+        description: 'The distance between the room object and the player.',
+        getValue: (final value) => value.distance,
       ),
     ],
   );

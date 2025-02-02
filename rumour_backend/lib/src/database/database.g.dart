@@ -1906,9 +1906,28 @@ class $RoomObjectsTable extends RoomObjects
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("visible" IN (0, 1))'),
       defaultValue: const Constant(true));
+  static const VerificationMeta _earconIdMeta =
+      const VerificationMeta('earconId');
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, name, description, ambianceId, roomId, x, y, roomExitId, visible];
+  late final GeneratedColumn<int> earconId = GeneratedColumn<int>(
+      'earcon_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES sound_references (id) ON DELETE SET NULL'));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        description,
+        ambianceId,
+        roomId,
+        x,
+        y,
+        roomExitId,
+        visible,
+        earconId
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1964,6 +1983,10 @@ class $RoomObjectsTable extends RoomObjects
       context.handle(_visibleMeta,
           visible.isAcceptableOrUnknown(data['visible']!, _visibleMeta));
     }
+    if (data.containsKey('earcon_id')) {
+      context.handle(_earconIdMeta,
+          earconId.isAcceptableOrUnknown(data['earcon_id']!, _earconIdMeta));
+    }
     return context;
   }
 
@@ -1991,6 +2014,8 @@ class $RoomObjectsTable extends RoomObjects
           .read(DriftSqlType.int, data['${effectivePrefix}room_exit_id']),
       visible: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}visible'])!,
+      earconId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}earcon_id']),
     );
   }
 
@@ -2029,6 +2054,9 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
   ///
   /// If [visible] is `false`, then the player will still hear the ambiance.
   final bool visible;
+
+  /// The ID of the earcon to use.
+  final int? earconId;
   const RoomObject(
       {required this.id,
       required this.name,
@@ -2038,7 +2066,8 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
       required this.x,
       required this.y,
       this.roomExitId,
-      required this.visible});
+      required this.visible,
+      this.earconId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2055,6 +2084,9 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
       map['room_exit_id'] = Variable<int>(roomExitId);
     }
     map['visible'] = Variable<bool>(visible);
+    if (!nullToAbsent || earconId != null) {
+      map['earcon_id'] = Variable<int>(earconId);
+    }
     return map;
   }
 
@@ -2073,6 +2105,9 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
           ? const Value.absent()
           : Value(roomExitId),
       visible: Value(visible),
+      earconId: earconId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(earconId),
     );
   }
 
@@ -2089,6 +2124,7 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
       y: serializer.fromJson<int>(json['y']),
       roomExitId: serializer.fromJson<int?>(json['roomExitId']),
       visible: serializer.fromJson<bool>(json['visible']),
+      earconId: serializer.fromJson<int?>(json['earconId']),
     );
   }
   @override
@@ -2104,6 +2140,7 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
       'y': serializer.toJson<int>(y),
       'roomExitId': serializer.toJson<int?>(roomExitId),
       'visible': serializer.toJson<bool>(visible),
+      'earconId': serializer.toJson<int?>(earconId),
     };
   }
 
@@ -2116,7 +2153,8 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
           int? x,
           int? y,
           Value<int?> roomExitId = const Value.absent(),
-          bool? visible}) =>
+          bool? visible,
+          Value<int?> earconId = const Value.absent()}) =>
       RoomObject(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -2127,6 +2165,7 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
         y: y ?? this.y,
         roomExitId: roomExitId.present ? roomExitId.value : this.roomExitId,
         visible: visible ?? this.visible,
+        earconId: earconId.present ? earconId.value : this.earconId,
       );
   RoomObject copyWithCompanion(RoomObjectsCompanion data) {
     return RoomObject(
@@ -2142,6 +2181,7 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
       roomExitId:
           data.roomExitId.present ? data.roomExitId.value : this.roomExitId,
       visible: data.visible.present ? data.visible.value : this.visible,
+      earconId: data.earconId.present ? data.earconId.value : this.earconId,
     );
   }
 
@@ -2156,14 +2196,15 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
           ..write('x: $x, ')
           ..write('y: $y, ')
           ..write('roomExitId: $roomExitId, ')
-          ..write('visible: $visible')
+          ..write('visible: $visible, ')
+          ..write('earconId: $earconId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, name, description, ambianceId, roomId, x, y, roomExitId, visible);
+  int get hashCode => Object.hash(id, name, description, ambianceId, roomId, x,
+      y, roomExitId, visible, earconId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2176,7 +2217,8 @@ class RoomObject extends DataClass implements Insertable<RoomObject> {
           other.x == this.x &&
           other.y == this.y &&
           other.roomExitId == this.roomExitId &&
-          other.visible == this.visible);
+          other.visible == this.visible &&
+          other.earconId == this.earconId);
 }
 
 class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
@@ -2189,6 +2231,7 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
   final Value<int> y;
   final Value<int?> roomExitId;
   final Value<bool> visible;
+  final Value<int?> earconId;
   const RoomObjectsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -2199,6 +2242,7 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
     this.y = const Value.absent(),
     this.roomExitId = const Value.absent(),
     this.visible = const Value.absent(),
+    this.earconId = const Value.absent(),
   });
   RoomObjectsCompanion.insert({
     this.id = const Value.absent(),
@@ -2210,6 +2254,7 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
     this.y = const Value.absent(),
     this.roomExitId = const Value.absent(),
     this.visible = const Value.absent(),
+    this.earconId = const Value.absent(),
   })  : name = Value(name),
         description = Value(description),
         roomId = Value(roomId);
@@ -2223,6 +2268,7 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
     Expression<int>? y,
     Expression<int>? roomExitId,
     Expression<bool>? visible,
+    Expression<int>? earconId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2234,6 +2280,7 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
       if (y != null) 'y': y,
       if (roomExitId != null) 'room_exit_id': roomExitId,
       if (visible != null) 'visible': visible,
+      if (earconId != null) 'earcon_id': earconId,
     });
   }
 
@@ -2246,7 +2293,8 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
       Value<int>? x,
       Value<int>? y,
       Value<int?>? roomExitId,
-      Value<bool>? visible}) {
+      Value<bool>? visible,
+      Value<int?>? earconId}) {
     return RoomObjectsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -2257,6 +2305,7 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
       y: y ?? this.y,
       roomExitId: roomExitId ?? this.roomExitId,
       visible: visible ?? this.visible,
+      earconId: earconId ?? this.earconId,
     );
   }
 
@@ -2290,6 +2339,9 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
     if (visible.present) {
       map['visible'] = Variable<bool>(visible.value);
     }
+    if (earconId.present) {
+      map['earcon_id'] = Variable<int>(earconId.value);
+    }
     return map;
   }
 
@@ -2304,7 +2356,8 @@ class RoomObjectsCompanion extends UpdateCompanion<RoomObject> {
           ..write('x: $x, ')
           ..write('y: $y, ')
           ..write('roomExitId: $roomExitId, ')
-          ..write('visible: $visible')
+          ..write('visible: $visible, ')
+          ..write('earconId: $earconId')
           ..write(')'))
         .toString();
   }
@@ -5532,6 +5585,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
             ],
           ),
           WritePropagation(
+            on: TableUpdateQuery.onTableName('sound_references',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_objects', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
             on: TableUpdateQuery.onTableName('rooms',
                 limitUpdateKind: UpdateKind.delete),
             result: [
@@ -5794,6 +5854,22 @@ final class $$SoundReferencesTableReferences extends BaseReferences<
         .filter((f) => f.ambianceId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_roomObjectsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$RoomObjectsTable, List<RoomObject>>
+      _room_object_earconsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.roomObjects,
+              aliasName: $_aliasNameGenerator(
+                  db.soundReferences.id, db.roomObjects.earconId));
+
+  $$RoomObjectsTableProcessedTableManager get room_object_earcons {
+    final manager = $$RoomObjectsTableTableManager($_db, $_db.roomObjects)
+        .filter((f) => f.earconId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_room_object_earconsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -6062,6 +6138,27 @@ class $$SoundReferencesTableFilterComposer
         getCurrentColumn: (t) => t.id,
         referencedTable: $db.roomObjects,
         getReferencedColumn: (t) => t.ambianceId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> room_object_earcons(
+      Expression<bool> Function($$RoomObjectsTableFilterComposer f) f) {
+    final $$RoomObjectsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomObjects,
+        getReferencedColumn: (t) => t.earconId,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
@@ -6397,6 +6494,27 @@ class $$SoundReferencesTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> room_object_earcons<T extends Object>(
+      Expression<T> Function($$RoomObjectsTableAnnotationComposer a) f) {
+    final $$RoomObjectsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomObjects,
+        getReferencedColumn: (t) => t.earconId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
   Expression<T> roomSurfaceBoostBoostSounds<T extends Object>(
       Expression<T> Function($$RoomSurfaceBoostsTableAnnotationComposer a) f) {
     final $$RoomSurfaceBoostsTableAnnotationComposer composer =
@@ -6550,6 +6668,7 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
         bool room_exit_use_sounds,
         bool room_exits_earcons,
         bool roomObjectsRefs,
+        bool room_object_earcons,
         bool roomSurfaceBoostBoostSounds,
         bool roomSurfaceBoostMaxedOutSounds,
         bool roomSurfaceCostsRefs,
@@ -6605,6 +6724,7 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
               room_exit_use_sounds = false,
               room_exits_earcons = false,
               roomObjectsRefs = false,
+              room_object_earcons = false,
               roomSurfaceBoostBoostSounds = false,
               roomSurfaceBoostMaxedOutSounds = false,
               roomSurfaceCostsRefs = false,
@@ -6621,6 +6741,7 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                 if (room_exit_use_sounds) db.roomExits,
                 if (room_exits_earcons) db.roomExits,
                 if (roomObjectsRefs) db.roomObjects,
+                if (room_object_earcons) db.roomObjects,
                 if (roomSurfaceBoostBoostSounds) db.roomSurfaceBoosts,
                 if (roomSurfaceBoostMaxedOutSounds) db.roomSurfaceBoosts,
                 if (roomSurfaceCostsRefs) db.roomSurfaceCosts,
@@ -6714,6 +6835,18 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.ambianceId == item.id),
+                        typedResults: items),
+                  if (room_object_earcons)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$SoundReferencesTableReferences
+                            ._room_object_earconsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$SoundReferencesTableReferences(db, table, p0)
+                                .room_object_earcons,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.earconId == item.id),
                         typedResults: items),
                   if (roomSurfaceBoostBoostSounds)
                     await $_getPrefetchedData(
@@ -6813,6 +6946,7 @@ typedef $$SoundReferencesTableProcessedTableManager = ProcessedTableManager<
         bool room_exit_use_sounds,
         bool room_exits_earcons,
         bool roomObjectsRefs,
+        bool room_object_earcons,
         bool roomSurfaceBoostBoostSounds,
         bool roomSurfaceBoostMaxedOutSounds,
         bool roomSurfaceCostsRefs,
@@ -8985,6 +9119,7 @@ typedef $$RoomObjectsTableCreateCompanionBuilder = RoomObjectsCompanion
   Value<int> y,
   Value<int?> roomExitId,
   Value<bool> visible,
+  Value<int?> earconId,
 });
 typedef $$RoomObjectsTableUpdateCompanionBuilder = RoomObjectsCompanion
     Function({
@@ -8997,6 +9132,7 @@ typedef $$RoomObjectsTableUpdateCompanionBuilder = RoomObjectsCompanion
   Value<int> y,
   Value<int?> roomExitId,
   Value<bool> visible,
+  Value<int?> earconId,
 });
 
 final class $$RoomObjectsTableReferences
@@ -9043,6 +9179,22 @@ final class $$RoomObjectsTableReferences
     final manager = $$RoomExitsTableTableManager($_db, $_db.roomExits)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_roomExitIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $SoundReferencesTable _earconIdTable(_$AppDatabase db) =>
+      db.soundReferences.createAlias(
+          $_aliasNameGenerator(db.roomObjects.earconId, db.soundReferences.id));
+
+  $$SoundReferencesTableProcessedTableManager? get earconId {
+    final $_column = $_itemColumn<int>('earcon_id');
+    if ($_column == null) return null;
+    final manager =
+        $$SoundReferencesTableTableManager($_db, $_db.soundReferences)
+            .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_earconIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
@@ -9166,6 +9318,26 @@ class $$RoomObjectsTableFilterComposer
             $$RoomExitsTableFilterComposer(
               $db: $db,
               $table: $db.roomExits,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableFilterComposer get earconId {
+    final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.earconId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableFilterComposer(
+              $db: $db,
+              $table: $db.soundReferences,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -9307,6 +9479,26 @@ class $$RoomObjectsTableOrderingComposer
             ));
     return composer;
   }
+
+  $$SoundReferencesTableOrderingComposer get earconId {
+    final $$SoundReferencesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.earconId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableOrderingComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$RoomObjectsTableAnnotationComposer
@@ -9396,6 +9588,26 @@ class $$RoomObjectsTableAnnotationComposer
     return composer;
   }
 
+  $$SoundReferencesTableAnnotationComposer get earconId {
+    final $$SoundReferencesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.earconId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
   Expression<T> roomObjectRandomSoundsRefs<T extends Object>(
       Expression<T> Function($$RoomObjectRandomSoundsTableAnnotationComposer a)
           f) {
@@ -9459,6 +9671,7 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
         {bool ambianceId,
         bool roomId,
         bool roomExitId,
+        bool earconId,
         bool roomObjectRandomSoundsRefs,
         bool roomObjectCommandCallersRefs})> {
   $$RoomObjectsTableTableManager(_$AppDatabase db, $RoomObjectsTable table)
@@ -9481,6 +9694,7 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
             Value<int> y = const Value.absent(),
             Value<int?> roomExitId = const Value.absent(),
             Value<bool> visible = const Value.absent(),
+            Value<int?> earconId = const Value.absent(),
           }) =>
               RoomObjectsCompanion(
             id: id,
@@ -9492,6 +9706,7 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
             y: y,
             roomExitId: roomExitId,
             visible: visible,
+            earconId: earconId,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -9503,6 +9718,7 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
             Value<int> y = const Value.absent(),
             Value<int?> roomExitId = const Value.absent(),
             Value<bool> visible = const Value.absent(),
+            Value<int?> earconId = const Value.absent(),
           }) =>
               RoomObjectsCompanion.insert(
             id: id,
@@ -9514,6 +9730,7 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
             y: y,
             roomExitId: roomExitId,
             visible: visible,
+            earconId: earconId,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
@@ -9525,6 +9742,7 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
               {ambianceId = false,
               roomId = false,
               roomExitId = false,
+              earconId = false,
               roomObjectRandomSoundsRefs = false,
               roomObjectCommandCallersRefs = false}) {
             return PrefetchHooks(
@@ -9574,6 +9792,16 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
                         $$RoomObjectsTableReferences._roomExitIdTable(db),
                     referencedColumn:
                         $$RoomObjectsTableReferences._roomExitIdTable(db).id,
+                  ) as T;
+                }
+                if (earconId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.earconId,
+                    referencedTable:
+                        $$RoomObjectsTableReferences._earconIdTable(db),
+                    referencedColumn:
+                        $$RoomObjectsTableReferences._earconIdTable(db).id,
                   ) as T;
                 }
 
@@ -9627,6 +9855,7 @@ typedef $$RoomObjectsTableProcessedTableManager = ProcessedTableManager<
         {bool ambianceId,
         bool roomId,
         bool roomExitId,
+        bool earconId,
         bool roomObjectRandomSoundsRefs,
         bool roomObjectCommandCallersRefs})>;
 typedef $$PlayerClassesTableCreateCompanionBuilder = PlayerClassesCompanion

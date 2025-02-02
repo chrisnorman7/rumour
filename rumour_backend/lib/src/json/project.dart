@@ -33,6 +33,9 @@ class Project {
     this.statMenuItemFormat =
         '{{ statName }}: {% if maxValue %}{{ (100 / maxValue * statValue) | floor }}%{% else %}{{ statValue }}{% endif %}',
     final TextStyleSettings? textStyleSettings,
+    this.examineRoomObjectFormat =
+        // ignore: lines_longer_than_80_chars
+        '{{ name }}: {{ description }} ({% if north == 0 and east == 0 and south == 0 and west == 0 %}here{% else %}{%if north > 0 %}{{ north }}n {% endif %}{% if east > 0 %}{{ east }}e {% endif %}{% if south > 0 %}{{ south }}s {% endif %}{% if west > 0 %}{{ west }}w {% endif %}{% endif %})',
   }) : textStyleSettings = textStyleSettings ??
             TextStyleSettings(
               fontSize: 24,
@@ -114,6 +117,9 @@ class Project {
 
   /// The text style to use.
   TextStyleSettings textStyleSettings;
+
+  /// The format of the message spoken when examining room objects.
+  String examineRoomObjectFormat;
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$ProjectToJson(this);

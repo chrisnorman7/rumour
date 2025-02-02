@@ -3,6 +3,7 @@ library;
 
 export 'src/game_player_context.dart';
 export 'src/game_player_file.dart';
+export 'src/room_object_location.dart';
 export 'src/screens/new_player_screen.dart';
 export 'src/screens/pause_menu.dart';
 export 'src/screens/play_project_context_loader_screen.dart';

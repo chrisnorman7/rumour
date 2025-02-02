@@ -23,4 +23,10 @@ class RoomObjects extends Table
   ///
   /// If [visible] is `false`, then the player will still hear the ambiance.
   BoolColumn get visible => boolean().withDefault(const Constant(true))();
+
+  /// The ID of the earcon to use.
+  @ReferenceName('room_object_earcons')
+  IntColumn get earconId => integer()
+      .references(SoundReferences, #id, onDelete: KeyAction.setNull)
+      .nullable()();
 }

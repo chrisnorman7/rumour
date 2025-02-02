@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:backstreets_widgets/extensions.dart';
 import 'package:backstreets_widgets/screens.dart';
 import 'package:backstreets_widgets/widgets.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_audio_games/touch.dart';
@@ -51,6 +52,9 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
   /// The project loaded from [projectContext].
   Project get project => projectContext.project;
 
+  /// The database to query.
+  AppDatabase get database => projectContext.database;
+
   /// The game player context to use.
   late GamePlayerContext _gamePlayerContext;
 
@@ -86,8 +90,33 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
   MovingDirection? movingDirection;
 
   /// Get nearby objects.
-  Future<List<RoomObject>> getNearbyRoomObjects() =>
+  Future<List<RoomObject>> _getNearbyRoomObjects() =>
       ref.read(roomObjectsProvider(_room.id, coordinates).future);
+
+  /// Get visible objects in this room.
+  Future<List<RoomObject>> _getVisibleObjects() async {
+    final objects = await database.managers.roomObjects
+        .filter(
+          (final f) => f.roomId.id.equals(_room.id) & f.visible.equals(true),
+        )
+        .get();
+    objects.sort(
+      (final a, final b) {
+        final distanceComparison = a.coordinates
+            .distanceTo(coordinates)
+            .compareTo(b.coordinates.distanceTo(coordinates));
+        if (distanceComparison == 0) {
+          // They are the same. Compare by name instead.
+          return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+        }
+        return distanceComparison;
+      },
+    );
+    return objects;
+  }
+
+  /// The ID of the last object which was examined.
+  int? _lastExaminedObjectIndex;
 
   /// Initialise state.
   @override
@@ -147,15 +176,15 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
                       TouchSurfaceBuilderCommand(
                         title: 'Examine previous object',
                         shortcut: GameShortcutsShortcut.bracketLeft,
-                        onStart: (final innerContext) => innerContext.announce(
-                          'Previous object.',
+                        onStart: (final innerContext) => switchObjects(
+                          TurningDirection.left,
                         ),
                       ),
                       TouchSurfaceBuilderCommand(
                         title: 'Examine next command',
                         shortcut: GameShortcutsShortcut.bracketRight,
-                        onStart: (final innerContext) => innerContext.announce(
-                          'Next object.',
+                        onStart: (final innerContext) => switchObjects(
+                          TurningDirection.right,
                         ),
                       ),
                       TouchSurfaceBuilderCommand(
@@ -192,7 +221,7 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
                         title: 'Activate nearby object',
                         shortcut: GameShortcutsShortcut.enter,
                         onStart: (final innerContext) async {
-                          final objects = await getNearbyRoomObjects();
+                          final objects = await _getNearbyRoomObjects();
                           if (objects.isEmpty) {
                             return;
                           }
@@ -444,6 +473,67 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
       return innerContext.pushWidgetBuilder(
         (final _) =>
             PlayerActionsScreen(title: object.name, playerActions: actions),
+      );
+    }
+  }
+
+  /// Examine an object.
+  Future<void> examineObject(final RoomObject object) async {
+    _lastExaminedObjectIndex = object.id;
+    final string = projectContext.renderTemplate(
+      rumourTemplate: RumourTemplate.roomObjectTemplate,
+      template: projectContext.jinjaEnvironment
+          .fromString(project.examineRoomObjectFormat),
+      value: RoomObjectLocation(
+        roomObject: object,
+        playerCoordinates: coordinates,
+      ),
+    );
+    context.announce(string);
+    await ref.maybePlaySoundReference(
+      soundReference:
+          await projectContext.maybeGetSoundReference(object.earconId),
+      destroy: true,
+    );
+  }
+
+  /// Switch to the next object in [direction].
+  Future<void> switchObjects(final TurningDirection direction) async {
+    final objects = await _getVisibleObjects();
+    if (objects.isEmpty) {
+      return;
+    }
+    final oldId = _lastExaminedObjectIndex;
+    if (oldId == null) {
+      switch (direction) {
+        case TurningDirection.left:
+          return examineObject(objects.last);
+        case TurningDirection.right:
+          return examineObject(objects.first);
+      }
+    }
+    for (var i = 0; i < objects.length; i++) {
+      final object = objects[i];
+      if (object.id == oldId) {
+        switch (direction) {
+          case TurningDirection.left:
+            if (i == 0) {
+              return examineObject(objects.last);
+            } else {
+              return examineObject(objects[i - 1]);
+            }
+          case TurningDirection.right:
+            if (i + 1 == objects.length) {
+              return examineObject(objects.first);
+            } else {
+              return examineObject(objects[i + 1]);
+            }
+        }
+      }
+    }
+    if (mounted) {
+      context.announce(
+        'There is an error in `switchObjects` which should be reported.',
       );
     }
   }
