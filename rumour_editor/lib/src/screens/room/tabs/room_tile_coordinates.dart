@@ -112,10 +112,7 @@ class _RoomTileCoordinates extends ConsumerWidget {
                     );
                     for (final object in [outObject, backObject]) {
                       ref.invalidate(
-                        roomObjectsProvider(
-                          object.roomId,
-                          Point(object.x, object.y),
-                        ),
+                        roomObjectsProvider(object.roomId, object.coordinates),
                       );
                     }
                     ref.invalidate(roomProvider(room.id));
@@ -175,7 +172,7 @@ class _RoomTileCoordinates extends ConsumerWidget {
                   ),
                 );
                 ref.invalidate(
-                  roomObjectsProvider(object.roomId, Point(object.x, object.y)),
+                  roomObjectsProvider(object.roomId, object.coordinates),
                 );
               }
               if (context.mounted) {
@@ -207,10 +204,7 @@ class _RoomTileCoordinates extends ConsumerWidget {
                     names.add(object.name);
                     await query.delete();
                     ref.invalidate(
-                      roomObjectsProvider(
-                        object.roomId,
-                        Point(object.x, object.y),
-                      ),
+                      roomObjectsProvider(object.roomId, object.coordinates),
                     );
                   }
                   if (context.mounted) {

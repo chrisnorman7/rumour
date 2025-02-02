@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +21,9 @@ class PlayerClassSettingsTab extends ConsumerWidget {
       (final f) => f.id.equals(playerClassId),
     );
     final value = ref.watch(playerClassProvider(playerClassId));
-    return value.simpleWhen(
-      (final playerClass) => ListView(
+    return value.simpleWhen((final playerClass) {
+      final value = ref.watch(roomProvider(playerClass.roomId));
+      return ListView(
         shrinkWrap: true,
         children: [
           TextListTile(
@@ -52,20 +51,26 @@ class PlayerClassSettingsTab extends ConsumerWidget {
             },
             title: 'Starting room',
           ),
-          PointListTile(
-            point: Point(playerClass.x, playerClass.y),
-            onChanged: (final point) async {
-              await query.update(
-                (final o) => o(x: Value(point.x), y: Value(point.y)),
-              );
-              ref.invalidate(PlayerClassProvider(playerClassId));
-            },
-            title: 'Starting coordinates',
-            min: const Point(0, 0),
+          value.when(
+            data:
+                (final room) => PointListTile(
+                  point: playerClass.coordinates,
+                  onChanged: (final point) async {
+                    await query.update(
+                      (final o) => o(x: Value(point.x), y: Value(point.y)),
+                    );
+                    ref.invalidate(PlayerClassProvider(playerClassId));
+                  },
+                  title: 'Starting coordinates',
+                  min: room.minCoordinates,
+                  max: room.maxCoordinates,
+                ),
+            error: ErrorListTile.withPositional,
+            loading: () => const LoadingListTile(title: 'Starting coordinates'),
           ),
         ],
-      ),
-    );
+      );
+    });
   }
 
   /// Invalidate providers.

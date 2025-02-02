@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:backstreets_widgets/screens.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:drift/drift.dart';
@@ -54,7 +52,7 @@ class EditRoomExitScreen extends ConsumerWidget {
                   title: 'Destination room',
                 ),
                 PointListTile(
-                  point: Point(roomExit.x, roomExit.y),
+                  point: roomExit.coordinates,
                   onChanged: (final point) async {
                     await query.update(
                       (final o) => o(x: Value(point.x), y: Value(point.y)),
@@ -62,8 +60,8 @@ class EditRoomExitScreen extends ConsumerWidget {
                     ref.invalidate(provider);
                   },
                   title: 'Destination coordinates',
-                  max: Point(room.maxX, room.maxY),
-                  min: const Point(0, 0),
+                  max: room.maxCoordinates,
+                  min: room.minCoordinates,
                 ),
                 SoundReferenceListTile(
                   soundReferenceId: roomExit.earconId,

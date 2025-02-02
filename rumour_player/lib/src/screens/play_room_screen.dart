@@ -390,7 +390,7 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
               ..x = exit.x
               ..y = exit.y;
             stopPlayerMoving();
-            setPlayerCoordinates(Point(exit.x, exit.y));
+            setPlayerCoordinates(exit.coordinates);
             ref.invalidate(gamePlayerContextProvider(widget.playerId));
           },
           earcon: await projectContext.maybeGetSoundFromSoundReferenceId(

@@ -84,9 +84,7 @@ class RoomObjectsTabState extends ConsumerState<RoomObjectsTab> {
       for (final object in objects) {
         names.add(object.name);
         _selectedObjectIds.add(object.id);
-        ref.invalidate(
-          roomObjectsProvider(object.roomId, Point(object.x, object.y)),
-        );
+        ref.invalidate(roomObjectsProvider(object.roomId, object.coordinates));
       }
       if (mounted) {
         setState(() {});
