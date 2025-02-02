@@ -206,12 +206,12 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
                               await innerContext.pushWidgetBuilder(
                                 (final _) => SelectObject(
                                   objects: objects,
-                                  onObjectSelect: activateObject,
+                                  onObjectSelect: _activateObject,
                                 ),
                               );
                             }
                           } else {
-                            await activateObject(objects.single);
+                            await _activateObject(objects.single);
                           }
                         },
                       ),
@@ -360,7 +360,7 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
   }
 
   /// Activate the given [object].
-  Future<void> activateObject(final RoomObject object) async {
+  Future<void> _activateObject(final RoomObject object) async {
     final exitId = object.roomExitId;
     if (exitId != null) {
       final exit = await ref.read(roomExitProvider(exitId).future);
