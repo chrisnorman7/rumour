@@ -31,6 +31,7 @@ class PauseMenuTab extends ConsumerWidget {
           AudioGameMenuItem(
             title: 'Save player',
             onActivate: (final innerContext) {
+              Navigator.pop(innerContext);
               gamePlayerContext.save();
               innerContext.announce('Saved.');
             },
