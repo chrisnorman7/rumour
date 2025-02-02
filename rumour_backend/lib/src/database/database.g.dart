@@ -1489,8 +1489,18 @@ class $RoomExitsTable extends RoomExits
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       defaultValue: const Constant('Use exit'));
+  static const VerificationMeta _earconIdMeta =
+      const VerificationMeta('earconId');
   @override
-  List<GeneratedColumn> get $columns => [id, roomId, x, y, useSoundId, label];
+  late final GeneratedColumn<int> earconId = GeneratedColumn<int>(
+      'earcon_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES sound_references (id) ON DELETE SET NULL'));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, roomId, x, y, useSoundId, label, earconId];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1526,6 +1536,10 @@ class $RoomExitsTable extends RoomExits
       context.handle(
           _labelMeta, label.isAcceptableOrUnknown(data['label']!, _labelMeta));
     }
+    if (data.containsKey('earcon_id')) {
+      context.handle(_earconIdMeta,
+          earconId.isAcceptableOrUnknown(data['earcon_id']!, _earconIdMeta));
+    }
     return context;
   }
 
@@ -1547,6 +1561,8 @@ class $RoomExitsTable extends RoomExits
           .read(DriftSqlType.int, data['${effectivePrefix}use_sound_id']),
       label: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}label'])!,
+      earconId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}earcon_id']),
     );
   }
 
@@ -1576,13 +1592,17 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
   ///
   /// The [label] will be used in the object actions menu.
   final String label;
+
+  /// The ID of the earcon sound to use in the room object action menu.
+  final int? earconId;
   const RoomExit(
       {required this.id,
       required this.roomId,
       required this.x,
       required this.y,
       this.useSoundId,
-      required this.label});
+      required this.label,
+      this.earconId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1594,6 +1614,9 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
       map['use_sound_id'] = Variable<int>(useSoundId);
     }
     map['label'] = Variable<String>(label);
+    if (!nullToAbsent || earconId != null) {
+      map['earcon_id'] = Variable<int>(earconId);
+    }
     return map;
   }
 
@@ -1607,6 +1630,9 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
           ? const Value.absent()
           : Value(useSoundId),
       label: Value(label),
+      earconId: earconId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(earconId),
     );
   }
 
@@ -1620,6 +1646,7 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
       y: serializer.fromJson<int>(json['y']),
       useSoundId: serializer.fromJson<int?>(json['useSoundId']),
       label: serializer.fromJson<String>(json['label']),
+      earconId: serializer.fromJson<int?>(json['earconId']),
     );
   }
   @override
@@ -1632,6 +1659,7 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
       'y': serializer.toJson<int>(y),
       'useSoundId': serializer.toJson<int?>(useSoundId),
       'label': serializer.toJson<String>(label),
+      'earconId': serializer.toJson<int?>(earconId),
     };
   }
 
@@ -1641,7 +1669,8 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
           int? x,
           int? y,
           Value<int?> useSoundId = const Value.absent(),
-          String? label}) =>
+          String? label,
+          Value<int?> earconId = const Value.absent()}) =>
       RoomExit(
         id: id ?? this.id,
         roomId: roomId ?? this.roomId,
@@ -1649,6 +1678,7 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
         y: y ?? this.y,
         useSoundId: useSoundId.present ? useSoundId.value : this.useSoundId,
         label: label ?? this.label,
+        earconId: earconId.present ? earconId.value : this.earconId,
       );
   RoomExit copyWithCompanion(RoomExitsCompanion data) {
     return RoomExit(
@@ -1659,6 +1689,7 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
       useSoundId:
           data.useSoundId.present ? data.useSoundId.value : this.useSoundId,
       label: data.label.present ? data.label.value : this.label,
+      earconId: data.earconId.present ? data.earconId.value : this.earconId,
     );
   }
 
@@ -1670,13 +1701,15 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
           ..write('x: $x, ')
           ..write('y: $y, ')
           ..write('useSoundId: $useSoundId, ')
-          ..write('label: $label')
+          ..write('label: $label, ')
+          ..write('earconId: $earconId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, roomId, x, y, useSoundId, label);
+  int get hashCode =>
+      Object.hash(id, roomId, x, y, useSoundId, label, earconId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1686,7 +1719,8 @@ class RoomExit extends DataClass implements Insertable<RoomExit> {
           other.x == this.x &&
           other.y == this.y &&
           other.useSoundId == this.useSoundId &&
-          other.label == this.label);
+          other.label == this.label &&
+          other.earconId == this.earconId);
 }
 
 class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
@@ -1696,6 +1730,7 @@ class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
   final Value<int> y;
   final Value<int?> useSoundId;
   final Value<String> label;
+  final Value<int?> earconId;
   const RoomExitsCompanion({
     this.id = const Value.absent(),
     this.roomId = const Value.absent(),
@@ -1703,6 +1738,7 @@ class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
     this.y = const Value.absent(),
     this.useSoundId = const Value.absent(),
     this.label = const Value.absent(),
+    this.earconId = const Value.absent(),
   });
   RoomExitsCompanion.insert({
     this.id = const Value.absent(),
@@ -1711,6 +1747,7 @@ class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
     this.y = const Value.absent(),
     this.useSoundId = const Value.absent(),
     this.label = const Value.absent(),
+    this.earconId = const Value.absent(),
   }) : roomId = Value(roomId);
   static Insertable<RoomExit> custom({
     Expression<int>? id,
@@ -1719,6 +1756,7 @@ class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
     Expression<int>? y,
     Expression<int>? useSoundId,
     Expression<String>? label,
+    Expression<int>? earconId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1727,6 +1765,7 @@ class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
       if (y != null) 'y': y,
       if (useSoundId != null) 'use_sound_id': useSoundId,
       if (label != null) 'label': label,
+      if (earconId != null) 'earcon_id': earconId,
     });
   }
 
@@ -1736,7 +1775,8 @@ class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
       Value<int>? x,
       Value<int>? y,
       Value<int?>? useSoundId,
-      Value<String>? label}) {
+      Value<String>? label,
+      Value<int?>? earconId}) {
     return RoomExitsCompanion(
       id: id ?? this.id,
       roomId: roomId ?? this.roomId,
@@ -1744,6 +1784,7 @@ class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
       y: y ?? this.y,
       useSoundId: useSoundId ?? this.useSoundId,
       label: label ?? this.label,
+      earconId: earconId ?? this.earconId,
     );
   }
 
@@ -1768,6 +1809,9 @@ class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
     if (label.present) {
       map['label'] = Variable<String>(label.value);
     }
+    if (earconId.present) {
+      map['earcon_id'] = Variable<int>(earconId.value);
+    }
     return map;
   }
 
@@ -1779,7 +1823,8 @@ class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
           ..write('x: $x, ')
           ..write('y: $y, ')
           ..write('useSoundId: $useSoundId, ')
-          ..write('label: $label')
+          ..write('label: $label, ')
+          ..write('earconId: $earconId')
           ..write(')'))
         .toString();
   }
@@ -5466,6 +5511,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
             ],
           ),
           WritePropagation(
+            on: TableUpdateQuery.onTableName('sound_references',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_exits', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
             on: TableUpdateQuery.onTableName('rooms',
                 limitUpdateKind: UpdateKind.delete),
             result: [
@@ -5701,16 +5753,32 @@ final class $$SoundReferencesTableReferences extends BaseReferences<
   }
 
   static MultiTypedResultKey<$RoomExitsTable, List<RoomExit>>
-      _roomExitsRefsTable(_$AppDatabase db) =>
+      _room_exit_use_soundsTable(_$AppDatabase db) =>
           MultiTypedResultKey.fromTable(db.roomExits,
               aliasName: $_aliasNameGenerator(
                   db.soundReferences.id, db.roomExits.useSoundId));
 
-  $$RoomExitsTableProcessedTableManager get roomExitsRefs {
+  $$RoomExitsTableProcessedTableManager get room_exit_use_sounds {
     final manager = $$RoomExitsTableTableManager($_db, $_db.roomExits)
         .filter((f) => f.useSoundId.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_roomExitsRefsTable($_db));
+    final cache =
+        $_typedResult.readTableOrNull(_room_exit_use_soundsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$RoomExitsTable, List<RoomExit>>
+      _room_exits_earconsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.roomExits,
+              aliasName: $_aliasNameGenerator(
+                  db.soundReferences.id, db.roomExits.earconId));
+
+  $$RoomExitsTableProcessedTableManager get room_exits_earcons {
+    final manager = $$RoomExitsTableTableManager($_db, $_db.roomExits)
+        .filter((f) => f.earconId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_room_exits_earconsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -5945,13 +6013,34 @@ class $$SoundReferencesTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> roomExitsRefs(
+  Expression<bool> room_exit_use_sounds(
       Expression<bool> Function($$RoomExitsTableFilterComposer f) f) {
     final $$RoomExitsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
         referencedTable: $db.roomExits,
         getReferencedColumn: (t) => t.useSoundId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomExitsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomExits,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> room_exits_earcons(
+      Expression<bool> Function($$RoomExitsTableFilterComposer f) f) {
+    final $$RoomExitsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomExits,
+        getReferencedColumn: (t) => t.earconId,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
@@ -6245,13 +6334,34 @@ class $$SoundReferencesTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> roomExitsRefs<T extends Object>(
+  Expression<T> room_exit_use_sounds<T extends Object>(
       Expression<T> Function($$RoomExitsTableAnnotationComposer a) f) {
     final $$RoomExitsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
         referencedTable: $db.roomExits,
         getReferencedColumn: (t) => t.useSoundId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomExitsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roomExits,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<T> room_exits_earcons<T extends Object>(
+      Expression<T> Function($$RoomExitsTableAnnotationComposer a) f) {
+    final $$RoomExitsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomExits,
+        getReferencedColumn: (t) => t.earconId,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
@@ -6437,7 +6547,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
         bool footstepsSurfaces,
         bool wallSoundsSurfaces,
         bool roomsRefs,
-        bool roomExitsRefs,
+        bool room_exit_use_sounds,
+        bool room_exits_earcons,
         bool roomObjectsRefs,
         bool roomSurfaceBoostBoostSounds,
         bool roomSurfaceBoostMaxedOutSounds,
@@ -6491,7 +6602,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
               footstepsSurfaces = false,
               wallSoundsSurfaces = false,
               roomsRefs = false,
-              roomExitsRefs = false,
+              room_exit_use_sounds = false,
+              room_exits_earcons = false,
               roomObjectsRefs = false,
               roomSurfaceBoostBoostSounds = false,
               roomSurfaceBoostMaxedOutSounds = false,
@@ -6506,7 +6618,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                 if (footstepsSurfaces) db.roomSurfaces,
                 if (wallSoundsSurfaces) db.roomSurfaces,
                 if (roomsRefs) db.rooms,
-                if (roomExitsRefs) db.roomExits,
+                if (room_exit_use_sounds) db.roomExits,
+                if (room_exits_earcons) db.roomExits,
                 if (roomObjectsRefs) db.roomObjects,
                 if (roomSurfaceBoostBoostSounds) db.roomSurfaceBoosts,
                 if (roomSurfaceBoostMaxedOutSounds) db.roomSurfaceBoosts,
@@ -6566,17 +6679,29 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.ambianceId == item.id),
                         typedResults: items),
-                  if (roomExitsRefs)
+                  if (room_exit_use_sounds)
                     await $_getPrefetchedData(
                         currentTable: table,
                         referencedTable: $$SoundReferencesTableReferences
-                            ._roomExitsRefsTable(db),
+                            ._room_exit_use_soundsTable(db),
                         managerFromTypedResult: (p0) =>
                             $$SoundReferencesTableReferences(db, table, p0)
-                                .roomExitsRefs,
+                                .room_exit_use_sounds,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.useSoundId == item.id),
+                        typedResults: items),
+                  if (room_exits_earcons)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$SoundReferencesTableReferences
+                            ._room_exits_earconsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$SoundReferencesTableReferences(db, table, p0)
+                                .room_exits_earcons,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.earconId == item.id),
                         typedResults: items),
                   if (roomObjectsRefs)
                     await $_getPrefetchedData(
@@ -6685,7 +6810,8 @@ typedef $$SoundReferencesTableProcessedTableManager = ProcessedTableManager<
         bool footstepsSurfaces,
         bool wallSoundsSurfaces,
         bool roomsRefs,
-        bool roomExitsRefs,
+        bool room_exit_use_sounds,
+        bool room_exits_earcons,
         bool roomObjectsRefs,
         bool roomSurfaceBoostBoostSounds,
         bool roomSurfaceBoostMaxedOutSounds,
@@ -8329,6 +8455,7 @@ typedef $$RoomExitsTableCreateCompanionBuilder = RoomExitsCompanion Function({
   Value<int> y,
   Value<int?> useSoundId,
   Value<String> label,
+  Value<int?> earconId,
 });
 typedef $$RoomExitsTableUpdateCompanionBuilder = RoomExitsCompanion Function({
   Value<int> id,
@@ -8337,6 +8464,7 @@ typedef $$RoomExitsTableUpdateCompanionBuilder = RoomExitsCompanion Function({
   Value<int> y,
   Value<int?> useSoundId,
   Value<String> label,
+  Value<int?> earconId,
 });
 
 final class $$RoomExitsTableReferences
@@ -8368,6 +8496,22 @@ final class $$RoomExitsTableReferences
         $$SoundReferencesTableTableManager($_db, $_db.soundReferences)
             .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_useSoundIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $SoundReferencesTable _earconIdTable(_$AppDatabase db) =>
+      db.soundReferences.createAlias(
+          $_aliasNameGenerator(db.roomExits.earconId, db.soundReferences.id));
+
+  $$SoundReferencesTableProcessedTableManager? get earconId {
+    final $_column = $_itemColumn<int>('earcon_id');
+    if ($_column == null) return null;
+    final manager =
+        $$SoundReferencesTableTableManager($_db, $_db.soundReferences)
+            .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_earconIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
@@ -8434,6 +8578,26 @@ class $$RoomExitsTableFilterComposer
     final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.useSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableFilterComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableFilterComposer get earconId {
+    final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.earconId,
         referencedTable: $db.soundReferences,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
@@ -8532,6 +8696,26 @@ class $$RoomExitsTableOrderingComposer
             ));
     return composer;
   }
+
+  $$SoundReferencesTableOrderingComposer get earconId {
+    final $$SoundReferencesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.earconId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableOrderingComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$RoomExitsTableAnnotationComposer
@@ -8595,6 +8779,26 @@ class $$RoomExitsTableAnnotationComposer
     return composer;
   }
 
+  $$SoundReferencesTableAnnotationComposer get earconId {
+    final $$SoundReferencesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.earconId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
   Expression<T> roomObjectsRefs<T extends Object>(
       Expression<T> Function($$RoomObjectsTableAnnotationComposer a) f) {
     final $$RoomObjectsTableAnnotationComposer composer = $composerBuilder(
@@ -8629,7 +8833,7 @@ class $$RoomExitsTableTableManager extends RootTableManager<
     (RoomExit, $$RoomExitsTableReferences),
     RoomExit,
     PrefetchHooks Function(
-        {bool roomId, bool useSoundId, bool roomObjectsRefs})> {
+        {bool roomId, bool useSoundId, bool earconId, bool roomObjectsRefs})> {
   $$RoomExitsTableTableManager(_$AppDatabase db, $RoomExitsTable table)
       : super(TableManagerState(
           db: db,
@@ -8647,6 +8851,7 @@ class $$RoomExitsTableTableManager extends RootTableManager<
             Value<int> y = const Value.absent(),
             Value<int?> useSoundId = const Value.absent(),
             Value<String> label = const Value.absent(),
+            Value<int?> earconId = const Value.absent(),
           }) =>
               RoomExitsCompanion(
             id: id,
@@ -8655,6 +8860,7 @@ class $$RoomExitsTableTableManager extends RootTableManager<
             y: y,
             useSoundId: useSoundId,
             label: label,
+            earconId: earconId,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -8663,6 +8869,7 @@ class $$RoomExitsTableTableManager extends RootTableManager<
             Value<int> y = const Value.absent(),
             Value<int?> useSoundId = const Value.absent(),
             Value<String> label = const Value.absent(),
+            Value<int?> earconId = const Value.absent(),
           }) =>
               RoomExitsCompanion.insert(
             id: id,
@@ -8671,6 +8878,7 @@ class $$RoomExitsTableTableManager extends RootTableManager<
             y: y,
             useSoundId: useSoundId,
             label: label,
+            earconId: earconId,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
@@ -8679,7 +8887,10 @@ class $$RoomExitsTableTableManager extends RootTableManager<
                   ))
               .toList(),
           prefetchHooksCallback: (
-              {roomId = false, useSoundId = false, roomObjectsRefs = false}) {
+              {roomId = false,
+              useSoundId = false,
+              earconId = false,
+              roomObjectsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [if (roomObjectsRefs) db.roomObjects],
@@ -8714,6 +8925,16 @@ class $$RoomExitsTableTableManager extends RootTableManager<
                         $$RoomExitsTableReferences._useSoundIdTable(db),
                     referencedColumn:
                         $$RoomExitsTableReferences._useSoundIdTable(db).id,
+                  ) as T;
+                }
+                if (earconId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.earconId,
+                    referencedTable:
+                        $$RoomExitsTableReferences._earconIdTable(db),
+                    referencedColumn:
+                        $$RoomExitsTableReferences._earconIdTable(db).id,
                   ) as T;
                 }
 
@@ -8752,7 +8973,7 @@ typedef $$RoomExitsTableProcessedTableManager = ProcessedTableManager<
     (RoomExit, $$RoomExitsTableReferences),
     RoomExit,
     PrefetchHooks Function(
-        {bool roomId, bool useSoundId, bool roomObjectsRefs})>;
+        {bool roomId, bool useSoundId, bool earconId, bool roomObjectsRefs})>;
 typedef $$RoomObjectsTableCreateCompanionBuilder = RoomObjectsCompanion
     Function({
   Value<int> id,
