@@ -41,30 +41,49 @@ class PlayerContextSounds extends ConsumerWidget {
         final roomId = player.roomId;
         final value = ref.watch(roomProvider(roomId));
         return value.when(
-          data: (final room) => RoomRandomSounds(
-            roomId: roomId,
-            getPaused: getPaused,
-            error: error,
-            loading: loading,
-            child: RoomSurfaceBoostTimers(
-              playerId: playerId,
-              roomSurfaceId: room.surfaceId,
-              getPaused: getPaused,
-              error: error,
-              loading: loading,
-              child: RoomAmbiances(
-                roomId: roomId,
-                error: error,
-                loading: loading,
-                child: ZoneMusic(
-                  zoneId: room.zoneId,
+          data: (final room) {
+            final value = ref.watch(roomSurfaceProvider(room.surfaceId));
+            return value.when(
+              data: (final surface) => LoadProtectedSoundReference(
+                soundReferenceId: surface.footstepSoundId,
+                destroy: true,
+                child: LoadProtectedSoundReference(
+                  soundReferenceId: surface.wallSoundI,
+                  destroy: true,
+                  child: RoomRandomSounds(
+                    roomId: roomId,
+                    getPaused: getPaused,
+                    error: error,
+                    loading: loading,
+                    child: RoomSurfaceBoostTimers(
+                      playerId: playerId,
+                      roomSurfaceId: room.surfaceId,
+                      getPaused: getPaused,
+                      error: error,
+                      loading: loading,
+                      child: RoomAmbiances(
+                        roomId: roomId,
+                        error: error,
+                        loading: loading,
+                        child: ZoneMusic(
+                          zoneId: room.zoneId,
+                          error: error,
+                          loading: loading,
+                          builder: builder,
+                        ),
+                      ),
+                    ),
+                  ),
                   error: error,
                   loading: loading,
-                  builder: builder,
                 ),
+                error: error,
+                loading: loading,
               ),
-            ),
-          ),
+              error: error,
+              loading: loading,
+            );
+          },
           error: error,
           loading: loading,
         );
