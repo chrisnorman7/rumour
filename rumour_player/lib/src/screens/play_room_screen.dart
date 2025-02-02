@@ -372,7 +372,7 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
     final commands = await ref.read(
       roomObjectCommandCallersProvider(roomObject.id).future,
     );
-    final actions = <PlayerAction>[
+    return <PlayerAction>[
       if (exit != null)
         PlayerAction(
           name: exit.label,
@@ -393,25 +393,23 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
             setPlayerCoordinates(Point(exit.x, exit.y));
             ref.invalidate(gamePlayerContextProvider(widget.playerId));
           },
+          earcon: await projectContext.maybeGetSoundFromSoundReferenceId(
+            id: exit.earconId,
+            destroy: false,
+          ),
         ),
-    ];
-    for (final command in commands) {
-      actions.add(
+      for (final command in commands)
         PlayerAction(
           name: command.name,
           performAction: () => ref.runCommandCaller(
             command.commandCallerId,
           ),
-          earcon: projectContext.maybeGetSound(
-            soundReference: await projectContext.maybeGetSoundReference(
-              command.earconId,
-            ),
+          earcon: await projectContext.maybeGetSoundFromSoundReferenceId(
+            id: command.earconId,
             destroy: false,
           ),
         ),
-      );
-    }
-    return actions;
+    ];
   }
 
   /// Pause the game and push a widget [builder] on [innerContext].
