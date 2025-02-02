@@ -5,7 +5,6 @@ import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
-import 'package:rumour_player/rumour_player.dart';
 import 'package:time/time.dart';
 
 /// A widget for running room surface boosts.

@@ -2289,7 +2289,7 @@ class _ProjectDataDirectoryProviderElement
   Project get project => (origin as ProjectDataDirectoryProvider).project;
 }
 
-String _$gameStatsHash() => r'e9b8d1e1e437e3c8624266b03680ef73ad752283';
+String _$gameStatsHash() => r'1a481afdfdc377ef124322a70ecaa67690de9af7';
 
 /// Provide all game stats.
 ///

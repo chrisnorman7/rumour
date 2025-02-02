@@ -640,8 +640,11 @@ Future<List<GameStat>> gameStats(final Ref ref) async {
       ),
     );
     final maxHealth = await manager.createReturning(
-      (final f) =>
-          f(name: 'Max health', description: 'The maximum possible health.'),
+      (final f) => f(
+        name: 'Max health',
+        description: 'The maximum possible health.',
+        isVisible: const Value(false),
+      ),
     );
     final health = await manager.createReturning(
       (final f) => f(

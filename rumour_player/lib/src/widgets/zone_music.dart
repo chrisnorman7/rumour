@@ -49,6 +49,7 @@ class ZoneMusic extends ConsumerWidget {
             fadeInTime: project.mainMenuMusicFadeIn,
             fadeOutTime: project.mainMenuMusicFadeOut,
             builder: builder,
+            key: ValueKey('Music-$musicId'),
           ),
           error: error,
           loading: loading,

@@ -100,6 +100,7 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
   /// Build a widget.
   @override
   Widget build(final BuildContext context) {
+    movingDirection = null;
     final error = _error;
     if (error != null) {
       return Cancel(
@@ -161,25 +162,20 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
                         title: 'Pause menu',
                         shortcut: GameShortcutsShortcut.escape,
                         onStart: (final innerContext) async {
-                          final state = innerContext
-                              .findAncestorStateOfType<RoomAmbiancesState>();
-                          state?.fadeOut();
-                          _paused = true;
                           if (innerContext.mounted) {
                             final shortcuts = innerContext
                                     .dependOnInheritedWidgetOfExactType<
                                         InheritedGameShortcuts>()
                                     ?.shortcuts ??
                                 [];
-                            await innerContext.fadeMusicAndPushWidget(
+                            await pauseGameAndPushWidgetBuilder(
+                              innerContext,
                               (final _) => PauseMenu(
                                 playerId: widget.playerId,
                                 shortcuts: shortcuts,
                               ),
                             );
                           }
-                          state?.fadeIn();
-                          _paused = false;
                         },
                       ),
                     ],
@@ -206,12 +202,18 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
                               await innerContext.pushWidgetBuilder(
                                 (final _) => SelectObject(
                                   objects: objects,
-                                  onObjectSelect: _activateObject,
+                                  onObjectSelect: (final object) =>
+                                      _activateObject(innerContext, object),
                                 ),
                               );
                             }
                           } else {
-                            await _activateObject(objects.single);
+                            if (innerContext.mounted) {
+                              await _activateObject(
+                                innerContext,
+                                objects.single,
+                              );
+                            }
                           }
                         },
                       ),
@@ -359,27 +361,92 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
     );
   }
 
+  /// Provide a list of player actions which can be performed on a room object.
+  Future<List<PlayerAction>> getRoomObjectPlayerActions(
+    final RoomObject roomObject,
+  ) async {
+    final roomExitId = roomObject.roomExitId;
+    final exit = roomExitId == null
+        ? null
+        : await ref.read(roomExitProvider(roomExitId).future);
+    final commands = await ref.read(
+      roomObjectCommandCallersProvider(roomObject.id).future,
+    );
+    final actions = <PlayerAction>[
+      if (exit != null)
+        PlayerAction(
+          name: exit.label,
+          performAction: () async {
+            await ref.maybePlaySoundReference(
+              soundReference:
+                  await projectContext.maybeGetSoundReference(exit.useSoundId),
+              destroy: true,
+            );
+            final destinationRoom = await ref.read(
+              roomProvider(exit.roomId).future,
+            );
+            _player
+              ..roomId = destinationRoom.id
+              ..x = exit.x
+              ..y = exit.y;
+            stopPlayerMoving();
+            setPlayerCoordinates(Point(exit.x, exit.y));
+            ref.invalidate(gamePlayerContextProvider(widget.playerId));
+          },
+        ),
+    ];
+    for (final command in commands) {
+      actions.add(
+        PlayerAction(
+          name: command.name,
+          performAction: () => ref.runCommandCaller(
+            command.commandCallerId,
+          ),
+          earcon: projectContext.maybeGetSound(
+            soundReference: await projectContext.maybeGetSoundReference(
+              command.earconId,
+            ),
+            destroy: false,
+          ),
+        ),
+      );
+    }
+    return actions;
+  }
+
+  /// Pause the game and push a widget [builder] on [innerContext].
+  Future<void> pauseGameAndPushWidgetBuilder(
+    final BuildContext innerContext,
+    final WidgetBuilder builder,
+  ) async {
+    final state = innerContext.findAncestorStateOfType<RoomAmbiancesState>();
+    _paused = true;
+    state?.fadeOut();
+    await innerContext.fadeMusicAndPushWidget(
+      builder,
+      restartMusic: false,
+    );
+    state?.fadeIn();
+    _paused = false;
+  }
+
   /// Activate the given [object].
-  Future<void> _activateObject(final RoomObject object) async {
-    final exitId = object.roomExitId;
-    if (exitId != null) {
-      final exit = await ref.read(roomExitProvider(exitId).future);
-      await ref.maybePlaySoundReference(
-        soundReference:
-            await projectContext.maybeGetSoundReference(exit.useSoundId),
-        destroy: true,
+  Future<void> _activateObject(
+    final BuildContext innerContext,
+    final RoomObject object,
+  ) async {
+    final actions = await getRoomObjectPlayerActions(object);
+    if (actions.isEmpty) {
+      return;
+    }
+    if (actions.length == 1) {
+      return actions.single.performAction();
+    }
+    if (innerContext.mounted) {
+      return innerContext.pushWidgetBuilder(
+        (final _) =>
+            PlayerActionsScreen(title: object.name, playerActions: actions),
       );
-      final destinationRoom = await ref.read(
-        roomProvider(exit.roomId).future,
-      );
-      _player
-        ..roomId = destinationRoom.id
-        ..x = exit.x
-        ..y = exit.y;
-      _gamePlayerContext.save();
-      stopPlayerMoving();
-      setPlayerCoordinates(Point(exit.x, exit.y));
-      ref.invalidate(gamePlayerContextProvider(widget.playerId));
     }
   }
 }

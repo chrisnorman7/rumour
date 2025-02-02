@@ -1,6 +1,7 @@
 import 'package:backstreets_widgets/extensions.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:time/time.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,7 +15,9 @@ extension WidgetRefX on WidgetRef {
     if (callAfter != null) {
       await Future<void>.delayed(callAfter.seconds);
     }
-    return runCommand(caller.childCommandId);
+    if (context.mounted) {
+      return runCommand(caller.childCommandId);
+    }
   }
 
   /// Call a command by its [id].
@@ -50,5 +53,32 @@ extension WidgetRefX on WidgetRef {
         return runCommandCaller(possibleCommandCaller.id);
       }
     }
+  }
+
+  /// Maybe play [soundReference].
+  ///
+  /// If [soundReference] is `null`, then nothing will happen.
+  Future<SoundHandle?> maybePlaySoundReference({
+    required final SoundReference? soundReference,
+    required final bool destroy,
+    final bool looping = false,
+    final Duration loopingStart = Duration.zero,
+    final bool paused = false,
+    final SoundPosition position = unpanned,
+  }) {
+    if (context.mounted) {
+      final projectContext = read(projectContextProvider);
+      return context.maybePlaySound(
+        projectContext.maybeGetSound(
+          soundReference: soundReference,
+          destroy: destroy,
+          looping: looping,
+          loopingStart: loopingStart,
+          paused: paused,
+          position: position,
+        ),
+      );
+    }
+    return Future.value();
   }
 }
