@@ -1,3 +1,4 @@
+import 'package:backstreets_widgets/extensions.dart';
 import 'package:backstreets_widgets/screens.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class SelectObject extends StatelessWidget {
                 autofocus: index == 0,
                 title: Text(object.name),
                 onTap: () {
-                  Navigator.pop(context);
+                  context.pop();
                   onObjectSelect(object);
                 },
               );

@@ -1,3 +1,4 @@
+import 'package:backstreets_widgets/extensions.dart';
 import 'package:backstreets_widgets/screens.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +54,7 @@ class _ObjectsListTile extends ConsumerWidget {
                             title: Text(object.name),
                             subtitle: Text(object.description),
                             onTap: () {
-                              Navigator.pop(context);
+                              context.pop();
                               selectObject(object);
                             },
                           ),

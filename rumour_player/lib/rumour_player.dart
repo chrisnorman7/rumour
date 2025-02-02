@@ -13,7 +13,6 @@ export 'src/screens/play_room_screen.dart';
 export 'src/screens/play_saved_player_screen.dart';
 export 'src/screens/player_actions_screen.dart';
 export 'src/screens/select_object.dart';
-export 'src/widgets/audio_game_menu_list_view.dart';
 export 'src/widgets/close_project.dart';
 export 'src/widgets/pause_menu_tabs/pause_menu_tab.dart';
 export 'src/widgets/pause_menu_tabs/player_stats_tab.dart';

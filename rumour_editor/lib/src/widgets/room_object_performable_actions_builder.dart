@@ -141,11 +141,10 @@ class RoomObjectPerformableActionsBuilder extends ConsumerWidget {
                   PerformableAction(
                     name: 'Delete exit',
                     invoke:
-                        () => context.confirm(
+                        () => context.showConfirmMessage(
                           message: 'Really delete the exit?',
                           title: confirmDeleteTitle,
                           yesCallback: () async {
-                            Navigator.pop(context);
                             await managers.roomExits
                                 .filter((final f) => f.id.equals(roomExitId))
                                 .delete();
@@ -174,11 +173,10 @@ class RoomObjectPerformableActionsBuilder extends ConsumerWidget {
                 PerformableAction(
                   name: 'Delete',
                   invoke:
-                      () => context.confirm(
+                      () => context.showConfirmMessage(
                         message: 'Really delete ${object.name}?',
                         title: confirmDeleteTitle,
                         yesCallback: () async {
-                          Navigator.pop(context);
                           if (selected ?? false) {
                             onSelectChange?.call(object);
                           }

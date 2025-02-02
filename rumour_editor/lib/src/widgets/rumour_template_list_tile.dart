@@ -55,7 +55,7 @@ class RumourTemplateListTile<T> extends StatelessWidget {
         () => context.pushWidgetBuilder(
           (_) => GetText(
             onDone: (final value) {
-              Navigator.pop(context);
+              context.pop();
               onChanged(value);
             },
             labelText: 'Template',

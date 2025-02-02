@@ -1,9 +1,9 @@
+import 'package:backstreets_widgets/extensions.dart';
 import 'package:backstreets_widgets/screens.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:rumour_backend/rumour_backend.dart';
-import 'package:rumour_player/src/widgets/audio_game_menu_list_view.dart';
 
 /// A screen to select a player action from [playerActions].
 class PlayerActionsScreen extends StatelessWidget {
@@ -31,7 +31,7 @@ class PlayerActionsScreen extends StatelessWidget {
                 (final playerAction) => AudioGameMenuItem(
                   title: playerAction.name,
                   onActivate: (final innerContext) {
-                    Navigator.pop(innerContext);
+                    innerContext.pop();
                     playerAction.performAction();
                   },
                   earcon: playerAction.earcon,

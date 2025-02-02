@@ -98,7 +98,7 @@ class EditCommandScreen extends ConsumerWidget {
                     () => context.pushWidgetBuilder(
                       (_) => GetText(
                         onDone: (final newUrl) async {
-                          Navigator.pop(context);
+                          context.pop();
                           await query.update(
                             (final o) =>
                                 o(url: Value(newUrl.isEmpty ? null : newUrl)),

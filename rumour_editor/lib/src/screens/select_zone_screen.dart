@@ -1,3 +1,4 @@
+import 'package:backstreets_widgets/extensions.dart';
 import 'package:backstreets_widgets/screens.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,7 @@ class SelectZoneScreen extends ConsumerWidget {
                   subtitle: Text(zone.description),
                   selected: zone.id == currentZoneId,
                   onTap: () {
-                    Navigator.pop(context);
+                    context.pop();
                     onChanged(zone.id);
                   },
                 ),

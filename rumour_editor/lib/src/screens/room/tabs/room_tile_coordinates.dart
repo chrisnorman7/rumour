@@ -191,11 +191,10 @@ class _RoomTileCoordinates extends ConsumerWidget {
             name: 'Delete',
             invoke: () {
               final n = selectedObjectIds.length;
-              context.confirm(
+              context.showConfirmMessage(
                 message: 'Really delete $n ${n.pluralise("object")}?',
                 title: confirmDeleteTitle,
                 yesCallback: () async {
-                  Navigator.pop(context);
                   final names = <String>[];
                   for (final id in [...selectedObjectIds]) {
                     final query = manager.filter((final f) => f.id.equals(id));

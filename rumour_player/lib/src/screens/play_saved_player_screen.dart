@@ -34,8 +34,14 @@ class PlaySavedPlayerScreenState extends ConsumerState<PlaySavedPlayerScreen> {
     }
     final projectContext = ref.watch(projectContextProvider);
     final project = projectContext.project;
-    final selectSound = project.menuSelectSound?.getSoundReference();
-    final activateSound = project.menuActivateSound?.getSoundReference();
+    final selectSound = projectContext.maybeGetSound(
+      soundReference: project.menuSelectSound?.getSoundReference(),
+      destroy: false,
+    );
+    final activateSound = projectContext.maybeGetSound(
+      soundReference: project.menuActivateSound?.getSoundReference(),
+      destroy: true,
+    );
     final value = ref.watch(gamePlayersProvider);
     return Cancel(
       child: SimpleScaffold(
@@ -46,12 +52,7 @@ class PlaySavedPlayerScreenState extends ConsumerState<PlaySavedPlayerScreen> {
               final gamePlayerFile = players[index];
               final player = gamePlayerFile.gamePlayer;
               return MaybePlaySoundSemantics(
-                sound: selectSound == null
-                    ? null
-                    : projectContext.getSound(
-                        soundReference: selectSound,
-                        destroy: false,
-                      ),
+                sound: selectSound,
                 child: PerformableActionsListTile(
                   actions: [
                     RenameAction(
@@ -70,13 +71,12 @@ class PlaySavedPlayerScreenState extends ConsumerState<PlaySavedPlayerScreen> {
                     ),
                     PerformableAction(
                       name: 'Delete',
-                      invoke: () => context.confirm(
+                      invoke: () => context.showConfirmMessage(
                         message: 'Really delete ${player.name}?',
                         title: confirmDeleteTitle,
                         yesCallback: () async {
-                          Navigator.pop(context);
                           if (players.length == 1) {
-                            Navigator.pop(context);
+                            context.pop();
                           }
                           gamePlayerFile.file.deleteSync(recursive: true);
                           ref.invalidate(gamePlayersProvider);
@@ -88,14 +88,7 @@ class PlaySavedPlayerScreenState extends ConsumerState<PlaySavedPlayerScreen> {
                   autofocus: index == 0,
                   title: Text(player.name),
                   onTap: () {
-                    if (activateSound != null) {
-                      context.playSound(
-                        projectContext.getSound(
-                          soundReference: activateSound,
-                          destroy: true,
-                        ),
-                      );
-                    }
+                    context.maybePlaySound(activateSound);
                     setState(() => _playerId = gamePlayerFile.id);
                   },
                 ),

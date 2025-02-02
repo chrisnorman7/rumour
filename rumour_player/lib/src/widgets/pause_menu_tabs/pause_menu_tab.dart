@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
-import 'package:rumour_player/rumour_player.dart';
 
 /// The pause menu tab.
 class PauseMenuTab extends ConsumerWidget {
@@ -31,7 +30,7 @@ class PauseMenuTab extends ConsumerWidget {
           AudioGameMenuItem(
             title: 'Save player',
             onActivate: (final innerContext) {
-              Navigator.pop(innerContext);
+              innerContext.pop();
               gamePlayerContext.save();
               innerContext.announce('Saved.');
             },
@@ -54,7 +53,7 @@ class PauseMenuTab extends ConsumerWidget {
             title: 'Exit game',
             onActivate: (final innerContext) {
               for (var i = 0; i < 2; i++) {
-                Navigator.pop(innerContext);
+                innerContext.pop();
               }
             },
           ),

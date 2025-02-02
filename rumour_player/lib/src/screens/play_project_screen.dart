@@ -2,7 +2,6 @@ import 'package:backstreets_widgets/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_player/rumour_player.dart';
 
@@ -18,30 +17,18 @@ class PlayProjectScreen extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     final projectContext = ref.watch(projectContextProvider);
     final project = projectContext.project;
-    final musicReference = project.mainMenuMusic;
-    final selectSoundReference = project.menuSelectSound;
-    final activateSoundReference = project.menuActivateSound;
-    final activateItemSound = activateSoundReference == null
-        ? null
-        : projectContext.getSound(
-            soundReference: activateSoundReference.getSoundReference(),
-            destroy: true,
-          );
-    final selectItemSound = selectSoundReference == null
-        ? null
-        : projectContext.getSound(
-            soundReference: selectSoundReference.getSoundReference(),
-            destroy: false,
-          );
-    final music = musicReference == null
-        ? null
-        : projectContext.getSound(
-            soundReference: musicReference.getSoundReference(
-              loadMode: LoadMode.disk,
-            ),
-            destroy: false,
-            looping: true,
-          );
+    final music = projectContext.maybeGetSound(
+      soundReference: project.mainMenuMusic?.getSoundReference(),
+      destroy: false,
+    );
+    final selectSound = projectContext.maybeGetSound(
+      soundReference: project.menuSelectSound?.getSoundReference(),
+      destroy: false,
+    );
+    final activateSound = projectContext.maybeGetSound(
+      soundReference: project.menuActivateSound?.getSoundReference(),
+      destroy: true,
+    );
     final newPlayerEarcon = projectContext.maybeGetSound(
       soundReference: project.newPlayerEarcon?.getSoundReference(),
       destroy: false,
@@ -54,45 +41,36 @@ class PlayProjectScreen extends ConsumerWidget {
     final textStyle = ref.watch(projectTextStyleProvider);
     return DefaultTextStyle(
       style: textStyle,
-      child: ProtectSounds(
-        sounds: [
-          activateItemSound,
-          selectItemSound,
-          music,
-          newPlayerEarcon,
-          savedPlayersEarcon,
-        ].whereType<Sound>().toList(),
-        child: value.when(
-          data: (final players) => AudioGameMenu(
-            title: project.name,
-            menuItems: [
+      child: value.when(
+        data: (final players) => AudioGameMenu(
+          title: project.name,
+          menuItems: [
+            AudioGameMenuItem(
+              title: project.newPlayerLabel,
+              onActivate: (final innerContext) =>
+                  innerContext.fadeMusicAndPushWidget(
+                (final _) => const NewPlayerScreen(),
+              ),
+              earcon: newPlayerEarcon,
+            ),
+            if (players.isNotEmpty)
               AudioGameMenuItem(
-                title: project.newPlayerLabel,
+                title: project.savedPlayersLabel,
                 onActivate: (final innerContext) =>
                     innerContext.fadeMusicAndPushWidget(
-                  (final _) => const NewPlayerScreen(),
+                  (final _) => const PlaySavedPlayerScreen(),
                 ),
-                earcon: newPlayerEarcon,
+                earcon: savedPlayersEarcon,
               ),
-              if (players.isNotEmpty)
-                AudioGameMenuItem(
-                  title: project.savedPlayersLabel,
-                  onActivate: (final innerContext) =>
-                      innerContext.fadeMusicAndPushWidget(
-                    (final _) => const PlaySavedPlayerScreen(),
-                  ),
-                  earcon: savedPlayersEarcon,
-                ),
-            ],
-            activateItemSound: activateItemSound,
-            selectItemSound: selectItemSound,
-            music: music,
-            musicFadeInTime: project.mainMenuMusicFadeIn,
-            musicFadeOutTime: project.mainMenuMusicFadeOut,
-          ),
-          error: ErrorScreen.withPositional,
-          loading: LoadingScreen.new,
+          ],
+          activateItemSound: activateSound,
+          selectItemSound: selectSound,
+          music: music,
+          musicFadeInTime: project.mainMenuMusicFadeIn,
+          musicFadeOutTime: project.mainMenuMusicFadeOut,
         ),
+        error: ErrorScreen.withPositional,
+        loading: LoadingScreen.new,
       ),
     );
   }

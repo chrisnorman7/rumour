@@ -17,7 +17,7 @@ class DescribeAction extends PerformableAction {
           invoke: () => context.pushWidgetBuilder(
             (final builderContext) => GetText(
               onDone: (final value) {
-                Navigator.pop(builderContext);
+                builderContext.pop();
                 onDescribe(value);
               },
               labelText: labelText,

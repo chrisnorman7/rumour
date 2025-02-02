@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:backstreets_widgets/extensions.dart';
 import 'package:backstreets_widgets/screens.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:filesize/filesize.dart';
@@ -86,7 +87,7 @@ class SelectSoundScreenState extends ConsumerState<SelectSoundScreen> {
               autofocus: true,
               title: const Text('Use Directory'),
               onTap: () {
-                Navigator.pop(context);
+                context.pop();
                 widget.onChanged(path.relative(entity.path, from: soundsPath));
               },
             );
@@ -105,7 +106,7 @@ class SelectSoundScreenState extends ConsumerState<SelectSoundScreen> {
                 title: Text(path.basename(entity.path)),
                 subtitle: Text(filesize(entity.statSync().size)),
                 onTap: () {
-                  Navigator.pop(context);
+                  context.pop();
                   widget.onChanged(
                     path.relative(entity.path, from: soundsPath),
                   );
@@ -128,7 +129,7 @@ class SelectSoundScreenState extends ConsumerState<SelectSoundScreen> {
       child: SimpleScaffold(title: 'Select Sound', body: child),
       onCancel: () {
         if (path.equals(directory.path, projectContext.soundsDirectory.path)) {
-          Navigator.pop(context);
+          context.pop();
         } else {
           setState(() {
             _directory = directory.parent;

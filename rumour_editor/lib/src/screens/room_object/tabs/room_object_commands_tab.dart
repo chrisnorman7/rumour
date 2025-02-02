@@ -49,11 +49,10 @@ class RoomObjectCommandsTab extends ConsumerWidget {
                 PerformableAction(
                   name: 'Delete',
                   invoke:
-                      () => context.confirm(
+                      () => context.showConfirmMessage(
                         message: 'Really delete ${caller.name}?',
                         title: confirmDeleteTitle,
                         yesCallback: () async {
-                          Navigator.pop(context);
                           await query.delete();
                           ref.invalidate(
                             roomObjectCommandCallersProvider(roomObjectId),

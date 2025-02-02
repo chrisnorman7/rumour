@@ -1,3 +1,4 @@
+import 'package:backstreets_widgets/extensions.dart';
 import 'package:backstreets_widgets/screens.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,7 @@ class SelectPlayerClass extends ConsumerWidget {
                 title: Text(playerClass.name),
                 subtitle: Text(playerClass.description),
                 onTap: () {
-                  Navigator.pop(context);
+                  context.pop();
                   onChanged(playerClass);
                 },
               );

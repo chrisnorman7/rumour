@@ -17,7 +17,7 @@ class RenameAction extends PerformableAction {
           invoke: () => context.pushWidgetBuilder(
             (final builderContext) => GetText(
               onDone: (final value) {
-                Navigator.pop(builderContext);
+                builderContext.pop();
                 onRename(value);
               },
               labelText: labelText,

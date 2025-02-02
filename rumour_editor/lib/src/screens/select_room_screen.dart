@@ -1,3 +1,4 @@
+import 'package:backstreets_widgets/extensions.dart';
 import 'package:backstreets_widgets/screens.dart';
 import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,7 @@ class SelectRoomScreen extends ConsumerWidget {
               return ZoneListTile(
                 zoneId: zone.id,
                 onRoomSelected: (final value) {
-                  Navigator.pop(context);
+                  context.pop();
                   onChanged(value);
                 },
                 autofocus: index == 0,

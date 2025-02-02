@@ -60,11 +60,10 @@ class ProjectRoomSurfacesTab extends ConsumerWidget {
                         name: 'Delete',
                         activator: deleteShortcut,
                         invoke:
-                            () => builderContext.confirm(
+                            () => builderContext.showConfirmMessage(
                               message: 'Really delete ${roomSurface.name}?',
                               title: confirmDeleteTitle,
                               yesCallback: () async {
-                                Navigator.pop(builderContext);
                                 final rooms =
                                     await managers.rooms
                                         .filter(

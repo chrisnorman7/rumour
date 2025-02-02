@@ -80,11 +80,10 @@ class ZoneRoomsTab extends ConsumerWidget {
                         name: 'Delete',
                         activator: deleteShortcut,
                         invoke:
-                            () => builderContext.confirm(
+                            () => builderContext.showConfirmMessage(
                               message: 'Really delete the ${room.name} room?',
                               title: confirmDeleteTitle,
                               yesCallback: () async {
-                                Navigator.pop(builderContext);
                                 await query.delete();
                                 ref.invalidate(roomsProvider);
                               },

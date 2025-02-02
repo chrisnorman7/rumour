@@ -85,7 +85,7 @@ class CommandCallerListTile extends ConsumerWidget {
                   PerformableAction(
                     name: 'Delete',
                     invoke:
-                        () => context.confirm(
+                        () => context.showConfirmMessage(
                           message: 'Really delete ${command.description}?',
                           title: confirmDeleteTitle,
                           yesCallback: () async {

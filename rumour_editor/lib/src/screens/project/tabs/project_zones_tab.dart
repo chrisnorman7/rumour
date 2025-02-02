@@ -59,11 +59,10 @@ class ProjectZonesTab extends ConsumerWidget {
                         name: 'Delete',
                         activator: deleteShortcut,
                         invoke:
-                            () => context.confirm(
+                            () => context.showConfirmMessage(
                               message: 'Really delete the ${zone.name} zone?',
                               title: confirmDeleteTitle,
                               yesCallback: () async {
-                                Navigator.pop(context);
                                 await query.delete();
                                 ref.invalidate(zonesProvider);
                               },
