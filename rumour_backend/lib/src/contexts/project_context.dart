@@ -181,6 +181,28 @@ class ProjectContext {
     );
   }
 
+  /// Maybe get a [Sound] instance from the [id] of a [SoundReference].
+  Future<Sound?> maybeGetSoundFromSoundReferenceId({
+    required final int? id,
+    required final bool destroy,
+    final bool looping = false,
+    final Duration loopingStart = Duration.zero,
+    final bool paused = false,
+    final SoundPosition position = unpanned,
+  }) async {
+    if (id == null) {
+      return null;
+    }
+    return maybeGetSound(
+      soundReference: await maybeGetSoundReference(id),
+      destroy: destroy,
+      looping: looping,
+      loopingStart: loopingStart,
+      paused: paused,
+      position: position,
+    );
+  }
+
   /// Get a sound path from [soundPath].
   String getSoundPath(final String soundPath) =>
       path.relative(soundPath, from: soundsDirectory.path);
