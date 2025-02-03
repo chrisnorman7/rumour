@@ -1004,3 +1004,28 @@ Future<RoomObjectCommandCaller> roomObjectCommandCaller(
       .filter((final f) => f.id.equals(id))
       .getSingle();
 }
+
+/// Provide the sounds which should be loaded before a room is rendered.
+@riverpod
+Future<List<Sound>> roomSounds(final Ref ref, final int roomId) async {
+  final projectContext = ref.watch(projectContextProvider);
+  final room = await ref.watch(
+    roomProvider(roomId).future,
+  );
+  final surface = await ref.watch(
+    roomSurfaceProvider(room.surfaceId).future,
+  );
+  final footstepSoundId = surface.footstepSoundId;
+  final footstepSound = footstepSoundId == null
+      ? null
+      : await ref.watch(soundReferenceProvider(footstepSoundId).future);
+  final wallSoundId = surface.wallSoundI;
+  final wallSound = wallSoundId == null
+      ? null
+      : await ref.watch(soundReferenceProvider(wallSoundId).future);
+  return [
+    for (final sound in [footstepSound, wallSound])
+      if (sound != null)
+        ...projectContext.getSounds(soundReference: sound, destroy: true),
+  ];
+}

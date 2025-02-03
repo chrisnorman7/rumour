@@ -14,7 +14,6 @@ export 'src/screens/play_saved_player_screen.dart';
 export 'src/screens/player_actions_screen.dart';
 export 'src/screens/select_object.dart';
 export 'src/widgets/close_project.dart';
-export 'src/widgets/load_protected_sound_reference.dart';
 export 'src/widgets/pause_menu_tabs/pause_menu_tab.dart';
 export 'src/widgets/pause_menu_tabs/player_stats_tab.dart';
 export 'src/widgets/player_context_sounds.dart';

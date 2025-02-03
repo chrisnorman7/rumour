@@ -1,5 +1,6 @@
 import 'package:backstreets_widgets/typedefs.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_player/rumour_player.dart';
@@ -39,46 +40,39 @@ class PlayerContextSounds extends ConsumerWidget {
       data: (final playerContext) {
         final player = playerContext.gamePlayer;
         final roomId = player.roomId;
-        final value = ref.watch(roomProvider(roomId));
+        final value = ref.watch(roomSoundsProvider(roomId));
         return value.when(
-          data: (final room) {
-            final value = ref.watch(roomSurfaceProvider(room.surfaceId));
+          data: (final sounds) {
+            final value = ref.watch(roomProvider(roomId));
             return value.when(
-              data: (final surface) => LoadProtectedSoundReference(
-                soundReferenceId: surface.footstepSoundId,
-                destroy: true,
-                child: LoadProtectedSoundReference(
-                  soundReferenceId: surface.wallSoundI,
-                  destroy: true,
-                  child: RoomRandomSounds(
-                    roomId: roomId,
+              data: (final room) => LoadSounds(
+                sounds: sounds,
+                loading: loading,
+                error: error,
+                child: RoomRandomSounds(
+                  roomId: roomId,
+                  getPaused: getPaused,
+                  error: error,
+                  loading: loading,
+                  child: RoomSurfaceBoostTimers(
+                    playerId: playerId,
+                    roomSurfaceId: room.surfaceId,
                     getPaused: getPaused,
                     error: error,
                     loading: loading,
-                    child: RoomSurfaceBoostTimers(
-                      playerId: playerId,
-                      roomSurfaceId: room.surfaceId,
-                      getPaused: getPaused,
+                    child: RoomAmbiances(
+                      roomId: roomId,
                       error: error,
                       loading: loading,
-                      child: RoomAmbiances(
-                        roomId: roomId,
+                      child: ZoneMusic(
+                        zoneId: room.zoneId,
                         error: error,
                         loading: loading,
-                        child: ZoneMusic(
-                          zoneId: room.zoneId,
-                          error: error,
-                          loading: loading,
-                          builder: builder,
-                        ),
+                        builder: builder,
                       ),
                     ),
                   ),
-                  error: error,
-                  loading: loading,
                 ),
-                error: error,
-                loading: loading,
               ),
               error: error,
               loading: loading,

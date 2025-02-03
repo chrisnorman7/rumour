@@ -5516,6 +5516,148 @@ class _RoomObjectCommandCallerProviderElement
   int get id => (origin as RoomObjectCommandCallerProvider).id;
 }
 
+String _$roomSoundsHash() => r'38da1b53dca4f9dbad8d0ccaf965f739f6b5da8f';
+
+/// Provide the sounds which should be loaded before a room is rendered.
+///
+/// Copied from [roomSounds].
+@ProviderFor(roomSounds)
+const roomSoundsProvider = RoomSoundsFamily();
+
+/// Provide the sounds which should be loaded before a room is rendered.
+///
+/// Copied from [roomSounds].
+class RoomSoundsFamily extends Family<AsyncValue<List<Sound>>> {
+  /// Provide the sounds which should be loaded before a room is rendered.
+  ///
+  /// Copied from [roomSounds].
+  const RoomSoundsFamily();
+
+  /// Provide the sounds which should be loaded before a room is rendered.
+  ///
+  /// Copied from [roomSounds].
+  RoomSoundsProvider call(
+    int roomId,
+  ) {
+    return RoomSoundsProvider(
+      roomId,
+    );
+  }
+
+  @override
+  RoomSoundsProvider getProviderOverride(
+    covariant RoomSoundsProvider provider,
+  ) {
+    return call(
+      provider.roomId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'roomSoundsProvider';
+}
+
+/// Provide the sounds which should be loaded before a room is rendered.
+///
+/// Copied from [roomSounds].
+class RoomSoundsProvider extends AutoDisposeFutureProvider<List<Sound>> {
+  /// Provide the sounds which should be loaded before a room is rendered.
+  ///
+  /// Copied from [roomSounds].
+  RoomSoundsProvider(
+    int roomId,
+  ) : this._internal(
+          (ref) => roomSounds(
+            ref as RoomSoundsRef,
+            roomId,
+          ),
+          from: roomSoundsProvider,
+          name: r'roomSoundsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$roomSoundsHash,
+          dependencies: RoomSoundsFamily._dependencies,
+          allTransitiveDependencies:
+              RoomSoundsFamily._allTransitiveDependencies,
+          roomId: roomId,
+        );
+
+  RoomSoundsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.roomId,
+  }) : super.internal();
+
+  final int roomId;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<Sound>> Function(RoomSoundsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: RoomSoundsProvider._internal(
+        (ref) => create(ref as RoomSoundsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        roomId: roomId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<Sound>> createElement() {
+    return _RoomSoundsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RoomSoundsProvider && other.roomId == roomId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, roomId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin RoomSoundsRef on AutoDisposeFutureProviderRef<List<Sound>> {
+  /// The parameter `roomId` of this provider.
+  int get roomId;
+}
+
+class _RoomSoundsProviderElement
+    extends AutoDisposeFutureProviderElement<List<Sound>> with RoomSoundsRef {
+  _RoomSoundsProviderElement(super.provider);
+
+  @override
+  int get roomId => (origin as RoomSoundsProvider).roomId;
+}
+
 String _$currentProjectContextHash() =>
     r'4c8cc047a1a79eb695b9f390a99148ce921e1e5b';
 
