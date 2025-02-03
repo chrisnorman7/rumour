@@ -75,6 +75,16 @@ class RoomObjectSettingsTab extends ConsumerWidget {
             },
             title: 'Earcon',
           ),
+          IntListTile(
+            value: object.approachDistance,
+            onChanged: (final value) async {
+              await query.update(
+                (final o) => o(approachDistance: Value(value)),
+              );
+              invalidateProviders(ref, object);
+            },
+            title: 'Approach distance',
+          ),
         ],
       ),
     );

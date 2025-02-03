@@ -32,6 +32,11 @@ class EditRoomObjectScreen extends ConsumerWidget {
           ),
         ),
         TabbedScaffoldTab(
+          title: 'Events',
+          icon: const Text('Events this object can emit'),
+          child: RoomObjectEventsTab(roomObjectId: roomObjectId),
+        ),
+        TabbedScaffoldTab(
           title: 'Random Sounds',
           icon: const Text('The random sounds that this object plays'),
           child: CommonShortcuts(
