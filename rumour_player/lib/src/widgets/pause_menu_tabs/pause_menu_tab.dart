@@ -23,6 +23,8 @@ class PauseMenuTab extends ConsumerWidget {
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
+    final projectContext = ref.watch(projectContextProvider);
+    final project = ref.watch(projectProvider);
     final value = ref.watch(gamePlayerContextProvider(playerId));
     return value.simpleWhen(
       (final gamePlayerContext) => AudioGameMenuListView(
@@ -58,6 +60,14 @@ class PauseMenuTab extends ConsumerWidget {
             },
           ),
         ],
+        activateItemSound: projectContext.maybeGetSound(
+          soundReference: project.menuActivateSound?.getSoundReference(),
+          destroy: true,
+        ),
+        selectItemSound: projectContext.maybeGetSound(
+          soundReference: project.menuSelectSound?.getSoundReference(),
+          destroy: false,
+        ),
       ),
     );
   }
