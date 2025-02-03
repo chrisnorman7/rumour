@@ -1,7 +1,9 @@
 import 'package:backstreets_widgets/screens.dart';
+import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_player/rumour_player.dart';
 
@@ -18,8 +20,11 @@ class PlayProjectScreen extends ConsumerWidget {
     final projectContext = ref.watch(projectContextProvider);
     final project = projectContext.project;
     final music = projectContext.maybeGetSound(
-      soundReference: project.mainMenuMusic?.getSoundReference(),
+      soundReference: project.mainMenuMusic?.getSoundReference(
+        loadMode: LoadMode.disk,
+      ),
       destroy: false,
+      looping: true,
     );
     final selectSound = projectContext.maybeGetSound(
       soundReference: project.menuSelectSound?.getSoundReference(),
@@ -41,36 +46,44 @@ class PlayProjectScreen extends ConsumerWidget {
     final textStyle = ref.watch(projectTextStyleProvider);
     return DefaultTextStyle(
       style: textStyle,
-      child: value.when(
-        data: (final players) => AudioGameMenu(
-          title: project.name,
-          menuItems: [
-            AudioGameMenuItem(
-              title: project.newPlayerLabel,
-              onActivate: (final innerContext) =>
-                  innerContext.fadeMusicAndPushWidget(
-                (final _) => const NewPlayerScreen(),
-              ),
-              earcon: newPlayerEarcon,
-            ),
-            if (players.isNotEmpty)
-              AudioGameMenuItem(
-                title: project.savedPlayersLabel,
-                onActivate: (final innerContext) =>
-                    innerContext.fadeMusicAndPushWidget(
-                  (final _) => const PlaySavedPlayerScreen(),
-                ),
-                earcon: savedPlayersEarcon,
-              ),
-          ],
-          activateItemSound: activateSound,
-          selectItemSound: selectSound,
-          music: music,
-          musicFadeInTime: project.mainMenuMusicFadeIn,
-          musicFadeOutTime: project.mainMenuMusicFadeOut,
-        ),
+      child: MaybeMusic(
+        music: music,
+        fadeInTime: project.mainMenuMusicFadeIn,
+        fadeOutTime: project.mainMenuMusicFadeOut,
         error: ErrorScreen.withPositional,
         loading: LoadingScreen.new,
+        child: Builder(
+          builder: (final _) => SimpleScaffold(
+            title: project.name,
+            body: value.when(
+              data: (final players) => AudioGameMenuListView(
+                menuItems: [
+                  AudioGameMenuItem(
+                    title: project.newPlayerLabel,
+                    onActivate: (final innerContext) =>
+                        innerContext.fadeMusicAndPushWidget(
+                      (final _) => const NewPlayerScreen(),
+                    ),
+                    earcon: newPlayerEarcon,
+                  ),
+                  if (players.isNotEmpty)
+                    AudioGameMenuItem(
+                      title: project.savedPlayersLabel,
+                      onActivate: (final innerContext) =>
+                          innerContext.fadeMusicAndPushWidget(
+                        (final _) => const PlaySavedPlayerScreen(),
+                      ),
+                      earcon: savedPlayersEarcon,
+                    ),
+                ],
+                activateItemSound: activateSound,
+                selectItemSound: selectSound,
+              ),
+              error: ErrorListView.withPositional,
+              loading: LoadingWidget.new,
+            ),
+          ),
+        ),
       ),
     );
   }

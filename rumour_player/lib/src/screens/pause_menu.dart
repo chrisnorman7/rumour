@@ -30,14 +30,17 @@ class PauseMenu extends ConsumerWidget {
     return Cancel(
       child: MaybeMusic(
         music: projectContext.maybeGetSound(
-          soundReference: project.pauseMenuMusic
-              ?.getSoundReference(loadMode: LoadMode.disk),
+          soundReference: project.pauseMenuMusic?.getSoundReference(
+            loadMode: LoadMode.disk,
+          ),
           destroy: false,
           looping: true,
         ),
         fadeInTime: project.mainMenuMusicFadeIn,
         fadeOutTime: project.mainMenuMusicFadeOut,
-        builder: (final context) => TabbedScaffold(
+        error: ErrorScreen.withPositional,
+        loading: LoadingScreen.new,
+        child: TabbedScaffold(
           tabs: [
             TabbedScaffoldTab(
               title: project.pauseMenuTitle,
