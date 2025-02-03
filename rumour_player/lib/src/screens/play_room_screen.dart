@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:backstreets_widgets/extensions.dart';
@@ -42,6 +43,10 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
 
   /// A stack trace to show.
   StackTrace? _stackTrace;
+
+  /// The ID's of objects which have had their `onApproach` command ran, but not
+  /// their `onLeave` one.
+  late final List<int> _approachedObjectIds;
 
   /// The timed commands state to use.
   late TimedCommandsState timedCommandsState;
@@ -124,6 +129,7 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
     super.initState();
     _firstLoad = true;
     _paused = false;
+    _approachedObjectIds = [];
   }
 
   /// Build a widget.
@@ -375,6 +381,16 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
       MovingDirection.left => coordinates.west,
       MovingDirection.right => coordinates.east,
     };
+    final objects = await ref.read(objectsInRoomProvider(_room.id).future);
+    final nearby = <RoomObject>[];
+    final distant = <RoomObject>[];
+    for (final object in objects) {
+      if (object.isNearby(coordinates)) {
+        nearby.add(object);
+      } else {
+        distant.add(object);
+      }
+    }
     if (!validCoordinates(newCoordinates)) {
       await ref.maybePlaySoundReference(
         soundReference: _wallSound,
@@ -387,6 +403,22 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
       soundReference: _footsteps,
       destroy: true,
     );
+    for (final object in nearby) {
+      if (!object.isNearby(newCoordinates)) {
+        // `object` is no longer nearby.
+        if (_approachedObjectIds.contains(object.id)) {
+          _approachedObjectIds.remove(object.id);
+        }
+        unawaited(ref.maybeRunCommandCaller(object.onLeaveCommandCallerId));
+      }
+    }
+    for (final object in distant) {
+      if (object.isNearby(newCoordinates)) {
+        // `object` is no longer distant.
+        _approachedObjectIds.add(object.id);
+        unawaited(ref.maybeRunCommandCaller(object.onApproachCommandCallerId));
+      }
+    }
   }
 
   /// Provide a list of player actions which can be performed on a room object.
@@ -417,8 +449,10 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
               ..roomId = destinationRoom.id
               ..x = exit.x
               ..y = exit.y;
+            _gamePlayerContext.save();
             stopPlayerMoving();
             movingDirection = null;
+            _approachedObjectIds.clear();
             setPlayerCoordinates(exit.coordinates);
             ref.invalidate(gamePlayerContextProvider(widget.playerId));
           },

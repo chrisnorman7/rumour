@@ -29,4 +29,20 @@ class RoomObjects extends Table
   IntColumn get earconId => integer()
       .references(SoundReferences, #id, onDelete: KeyAction.setNull)
       .nullable()();
+
+  /// The distance at which an onApproach command will be called.
+  IntColumn get approachDistance => integer().withDefault(const Constant(2))();
+
+  /// The ID of a command caller to use when a player approaches this object.
+  @ReferenceName('onApproachCommandCallers')
+  IntColumn get onApproachCommandCallerId => integer()
+      .references(CommandCallers, #id, onDelete: KeyAction.setNull)
+      .nullable()();
+
+  /// The ID of a command caller to use when the player leaves this object
+  /// behind.
+  @ReferenceName('onLeaveCommandCallers')
+  IntColumn get onLeaveCommandCallerId => integer()
+      .references(CommandCallers, #id, onDelete: KeyAction.setNull)
+      .nullable()();
 }

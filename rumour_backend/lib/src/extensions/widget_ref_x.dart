@@ -81,4 +81,14 @@ extension WidgetRefX on WidgetRef {
     }
     return Future.value();
   }
+
+  /// Possibly run the command caller with the given [id].
+  ///
+  /// If [id] is `null`, nothing will happen.
+  Future<void> maybeRunCommandCaller(final int? id) async {
+    if (id == null) {
+      return;
+    }
+    return runCommandCaller(id);
+  }
 }

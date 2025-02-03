@@ -1,0 +1,13 @@
+{
+	"Create command caller column": {
+		"body": [
+			"  @ReferenceName('$1CommandCallers')",
+			"  IntColumn get ${1:commandName}CommandCallerId => integer()",
+			"      .references(CommandCallers, #id, onDelete: KeyAction.setNull)",
+			"      .nullable()();",
+		],
+		"description": "Create an integer column with a foreign key to the command_callers table",
+		"prefix": "cccc",
+		"scope": "dart"
+	}
+}
