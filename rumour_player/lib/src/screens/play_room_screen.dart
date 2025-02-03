@@ -348,6 +348,29 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
     if (direction == null) {
       return;
     }
+    final newCoordinates = switch (direction) {
+      MovingDirection.forwards => coordinates.north,
+      MovingDirection.backwards => coordinates.south,
+      MovingDirection.left => coordinates.west,
+      MovingDirection.right => coordinates.east,
+    };
+    if (!validCoordinates(newCoordinates)) {
+      await ref.maybePlaySoundReference(
+        soundReference: _wallSound,
+        destroy: true,
+      );
+      return;
+    }
+    final objects = await ref.read(objectsInRoomProvider(_room.id).future);
+    final nearby = <RoomObject>[];
+    final distant = <RoomObject>[];
+    for (final object in objects) {
+      if (object.isNearby(coordinates)) {
+        nearby.add(object);
+      } else {
+        distant.add(object);
+      }
+    }
     final costs = await ref.read(
       roomSurfaceCostsProvider(_roomSurface.id).future,
     );
@@ -374,29 +397,6 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
     for (final MapEntry(key: gameStatId, value: value)
         in alteredStats.entries) {
       stats[gameStatId] = value;
-    }
-    final newCoordinates = switch (direction) {
-      MovingDirection.forwards => coordinates.north,
-      MovingDirection.backwards => coordinates.south,
-      MovingDirection.left => coordinates.west,
-      MovingDirection.right => coordinates.east,
-    };
-    final objects = await ref.read(objectsInRoomProvider(_room.id).future);
-    final nearby = <RoomObject>[];
-    final distant = <RoomObject>[];
-    for (final object in objects) {
-      if (object.isNearby(coordinates)) {
-        nearby.add(object);
-      } else {
-        distant.add(object);
-      }
-    }
-    if (!validCoordinates(newCoordinates)) {
-      await ref.maybePlaySoundReference(
-        soundReference: _wallSound,
-        destroy: true,
-      );
-      return;
     }
     setPlayerCoordinates(newCoordinates);
     await ref.maybePlaySoundReference(

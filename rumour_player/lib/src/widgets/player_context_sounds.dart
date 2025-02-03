@@ -49,26 +49,29 @@ class PlayerContextSounds extends ConsumerWidget {
                 sounds: sounds,
                 loading: loading,
                 error: error,
-                child: RoomRandomSounds(
-                  roomId: roomId,
-                  getPaused: getPaused,
-                  error: error,
-                  loading: loading,
-                  child: RoomSurfaceBoostTimers(
-                    playerId: playerId,
-                    roomSurfaceId: room.surfaceId,
+                child: ProtectSounds(
+                  sounds: sounds,
+                  child: RoomRandomSounds(
+                    roomId: roomId,
                     getPaused: getPaused,
                     error: error,
                     loading: loading,
-                    child: RoomAmbiances(
-                      roomId: roomId,
+                    child: RoomSurfaceBoostTimers(
+                      playerId: playerId,
+                      roomSurfaceId: room.surfaceId,
+                      getPaused: getPaused,
                       error: error,
                       loading: loading,
-                      child: ZoneMusic(
-                        zoneId: room.zoneId,
+                      child: RoomAmbiances(
+                        roomId: roomId,
                         error: error,
                         loading: loading,
-                        builder: builder,
+                        child: ZoneMusic(
+                          zoneId: room.zoneId,
+                          error: error,
+                          loading: loading,
+                          builder: builder,
+                        ),
                       ),
                     ),
                   ),
