@@ -1,7 +1,9 @@
+import 'package:backstreets_widgets/widgets.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
+import 'package:rumour_editor/rumour_editor.dart';
 import 'package:rumour_editor/src/widgets/command_caller_list_tile.dart';
 
 /// A [ListTile] for editing a [CommandCaller] or creating a new one.
@@ -13,6 +15,7 @@ class PossibleCommandCallerListTile extends ConsumerWidget {
     this.commandCallerId,
     this.parentCommandId,
     this.autofocus = false,
+    this.helpAssetKey,
     super.key,
   });
 
@@ -35,6 +38,9 @@ class PossibleCommandCallerListTile extends ConsumerWidget {
   /// Whether the [ListTile] should be autofocused.
   final bool autofocus;
 
+  /// The asset key to use to show a help screen.
+  final String? helpAssetKey;
+
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
@@ -43,8 +49,13 @@ class PossibleCommandCallerListTile extends ConsumerWidget {
     final commands = managers.commands;
     final commandCallers = managers.commandCallers;
     final id = commandCallerId;
+    final assetKey = helpAssetKey;
     if (id == null) {
-      return ListTile(
+      return PerformableActionsListTile(
+        actions: [
+          if (assetKey != null)
+            HelpPerformableAction(context: context, assetKey: assetKey),
+        ],
         autofocus: autofocus,
         title: Text(title),
         subtitle: const Text(unsetMessage),

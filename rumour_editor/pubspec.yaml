@@ -16,6 +16,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_audio_games: ^0.43.1
+  flutter_markdown: ^0.7.6
   flutter_riverpod: ^2.6.1
   flutter_soloud: ^2.1.7
   flutter_text_style_settings: ^0.2.0
@@ -35,3 +36,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - help/

@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
+import 'package:rumour_editor/gen/assets.gen.dart';
 import 'package:rumour_editor/src/widgets/possible_command_caller_list_tile.dart';
 
 /// The room events tab.
@@ -35,6 +36,7 @@ class RoomEventsTab extends ConsumerWidget {
             },
             autofocus: true,
             commandCallerId: room.onEnterCommandCallerId,
+            helpAssetKey: Assets.help.roomOnEnter,
           ),
           PossibleCommandCallerListTile(
             title: 'Player exits',

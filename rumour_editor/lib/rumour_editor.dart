@@ -1,9 +1,11 @@
 /// Export everything.
 library;
 
+export 'src/actions/help_performable_action.dart';
 export 'src/extensions/int_x.dart';
 export 'src/extensions/list_x.dart';
 export 'src/screens/game_stats/edit_game_stat_screen.dart';
+export 'src/screens/help_screen.dart';
 export 'src/screens/player_class/edit_player_class_screen.dart';
 export 'src/screens/player_class/tabs/player_class_settings_tab.dart';
 export 'src/screens/project/build_project_screen.dart';

@@ -17,6 +17,7 @@ class CommandCallerListTile extends ConsumerWidget {
     this.title = 'Command',
     this.autofocus = false,
     this.canDelete = false,
+    this.helpAssetKey,
     super.key,
   });
 
@@ -35,9 +36,13 @@ class CommandCallerListTile extends ConsumerWidget {
   /// Whether the command can be deleted.
   final bool canDelete;
 
+  /// The asset key to use to show a help screen.
+  final String? helpAssetKey;
+
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
+    final assetKey = helpAssetKey;
     final database = ref.watch(databaseProvider);
     final managers = database.managers;
     final callerQuery = managers.commandCallers.filter(
@@ -128,6 +133,8 @@ class CommandCallerListTile extends ConsumerWidget {
                     },
                     activator: moveDownShortcut,
                   ),
+                if (assetKey != null)
+                  HelpPerformableAction(context: context, assetKey: assetKey),
               ],
               autofocus: autofocus,
               title: Text(title),
