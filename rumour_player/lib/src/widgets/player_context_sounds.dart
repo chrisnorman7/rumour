@@ -66,12 +66,7 @@ class PlayerContextSounds extends ConsumerWidget {
                         roomId: roomId,
                         error: error,
                         loading: loading,
-                        child: ZoneMusic(
-                          zoneId: room.zoneId,
-                          error: error,
-                          loading: loading,
-                          builder: builder,
-                        ),
+                        child: Builder(builder: builder),
                       ),
                     ),
                   ),

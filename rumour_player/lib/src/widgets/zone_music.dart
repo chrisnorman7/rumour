@@ -41,10 +41,11 @@ class ZoneMusic extends ConsumerWidget {
         final project = projectContext.project;
         final value = ref.watch(soundReferenceProvider(musicId));
         return value.when(
-          data: (final music) => MaybeMusic(
-            music: projectContext.getSound(
+          data: (final music) => Music(
+            sound: projectContext.getSound(
               soundReference: music,
               destroy: false,
+              looping: true,
             ),
             fadeInTime: project.mainMenuMusicFadeIn,
             fadeOutTime: project.mainMenuMusicFadeOut,
