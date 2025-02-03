@@ -26,7 +26,7 @@ class RoomObjectEventsTab extends ConsumerWidget {
         shrinkWrap: true,
         children: [
           PossibleCommandCallerListTile(
-            title: 'Approach',
+            title: 'Player approaches',
             onChanged: (final value) async {
               await query.update(
                 (final o) => o(onApproachCommandCallerId: Value(value)),
@@ -37,7 +37,7 @@ class RoomObjectEventsTab extends ConsumerWidget {
             commandCallerId: object.onApproachCommandCallerId,
           ),
           PossibleCommandCallerListTile(
-            title: 'Leave',
+            title: 'Player moves away',
             onChanged: (final value) async {
               await query.update(
                 (final o) => o(onLeaveCommandCallerId: Value(value)),
