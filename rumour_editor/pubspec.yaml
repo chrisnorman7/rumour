@@ -15,7 +15,7 @@ dependencies:
   filesize: ^2.0.1
   flutter:
     sdk: flutter
-  flutter_audio_games: ^0.43.0
+  flutter_audio_games: ^0.43.1
   flutter_riverpod: ^2.6.1
   flutter_soloud: ^2.1.7
   flutter_text_style_settings: ^0.2.0
