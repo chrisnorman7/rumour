@@ -35,7 +35,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// The schema version.
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   /// Migrate the database.
   @override
@@ -60,6 +60,14 @@ class AppDatabase extends _$AppDatabase {
               this.roomObjects.approachDistance,
             ]) {
               await m.addColumn(this.roomObjects, column);
+            }
+          }
+          if (from < 5) {
+            for (final column in [
+              this.rooms.onEnterCommandCallerId,
+              this.rooms.onExitCommandCallerId,
+            ]) {
+              await m.addColumn(this.rooms, column);
             }
           }
         },

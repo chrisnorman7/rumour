@@ -33,7 +33,7 @@ class EditRoomObjectScreen extends ConsumerWidget {
         ),
         TabbedScaffoldTab(
           title: 'Events',
-          icon: const Text('Events this object can emit'),
+          icon: const EventsDescription(name: 'object'),
           child: RoomObjectEventsTab(roomObjectId: roomObjectId),
         ),
         TabbedScaffoldTab(

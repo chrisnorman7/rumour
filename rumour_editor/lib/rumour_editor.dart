@@ -43,6 +43,7 @@ export 'src/screens/zone/edit_zone_screen.dart';
 export 'src/screens/zone/tabs/zone_rooms_tab.dart';
 export 'src/screens/zone/tabs/zone_settings_tab.dart';
 export 'src/widgets/error_text.dart';
+export 'src/widgets/events_description.dart';
 export 'src/widgets/game_stats_list_view.dart';
 export 'src/widgets/loading_list_tile.dart';
 export 'src/widgets/menu_button.dart';

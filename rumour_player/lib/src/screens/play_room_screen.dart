@@ -436,26 +436,7 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
       if (exit != null)
         PlayerAction(
           name: exit.label,
-          performAction: () async {
-            await ref.maybePlaySoundReference(
-              soundReference:
-                  await projectContext.maybeGetSoundReference(exit.useSoundId),
-              destroy: true,
-            );
-            final destinationRoom = await ref.read(
-              roomProvider(exit.roomId).future,
-            );
-            _player
-              ..roomId = destinationRoom.id
-              ..x = exit.x
-              ..y = exit.y;
-            _gamePlayerContext.save();
-            stopPlayerMoving();
-            movingDirection = null;
-            _approachedObjectIds.clear();
-            setPlayerCoordinates(exit.coordinates);
-            ref.invalidate(gamePlayerContextProvider(widget.playerId));
-          },
+          performAction: () => handleRoomExit(exit),
           earcon: await projectContext.maybeGetSoundFromSoundReferenceId(
             id: exit.earconId,
             destroy: false,
@@ -473,6 +454,35 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
           ),
         ),
     ];
+  }
+
+  /// Move the player through [exit].
+  FutureOr<void> handleRoomExit(final RoomExit exit) async {
+    await ref.maybePlaySoundReference(
+      soundReference: await projectContext.maybeGetSoundReference(
+        exit.useSoundId,
+      ),
+      destroy: true,
+    );
+    final destinationRoom = await ref.read(
+      roomProvider(exit.roomId).future,
+    );
+    if (exit.roomId != _room.id) {
+      unawaited(ref.maybeRunCommandCaller(_room.onExitCommandCallerId));
+      unawaited(
+        ref.maybeRunCommandCaller(destinationRoom.onEnterCommandCallerId),
+      );
+    }
+    _player
+      ..roomId = destinationRoom.id
+      ..x = exit.x
+      ..y = exit.y;
+    _gamePlayerContext.save();
+    stopPlayerMoving();
+    movingDirection = null;
+    _approachedObjectIds.clear();
+    setPlayerCoordinates(exit.coordinates);
+    ref.invalidate(gamePlayerContextProvider(widget.playerId));
   }
 
   /// Pause the game and push a widget [builder] on [innerContext].

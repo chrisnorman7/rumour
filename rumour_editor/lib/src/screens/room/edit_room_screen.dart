@@ -3,6 +3,7 @@ import 'package:backstreets_widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_editor/rumour_editor.dart';
+import 'package:rumour_editor/src/screens/room/tabs/room_events_tab.dart';
 
 /// A screen for editing a room.
 class EditRoomScreen extends ConsumerWidget {
@@ -26,6 +27,11 @@ class EditRoomScreen extends ConsumerWidget {
           title: 'Objects List',
           icon: const Text('The objects in this room presented as a list'),
           child: RoomObjectsListTab(roomId: roomId),
+        ),
+        TabbedScaffoldTab(
+          title: 'Events`',
+          icon: const EventsDescription(name: 'room'),
+          child: RoomEventsTab(roomId: roomId),
         ),
         TabbedScaffoldTab(
           title: 'Settings',

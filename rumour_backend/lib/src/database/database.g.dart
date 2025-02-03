@@ -954,882 +954,6 @@ class RoomSurfacesCompanion extends UpdateCompanion<RoomSurface> {
   }
 }
 
-class $RoomsTable extends Rooms with TableInfo<$RoomsTable, Room> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $RoomsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _descriptionMeta =
-      const VerificationMeta('description');
-  @override
-  late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _createdAtMeta =
-      const VerificationMeta('createdAt');
-  @override
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false,
-      defaultValue: currentDateAndTime);
-  static const VerificationMeta _ambianceIdMeta =
-      const VerificationMeta('ambianceId');
-  @override
-  late final GeneratedColumn<int> ambianceId = GeneratedColumn<int>(
-      'ambiance_id', aliasedName, true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES sound_references (id)'));
-  static const VerificationMeta _zoneIdMeta = const VerificationMeta('zoneId');
-  @override
-  late final GeneratedColumn<int> zoneId = GeneratedColumn<int>(
-      'zone_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES zones (id)'));
-  static const VerificationMeta _maxXMeta = const VerificationMeta('maxX');
-  @override
-  late final GeneratedColumn<int> maxX = GeneratedColumn<int>(
-      'max_x', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(20));
-  static const VerificationMeta _maxYMeta = const VerificationMeta('maxY');
-  @override
-  late final GeneratedColumn<int> maxY = GeneratedColumn<int>(
-      'max_y', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(15));
-  static const VerificationMeta _surfaceIdMeta =
-      const VerificationMeta('surfaceId');
-  @override
-  late final GeneratedColumn<int> surfaceId = GeneratedColumn<int>(
-      'surface_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES room_surfaces (id)'));
-  @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        name,
-        description,
-        createdAt,
-        ambianceId,
-        zoneId,
-        maxX,
-        maxY,
-        surfaceId
-      ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'rooms';
-  @override
-  VerificationContext validateIntegrity(Insertable<Room> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('description')) {
-      context.handle(
-          _descriptionMeta,
-          description.isAcceptableOrUnknown(
-              data['description']!, _descriptionMeta));
-    } else if (isInserting) {
-      context.missing(_descriptionMeta);
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(_createdAtMeta,
-          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
-    }
-    if (data.containsKey('ambiance_id')) {
-      context.handle(
-          _ambianceIdMeta,
-          ambianceId.isAcceptableOrUnknown(
-              data['ambiance_id']!, _ambianceIdMeta));
-    }
-    if (data.containsKey('zone_id')) {
-      context.handle(_zoneIdMeta,
-          zoneId.isAcceptableOrUnknown(data['zone_id']!, _zoneIdMeta));
-    } else if (isInserting) {
-      context.missing(_zoneIdMeta);
-    }
-    if (data.containsKey('max_x')) {
-      context.handle(
-          _maxXMeta, maxX.isAcceptableOrUnknown(data['max_x']!, _maxXMeta));
-    }
-    if (data.containsKey('max_y')) {
-      context.handle(
-          _maxYMeta, maxY.isAcceptableOrUnknown(data['max_y']!, _maxYMeta));
-    }
-    if (data.containsKey('surface_id')) {
-      context.handle(_surfaceIdMeta,
-          surfaceId.isAcceptableOrUnknown(data['surface_id']!, _surfaceIdMeta));
-    } else if (isInserting) {
-      context.missing(_surfaceIdMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  Room map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Room(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
-      createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
-      ambianceId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}ambiance_id']),
-      zoneId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}zone_id'])!,
-      maxX: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}max_x'])!,
-      maxY: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}max_y'])!,
-      surfaceId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}surface_id'])!,
-    );
-  }
-
-  @override
-  $RoomsTable createAlias(String alias) {
-    return $RoomsTable(attachedDatabase, alias);
-  }
-}
-
-class Room extends DataClass implements Insertable<Room> {
-  /// The primary key field.
-  final int id;
-
-  /// The name column.
-  final String name;
-
-  /// The description column.
-  final String description;
-
-  /// The created at column.
-  final DateTime createdAt;
-
-  /// The ID of the ambiance for this row.
-  final int? ambianceId;
-
-  /// The ID of the zone which this room belongs to.
-  final int zoneId;
-
-  /// The maximum x coordinate.
-  final int maxX;
-
-  /// The maximum y coordinate.
-  final int maxY;
-
-  /// The ID of the surface to use.
-  final int surfaceId;
-  const Room(
-      {required this.id,
-      required this.name,
-      required this.description,
-      required this.createdAt,
-      this.ambianceId,
-      required this.zoneId,
-      required this.maxX,
-      required this.maxY,
-      required this.surfaceId});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['name'] = Variable<String>(name);
-    map['description'] = Variable<String>(description);
-    map['created_at'] = Variable<DateTime>(createdAt);
-    if (!nullToAbsent || ambianceId != null) {
-      map['ambiance_id'] = Variable<int>(ambianceId);
-    }
-    map['zone_id'] = Variable<int>(zoneId);
-    map['max_x'] = Variable<int>(maxX);
-    map['max_y'] = Variable<int>(maxY);
-    map['surface_id'] = Variable<int>(surfaceId);
-    return map;
-  }
-
-  RoomsCompanion toCompanion(bool nullToAbsent) {
-    return RoomsCompanion(
-      id: Value(id),
-      name: Value(name),
-      description: Value(description),
-      createdAt: Value(createdAt),
-      ambianceId: ambianceId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(ambianceId),
-      zoneId: Value(zoneId),
-      maxX: Value(maxX),
-      maxY: Value(maxY),
-      surfaceId: Value(surfaceId),
-    );
-  }
-
-  factory Room.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Room(
-      id: serializer.fromJson<int>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
-      description: serializer.fromJson<String>(json['description']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      ambianceId: serializer.fromJson<int?>(json['ambianceId']),
-      zoneId: serializer.fromJson<int>(json['zoneId']),
-      maxX: serializer.fromJson<int>(json['maxX']),
-      maxY: serializer.fromJson<int>(json['maxY']),
-      surfaceId: serializer.fromJson<int>(json['surfaceId']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'name': serializer.toJson<String>(name),
-      'description': serializer.toJson<String>(description),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'ambianceId': serializer.toJson<int?>(ambianceId),
-      'zoneId': serializer.toJson<int>(zoneId),
-      'maxX': serializer.toJson<int>(maxX),
-      'maxY': serializer.toJson<int>(maxY),
-      'surfaceId': serializer.toJson<int>(surfaceId),
-    };
-  }
-
-  Room copyWith(
-          {int? id,
-          String? name,
-          String? description,
-          DateTime? createdAt,
-          Value<int?> ambianceId = const Value.absent(),
-          int? zoneId,
-          int? maxX,
-          int? maxY,
-          int? surfaceId}) =>
-      Room(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        description: description ?? this.description,
-        createdAt: createdAt ?? this.createdAt,
-        ambianceId: ambianceId.present ? ambianceId.value : this.ambianceId,
-        zoneId: zoneId ?? this.zoneId,
-        maxX: maxX ?? this.maxX,
-        maxY: maxY ?? this.maxY,
-        surfaceId: surfaceId ?? this.surfaceId,
-      );
-  Room copyWithCompanion(RoomsCompanion data) {
-    return Room(
-      id: data.id.present ? data.id.value : this.id,
-      name: data.name.present ? data.name.value : this.name,
-      description:
-          data.description.present ? data.description.value : this.description,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      ambianceId:
-          data.ambianceId.present ? data.ambianceId.value : this.ambianceId,
-      zoneId: data.zoneId.present ? data.zoneId.value : this.zoneId,
-      maxX: data.maxX.present ? data.maxX.value : this.maxX,
-      maxY: data.maxY.present ? data.maxY.value : this.maxY,
-      surfaceId: data.surfaceId.present ? data.surfaceId.value : this.surfaceId,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('Room(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('description: $description, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('ambianceId: $ambianceId, ')
-          ..write('zoneId: $zoneId, ')
-          ..write('maxX: $maxX, ')
-          ..write('maxY: $maxY, ')
-          ..write('surfaceId: $surfaceId')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, name, description, createdAt, ambianceId,
-      zoneId, maxX, maxY, surfaceId);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Room &&
-          other.id == this.id &&
-          other.name == this.name &&
-          other.description == this.description &&
-          other.createdAt == this.createdAt &&
-          other.ambianceId == this.ambianceId &&
-          other.zoneId == this.zoneId &&
-          other.maxX == this.maxX &&
-          other.maxY == this.maxY &&
-          other.surfaceId == this.surfaceId);
-}
-
-class RoomsCompanion extends UpdateCompanion<Room> {
-  final Value<int> id;
-  final Value<String> name;
-  final Value<String> description;
-  final Value<DateTime> createdAt;
-  final Value<int?> ambianceId;
-  final Value<int> zoneId;
-  final Value<int> maxX;
-  final Value<int> maxY;
-  final Value<int> surfaceId;
-  const RoomsCompanion({
-    this.id = const Value.absent(),
-    this.name = const Value.absent(),
-    this.description = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.ambianceId = const Value.absent(),
-    this.zoneId = const Value.absent(),
-    this.maxX = const Value.absent(),
-    this.maxY = const Value.absent(),
-    this.surfaceId = const Value.absent(),
-  });
-  RoomsCompanion.insert({
-    this.id = const Value.absent(),
-    required String name,
-    required String description,
-    this.createdAt = const Value.absent(),
-    this.ambianceId = const Value.absent(),
-    required int zoneId,
-    this.maxX = const Value.absent(),
-    this.maxY = const Value.absent(),
-    required int surfaceId,
-  })  : name = Value(name),
-        description = Value(description),
-        zoneId = Value(zoneId),
-        surfaceId = Value(surfaceId);
-  static Insertable<Room> custom({
-    Expression<int>? id,
-    Expression<String>? name,
-    Expression<String>? description,
-    Expression<DateTime>? createdAt,
-    Expression<int>? ambianceId,
-    Expression<int>? zoneId,
-    Expression<int>? maxX,
-    Expression<int>? maxY,
-    Expression<int>? surfaceId,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (name != null) 'name': name,
-      if (description != null) 'description': description,
-      if (createdAt != null) 'created_at': createdAt,
-      if (ambianceId != null) 'ambiance_id': ambianceId,
-      if (zoneId != null) 'zone_id': zoneId,
-      if (maxX != null) 'max_x': maxX,
-      if (maxY != null) 'max_y': maxY,
-      if (surfaceId != null) 'surface_id': surfaceId,
-    });
-  }
-
-  RoomsCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? name,
-      Value<String>? description,
-      Value<DateTime>? createdAt,
-      Value<int?>? ambianceId,
-      Value<int>? zoneId,
-      Value<int>? maxX,
-      Value<int>? maxY,
-      Value<int>? surfaceId}) {
-    return RoomsCompanion(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      description: description ?? this.description,
-      createdAt: createdAt ?? this.createdAt,
-      ambianceId: ambianceId ?? this.ambianceId,
-      zoneId: zoneId ?? this.zoneId,
-      maxX: maxX ?? this.maxX,
-      maxY: maxY ?? this.maxY,
-      surfaceId: surfaceId ?? this.surfaceId,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (description.present) {
-      map['description'] = Variable<String>(description.value);
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
-    }
-    if (ambianceId.present) {
-      map['ambiance_id'] = Variable<int>(ambianceId.value);
-    }
-    if (zoneId.present) {
-      map['zone_id'] = Variable<int>(zoneId.value);
-    }
-    if (maxX.present) {
-      map['max_x'] = Variable<int>(maxX.value);
-    }
-    if (maxY.present) {
-      map['max_y'] = Variable<int>(maxY.value);
-    }
-    if (surfaceId.present) {
-      map['surface_id'] = Variable<int>(surfaceId.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('RoomsCompanion(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('description: $description, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('ambianceId: $ambianceId, ')
-          ..write('zoneId: $zoneId, ')
-          ..write('maxX: $maxX, ')
-          ..write('maxY: $maxY, ')
-          ..write('surfaceId: $surfaceId')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $RoomExitsTable extends RoomExits
-    with TableInfo<$RoomExitsTable, RoomExit> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $RoomExitsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _roomIdMeta = const VerificationMeta('roomId');
-  @override
-  late final GeneratedColumn<int> roomId = GeneratedColumn<int>(
-      'room_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES rooms (id) ON DELETE CASCADE'));
-  static const VerificationMeta _xMeta = const VerificationMeta('x');
-  @override
-  late final GeneratedColumn<int> x = GeneratedColumn<int>(
-      'x', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
-  static const VerificationMeta _yMeta = const VerificationMeta('y');
-  @override
-  late final GeneratedColumn<int> y = GeneratedColumn<int>(
-      'y', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
-  static const VerificationMeta _useSoundIdMeta =
-      const VerificationMeta('useSoundId');
-  @override
-  late final GeneratedColumn<int> useSoundId = GeneratedColumn<int>(
-      'use_sound_id', aliasedName, true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES sound_references (id)'));
-  static const VerificationMeta _labelMeta = const VerificationMeta('label');
-  @override
-  late final GeneratedColumn<String> label = GeneratedColumn<String>(
-      'label', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant('Use exit'));
-  static const VerificationMeta _earconIdMeta =
-      const VerificationMeta('earconId');
-  @override
-  late final GeneratedColumn<int> earconId = GeneratedColumn<int>(
-      'earcon_id', aliasedName, true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES sound_references (id) ON DELETE SET NULL'));
-  @override
-  List<GeneratedColumn> get $columns =>
-      [id, roomId, x, y, useSoundId, label, earconId];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'room_exits';
-  @override
-  VerificationContext validateIntegrity(Insertable<RoomExit> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('room_id')) {
-      context.handle(_roomIdMeta,
-          roomId.isAcceptableOrUnknown(data['room_id']!, _roomIdMeta));
-    } else if (isInserting) {
-      context.missing(_roomIdMeta);
-    }
-    if (data.containsKey('x')) {
-      context.handle(_xMeta, x.isAcceptableOrUnknown(data['x']!, _xMeta));
-    }
-    if (data.containsKey('y')) {
-      context.handle(_yMeta, y.isAcceptableOrUnknown(data['y']!, _yMeta));
-    }
-    if (data.containsKey('use_sound_id')) {
-      context.handle(
-          _useSoundIdMeta,
-          useSoundId.isAcceptableOrUnknown(
-              data['use_sound_id']!, _useSoundIdMeta));
-    }
-    if (data.containsKey('label')) {
-      context.handle(
-          _labelMeta, label.isAcceptableOrUnknown(data['label']!, _labelMeta));
-    }
-    if (data.containsKey('earcon_id')) {
-      context.handle(_earconIdMeta,
-          earconId.isAcceptableOrUnknown(data['earcon_id']!, _earconIdMeta));
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  RoomExit map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return RoomExit(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      roomId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}room_id'])!,
-      x: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}x'])!,
-      y: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}y'])!,
-      useSoundId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}use_sound_id']),
-      label: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}label'])!,
-      earconId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}earcon_id']),
-    );
-  }
-
-  @override
-  $RoomExitsTable createAlias(String alias) {
-    return $RoomExitsTable(attachedDatabase, alias);
-  }
-}
-
-class RoomExit extends DataClass implements Insertable<RoomExit> {
-  /// The primary key field.
-  final int id;
-
-  /// The ID of the room this row is attached to.
-  final int roomId;
-
-  /// The x coordinate.
-  final int x;
-
-  /// The y coordinate.
-  final int y;
-
-  /// The ID of the sound to play when using this exit.
-  final int? useSoundId;
-
-  /// The label of this exit.
-  ///
-  /// The [label] will be used in the object actions menu.
-  final String label;
-
-  /// The ID of the earcon sound to use in the room object action menu.
-  final int? earconId;
-  const RoomExit(
-      {required this.id,
-      required this.roomId,
-      required this.x,
-      required this.y,
-      this.useSoundId,
-      required this.label,
-      this.earconId});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['room_id'] = Variable<int>(roomId);
-    map['x'] = Variable<int>(x);
-    map['y'] = Variable<int>(y);
-    if (!nullToAbsent || useSoundId != null) {
-      map['use_sound_id'] = Variable<int>(useSoundId);
-    }
-    map['label'] = Variable<String>(label);
-    if (!nullToAbsent || earconId != null) {
-      map['earcon_id'] = Variable<int>(earconId);
-    }
-    return map;
-  }
-
-  RoomExitsCompanion toCompanion(bool nullToAbsent) {
-    return RoomExitsCompanion(
-      id: Value(id),
-      roomId: Value(roomId),
-      x: Value(x),
-      y: Value(y),
-      useSoundId: useSoundId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(useSoundId),
-      label: Value(label),
-      earconId: earconId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(earconId),
-    );
-  }
-
-  factory RoomExit.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return RoomExit(
-      id: serializer.fromJson<int>(json['id']),
-      roomId: serializer.fromJson<int>(json['roomId']),
-      x: serializer.fromJson<int>(json['x']),
-      y: serializer.fromJson<int>(json['y']),
-      useSoundId: serializer.fromJson<int?>(json['useSoundId']),
-      label: serializer.fromJson<String>(json['label']),
-      earconId: serializer.fromJson<int?>(json['earconId']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'roomId': serializer.toJson<int>(roomId),
-      'x': serializer.toJson<int>(x),
-      'y': serializer.toJson<int>(y),
-      'useSoundId': serializer.toJson<int?>(useSoundId),
-      'label': serializer.toJson<String>(label),
-      'earconId': serializer.toJson<int?>(earconId),
-    };
-  }
-
-  RoomExit copyWith(
-          {int? id,
-          int? roomId,
-          int? x,
-          int? y,
-          Value<int?> useSoundId = const Value.absent(),
-          String? label,
-          Value<int?> earconId = const Value.absent()}) =>
-      RoomExit(
-        id: id ?? this.id,
-        roomId: roomId ?? this.roomId,
-        x: x ?? this.x,
-        y: y ?? this.y,
-        useSoundId: useSoundId.present ? useSoundId.value : this.useSoundId,
-        label: label ?? this.label,
-        earconId: earconId.present ? earconId.value : this.earconId,
-      );
-  RoomExit copyWithCompanion(RoomExitsCompanion data) {
-    return RoomExit(
-      id: data.id.present ? data.id.value : this.id,
-      roomId: data.roomId.present ? data.roomId.value : this.roomId,
-      x: data.x.present ? data.x.value : this.x,
-      y: data.y.present ? data.y.value : this.y,
-      useSoundId:
-          data.useSoundId.present ? data.useSoundId.value : this.useSoundId,
-      label: data.label.present ? data.label.value : this.label,
-      earconId: data.earconId.present ? data.earconId.value : this.earconId,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('RoomExit(')
-          ..write('id: $id, ')
-          ..write('roomId: $roomId, ')
-          ..write('x: $x, ')
-          ..write('y: $y, ')
-          ..write('useSoundId: $useSoundId, ')
-          ..write('label: $label, ')
-          ..write('earconId: $earconId')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(id, roomId, x, y, useSoundId, label, earconId);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is RoomExit &&
-          other.id == this.id &&
-          other.roomId == this.roomId &&
-          other.x == this.x &&
-          other.y == this.y &&
-          other.useSoundId == this.useSoundId &&
-          other.label == this.label &&
-          other.earconId == this.earconId);
-}
-
-class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
-  final Value<int> id;
-  final Value<int> roomId;
-  final Value<int> x;
-  final Value<int> y;
-  final Value<int?> useSoundId;
-  final Value<String> label;
-  final Value<int?> earconId;
-  const RoomExitsCompanion({
-    this.id = const Value.absent(),
-    this.roomId = const Value.absent(),
-    this.x = const Value.absent(),
-    this.y = const Value.absent(),
-    this.useSoundId = const Value.absent(),
-    this.label = const Value.absent(),
-    this.earconId = const Value.absent(),
-  });
-  RoomExitsCompanion.insert({
-    this.id = const Value.absent(),
-    required int roomId,
-    this.x = const Value.absent(),
-    this.y = const Value.absent(),
-    this.useSoundId = const Value.absent(),
-    this.label = const Value.absent(),
-    this.earconId = const Value.absent(),
-  }) : roomId = Value(roomId);
-  static Insertable<RoomExit> custom({
-    Expression<int>? id,
-    Expression<int>? roomId,
-    Expression<int>? x,
-    Expression<int>? y,
-    Expression<int>? useSoundId,
-    Expression<String>? label,
-    Expression<int>? earconId,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (roomId != null) 'room_id': roomId,
-      if (x != null) 'x': x,
-      if (y != null) 'y': y,
-      if (useSoundId != null) 'use_sound_id': useSoundId,
-      if (label != null) 'label': label,
-      if (earconId != null) 'earcon_id': earconId,
-    });
-  }
-
-  RoomExitsCompanion copyWith(
-      {Value<int>? id,
-      Value<int>? roomId,
-      Value<int>? x,
-      Value<int>? y,
-      Value<int?>? useSoundId,
-      Value<String>? label,
-      Value<int?>? earconId}) {
-    return RoomExitsCompanion(
-      id: id ?? this.id,
-      roomId: roomId ?? this.roomId,
-      x: x ?? this.x,
-      y: y ?? this.y,
-      useSoundId: useSoundId ?? this.useSoundId,
-      label: label ?? this.label,
-      earconId: earconId ?? this.earconId,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (roomId.present) {
-      map['room_id'] = Variable<int>(roomId.value);
-    }
-    if (x.present) {
-      map['x'] = Variable<int>(x.value);
-    }
-    if (y.present) {
-      map['y'] = Variable<int>(y.value);
-    }
-    if (useSoundId.present) {
-      map['use_sound_id'] = Variable<int>(useSoundId.value);
-    }
-    if (label.present) {
-      map['label'] = Variable<String>(label.value);
-    }
-    if (earconId.present) {
-      map['earcon_id'] = Variable<int>(earconId.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('RoomExitsCompanion(')
-          ..write('id: $id, ')
-          ..write('roomId: $roomId, ')
-          ..write('x: $x, ')
-          ..write('y: $y, ')
-          ..write('useSoundId: $useSoundId, ')
-          ..write('label: $label, ')
-          ..write('earconId: $earconId')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $CommandsTable extends Commands with TableInfo<$CommandsTable, Command> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -2433,6 +1557,1002 @@ class CommandCallersCompanion extends UpdateCompanion<CommandCaller> {
           ..write('parentCommandId: $parentCommandId, ')
           ..write('childCommandId: $childCommandId, ')
           ..write('callAfter: $callAfter')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RoomsTable extends Rooms with TableInfo<$RoomsTable, Room> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RoomsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _ambianceIdMeta =
+      const VerificationMeta('ambianceId');
+  @override
+  late final GeneratedColumn<int> ambianceId = GeneratedColumn<int>(
+      'ambiance_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES sound_references (id)'));
+  static const VerificationMeta _zoneIdMeta = const VerificationMeta('zoneId');
+  @override
+  late final GeneratedColumn<int> zoneId = GeneratedColumn<int>(
+      'zone_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES zones (id)'));
+  static const VerificationMeta _maxXMeta = const VerificationMeta('maxX');
+  @override
+  late final GeneratedColumn<int> maxX = GeneratedColumn<int>(
+      'max_x', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(20));
+  static const VerificationMeta _maxYMeta = const VerificationMeta('maxY');
+  @override
+  late final GeneratedColumn<int> maxY = GeneratedColumn<int>(
+      'max_y', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(15));
+  static const VerificationMeta _surfaceIdMeta =
+      const VerificationMeta('surfaceId');
+  @override
+  late final GeneratedColumn<int> surfaceId = GeneratedColumn<int>(
+      'surface_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES room_surfaces (id)'));
+  static const VerificationMeta _onEnterCommandCallerIdMeta =
+      const VerificationMeta('onEnterCommandCallerId');
+  @override
+  late final GeneratedColumn<int> onEnterCommandCallerId = GeneratedColumn<int>(
+      'on_enter_command_caller_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES command_callers (id) ON DELETE SET NULL'));
+  static const VerificationMeta _onExitCommandCallerIdMeta =
+      const VerificationMeta('onExitCommandCallerId');
+  @override
+  late final GeneratedColumn<int> onExitCommandCallerId = GeneratedColumn<int>(
+      'on_exit_command_caller_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES command_callers (id) ON DELETE SET NULL'));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        description,
+        createdAt,
+        ambianceId,
+        zoneId,
+        maxX,
+        maxY,
+        surfaceId,
+        onEnterCommandCallerId,
+        onExitCommandCallerId
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'rooms';
+  @override
+  VerificationContext validateIntegrity(Insertable<Room> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    if (data.containsKey('ambiance_id')) {
+      context.handle(
+          _ambianceIdMeta,
+          ambianceId.isAcceptableOrUnknown(
+              data['ambiance_id']!, _ambianceIdMeta));
+    }
+    if (data.containsKey('zone_id')) {
+      context.handle(_zoneIdMeta,
+          zoneId.isAcceptableOrUnknown(data['zone_id']!, _zoneIdMeta));
+    } else if (isInserting) {
+      context.missing(_zoneIdMeta);
+    }
+    if (data.containsKey('max_x')) {
+      context.handle(
+          _maxXMeta, maxX.isAcceptableOrUnknown(data['max_x']!, _maxXMeta));
+    }
+    if (data.containsKey('max_y')) {
+      context.handle(
+          _maxYMeta, maxY.isAcceptableOrUnknown(data['max_y']!, _maxYMeta));
+    }
+    if (data.containsKey('surface_id')) {
+      context.handle(_surfaceIdMeta,
+          surfaceId.isAcceptableOrUnknown(data['surface_id']!, _surfaceIdMeta));
+    } else if (isInserting) {
+      context.missing(_surfaceIdMeta);
+    }
+    if (data.containsKey('on_enter_command_caller_id')) {
+      context.handle(
+          _onEnterCommandCallerIdMeta,
+          onEnterCommandCallerId.isAcceptableOrUnknown(
+              data['on_enter_command_caller_id']!,
+              _onEnterCommandCallerIdMeta));
+    }
+    if (data.containsKey('on_exit_command_caller_id')) {
+      context.handle(
+          _onExitCommandCallerIdMeta,
+          onExitCommandCallerId.isAcceptableOrUnknown(
+              data['on_exit_command_caller_id']!, _onExitCommandCallerIdMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Room map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Room(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      ambianceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}ambiance_id']),
+      zoneId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}zone_id'])!,
+      maxX: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}max_x'])!,
+      maxY: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}max_y'])!,
+      surfaceId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}surface_id'])!,
+      onEnterCommandCallerId: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}on_enter_command_caller_id']),
+      onExitCommandCallerId: attachedDatabase.typeMapping.read(DriftSqlType.int,
+          data['${effectivePrefix}on_exit_command_caller_id']),
+    );
+  }
+
+  @override
+  $RoomsTable createAlias(String alias) {
+    return $RoomsTable(attachedDatabase, alias);
+  }
+}
+
+class Room extends DataClass implements Insertable<Room> {
+  /// The primary key field.
+  final int id;
+
+  /// The name column.
+  final String name;
+
+  /// The description column.
+  final String description;
+
+  /// The created at column.
+  final DateTime createdAt;
+
+  /// The ID of the ambiance for this row.
+  final int? ambianceId;
+
+  /// The ID of the zone which this room belongs to.
+  final int zoneId;
+
+  /// The maximum x coordinate.
+  final int maxX;
+
+  /// The maximum y coordinate.
+  final int maxY;
+
+  /// The ID of the surface to use.
+  final int surfaceId;
+
+  /// The ID of a command caller to use when the player enters this room.
+  final int? onEnterCommandCallerId;
+
+  /// The ID of a command caller to use when the player exits this room.
+  final int? onExitCommandCallerId;
+  const Room(
+      {required this.id,
+      required this.name,
+      required this.description,
+      required this.createdAt,
+      this.ambianceId,
+      required this.zoneId,
+      required this.maxX,
+      required this.maxY,
+      required this.surfaceId,
+      this.onEnterCommandCallerId,
+      this.onExitCommandCallerId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || ambianceId != null) {
+      map['ambiance_id'] = Variable<int>(ambianceId);
+    }
+    map['zone_id'] = Variable<int>(zoneId);
+    map['max_x'] = Variable<int>(maxX);
+    map['max_y'] = Variable<int>(maxY);
+    map['surface_id'] = Variable<int>(surfaceId);
+    if (!nullToAbsent || onEnterCommandCallerId != null) {
+      map['on_enter_command_caller_id'] = Variable<int>(onEnterCommandCallerId);
+    }
+    if (!nullToAbsent || onExitCommandCallerId != null) {
+      map['on_exit_command_caller_id'] = Variable<int>(onExitCommandCallerId);
+    }
+    return map;
+  }
+
+  RoomsCompanion toCompanion(bool nullToAbsent) {
+    return RoomsCompanion(
+      id: Value(id),
+      name: Value(name),
+      description: Value(description),
+      createdAt: Value(createdAt),
+      ambianceId: ambianceId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ambianceId),
+      zoneId: Value(zoneId),
+      maxX: Value(maxX),
+      maxY: Value(maxY),
+      surfaceId: Value(surfaceId),
+      onEnterCommandCallerId: onEnterCommandCallerId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(onEnterCommandCallerId),
+      onExitCommandCallerId: onExitCommandCallerId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(onExitCommandCallerId),
+    );
+  }
+
+  factory Room.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Room(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      ambianceId: serializer.fromJson<int?>(json['ambianceId']),
+      zoneId: serializer.fromJson<int>(json['zoneId']),
+      maxX: serializer.fromJson<int>(json['maxX']),
+      maxY: serializer.fromJson<int>(json['maxY']),
+      surfaceId: serializer.fromJson<int>(json['surfaceId']),
+      onEnterCommandCallerId:
+          serializer.fromJson<int?>(json['onEnterCommandCallerId']),
+      onExitCommandCallerId:
+          serializer.fromJson<int?>(json['onExitCommandCallerId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'ambianceId': serializer.toJson<int?>(ambianceId),
+      'zoneId': serializer.toJson<int>(zoneId),
+      'maxX': serializer.toJson<int>(maxX),
+      'maxY': serializer.toJson<int>(maxY),
+      'surfaceId': serializer.toJson<int>(surfaceId),
+      'onEnterCommandCallerId': serializer.toJson<int?>(onEnterCommandCallerId),
+      'onExitCommandCallerId': serializer.toJson<int?>(onExitCommandCallerId),
+    };
+  }
+
+  Room copyWith(
+          {int? id,
+          String? name,
+          String? description,
+          DateTime? createdAt,
+          Value<int?> ambianceId = const Value.absent(),
+          int? zoneId,
+          int? maxX,
+          int? maxY,
+          int? surfaceId,
+          Value<int?> onEnterCommandCallerId = const Value.absent(),
+          Value<int?> onExitCommandCallerId = const Value.absent()}) =>
+      Room(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description ?? this.description,
+        createdAt: createdAt ?? this.createdAt,
+        ambianceId: ambianceId.present ? ambianceId.value : this.ambianceId,
+        zoneId: zoneId ?? this.zoneId,
+        maxX: maxX ?? this.maxX,
+        maxY: maxY ?? this.maxY,
+        surfaceId: surfaceId ?? this.surfaceId,
+        onEnterCommandCallerId: onEnterCommandCallerId.present
+            ? onEnterCommandCallerId.value
+            : this.onEnterCommandCallerId,
+        onExitCommandCallerId: onExitCommandCallerId.present
+            ? onExitCommandCallerId.value
+            : this.onExitCommandCallerId,
+      );
+  Room copyWithCompanion(RoomsCompanion data) {
+    return Room(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      description:
+          data.description.present ? data.description.value : this.description,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      ambianceId:
+          data.ambianceId.present ? data.ambianceId.value : this.ambianceId,
+      zoneId: data.zoneId.present ? data.zoneId.value : this.zoneId,
+      maxX: data.maxX.present ? data.maxX.value : this.maxX,
+      maxY: data.maxY.present ? data.maxY.value : this.maxY,
+      surfaceId: data.surfaceId.present ? data.surfaceId.value : this.surfaceId,
+      onEnterCommandCallerId: data.onEnterCommandCallerId.present
+          ? data.onEnterCommandCallerId.value
+          : this.onEnterCommandCallerId,
+      onExitCommandCallerId: data.onExitCommandCallerId.present
+          ? data.onExitCommandCallerId.value
+          : this.onExitCommandCallerId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Room(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('ambianceId: $ambianceId, ')
+          ..write('zoneId: $zoneId, ')
+          ..write('maxX: $maxX, ')
+          ..write('maxY: $maxY, ')
+          ..write('surfaceId: $surfaceId, ')
+          ..write('onEnterCommandCallerId: $onEnterCommandCallerId, ')
+          ..write('onExitCommandCallerId: $onExitCommandCallerId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id,
+      name,
+      description,
+      createdAt,
+      ambianceId,
+      zoneId,
+      maxX,
+      maxY,
+      surfaceId,
+      onEnterCommandCallerId,
+      onExitCommandCallerId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Room &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.createdAt == this.createdAt &&
+          other.ambianceId == this.ambianceId &&
+          other.zoneId == this.zoneId &&
+          other.maxX == this.maxX &&
+          other.maxY == this.maxY &&
+          other.surfaceId == this.surfaceId &&
+          other.onEnterCommandCallerId == this.onEnterCommandCallerId &&
+          other.onExitCommandCallerId == this.onExitCommandCallerId);
+}
+
+class RoomsCompanion extends UpdateCompanion<Room> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<DateTime> createdAt;
+  final Value<int?> ambianceId;
+  final Value<int> zoneId;
+  final Value<int> maxX;
+  final Value<int> maxY;
+  final Value<int> surfaceId;
+  final Value<int?> onEnterCommandCallerId;
+  final Value<int?> onExitCommandCallerId;
+  const RoomsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.ambianceId = const Value.absent(),
+    this.zoneId = const Value.absent(),
+    this.maxX = const Value.absent(),
+    this.maxY = const Value.absent(),
+    this.surfaceId = const Value.absent(),
+    this.onEnterCommandCallerId = const Value.absent(),
+    this.onExitCommandCallerId = const Value.absent(),
+  });
+  RoomsCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required String description,
+    this.createdAt = const Value.absent(),
+    this.ambianceId = const Value.absent(),
+    required int zoneId,
+    this.maxX = const Value.absent(),
+    this.maxY = const Value.absent(),
+    required int surfaceId,
+    this.onEnterCommandCallerId = const Value.absent(),
+    this.onExitCommandCallerId = const Value.absent(),
+  })  : name = Value(name),
+        description = Value(description),
+        zoneId = Value(zoneId),
+        surfaceId = Value(surfaceId);
+  static Insertable<Room> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<DateTime>? createdAt,
+    Expression<int>? ambianceId,
+    Expression<int>? zoneId,
+    Expression<int>? maxX,
+    Expression<int>? maxY,
+    Expression<int>? surfaceId,
+    Expression<int>? onEnterCommandCallerId,
+    Expression<int>? onExitCommandCallerId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (createdAt != null) 'created_at': createdAt,
+      if (ambianceId != null) 'ambiance_id': ambianceId,
+      if (zoneId != null) 'zone_id': zoneId,
+      if (maxX != null) 'max_x': maxX,
+      if (maxY != null) 'max_y': maxY,
+      if (surfaceId != null) 'surface_id': surfaceId,
+      if (onEnterCommandCallerId != null)
+        'on_enter_command_caller_id': onEnterCommandCallerId,
+      if (onExitCommandCallerId != null)
+        'on_exit_command_caller_id': onExitCommandCallerId,
+    });
+  }
+
+  RoomsCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<String>? description,
+      Value<DateTime>? createdAt,
+      Value<int?>? ambianceId,
+      Value<int>? zoneId,
+      Value<int>? maxX,
+      Value<int>? maxY,
+      Value<int>? surfaceId,
+      Value<int?>? onEnterCommandCallerId,
+      Value<int?>? onExitCommandCallerId}) {
+    return RoomsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      createdAt: createdAt ?? this.createdAt,
+      ambianceId: ambianceId ?? this.ambianceId,
+      zoneId: zoneId ?? this.zoneId,
+      maxX: maxX ?? this.maxX,
+      maxY: maxY ?? this.maxY,
+      surfaceId: surfaceId ?? this.surfaceId,
+      onEnterCommandCallerId:
+          onEnterCommandCallerId ?? this.onEnterCommandCallerId,
+      onExitCommandCallerId:
+          onExitCommandCallerId ?? this.onExitCommandCallerId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (ambianceId.present) {
+      map['ambiance_id'] = Variable<int>(ambianceId.value);
+    }
+    if (zoneId.present) {
+      map['zone_id'] = Variable<int>(zoneId.value);
+    }
+    if (maxX.present) {
+      map['max_x'] = Variable<int>(maxX.value);
+    }
+    if (maxY.present) {
+      map['max_y'] = Variable<int>(maxY.value);
+    }
+    if (surfaceId.present) {
+      map['surface_id'] = Variable<int>(surfaceId.value);
+    }
+    if (onEnterCommandCallerId.present) {
+      map['on_enter_command_caller_id'] =
+          Variable<int>(onEnterCommandCallerId.value);
+    }
+    if (onExitCommandCallerId.present) {
+      map['on_exit_command_caller_id'] =
+          Variable<int>(onExitCommandCallerId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoomsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('ambianceId: $ambianceId, ')
+          ..write('zoneId: $zoneId, ')
+          ..write('maxX: $maxX, ')
+          ..write('maxY: $maxY, ')
+          ..write('surfaceId: $surfaceId, ')
+          ..write('onEnterCommandCallerId: $onEnterCommandCallerId, ')
+          ..write('onExitCommandCallerId: $onExitCommandCallerId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RoomExitsTable extends RoomExits
+    with TableInfo<$RoomExitsTable, RoomExit> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RoomExitsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _roomIdMeta = const VerificationMeta('roomId');
+  @override
+  late final GeneratedColumn<int> roomId = GeneratedColumn<int>(
+      'room_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES rooms (id) ON DELETE CASCADE'));
+  static const VerificationMeta _xMeta = const VerificationMeta('x');
+  @override
+  late final GeneratedColumn<int> x = GeneratedColumn<int>(
+      'x', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _yMeta = const VerificationMeta('y');
+  @override
+  late final GeneratedColumn<int> y = GeneratedColumn<int>(
+      'y', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _useSoundIdMeta =
+      const VerificationMeta('useSoundId');
+  @override
+  late final GeneratedColumn<int> useSoundId = GeneratedColumn<int>(
+      'use_sound_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES sound_references (id)'));
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+      'label', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('Use exit'));
+  static const VerificationMeta _earconIdMeta =
+      const VerificationMeta('earconId');
+  @override
+  late final GeneratedColumn<int> earconId = GeneratedColumn<int>(
+      'earcon_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES sound_references (id) ON DELETE SET NULL'));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, roomId, x, y, useSoundId, label, earconId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'room_exits';
+  @override
+  VerificationContext validateIntegrity(Insertable<RoomExit> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('room_id')) {
+      context.handle(_roomIdMeta,
+          roomId.isAcceptableOrUnknown(data['room_id']!, _roomIdMeta));
+    } else if (isInserting) {
+      context.missing(_roomIdMeta);
+    }
+    if (data.containsKey('x')) {
+      context.handle(_xMeta, x.isAcceptableOrUnknown(data['x']!, _xMeta));
+    }
+    if (data.containsKey('y')) {
+      context.handle(_yMeta, y.isAcceptableOrUnknown(data['y']!, _yMeta));
+    }
+    if (data.containsKey('use_sound_id')) {
+      context.handle(
+          _useSoundIdMeta,
+          useSoundId.isAcceptableOrUnknown(
+              data['use_sound_id']!, _useSoundIdMeta));
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+          _labelMeta, label.isAcceptableOrUnknown(data['label']!, _labelMeta));
+    }
+    if (data.containsKey('earcon_id')) {
+      context.handle(_earconIdMeta,
+          earconId.isAcceptableOrUnknown(data['earcon_id']!, _earconIdMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RoomExit map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RoomExit(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      roomId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}room_id'])!,
+      x: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}x'])!,
+      y: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}y'])!,
+      useSoundId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}use_sound_id']),
+      label: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}label'])!,
+      earconId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}earcon_id']),
+    );
+  }
+
+  @override
+  $RoomExitsTable createAlias(String alias) {
+    return $RoomExitsTable(attachedDatabase, alias);
+  }
+}
+
+class RoomExit extends DataClass implements Insertable<RoomExit> {
+  /// The primary key field.
+  final int id;
+
+  /// The ID of the room this row is attached to.
+  final int roomId;
+
+  /// The x coordinate.
+  final int x;
+
+  /// The y coordinate.
+  final int y;
+
+  /// The ID of the sound to play when using this exit.
+  final int? useSoundId;
+
+  /// The label of this exit.
+  ///
+  /// The [label] will be used in the object actions menu.
+  final String label;
+
+  /// The ID of the earcon sound to use in the room object action menu.
+  final int? earconId;
+  const RoomExit(
+      {required this.id,
+      required this.roomId,
+      required this.x,
+      required this.y,
+      this.useSoundId,
+      required this.label,
+      this.earconId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['room_id'] = Variable<int>(roomId);
+    map['x'] = Variable<int>(x);
+    map['y'] = Variable<int>(y);
+    if (!nullToAbsent || useSoundId != null) {
+      map['use_sound_id'] = Variable<int>(useSoundId);
+    }
+    map['label'] = Variable<String>(label);
+    if (!nullToAbsent || earconId != null) {
+      map['earcon_id'] = Variable<int>(earconId);
+    }
+    return map;
+  }
+
+  RoomExitsCompanion toCompanion(bool nullToAbsent) {
+    return RoomExitsCompanion(
+      id: Value(id),
+      roomId: Value(roomId),
+      x: Value(x),
+      y: Value(y),
+      useSoundId: useSoundId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(useSoundId),
+      label: Value(label),
+      earconId: earconId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(earconId),
+    );
+  }
+
+  factory RoomExit.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RoomExit(
+      id: serializer.fromJson<int>(json['id']),
+      roomId: serializer.fromJson<int>(json['roomId']),
+      x: serializer.fromJson<int>(json['x']),
+      y: serializer.fromJson<int>(json['y']),
+      useSoundId: serializer.fromJson<int?>(json['useSoundId']),
+      label: serializer.fromJson<String>(json['label']),
+      earconId: serializer.fromJson<int?>(json['earconId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'roomId': serializer.toJson<int>(roomId),
+      'x': serializer.toJson<int>(x),
+      'y': serializer.toJson<int>(y),
+      'useSoundId': serializer.toJson<int?>(useSoundId),
+      'label': serializer.toJson<String>(label),
+      'earconId': serializer.toJson<int?>(earconId),
+    };
+  }
+
+  RoomExit copyWith(
+          {int? id,
+          int? roomId,
+          int? x,
+          int? y,
+          Value<int?> useSoundId = const Value.absent(),
+          String? label,
+          Value<int?> earconId = const Value.absent()}) =>
+      RoomExit(
+        id: id ?? this.id,
+        roomId: roomId ?? this.roomId,
+        x: x ?? this.x,
+        y: y ?? this.y,
+        useSoundId: useSoundId.present ? useSoundId.value : this.useSoundId,
+        label: label ?? this.label,
+        earconId: earconId.present ? earconId.value : this.earconId,
+      );
+  RoomExit copyWithCompanion(RoomExitsCompanion data) {
+    return RoomExit(
+      id: data.id.present ? data.id.value : this.id,
+      roomId: data.roomId.present ? data.roomId.value : this.roomId,
+      x: data.x.present ? data.x.value : this.x,
+      y: data.y.present ? data.y.value : this.y,
+      useSoundId:
+          data.useSoundId.present ? data.useSoundId.value : this.useSoundId,
+      label: data.label.present ? data.label.value : this.label,
+      earconId: data.earconId.present ? data.earconId.value : this.earconId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoomExit(')
+          ..write('id: $id, ')
+          ..write('roomId: $roomId, ')
+          ..write('x: $x, ')
+          ..write('y: $y, ')
+          ..write('useSoundId: $useSoundId, ')
+          ..write('label: $label, ')
+          ..write('earconId: $earconId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, roomId, x, y, useSoundId, label, earconId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RoomExit &&
+          other.id == this.id &&
+          other.roomId == this.roomId &&
+          other.x == this.x &&
+          other.y == this.y &&
+          other.useSoundId == this.useSoundId &&
+          other.label == this.label &&
+          other.earconId == this.earconId);
+}
+
+class RoomExitsCompanion extends UpdateCompanion<RoomExit> {
+  final Value<int> id;
+  final Value<int> roomId;
+  final Value<int> x;
+  final Value<int> y;
+  final Value<int?> useSoundId;
+  final Value<String> label;
+  final Value<int?> earconId;
+  const RoomExitsCompanion({
+    this.id = const Value.absent(),
+    this.roomId = const Value.absent(),
+    this.x = const Value.absent(),
+    this.y = const Value.absent(),
+    this.useSoundId = const Value.absent(),
+    this.label = const Value.absent(),
+    this.earconId = const Value.absent(),
+  });
+  RoomExitsCompanion.insert({
+    this.id = const Value.absent(),
+    required int roomId,
+    this.x = const Value.absent(),
+    this.y = const Value.absent(),
+    this.useSoundId = const Value.absent(),
+    this.label = const Value.absent(),
+    this.earconId = const Value.absent(),
+  }) : roomId = Value(roomId);
+  static Insertable<RoomExit> custom({
+    Expression<int>? id,
+    Expression<int>? roomId,
+    Expression<int>? x,
+    Expression<int>? y,
+    Expression<int>? useSoundId,
+    Expression<String>? label,
+    Expression<int>? earconId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (roomId != null) 'room_id': roomId,
+      if (x != null) 'x': x,
+      if (y != null) 'y': y,
+      if (useSoundId != null) 'use_sound_id': useSoundId,
+      if (label != null) 'label': label,
+      if (earconId != null) 'earcon_id': earconId,
+    });
+  }
+
+  RoomExitsCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? roomId,
+      Value<int>? x,
+      Value<int>? y,
+      Value<int?>? useSoundId,
+      Value<String>? label,
+      Value<int?>? earconId}) {
+    return RoomExitsCompanion(
+      id: id ?? this.id,
+      roomId: roomId ?? this.roomId,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      useSoundId: useSoundId ?? this.useSoundId,
+      label: label ?? this.label,
+      earconId: earconId ?? this.earconId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (roomId.present) {
+      map['room_id'] = Variable<int>(roomId.value);
+    }
+    if (x.present) {
+      map['x'] = Variable<int>(x.value);
+    }
+    if (y.present) {
+      map['y'] = Variable<int>(y.value);
+    }
+    if (useSoundId.present) {
+      map['use_sound_id'] = Variable<int>(useSoundId.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (earconId.present) {
+      map['earcon_id'] = Variable<int>(earconId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoomExitsCompanion(')
+          ..write('id: $id, ')
+          ..write('roomId: $roomId, ')
+          ..write('x: $x, ')
+          ..write('y: $y, ')
+          ..write('useSoundId: $useSoundId, ')
+          ..write('label: $label, ')
+          ..write('earconId: $earconId')
           ..write(')'))
         .toString();
   }
@@ -5678,10 +5798,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $SoundReferencesTable(this);
   late final $ZonesTable zones = $ZonesTable(this);
   late final $RoomSurfacesTable roomSurfaces = $RoomSurfacesTable(this);
-  late final $RoomsTable rooms = $RoomsTable(this);
-  late final $RoomExitsTable roomExits = $RoomExitsTable(this);
   late final $CommandsTable commands = $CommandsTable(this);
   late final $CommandCallersTable commandCallers = $CommandCallersTable(this);
+  late final $RoomsTable rooms = $RoomsTable(this);
+  late final $RoomExitsTable roomExits = $RoomExitsTable(this);
   late final $RoomObjectsTable roomObjects = $RoomObjectsTable(this);
   late final $PlayerClassesTable playerClasses = $PlayerClassesTable(this);
   late final $GameStatsTable gameStats = $GameStatsTable(this);
@@ -5709,10 +5829,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         soundReferences,
         zones,
         roomSurfaces,
-        rooms,
-        roomExits,
         commands,
         commandCallers,
+        rooms,
+        roomExits,
         roomObjects,
         playerClasses,
         gameStats,
@@ -5727,20 +5847,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
         [
-          WritePropagation(
-            on: TableUpdateQuery.onTableName('rooms',
-                limitUpdateKind: UpdateKind.delete),
-            result: [
-              TableUpdate('room_exits', kind: UpdateKind.delete),
-            ],
-          ),
-          WritePropagation(
-            on: TableUpdateQuery.onTableName('sound_references',
-                limitUpdateKind: UpdateKind.delete),
-            result: [
-              TableUpdate('room_exits', kind: UpdateKind.update),
-            ],
-          ),
           WritePropagation(
             on: TableUpdateQuery.onTableName('sound_references',
                 limitUpdateKind: UpdateKind.delete),
@@ -5760,6 +5866,34 @@ abstract class _$AppDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.delete),
             result: [
               TableUpdate('command_callers', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('command_callers',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('rooms', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('command_callers',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('rooms', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('rooms',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_exits', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('sound_references',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_exits', kind: UpdateKind.update),
             ],
           ),
           WritePropagation(
@@ -5982,6 +6116,21 @@ final class $$SoundReferencesTableReferences extends BaseReferences<
         manager.$state.copyWith(prefetchedData: cache));
   }
 
+  static MultiTypedResultKey<$CommandsTable, List<Command>> _commandsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.commands,
+          aliasName:
+              $_aliasNameGenerator(db.soundReferences.id, db.commands.soundId));
+
+  $$CommandsTableProcessedTableManager get commandsRefs {
+    final manager = $$CommandsTableTableManager($_db, $_db.commands)
+        .filter((f) => f.soundId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_commandsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
   static MultiTypedResultKey<$RoomsTable, List<Room>> _roomsRefsTable(
           _$AppDatabase db) =>
       MultiTypedResultKey.fromTable(db.rooms,
@@ -6024,21 +6173,6 @@ final class $$SoundReferencesTableReferences extends BaseReferences<
         .filter((f) => f.earconId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_room_exits_earconsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$CommandsTable, List<Command>> _commandsRefsTable(
-          _$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(db.commands,
-          aliasName:
-              $_aliasNameGenerator(db.soundReferences.id, db.commands.soundId));
-
-  $$CommandsTableProcessedTableManager get commandsRefs {
-    final manager = $$CommandsTableTableManager($_db, $_db.commands)
-        .filter((f) => f.soundId.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_commandsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -6253,6 +6387,27 @@ class $$SoundReferencesTableFilterComposer
     return f(composer);
   }
 
+  Expression<bool> commandsRefs(
+      Expression<bool> Function($$CommandsTableFilterComposer f) f) {
+    final $$CommandsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.commands,
+        getReferencedColumn: (t) => t.soundId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandsTableFilterComposer(
+              $db: $db,
+              $table: $db.commands,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
   Expression<bool> roomsRefs(
       Expression<bool> Function($$RoomsTableFilterComposer f) f) {
     final $$RoomsTableFilterComposer composer = $composerBuilder(
@@ -6308,27 +6463,6 @@ class $$SoundReferencesTableFilterComposer
             $$RoomExitsTableFilterComposer(
               $db: $db,
               $table: $db.roomExits,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<bool> commandsRefs(
-      Expression<bool> Function($$CommandsTableFilterComposer f) f) {
-    final $$CommandsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.commands,
-        getReferencedColumn: (t) => t.soundId,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$CommandsTableFilterComposer(
-              $db: $db,
-              $table: $db.commands,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -6595,6 +6729,27 @@ class $$SoundReferencesTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> commandsRefs<T extends Object>(
+      Expression<T> Function($$CommandsTableAnnotationComposer a) f) {
+    final $$CommandsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.commands,
+        getReferencedColumn: (t) => t.soundId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.commands,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
   Expression<T> roomsRefs<T extends Object>(
       Expression<T> Function($$RoomsTableAnnotationComposer a) f) {
     final $$RoomsTableAnnotationComposer composer = $composerBuilder(
@@ -6650,27 +6805,6 @@ class $$SoundReferencesTableAnnotationComposer
             $$RoomExitsTableAnnotationComposer(
               $db: $db,
               $table: $db.roomExits,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<T> commandsRefs<T extends Object>(
-      Expression<T> Function($$CommandsTableAnnotationComposer a) f) {
-    final $$CommandsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.commands,
-        getReferencedColumn: (t) => t.soundId,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$CommandsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.commands,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -6849,10 +6983,10 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
         {bool zonesRefs,
         bool footstepsSurfaces,
         bool wallSoundsSurfaces,
+        bool commandsRefs,
         bool roomsRefs,
         bool room_exit_use_sounds,
         bool room_exits_earcons,
-        bool commandsRefs,
         bool roomObjectsRefs,
         bool room_object_earcons,
         bool roomSurfaceBoostBoostSounds,
@@ -6905,10 +7039,10 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
               {zonesRefs = false,
               footstepsSurfaces = false,
               wallSoundsSurfaces = false,
+              commandsRefs = false,
               roomsRefs = false,
               room_exit_use_sounds = false,
               room_exits_earcons = false,
-              commandsRefs = false,
               roomObjectsRefs = false,
               room_object_earcons = false,
               roomSurfaceBoostBoostSounds = false,
@@ -6922,10 +7056,10 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                 if (zonesRefs) db.zones,
                 if (footstepsSurfaces) db.roomSurfaces,
                 if (wallSoundsSurfaces) db.roomSurfaces,
+                if (commandsRefs) db.commands,
                 if (roomsRefs) db.rooms,
                 if (room_exit_use_sounds) db.roomExits,
                 if (room_exits_earcons) db.roomExits,
-                if (commandsRefs) db.commands,
                 if (roomObjectsRefs) db.roomObjects,
                 if (room_object_earcons) db.roomObjects,
                 if (roomSurfaceBoostBoostSounds) db.roomSurfaceBoosts,
@@ -6973,6 +7107,18 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.wallSoundI == item.id),
                         typedResults: items),
+                  if (commandsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$SoundReferencesTableReferences
+                            ._commandsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$SoundReferencesTableReferences(db, table, p0)
+                                .commandsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.soundId == item.id),
+                        typedResults: items),
                   if (roomsRefs)
                     await $_getPrefetchedData(
                         currentTable: table,
@@ -7008,18 +7154,6 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.earconId == item.id),
-                        typedResults: items),
-                  if (commandsRefs)
-                    await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable: $$SoundReferencesTableReferences
-                            ._commandsRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$SoundReferencesTableReferences(db, table, p0)
-                                .commandsRefs,
-                        referencedItemsForCurrentItem: (item,
-                                referencedItems) =>
-                            referencedItems.where((e) => e.soundId == item.id),
                         typedResults: items),
                   if (roomObjectsRefs)
                     await $_getPrefetchedData(
@@ -7127,10 +7261,10 @@ typedef $$SoundReferencesTableProcessedTableManager = ProcessedTableManager<
         {bool zonesRefs,
         bool footstepsSurfaces,
         bool wallSoundsSurfaces,
+        bool commandsRefs,
         bool roomsRefs,
         bool room_exit_use_sounds,
         bool room_exits_earcons,
-        bool commandsRefs,
         bool roomObjectsRefs,
         bool room_object_earcons,
         bool roomSurfaceBoostBoostSounds,
@@ -8066,6 +8200,1144 @@ typedef $$RoomSurfacesTableProcessedTableManager = ProcessedTableManager<
         bool roomsRefs,
         bool roomSurfaceBoostsRefs,
         bool roomSurfaceCostsRefs})>;
+typedef $$CommandsTableCreateCompanionBuilder = CommandsCompanion Function({
+  Value<int> id,
+  required String description,
+  Value<String?> spokenMessage,
+  Value<int?> soundId,
+  Value<String?> url,
+});
+typedef $$CommandsTableUpdateCompanionBuilder = CommandsCompanion Function({
+  Value<int> id,
+  Value<String> description,
+  Value<String?> spokenMessage,
+  Value<int?> soundId,
+  Value<String?> url,
+});
+
+final class $$CommandsTableReferences
+    extends BaseReferences<_$AppDatabase, $CommandsTable, Command> {
+  $$CommandsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $SoundReferencesTable _soundIdTable(_$AppDatabase db) =>
+      db.soundReferences.createAlias(
+          $_aliasNameGenerator(db.commands.soundId, db.soundReferences.id));
+
+  $$SoundReferencesTableProcessedTableManager? get soundId {
+    final $_column = $_itemColumn<int>('sound_id');
+    if ($_column == null) return null;
+    final manager =
+        $$SoundReferencesTableTableManager($_db, $_db.soundReferences)
+            .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_soundIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static MultiTypedResultKey<$CommandCallersTable, List<CommandCaller>>
+      _commandsToCallTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.commandCallers,
+              aliasName: $_aliasNameGenerator(
+                  db.commands.id, db.commandCallers.parentCommandId));
+
+  $$CommandCallersTableProcessedTableManager get commandsToCall {
+    final manager = $$CommandCallersTableTableManager($_db, $_db.commandCallers)
+        .filter(
+            (f) => f.parentCommandId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_commandsToCallTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$CommandCallersTable, List<CommandCaller>>
+      _commandCallersTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.commandCallers,
+              aliasName: $_aliasNameGenerator(
+                  db.commands.id, db.commandCallers.childCommandId));
+
+  $$CommandCallersTableProcessedTableManager get commandCallers {
+    final manager = $$CommandCallersTableTableManager($_db, $_db.commandCallers)
+        .filter((f) => f.childCommandId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_commandCallersTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$CommandsTableFilterComposer
+    extends Composer<_$AppDatabase, $CommandsTable> {
+  $$CommandsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get spokenMessage => $composableBuilder(
+      column: $table.spokenMessage, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get url => $composableBuilder(
+      column: $table.url, builder: (column) => ColumnFilters(column));
+
+  $$SoundReferencesTableFilterComposer get soundId {
+    final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.soundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableFilterComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  Expression<bool> commandsToCall(
+      Expression<bool> Function($$CommandCallersTableFilterComposer f) f) {
+    final $$CommandCallersTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.parentCommandId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableFilterComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> commandCallers(
+      Expression<bool> Function($$CommandCallersTableFilterComposer f) f) {
+    final $$CommandCallersTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.childCommandId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableFilterComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$CommandsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CommandsTable> {
+  $$CommandsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get spokenMessage => $composableBuilder(
+      column: $table.spokenMessage,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get url => $composableBuilder(
+      column: $table.url, builder: (column) => ColumnOrderings(column));
+
+  $$SoundReferencesTableOrderingComposer get soundId {
+    final $$SoundReferencesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.soundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableOrderingComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$CommandsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CommandsTable> {
+  $$CommandsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
+
+  GeneratedColumn<String> get spokenMessage => $composableBuilder(
+      column: $table.spokenMessage, builder: (column) => column);
+
+  GeneratedColumn<String> get url =>
+      $composableBuilder(column: $table.url, builder: (column) => column);
+
+  $$SoundReferencesTableAnnotationComposer get soundId {
+    final $$SoundReferencesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.soundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  Expression<T> commandsToCall<T extends Object>(
+      Expression<T> Function($$CommandCallersTableAnnotationComposer a) f) {
+    final $$CommandCallersTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.parentCommandId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableAnnotationComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<T> commandCallers<T extends Object>(
+      Expression<T> Function($$CommandCallersTableAnnotationComposer a) f) {
+    final $$CommandCallersTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.childCommandId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableAnnotationComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$CommandsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $CommandsTable,
+    Command,
+    $$CommandsTableFilterComposer,
+    $$CommandsTableOrderingComposer,
+    $$CommandsTableAnnotationComposer,
+    $$CommandsTableCreateCompanionBuilder,
+    $$CommandsTableUpdateCompanionBuilder,
+    (Command, $$CommandsTableReferences),
+    Command,
+    PrefetchHooks Function(
+        {bool soundId, bool commandsToCall, bool commandCallers})> {
+  $$CommandsTableTableManager(_$AppDatabase db, $CommandsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CommandsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CommandsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CommandsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> description = const Value.absent(),
+            Value<String?> spokenMessage = const Value.absent(),
+            Value<int?> soundId = const Value.absent(),
+            Value<String?> url = const Value.absent(),
+          }) =>
+              CommandsCompanion(
+            id: id,
+            description: description,
+            spokenMessage: spokenMessage,
+            soundId: soundId,
+            url: url,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String description,
+            Value<String?> spokenMessage = const Value.absent(),
+            Value<int?> soundId = const Value.absent(),
+            Value<String?> url = const Value.absent(),
+          }) =>
+              CommandsCompanion.insert(
+            id: id,
+            description: description,
+            spokenMessage: spokenMessage,
+            soundId: soundId,
+            url: url,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) =>
+                  (e.readTable(table), $$CommandsTableReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: (
+              {soundId = false,
+              commandsToCall = false,
+              commandCallers = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (commandsToCall) db.commandCallers,
+                if (commandCallers) db.commandCallers
+              ],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (soundId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.soundId,
+                    referencedTable:
+                        $$CommandsTableReferences._soundIdTable(db),
+                    referencedColumn:
+                        $$CommandsTableReferences._soundIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (commandsToCall)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable:
+                            $$CommandsTableReferences._commandsToCallTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CommandsTableReferences(db, table, p0)
+                                .commandsToCall,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.parentCommandId == item.id),
+                        typedResults: items),
+                  if (commandCallers)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable:
+                            $$CommandsTableReferences._commandCallersTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CommandsTableReferences(db, table, p0)
+                                .commandCallers,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.childCommandId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$CommandsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $CommandsTable,
+    Command,
+    $$CommandsTableFilterComposer,
+    $$CommandsTableOrderingComposer,
+    $$CommandsTableAnnotationComposer,
+    $$CommandsTableCreateCompanionBuilder,
+    $$CommandsTableUpdateCompanionBuilder,
+    (Command, $$CommandsTableReferences),
+    Command,
+    PrefetchHooks Function(
+        {bool soundId, bool commandsToCall, bool commandCallers})>;
+typedef $$CommandCallersTableCreateCompanionBuilder = CommandCallersCompanion
+    Function({
+  Value<int> id,
+  Value<int?> parentCommandId,
+  required int childCommandId,
+  Value<int?> callAfter,
+});
+typedef $$CommandCallersTableUpdateCompanionBuilder = CommandCallersCompanion
+    Function({
+  Value<int> id,
+  Value<int?> parentCommandId,
+  Value<int> childCommandId,
+  Value<int?> callAfter,
+});
+
+final class $$CommandCallersTableReferences
+    extends BaseReferences<_$AppDatabase, $CommandCallersTable, CommandCaller> {
+  $$CommandCallersTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $CommandsTable _parentCommandIdTable(_$AppDatabase db) =>
+      db.commands.createAlias($_aliasNameGenerator(
+          db.commandCallers.parentCommandId, db.commands.id));
+
+  $$CommandsTableProcessedTableManager? get parentCommandId {
+    final $_column = $_itemColumn<int>('parent_command_id');
+    if ($_column == null) return null;
+    final manager = $$CommandsTableTableManager($_db, $_db.commands)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_parentCommandIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $CommandsTable _childCommandIdTable(_$AppDatabase db) =>
+      db.commands.createAlias($_aliasNameGenerator(
+          db.commandCallers.childCommandId, db.commands.id));
+
+  $$CommandsTableProcessedTableManager get childCommandId {
+    final $_column = $_itemColumn<int>('child_command_id')!;
+
+    final manager = $$CommandsTableTableManager($_db, $_db.commands)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_childCommandIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static MultiTypedResultKey<$RoomsTable, List<Room>>
+      _onEnterCommandCallersTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.rooms,
+              aliasName: $_aliasNameGenerator(
+                  db.commandCallers.id, db.rooms.onEnterCommandCallerId));
+
+  $$RoomsTableProcessedTableManager get onEnterCommandCallers {
+    final manager = $$RoomsTableTableManager($_db, $_db.rooms).filter(
+        (f) => f.onEnterCommandCallerId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_onEnterCommandCallersTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$RoomsTable, List<Room>>
+      _onExitCommandCallersTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.rooms,
+              aliasName: $_aliasNameGenerator(
+                  db.commandCallers.id, db.rooms.onExitCommandCallerId));
+
+  $$RoomsTableProcessedTableManager get onExitCommandCallers {
+    final manager = $$RoomsTableTableManager($_db, $_db.rooms).filter(
+        (f) => f.onExitCommandCallerId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_onExitCommandCallersTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$RoomObjectsTable, List<RoomObject>>
+      _onApproachCommandCallersTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.roomObjects,
+              aliasName: $_aliasNameGenerator(db.commandCallers.id,
+                  db.roomObjects.onApproachCommandCallerId));
+
+  $$RoomObjectsTableProcessedTableManager get onApproachCommandCallers {
+    final manager = $$RoomObjectsTableTableManager($_db, $_db.roomObjects)
+        .filter((f) =>
+            f.onApproachCommandCallerId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_onApproachCommandCallersTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$RoomObjectsTable, List<RoomObject>>
+      _onLeaveCommandCallersTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.roomObjects,
+              aliasName: $_aliasNameGenerator(
+                  db.commandCallers.id, db.roomObjects.onLeaveCommandCallerId));
+
+  $$RoomObjectsTableProcessedTableManager get onLeaveCommandCallers {
+    final manager = $$RoomObjectsTableTableManager($_db, $_db.roomObjects)
+        .filter((f) =>
+            f.onLeaveCommandCallerId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_onLeaveCommandCallersTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$RoomObjectCommandCallersTable,
+      List<RoomObjectCommandCaller>> _roomObjectCommandCallersRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.roomObjectCommandCallers,
+          aliasName: $_aliasNameGenerator(db.commandCallers.id,
+              db.roomObjectCommandCallers.commandCallerId));
+
+  $$RoomObjectCommandCallersTableProcessedTableManager
+      get roomObjectCommandCallersRefs {
+    final manager = $$RoomObjectCommandCallersTableTableManager(
+            $_db, $_db.roomObjectCommandCallers)
+        .filter(
+            (f) => f.commandCallerId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_roomObjectCommandCallersRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$CommandCallersTableFilterComposer
+    extends Composer<_$AppDatabase, $CommandCallersTable> {
+  $$CommandCallersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get callAfter => $composableBuilder(
+      column: $table.callAfter, builder: (column) => ColumnFilters(column));
+
+  $$CommandsTableFilterComposer get parentCommandId {
+    final $$CommandsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.parentCommandId,
+        referencedTable: $db.commands,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandsTableFilterComposer(
+              $db: $db,
+              $table: $db.commands,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$CommandsTableFilterComposer get childCommandId {
+    final $$CommandsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.childCommandId,
+        referencedTable: $db.commands,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandsTableFilterComposer(
+              $db: $db,
+              $table: $db.commands,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  Expression<bool> onEnterCommandCallers(
+      Expression<bool> Function($$RoomsTableFilterComposer f) f) {
+    final $$RoomsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.rooms,
+        getReferencedColumn: (t) => t.onEnterCommandCallerId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomsTableFilterComposer(
+              $db: $db,
+              $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> onExitCommandCallers(
+      Expression<bool> Function($$RoomsTableFilterComposer f) f) {
+    final $$RoomsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.rooms,
+        getReferencedColumn: (t) => t.onExitCommandCallerId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomsTableFilterComposer(
+              $db: $db,
+              $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> onApproachCommandCallers(
+      Expression<bool> Function($$RoomObjectsTableFilterComposer f) f) {
+    final $$RoomObjectsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomObjects,
+        getReferencedColumn: (t) => t.onApproachCommandCallerId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> onLeaveCommandCallers(
+      Expression<bool> Function($$RoomObjectsTableFilterComposer f) f) {
+    final $$RoomObjectsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomObjects,
+        getReferencedColumn: (t) => t.onLeaveCommandCallerId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> roomObjectCommandCallersRefs(
+      Expression<bool> Function($$RoomObjectCommandCallersTableFilterComposer f)
+          f) {
+    final $$RoomObjectCommandCallersTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomObjectCommandCallers,
+            getReferencedColumn: (t) => t.commandCallerId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomObjectCommandCallersTableFilterComposer(
+                  $db: $db,
+                  $table: $db.roomObjectCommandCallers,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+}
+
+class $$CommandCallersTableOrderingComposer
+    extends Composer<_$AppDatabase, $CommandCallersTable> {
+  $$CommandCallersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get callAfter => $composableBuilder(
+      column: $table.callAfter, builder: (column) => ColumnOrderings(column));
+
+  $$CommandsTableOrderingComposer get parentCommandId {
+    final $$CommandsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.parentCommandId,
+        referencedTable: $db.commands,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandsTableOrderingComposer(
+              $db: $db,
+              $table: $db.commands,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$CommandsTableOrderingComposer get childCommandId {
+    final $$CommandsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.childCommandId,
+        referencedTable: $db.commands,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandsTableOrderingComposer(
+              $db: $db,
+              $table: $db.commands,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$CommandCallersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CommandCallersTable> {
+  $$CommandCallersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get callAfter =>
+      $composableBuilder(column: $table.callAfter, builder: (column) => column);
+
+  $$CommandsTableAnnotationComposer get parentCommandId {
+    final $$CommandsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.parentCommandId,
+        referencedTable: $db.commands,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.commands,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$CommandsTableAnnotationComposer get childCommandId {
+    final $$CommandsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.childCommandId,
+        referencedTable: $db.commands,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.commands,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  Expression<T> onEnterCommandCallers<T extends Object>(
+      Expression<T> Function($$RoomsTableAnnotationComposer a) f) {
+    final $$RoomsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.rooms,
+        getReferencedColumn: (t) => t.onEnterCommandCallerId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<T> onExitCommandCallers<T extends Object>(
+      Expression<T> Function($$RoomsTableAnnotationComposer a) f) {
+    final $$RoomsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.rooms,
+        getReferencedColumn: (t) => t.onExitCommandCallerId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<T> onApproachCommandCallers<T extends Object>(
+      Expression<T> Function($$RoomObjectsTableAnnotationComposer a) f) {
+    final $$RoomObjectsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomObjects,
+        getReferencedColumn: (t) => t.onApproachCommandCallerId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<T> onLeaveCommandCallers<T extends Object>(
+      Expression<T> Function($$RoomObjectsTableAnnotationComposer a) f) {
+    final $$RoomObjectsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomObjects,
+        getReferencedColumn: (t) => t.onLeaveCommandCallerId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<T> roomObjectCommandCallersRefs<T extends Object>(
+      Expression<T> Function(
+              $$RoomObjectCommandCallersTableAnnotationComposer a)
+          f) {
+    final $$RoomObjectCommandCallersTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomObjectCommandCallers,
+            getReferencedColumn: (t) => t.commandCallerId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomObjectCommandCallersTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.roomObjectCommandCallers,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+}
+
+class $$CommandCallersTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $CommandCallersTable,
+    CommandCaller,
+    $$CommandCallersTableFilterComposer,
+    $$CommandCallersTableOrderingComposer,
+    $$CommandCallersTableAnnotationComposer,
+    $$CommandCallersTableCreateCompanionBuilder,
+    $$CommandCallersTableUpdateCompanionBuilder,
+    (CommandCaller, $$CommandCallersTableReferences),
+    CommandCaller,
+    PrefetchHooks Function(
+        {bool parentCommandId,
+        bool childCommandId,
+        bool onEnterCommandCallers,
+        bool onExitCommandCallers,
+        bool onApproachCommandCallers,
+        bool onLeaveCommandCallers,
+        bool roomObjectCommandCallersRefs})> {
+  $$CommandCallersTableTableManager(
+      _$AppDatabase db, $CommandCallersTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CommandCallersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CommandCallersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CommandCallersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int?> parentCommandId = const Value.absent(),
+            Value<int> childCommandId = const Value.absent(),
+            Value<int?> callAfter = const Value.absent(),
+          }) =>
+              CommandCallersCompanion(
+            id: id,
+            parentCommandId: parentCommandId,
+            childCommandId: childCommandId,
+            callAfter: callAfter,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int?> parentCommandId = const Value.absent(),
+            required int childCommandId,
+            Value<int?> callAfter = const Value.absent(),
+          }) =>
+              CommandCallersCompanion.insert(
+            id: id,
+            parentCommandId: parentCommandId,
+            childCommandId: childCommandId,
+            callAfter: callAfter,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$CommandCallersTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: (
+              {parentCommandId = false,
+              childCommandId = false,
+              onEnterCommandCallers = false,
+              onExitCommandCallers = false,
+              onApproachCommandCallers = false,
+              onLeaveCommandCallers = false,
+              roomObjectCommandCallersRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (onEnterCommandCallers) db.rooms,
+                if (onExitCommandCallers) db.rooms,
+                if (onApproachCommandCallers) db.roomObjects,
+                if (onLeaveCommandCallers) db.roomObjects,
+                if (roomObjectCommandCallersRefs) db.roomObjectCommandCallers
+              ],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (parentCommandId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.parentCommandId,
+                    referencedTable: $$CommandCallersTableReferences
+                        ._parentCommandIdTable(db),
+                    referencedColumn: $$CommandCallersTableReferences
+                        ._parentCommandIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (childCommandId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.childCommandId,
+                    referencedTable: $$CommandCallersTableReferences
+                        ._childCommandIdTable(db),
+                    referencedColumn: $$CommandCallersTableReferences
+                        ._childCommandIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (onEnterCommandCallers)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$CommandCallersTableReferences
+                            ._onEnterCommandCallersTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CommandCallersTableReferences(db, table, p0)
+                                .onEnterCommandCallers,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems.where(
+                                (e) => e.onEnterCommandCallerId == item.id),
+                        typedResults: items),
+                  if (onExitCommandCallers)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$CommandCallersTableReferences
+                            ._onExitCommandCallersTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CommandCallersTableReferences(db, table, p0)
+                                .onExitCommandCallers,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems.where(
+                                (e) => e.onExitCommandCallerId == item.id),
+                        typedResults: items),
+                  if (onApproachCommandCallers)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$CommandCallersTableReferences
+                            ._onApproachCommandCallersTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CommandCallersTableReferences(db, table, p0)
+                                .onApproachCommandCallers,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems.where(
+                                (e) => e.onApproachCommandCallerId == item.id),
+                        typedResults: items),
+                  if (onLeaveCommandCallers)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$CommandCallersTableReferences
+                            ._onLeaveCommandCallersTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CommandCallersTableReferences(db, table, p0)
+                                .onLeaveCommandCallers,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems.where(
+                                (e) => e.onLeaveCommandCallerId == item.id),
+                        typedResults: items),
+                  if (roomObjectCommandCallersRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$CommandCallersTableReferences
+                            ._roomObjectCommandCallersRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CommandCallersTableReferences(db, table, p0)
+                                .roomObjectCommandCallersRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.commandCallerId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$CommandCallersTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $CommandCallersTable,
+    CommandCaller,
+    $$CommandCallersTableFilterComposer,
+    $$CommandCallersTableOrderingComposer,
+    $$CommandCallersTableAnnotationComposer,
+    $$CommandCallersTableCreateCompanionBuilder,
+    $$CommandCallersTableUpdateCompanionBuilder,
+    (CommandCaller, $$CommandCallersTableReferences),
+    CommandCaller,
+    PrefetchHooks Function(
+        {bool parentCommandId,
+        bool childCommandId,
+        bool onEnterCommandCallers,
+        bool onExitCommandCallers,
+        bool onApproachCommandCallers,
+        bool onLeaveCommandCallers,
+        bool roomObjectCommandCallersRefs})>;
 typedef $$RoomsTableCreateCompanionBuilder = RoomsCompanion Function({
   Value<int> id,
   required String name,
@@ -8076,6 +9348,8 @@ typedef $$RoomsTableCreateCompanionBuilder = RoomsCompanion Function({
   Value<int> maxX,
   Value<int> maxY,
   required int surfaceId,
+  Value<int?> onEnterCommandCallerId,
+  Value<int?> onExitCommandCallerId,
 });
 typedef $$RoomsTableUpdateCompanionBuilder = RoomsCompanion Function({
   Value<int> id,
@@ -8087,6 +9361,8 @@ typedef $$RoomsTableUpdateCompanionBuilder = RoomsCompanion Function({
   Value<int> maxX,
   Value<int> maxY,
   Value<int> surfaceId,
+  Value<int?> onEnterCommandCallerId,
+  Value<int?> onExitCommandCallerId,
 });
 
 final class $$RoomsTableReferences
@@ -8133,6 +9409,38 @@ final class $$RoomsTableReferences
     final manager = $$RoomSurfacesTableTableManager($_db, $_db.roomSurfaces)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_surfaceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $CommandCallersTable _onEnterCommandCallerIdTable(_$AppDatabase db) =>
+      db.commandCallers.createAlias($_aliasNameGenerator(
+          db.rooms.onEnterCommandCallerId, db.commandCallers.id));
+
+  $$CommandCallersTableProcessedTableManager? get onEnterCommandCallerId {
+    final $_column = $_itemColumn<int>('on_enter_command_caller_id');
+    if ($_column == null) return null;
+    final manager = $$CommandCallersTableTableManager($_db, $_db.commandCallers)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item =
+        $_typedResult.readTableOrNull(_onEnterCommandCallerIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $CommandCallersTable _onExitCommandCallerIdTable(_$AppDatabase db) =>
+      db.commandCallers.createAlias($_aliasNameGenerator(
+          db.rooms.onExitCommandCallerId, db.commandCallers.id));
+
+  $$CommandCallersTableProcessedTableManager? get onExitCommandCallerId {
+    final $_column = $_itemColumn<int>('on_exit_command_caller_id');
+    if ($_column == null) return null;
+    final manager = $$CommandCallersTableTableManager($_db, $_db.commandCallers)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item =
+        $_typedResult.readTableOrNull(_onExitCommandCallerIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
@@ -8260,6 +9568,46 @@ class $$RoomsTableFilterComposer extends Composer<_$AppDatabase, $RoomsTable> {
             $$RoomSurfacesTableFilterComposer(
               $db: $db,
               $table: $db.roomSurfaces,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$CommandCallersTableFilterComposer get onEnterCommandCallerId {
+    final $$CommandCallersTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.onEnterCommandCallerId,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableFilterComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$CommandCallersTableFilterComposer get onExitCommandCallerId {
+    final $$CommandCallersTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.onExitCommandCallerId,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableFilterComposer(
+              $db: $db,
+              $table: $db.commandCallers,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8418,6 +9766,46 @@ class $$RoomsTableOrderingComposer
             ));
     return composer;
   }
+
+  $$CommandCallersTableOrderingComposer get onEnterCommandCallerId {
+    final $$CommandCallersTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.onEnterCommandCallerId,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableOrderingComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$CommandCallersTableOrderingComposer get onExitCommandCallerId {
+    final $$CommandCallersTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.onExitCommandCallerId,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableOrderingComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$RoomsTableAnnotationComposer
@@ -8507,6 +9895,46 @@ class $$RoomsTableAnnotationComposer
     return composer;
   }
 
+  $$CommandCallersTableAnnotationComposer get onEnterCommandCallerId {
+    final $$CommandCallersTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.onEnterCommandCallerId,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableAnnotationComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$CommandCallersTableAnnotationComposer get onExitCommandCallerId {
+    final $$CommandCallersTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.onExitCommandCallerId,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableAnnotationComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
   Expression<T> roomExitsRefs<T extends Object>(
       Expression<T> Function($$RoomExitsTableAnnotationComposer a) f) {
     final $$RoomExitsTableAnnotationComposer composer = $composerBuilder(
@@ -8586,6 +10014,8 @@ class $$RoomsTableTableManager extends RootTableManager<
         {bool ambianceId,
         bool zoneId,
         bool surfaceId,
+        bool onEnterCommandCallerId,
+        bool onExitCommandCallerId,
         bool roomExitsRefs,
         bool roomObjectsRefs,
         bool playerClassesRefs})> {
@@ -8609,6 +10039,8 @@ class $$RoomsTableTableManager extends RootTableManager<
             Value<int> maxX = const Value.absent(),
             Value<int> maxY = const Value.absent(),
             Value<int> surfaceId = const Value.absent(),
+            Value<int?> onEnterCommandCallerId = const Value.absent(),
+            Value<int?> onExitCommandCallerId = const Value.absent(),
           }) =>
               RoomsCompanion(
             id: id,
@@ -8620,6 +10052,8 @@ class $$RoomsTableTableManager extends RootTableManager<
             maxX: maxX,
             maxY: maxY,
             surfaceId: surfaceId,
+            onEnterCommandCallerId: onEnterCommandCallerId,
+            onExitCommandCallerId: onExitCommandCallerId,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -8631,6 +10065,8 @@ class $$RoomsTableTableManager extends RootTableManager<
             Value<int> maxX = const Value.absent(),
             Value<int> maxY = const Value.absent(),
             required int surfaceId,
+            Value<int?> onEnterCommandCallerId = const Value.absent(),
+            Value<int?> onExitCommandCallerId = const Value.absent(),
           }) =>
               RoomsCompanion.insert(
             id: id,
@@ -8642,6 +10078,8 @@ class $$RoomsTableTableManager extends RootTableManager<
             maxX: maxX,
             maxY: maxY,
             surfaceId: surfaceId,
+            onEnterCommandCallerId: onEnterCommandCallerId,
+            onExitCommandCallerId: onExitCommandCallerId,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) =>
@@ -8651,6 +10089,8 @@ class $$RoomsTableTableManager extends RootTableManager<
               {ambianceId = false,
               zoneId = false,
               surfaceId = false,
+              onEnterCommandCallerId = false,
+              onExitCommandCallerId = false,
               roomExitsRefs = false,
               roomObjectsRefs = false,
               playerClassesRefs = false}) {
@@ -8700,6 +10140,28 @@ class $$RoomsTableTableManager extends RootTableManager<
                     referencedTable: $$RoomsTableReferences._surfaceIdTable(db),
                     referencedColumn:
                         $$RoomsTableReferences._surfaceIdTable(db).id,
+                  ) as T;
+                }
+                if (onEnterCommandCallerId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.onEnterCommandCallerId,
+                    referencedTable:
+                        $$RoomsTableReferences._onEnterCommandCallerIdTable(db),
+                    referencedColumn: $$RoomsTableReferences
+                        ._onEnterCommandCallerIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (onExitCommandCallerId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.onExitCommandCallerId,
+                    referencedTable:
+                        $$RoomsTableReferences._onExitCommandCallerIdTable(db),
+                    referencedColumn: $$RoomsTableReferences
+                        ._onExitCommandCallerIdTable(db)
+                        .id,
                   ) as T;
                 }
 
@@ -8764,6 +10226,8 @@ typedef $$RoomsTableProcessedTableManager = ProcessedTableManager<
         {bool ambianceId,
         bool zoneId,
         bool surfaceId,
+        bool onEnterCommandCallerId,
+        bool onExitCommandCallerId,
         bool roomExitsRefs,
         bool roomObjectsRefs,
         bool playerClassesRefs})>;
@@ -9293,996 +10757,6 @@ typedef $$RoomExitsTableProcessedTableManager = ProcessedTableManager<
     RoomExit,
     PrefetchHooks Function(
         {bool roomId, bool useSoundId, bool earconId, bool roomObjectsRefs})>;
-typedef $$CommandsTableCreateCompanionBuilder = CommandsCompanion Function({
-  Value<int> id,
-  required String description,
-  Value<String?> spokenMessage,
-  Value<int?> soundId,
-  Value<String?> url,
-});
-typedef $$CommandsTableUpdateCompanionBuilder = CommandsCompanion Function({
-  Value<int> id,
-  Value<String> description,
-  Value<String?> spokenMessage,
-  Value<int?> soundId,
-  Value<String?> url,
-});
-
-final class $$CommandsTableReferences
-    extends BaseReferences<_$AppDatabase, $CommandsTable, Command> {
-  $$CommandsTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static $SoundReferencesTable _soundIdTable(_$AppDatabase db) =>
-      db.soundReferences.createAlias(
-          $_aliasNameGenerator(db.commands.soundId, db.soundReferences.id));
-
-  $$SoundReferencesTableProcessedTableManager? get soundId {
-    final $_column = $_itemColumn<int>('sound_id');
-    if ($_column == null) return null;
-    final manager =
-        $$SoundReferencesTableTableManager($_db, $_db.soundReferences)
-            .filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_soundIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
-  }
-
-  static MultiTypedResultKey<$CommandCallersTable, List<CommandCaller>>
-      _commandsToCallTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.commandCallers,
-              aliasName: $_aliasNameGenerator(
-                  db.commands.id, db.commandCallers.parentCommandId));
-
-  $$CommandCallersTableProcessedTableManager get commandsToCall {
-    final manager = $$CommandCallersTableTableManager($_db, $_db.commandCallers)
-        .filter(
-            (f) => f.parentCommandId.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_commandsToCallTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$CommandCallersTable, List<CommandCaller>>
-      _commandCallersTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.commandCallers,
-              aliasName: $_aliasNameGenerator(
-                  db.commands.id, db.commandCallers.childCommandId));
-
-  $$CommandCallersTableProcessedTableManager get commandCallers {
-    final manager = $$CommandCallersTableTableManager($_db, $_db.commandCallers)
-        .filter((f) => f.childCommandId.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_commandCallersTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-}
-
-class $$CommandsTableFilterComposer
-    extends Composer<_$AppDatabase, $CommandsTable> {
-  $$CommandsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get spokenMessage => $composableBuilder(
-      column: $table.spokenMessage, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get url => $composableBuilder(
-      column: $table.url, builder: (column) => ColumnFilters(column));
-
-  $$SoundReferencesTableFilterComposer get soundId {
-    final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.soundId,
-        referencedTable: $db.soundReferences,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$SoundReferencesTableFilterComposer(
-              $db: $db,
-              $table: $db.soundReferences,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  Expression<bool> commandsToCall(
-      Expression<bool> Function($$CommandCallersTableFilterComposer f) f) {
-    final $$CommandCallersTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.commandCallers,
-        getReferencedColumn: (t) => t.parentCommandId,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$CommandCallersTableFilterComposer(
-              $db: $db,
-              $table: $db.commandCallers,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<bool> commandCallers(
-      Expression<bool> Function($$CommandCallersTableFilterComposer f) f) {
-    final $$CommandCallersTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.commandCallers,
-        getReferencedColumn: (t) => t.childCommandId,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$CommandCallersTableFilterComposer(
-              $db: $db,
-              $table: $db.commandCallers,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-}
-
-class $$CommandsTableOrderingComposer
-    extends Composer<_$AppDatabase, $CommandsTable> {
-  $$CommandsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get spokenMessage => $composableBuilder(
-      column: $table.spokenMessage,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get url => $composableBuilder(
-      column: $table.url, builder: (column) => ColumnOrderings(column));
-
-  $$SoundReferencesTableOrderingComposer get soundId {
-    final $$SoundReferencesTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.soundId,
-        referencedTable: $db.soundReferences,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$SoundReferencesTableOrderingComposer(
-              $db: $db,
-              $table: $db.soundReferences,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-}
-
-class $$CommandsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $CommandsTable> {
-  $$CommandsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => column);
-
-  GeneratedColumn<String> get spokenMessage => $composableBuilder(
-      column: $table.spokenMessage, builder: (column) => column);
-
-  GeneratedColumn<String> get url =>
-      $composableBuilder(column: $table.url, builder: (column) => column);
-
-  $$SoundReferencesTableAnnotationComposer get soundId {
-    final $$SoundReferencesTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.soundId,
-        referencedTable: $db.soundReferences,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$SoundReferencesTableAnnotationComposer(
-              $db: $db,
-              $table: $db.soundReferences,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  Expression<T> commandsToCall<T extends Object>(
-      Expression<T> Function($$CommandCallersTableAnnotationComposer a) f) {
-    final $$CommandCallersTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.commandCallers,
-        getReferencedColumn: (t) => t.parentCommandId,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$CommandCallersTableAnnotationComposer(
-              $db: $db,
-              $table: $db.commandCallers,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<T> commandCallers<T extends Object>(
-      Expression<T> Function($$CommandCallersTableAnnotationComposer a) f) {
-    final $$CommandCallersTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.commandCallers,
-        getReferencedColumn: (t) => t.childCommandId,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$CommandCallersTableAnnotationComposer(
-              $db: $db,
-              $table: $db.commandCallers,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-}
-
-class $$CommandsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $CommandsTable,
-    Command,
-    $$CommandsTableFilterComposer,
-    $$CommandsTableOrderingComposer,
-    $$CommandsTableAnnotationComposer,
-    $$CommandsTableCreateCompanionBuilder,
-    $$CommandsTableUpdateCompanionBuilder,
-    (Command, $$CommandsTableReferences),
-    Command,
-    PrefetchHooks Function(
-        {bool soundId, bool commandsToCall, bool commandCallers})> {
-  $$CommandsTableTableManager(_$AppDatabase db, $CommandsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$CommandsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$CommandsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$CommandsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> description = const Value.absent(),
-            Value<String?> spokenMessage = const Value.absent(),
-            Value<int?> soundId = const Value.absent(),
-            Value<String?> url = const Value.absent(),
-          }) =>
-              CommandsCompanion(
-            id: id,
-            description: description,
-            spokenMessage: spokenMessage,
-            soundId: soundId,
-            url: url,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String description,
-            Value<String?> spokenMessage = const Value.absent(),
-            Value<int?> soundId = const Value.absent(),
-            Value<String?> url = const Value.absent(),
-          }) =>
-              CommandsCompanion.insert(
-            id: id,
-            description: description,
-            spokenMessage: spokenMessage,
-            soundId: soundId,
-            url: url,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$CommandsTableReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: (
-              {soundId = false,
-              commandsToCall = false,
-              commandCallers = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (commandsToCall) db.commandCallers,
-                if (commandCallers) db.commandCallers
-              ],
-              addJoins: <
-                  T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic>>(state) {
-                if (soundId) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.soundId,
-                    referencedTable:
-                        $$CommandsTableReferences._soundIdTable(db),
-                    referencedColumn:
-                        $$CommandsTableReferences._soundIdTable(db).id,
-                  ) as T;
-                }
-
-                return state;
-              },
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (commandsToCall)
-                    await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable:
-                            $$CommandsTableReferences._commandsToCallTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$CommandsTableReferences(db, table, p0)
-                                .commandsToCall,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) => referencedItems
-                                .where((e) => e.parentCommandId == item.id),
-                        typedResults: items),
-                  if (commandCallers)
-                    await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable:
-                            $$CommandsTableReferences._commandCallersTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$CommandsTableReferences(db, table, p0)
-                                .commandCallers,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) => referencedItems
-                                .where((e) => e.childCommandId == item.id),
-                        typedResults: items)
-                ];
-              },
-            );
-          },
-        ));
-}
-
-typedef $$CommandsTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $CommandsTable,
-    Command,
-    $$CommandsTableFilterComposer,
-    $$CommandsTableOrderingComposer,
-    $$CommandsTableAnnotationComposer,
-    $$CommandsTableCreateCompanionBuilder,
-    $$CommandsTableUpdateCompanionBuilder,
-    (Command, $$CommandsTableReferences),
-    Command,
-    PrefetchHooks Function(
-        {bool soundId, bool commandsToCall, bool commandCallers})>;
-typedef $$CommandCallersTableCreateCompanionBuilder = CommandCallersCompanion
-    Function({
-  Value<int> id,
-  Value<int?> parentCommandId,
-  required int childCommandId,
-  Value<int?> callAfter,
-});
-typedef $$CommandCallersTableUpdateCompanionBuilder = CommandCallersCompanion
-    Function({
-  Value<int> id,
-  Value<int?> parentCommandId,
-  Value<int> childCommandId,
-  Value<int?> callAfter,
-});
-
-final class $$CommandCallersTableReferences
-    extends BaseReferences<_$AppDatabase, $CommandCallersTable, CommandCaller> {
-  $$CommandCallersTableReferences(
-      super.$_db, super.$_table, super.$_typedResult);
-
-  static $CommandsTable _parentCommandIdTable(_$AppDatabase db) =>
-      db.commands.createAlias($_aliasNameGenerator(
-          db.commandCallers.parentCommandId, db.commands.id));
-
-  $$CommandsTableProcessedTableManager? get parentCommandId {
-    final $_column = $_itemColumn<int>('parent_command_id');
-    if ($_column == null) return null;
-    final manager = $$CommandsTableTableManager($_db, $_db.commands)
-        .filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_parentCommandIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
-  }
-
-  static $CommandsTable _childCommandIdTable(_$AppDatabase db) =>
-      db.commands.createAlias($_aliasNameGenerator(
-          db.commandCallers.childCommandId, db.commands.id));
-
-  $$CommandsTableProcessedTableManager get childCommandId {
-    final $_column = $_itemColumn<int>('child_command_id')!;
-
-    final manager = $$CommandsTableTableManager($_db, $_db.commands)
-        .filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_childCommandIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
-  }
-
-  static MultiTypedResultKey<$RoomObjectsTable, List<RoomObject>>
-      _onApproachCommandCallersTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.roomObjects,
-              aliasName: $_aliasNameGenerator(db.commandCallers.id,
-                  db.roomObjects.onApproachCommandCallerId));
-
-  $$RoomObjectsTableProcessedTableManager get onApproachCommandCallers {
-    final manager = $$RoomObjectsTableTableManager($_db, $_db.roomObjects)
-        .filter((f) =>
-            f.onApproachCommandCallerId.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache =
-        $_typedResult.readTableOrNull(_onApproachCommandCallersTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$RoomObjectsTable, List<RoomObject>>
-      _onLeaveCommandCallersTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.roomObjects,
-              aliasName: $_aliasNameGenerator(
-                  db.commandCallers.id, db.roomObjects.onLeaveCommandCallerId));
-
-  $$RoomObjectsTableProcessedTableManager get onLeaveCommandCallers {
-    final manager = $$RoomObjectsTableTableManager($_db, $_db.roomObjects)
-        .filter((f) =>
-            f.onLeaveCommandCallerId.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache =
-        $_typedResult.readTableOrNull(_onLeaveCommandCallersTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
-  static MultiTypedResultKey<$RoomObjectCommandCallersTable,
-      List<RoomObjectCommandCaller>> _roomObjectCommandCallersRefsTable(
-          _$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(db.roomObjectCommandCallers,
-          aliasName: $_aliasNameGenerator(db.commandCallers.id,
-              db.roomObjectCommandCallers.commandCallerId));
-
-  $$RoomObjectCommandCallersTableProcessedTableManager
-      get roomObjectCommandCallersRefs {
-    final manager = $$RoomObjectCommandCallersTableTableManager(
-            $_db, $_db.roomObjectCommandCallers)
-        .filter(
-            (f) => f.commandCallerId.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache =
-        $_typedResult.readTableOrNull(_roomObjectCommandCallersRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-}
-
-class $$CommandCallersTableFilterComposer
-    extends Composer<_$AppDatabase, $CommandCallersTable> {
-  $$CommandCallersTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get callAfter => $composableBuilder(
-      column: $table.callAfter, builder: (column) => ColumnFilters(column));
-
-  $$CommandsTableFilterComposer get parentCommandId {
-    final $$CommandsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.parentCommandId,
-        referencedTable: $db.commands,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$CommandsTableFilterComposer(
-              $db: $db,
-              $table: $db.commands,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  $$CommandsTableFilterComposer get childCommandId {
-    final $$CommandsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.childCommandId,
-        referencedTable: $db.commands,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$CommandsTableFilterComposer(
-              $db: $db,
-              $table: $db.commands,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  Expression<bool> onApproachCommandCallers(
-      Expression<bool> Function($$RoomObjectsTableFilterComposer f) f) {
-    final $$RoomObjectsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.roomObjects,
-        getReferencedColumn: (t) => t.onApproachCommandCallerId,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$RoomObjectsTableFilterComposer(
-              $db: $db,
-              $table: $db.roomObjects,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<bool> onLeaveCommandCallers(
-      Expression<bool> Function($$RoomObjectsTableFilterComposer f) f) {
-    final $$RoomObjectsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.roomObjects,
-        getReferencedColumn: (t) => t.onLeaveCommandCallerId,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$RoomObjectsTableFilterComposer(
-              $db: $db,
-              $table: $db.roomObjects,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<bool> roomObjectCommandCallersRefs(
-      Expression<bool> Function($$RoomObjectCommandCallersTableFilterComposer f)
-          f) {
-    final $$RoomObjectCommandCallersTableFilterComposer composer =
-        $composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.id,
-            referencedTable: $db.roomObjectCommandCallers,
-            getReferencedColumn: (t) => t.commandCallerId,
-            builder: (joinBuilder,
-                    {$addJoinBuilderToRootComposer,
-                    $removeJoinBuilderFromRootComposer}) =>
-                $$RoomObjectCommandCallersTableFilterComposer(
-                  $db: $db,
-                  $table: $db.roomObjectCommandCallers,
-                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                  joinBuilder: joinBuilder,
-                  $removeJoinBuilderFromRootComposer:
-                      $removeJoinBuilderFromRootComposer,
-                ));
-    return f(composer);
-  }
-}
-
-class $$CommandCallersTableOrderingComposer
-    extends Composer<_$AppDatabase, $CommandCallersTable> {
-  $$CommandCallersTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get callAfter => $composableBuilder(
-      column: $table.callAfter, builder: (column) => ColumnOrderings(column));
-
-  $$CommandsTableOrderingComposer get parentCommandId {
-    final $$CommandsTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.parentCommandId,
-        referencedTable: $db.commands,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$CommandsTableOrderingComposer(
-              $db: $db,
-              $table: $db.commands,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  $$CommandsTableOrderingComposer get childCommandId {
-    final $$CommandsTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.childCommandId,
-        referencedTable: $db.commands,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$CommandsTableOrderingComposer(
-              $db: $db,
-              $table: $db.commands,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-}
-
-class $$CommandCallersTableAnnotationComposer
-    extends Composer<_$AppDatabase, $CommandCallersTable> {
-  $$CommandCallersTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<int> get callAfter =>
-      $composableBuilder(column: $table.callAfter, builder: (column) => column);
-
-  $$CommandsTableAnnotationComposer get parentCommandId {
-    final $$CommandsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.parentCommandId,
-        referencedTable: $db.commands,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$CommandsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.commands,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  $$CommandsTableAnnotationComposer get childCommandId {
-    final $$CommandsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.childCommandId,
-        referencedTable: $db.commands,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$CommandsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.commands,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-
-  Expression<T> onApproachCommandCallers<T extends Object>(
-      Expression<T> Function($$RoomObjectsTableAnnotationComposer a) f) {
-    final $$RoomObjectsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.roomObjects,
-        getReferencedColumn: (t) => t.onApproachCommandCallerId,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$RoomObjectsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.roomObjects,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<T> onLeaveCommandCallers<T extends Object>(
-      Expression<T> Function($$RoomObjectsTableAnnotationComposer a) f) {
-    final $$RoomObjectsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.roomObjects,
-        getReferencedColumn: (t) => t.onLeaveCommandCallerId,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$RoomObjectsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.roomObjects,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
-  Expression<T> roomObjectCommandCallersRefs<T extends Object>(
-      Expression<T> Function(
-              $$RoomObjectCommandCallersTableAnnotationComposer a)
-          f) {
-    final $$RoomObjectCommandCallersTableAnnotationComposer composer =
-        $composerBuilder(
-            composer: this,
-            getCurrentColumn: (t) => t.id,
-            referencedTable: $db.roomObjectCommandCallers,
-            getReferencedColumn: (t) => t.commandCallerId,
-            builder: (joinBuilder,
-                    {$addJoinBuilderToRootComposer,
-                    $removeJoinBuilderFromRootComposer}) =>
-                $$RoomObjectCommandCallersTableAnnotationComposer(
-                  $db: $db,
-                  $table: $db.roomObjectCommandCallers,
-                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-                  joinBuilder: joinBuilder,
-                  $removeJoinBuilderFromRootComposer:
-                      $removeJoinBuilderFromRootComposer,
-                ));
-    return f(composer);
-  }
-}
-
-class $$CommandCallersTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $CommandCallersTable,
-    CommandCaller,
-    $$CommandCallersTableFilterComposer,
-    $$CommandCallersTableOrderingComposer,
-    $$CommandCallersTableAnnotationComposer,
-    $$CommandCallersTableCreateCompanionBuilder,
-    $$CommandCallersTableUpdateCompanionBuilder,
-    (CommandCaller, $$CommandCallersTableReferences),
-    CommandCaller,
-    PrefetchHooks Function(
-        {bool parentCommandId,
-        bool childCommandId,
-        bool onApproachCommandCallers,
-        bool onLeaveCommandCallers,
-        bool roomObjectCommandCallersRefs})> {
-  $$CommandCallersTableTableManager(
-      _$AppDatabase db, $CommandCallersTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$CommandCallersTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$CommandCallersTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$CommandCallersTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<int?> parentCommandId = const Value.absent(),
-            Value<int> childCommandId = const Value.absent(),
-            Value<int?> callAfter = const Value.absent(),
-          }) =>
-              CommandCallersCompanion(
-            id: id,
-            parentCommandId: parentCommandId,
-            childCommandId: childCommandId,
-            callAfter: callAfter,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<int?> parentCommandId = const Value.absent(),
-            required int childCommandId,
-            Value<int?> callAfter = const Value.absent(),
-          }) =>
-              CommandCallersCompanion.insert(
-            id: id,
-            parentCommandId: parentCommandId,
-            childCommandId: childCommandId,
-            callAfter: callAfter,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (
-                    e.readTable(table),
-                    $$CommandCallersTableReferences(db, table, e)
-                  ))
-              .toList(),
-          prefetchHooksCallback: (
-              {parentCommandId = false,
-              childCommandId = false,
-              onApproachCommandCallers = false,
-              onLeaveCommandCallers = false,
-              roomObjectCommandCallersRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (onApproachCommandCallers) db.roomObjects,
-                if (onLeaveCommandCallers) db.roomObjects,
-                if (roomObjectCommandCallersRefs) db.roomObjectCommandCallers
-              ],
-              addJoins: <
-                  T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic>>(state) {
-                if (parentCommandId) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.parentCommandId,
-                    referencedTable: $$CommandCallersTableReferences
-                        ._parentCommandIdTable(db),
-                    referencedColumn: $$CommandCallersTableReferences
-                        ._parentCommandIdTable(db)
-                        .id,
-                  ) as T;
-                }
-                if (childCommandId) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.childCommandId,
-                    referencedTable: $$CommandCallersTableReferences
-                        ._childCommandIdTable(db),
-                    referencedColumn: $$CommandCallersTableReferences
-                        ._childCommandIdTable(db)
-                        .id,
-                  ) as T;
-                }
-
-                return state;
-              },
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (onApproachCommandCallers)
-                    await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable: $$CommandCallersTableReferences
-                            ._onApproachCommandCallersTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$CommandCallersTableReferences(db, table, p0)
-                                .onApproachCommandCallers,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) => referencedItems.where(
-                                (e) => e.onApproachCommandCallerId == item.id),
-                        typedResults: items),
-                  if (onLeaveCommandCallers)
-                    await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable: $$CommandCallersTableReferences
-                            ._onLeaveCommandCallersTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$CommandCallersTableReferences(db, table, p0)
-                                .onLeaveCommandCallers,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) => referencedItems.where(
-                                (e) => e.onLeaveCommandCallerId == item.id),
-                        typedResults: items),
-                  if (roomObjectCommandCallersRefs)
-                    await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable: $$CommandCallersTableReferences
-                            ._roomObjectCommandCallersRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$CommandCallersTableReferences(db, table, p0)
-                                .roomObjectCommandCallersRefs,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) => referencedItems
-                                .where((e) => e.commandCallerId == item.id),
-                        typedResults: items)
-                ];
-              },
-            );
-          },
-        ));
-}
-
-typedef $$CommandCallersTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $CommandCallersTable,
-    CommandCaller,
-    $$CommandCallersTableFilterComposer,
-    $$CommandCallersTableOrderingComposer,
-    $$CommandCallersTableAnnotationComposer,
-    $$CommandCallersTableCreateCompanionBuilder,
-    $$CommandCallersTableUpdateCompanionBuilder,
-    (CommandCaller, $$CommandCallersTableReferences),
-    CommandCaller,
-    PrefetchHooks Function(
-        {bool parentCommandId,
-        bool childCommandId,
-        bool onApproachCommandCallers,
-        bool onLeaveCommandCallers,
-        bool roomObjectCommandCallersRefs})>;
 typedef $$RoomObjectsTableCreateCompanionBuilder = RoomObjectsCompanion
     Function({
   Value<int> id,
@@ -14283,14 +14757,14 @@ class $AppDatabaseManager {
       $$ZonesTableTableManager(_db, _db.zones);
   $$RoomSurfacesTableTableManager get roomSurfaces =>
       $$RoomSurfacesTableTableManager(_db, _db.roomSurfaces);
-  $$RoomsTableTableManager get rooms =>
-      $$RoomsTableTableManager(_db, _db.rooms);
-  $$RoomExitsTableTableManager get roomExits =>
-      $$RoomExitsTableTableManager(_db, _db.roomExits);
   $$CommandsTableTableManager get commands =>
       $$CommandsTableTableManager(_db, _db.commands);
   $$CommandCallersTableTableManager get commandCallers =>
       $$CommandCallersTableTableManager(_db, _db.commandCallers);
+  $$RoomsTableTableManager get rooms =>
+      $$RoomsTableTableManager(_db, _db.rooms);
+  $$RoomExitsTableTableManager get roomExits =>
+      $$RoomExitsTableTableManager(_db, _db.roomExits);
   $$RoomObjectsTableTableManager get roomObjects =>
       $$RoomObjectsTableTableManager(_db, _db.roomObjects);
   $$PlayerClassesTableTableManager get playerClasses =>

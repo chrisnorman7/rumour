@@ -18,4 +18,16 @@ class Rooms extends Table
 
   /// The ID of the surface to use.
   IntColumn get surfaceId => integer().references(RoomSurfaces, #id)();
+
+  /// The ID of a command caller to use when the player enters this room.
+  @ReferenceName('onEnterCommandCallers')
+  IntColumn get onEnterCommandCallerId => integer()
+      .references(CommandCallers, #id, onDelete: KeyAction.setNull)
+      .nullable()();
+
+  /// The ID of a command caller to use when the player exits this room.
+  @ReferenceName('onExitCommandCallers')
+  IntColumn get onExitCommandCallerId => integer()
+      .references(CommandCallers, #id, onDelete: KeyAction.setNull)
+      .nullable()();
 }
