@@ -35,8 +35,9 @@ class PlayerStatListTile extends ConsumerWidget {
     return value.when(
       data: (final gameStatContext) {
         final gameStat = gameStatContext.gameStat;
-        final value =
-            ref.watch(gameStatValueContextProvider(playerId, gameStatId));
+        final value = ref.watch(
+          gameStatValueContextProvider(playerId, gameStatId),
+        );
         return value.when(
           data: (final gameStatValueContext) => AudioGameMenuItemListTile(
             menuItem: AudioGameMenuItem(
@@ -53,7 +54,7 @@ class PlayerStatListTile extends ConsumerWidget {
             ),
             activateSound: projectContext.maybeGetSound(
               soundReference: project.menuActivateSound?.getSoundReference(),
-              destroy: false,
+              destroy: true,
             ),
             autofocus: autofocus,
           ),
