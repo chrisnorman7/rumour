@@ -47,6 +47,18 @@ class RoomEventsTab extends ConsumerWidget {
               ref.invalidate(provider);
             },
             commandCallerId: room.onExitCommandCallerId,
+            helpAssetKey: Assets.help.roomOnExit,
+          ),
+          PossibleCommandCallerListTile(
+            title: 'Player Teleports',
+            onChanged: (final value) async {
+              await query.update(
+                (final o) => o(onTeleportCommandCallerId: Value(value)),
+              );
+              ref.invalidate(provider);
+            },
+            commandCallerId: room.onTeleportCommandCallerId,
+            helpAssetKey: Assets.help.roomOnTeleport,
           ),
         ],
       ),

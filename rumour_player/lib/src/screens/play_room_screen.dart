@@ -477,6 +477,8 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
       unawaited(
         ref.maybeRunCommandCaller(destinationRoom.onEnterCommandCallerId),
       );
+    } else {
+      unawaited(ref.maybeRunCommandCaller(_room.onTeleportCommandCallerId));
     }
     _player
       ..roomId = destinationRoom.id

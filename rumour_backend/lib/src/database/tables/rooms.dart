@@ -30,4 +30,10 @@ class Rooms extends Table
   IntColumn get onExitCommandCallerId => integer()
       .references(CommandCallers, #id, onDelete: KeyAction.setNull)
       .nullable()();
+
+  /// The ID of a command caller to use when the player teleports in this room.
+  @ReferenceName('onTeleportCommandCallers')
+  IntColumn get onTeleportCommandCallerId => integer()
+      .references(CommandCallers, #id, onDelete: KeyAction.setNull)
+      .nullable()();
 }

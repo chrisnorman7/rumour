@@ -1653,6 +1653,15 @@ class $RoomsTable extends Rooms with TableInfo<$RoomsTable, Room> {
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES command_callers (id) ON DELETE SET NULL'));
+  static const VerificationMeta _onTeleportCommandCallerIdMeta =
+      const VerificationMeta('onTeleportCommandCallerId');
+  @override
+  late final GeneratedColumn<int> onTeleportCommandCallerId =
+      GeneratedColumn<int>('on_teleport_command_caller_id', aliasedName, true,
+          type: DriftSqlType.int,
+          requiredDuringInsert: false,
+          defaultConstraints: GeneratedColumn.constraintIsAlways(
+              'REFERENCES command_callers (id) ON DELETE SET NULL'));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -1665,7 +1674,8 @@ class $RoomsTable extends Rooms with TableInfo<$RoomsTable, Room> {
         maxY,
         surfaceId,
         onEnterCommandCallerId,
-        onExitCommandCallerId
+        onExitCommandCallerId,
+        onTeleportCommandCallerId
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1737,6 +1747,13 @@ class $RoomsTable extends Rooms with TableInfo<$RoomsTable, Room> {
           onExitCommandCallerId.isAcceptableOrUnknown(
               data['on_exit_command_caller_id']!, _onExitCommandCallerIdMeta));
     }
+    if (data.containsKey('on_teleport_command_caller_id')) {
+      context.handle(
+          _onTeleportCommandCallerIdMeta,
+          onTeleportCommandCallerId.isAcceptableOrUnknown(
+              data['on_teleport_command_caller_id']!,
+              _onTeleportCommandCallerIdMeta));
+    }
     return context;
   }
 
@@ -1769,6 +1786,9 @@ class $RoomsTable extends Rooms with TableInfo<$RoomsTable, Room> {
           data['${effectivePrefix}on_enter_command_caller_id']),
       onExitCommandCallerId: attachedDatabase.typeMapping.read(DriftSqlType.int,
           data['${effectivePrefix}on_exit_command_caller_id']),
+      onTeleportCommandCallerId: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}on_teleport_command_caller_id']),
     );
   }
 
@@ -1811,6 +1831,9 @@ class Room extends DataClass implements Insertable<Room> {
 
   /// The ID of a command caller to use when the player exits this room.
   final int? onExitCommandCallerId;
+
+  /// The ID of a command caller to use when the player teleports in this room.
+  final int? onTeleportCommandCallerId;
   const Room(
       {required this.id,
       required this.name,
@@ -1822,7 +1845,8 @@ class Room extends DataClass implements Insertable<Room> {
       required this.maxY,
       required this.surfaceId,
       this.onEnterCommandCallerId,
-      this.onExitCommandCallerId});
+      this.onExitCommandCallerId,
+      this.onTeleportCommandCallerId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1842,6 +1866,10 @@ class Room extends DataClass implements Insertable<Room> {
     }
     if (!nullToAbsent || onExitCommandCallerId != null) {
       map['on_exit_command_caller_id'] = Variable<int>(onExitCommandCallerId);
+    }
+    if (!nullToAbsent || onTeleportCommandCallerId != null) {
+      map['on_teleport_command_caller_id'] =
+          Variable<int>(onTeleportCommandCallerId);
     }
     return map;
   }
@@ -1865,6 +1893,10 @@ class Room extends DataClass implements Insertable<Room> {
       onExitCommandCallerId: onExitCommandCallerId == null && nullToAbsent
           ? const Value.absent()
           : Value(onExitCommandCallerId),
+      onTeleportCommandCallerId:
+          onTeleportCommandCallerId == null && nullToAbsent
+              ? const Value.absent()
+              : Value(onTeleportCommandCallerId),
     );
   }
 
@@ -1885,6 +1917,8 @@ class Room extends DataClass implements Insertable<Room> {
           serializer.fromJson<int?>(json['onEnterCommandCallerId']),
       onExitCommandCallerId:
           serializer.fromJson<int?>(json['onExitCommandCallerId']),
+      onTeleportCommandCallerId:
+          serializer.fromJson<int?>(json['onTeleportCommandCallerId']),
     );
   }
   @override
@@ -1902,6 +1936,8 @@ class Room extends DataClass implements Insertable<Room> {
       'surfaceId': serializer.toJson<int>(surfaceId),
       'onEnterCommandCallerId': serializer.toJson<int?>(onEnterCommandCallerId),
       'onExitCommandCallerId': serializer.toJson<int?>(onExitCommandCallerId),
+      'onTeleportCommandCallerId':
+          serializer.toJson<int?>(onTeleportCommandCallerId),
     };
   }
 
@@ -1916,7 +1952,8 @@ class Room extends DataClass implements Insertable<Room> {
           int? maxY,
           int? surfaceId,
           Value<int?> onEnterCommandCallerId = const Value.absent(),
-          Value<int?> onExitCommandCallerId = const Value.absent()}) =>
+          Value<int?> onExitCommandCallerId = const Value.absent(),
+          Value<int?> onTeleportCommandCallerId = const Value.absent()}) =>
       Room(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -1933,6 +1970,9 @@ class Room extends DataClass implements Insertable<Room> {
         onExitCommandCallerId: onExitCommandCallerId.present
             ? onExitCommandCallerId.value
             : this.onExitCommandCallerId,
+        onTeleportCommandCallerId: onTeleportCommandCallerId.present
+            ? onTeleportCommandCallerId.value
+            : this.onTeleportCommandCallerId,
       );
   Room copyWithCompanion(RoomsCompanion data) {
     return Room(
@@ -1953,6 +1993,9 @@ class Room extends DataClass implements Insertable<Room> {
       onExitCommandCallerId: data.onExitCommandCallerId.present
           ? data.onExitCommandCallerId.value
           : this.onExitCommandCallerId,
+      onTeleportCommandCallerId: data.onTeleportCommandCallerId.present
+          ? data.onTeleportCommandCallerId.value
+          : this.onTeleportCommandCallerId,
     );
   }
 
@@ -1969,7 +2012,8 @@ class Room extends DataClass implements Insertable<Room> {
           ..write('maxY: $maxY, ')
           ..write('surfaceId: $surfaceId, ')
           ..write('onEnterCommandCallerId: $onEnterCommandCallerId, ')
-          ..write('onExitCommandCallerId: $onExitCommandCallerId')
+          ..write('onExitCommandCallerId: $onExitCommandCallerId, ')
+          ..write('onTeleportCommandCallerId: $onTeleportCommandCallerId')
           ..write(')'))
         .toString();
   }
@@ -1986,7 +2030,8 @@ class Room extends DataClass implements Insertable<Room> {
       maxY,
       surfaceId,
       onEnterCommandCallerId,
-      onExitCommandCallerId);
+      onExitCommandCallerId,
+      onTeleportCommandCallerId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2001,7 +2046,8 @@ class Room extends DataClass implements Insertable<Room> {
           other.maxY == this.maxY &&
           other.surfaceId == this.surfaceId &&
           other.onEnterCommandCallerId == this.onEnterCommandCallerId &&
-          other.onExitCommandCallerId == this.onExitCommandCallerId);
+          other.onExitCommandCallerId == this.onExitCommandCallerId &&
+          other.onTeleportCommandCallerId == this.onTeleportCommandCallerId);
 }
 
 class RoomsCompanion extends UpdateCompanion<Room> {
@@ -2016,6 +2062,7 @@ class RoomsCompanion extends UpdateCompanion<Room> {
   final Value<int> surfaceId;
   final Value<int?> onEnterCommandCallerId;
   final Value<int?> onExitCommandCallerId;
+  final Value<int?> onTeleportCommandCallerId;
   const RoomsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -2028,6 +2075,7 @@ class RoomsCompanion extends UpdateCompanion<Room> {
     this.surfaceId = const Value.absent(),
     this.onEnterCommandCallerId = const Value.absent(),
     this.onExitCommandCallerId = const Value.absent(),
+    this.onTeleportCommandCallerId = const Value.absent(),
   });
   RoomsCompanion.insert({
     this.id = const Value.absent(),
@@ -2041,6 +2089,7 @@ class RoomsCompanion extends UpdateCompanion<Room> {
     required int surfaceId,
     this.onEnterCommandCallerId = const Value.absent(),
     this.onExitCommandCallerId = const Value.absent(),
+    this.onTeleportCommandCallerId = const Value.absent(),
   })  : name = Value(name),
         description = Value(description),
         zoneId = Value(zoneId),
@@ -2057,6 +2106,7 @@ class RoomsCompanion extends UpdateCompanion<Room> {
     Expression<int>? surfaceId,
     Expression<int>? onEnterCommandCallerId,
     Expression<int>? onExitCommandCallerId,
+    Expression<int>? onTeleportCommandCallerId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2072,6 +2122,8 @@ class RoomsCompanion extends UpdateCompanion<Room> {
         'on_enter_command_caller_id': onEnterCommandCallerId,
       if (onExitCommandCallerId != null)
         'on_exit_command_caller_id': onExitCommandCallerId,
+      if (onTeleportCommandCallerId != null)
+        'on_teleport_command_caller_id': onTeleportCommandCallerId,
     });
   }
 
@@ -2086,7 +2138,8 @@ class RoomsCompanion extends UpdateCompanion<Room> {
       Value<int>? maxY,
       Value<int>? surfaceId,
       Value<int?>? onEnterCommandCallerId,
-      Value<int?>? onExitCommandCallerId}) {
+      Value<int?>? onExitCommandCallerId,
+      Value<int?>? onTeleportCommandCallerId}) {
     return RoomsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -2101,6 +2154,8 @@ class RoomsCompanion extends UpdateCompanion<Room> {
           onEnterCommandCallerId ?? this.onEnterCommandCallerId,
       onExitCommandCallerId:
           onExitCommandCallerId ?? this.onExitCommandCallerId,
+      onTeleportCommandCallerId:
+          onTeleportCommandCallerId ?? this.onTeleportCommandCallerId,
     );
   }
 
@@ -2142,6 +2197,10 @@ class RoomsCompanion extends UpdateCompanion<Room> {
       map['on_exit_command_caller_id'] =
           Variable<int>(onExitCommandCallerId.value);
     }
+    if (onTeleportCommandCallerId.present) {
+      map['on_teleport_command_caller_id'] =
+          Variable<int>(onTeleportCommandCallerId.value);
+    }
     return map;
   }
 
@@ -2158,7 +2217,8 @@ class RoomsCompanion extends UpdateCompanion<Room> {
           ..write('maxY: $maxY, ')
           ..write('surfaceId: $surfaceId, ')
           ..write('onEnterCommandCallerId: $onEnterCommandCallerId, ')
-          ..write('onExitCommandCallerId: $onExitCommandCallerId')
+          ..write('onExitCommandCallerId: $onExitCommandCallerId, ')
+          ..write('onTeleportCommandCallerId: $onTeleportCommandCallerId')
           ..write(')'))
         .toString();
   }
@@ -5883,6 +5943,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
             ],
           ),
           WritePropagation(
+            on: TableUpdateQuery.onTableName('command_callers',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('rooms', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
             on: TableUpdateQuery.onTableName('rooms',
                 limitUpdateKind: UpdateKind.delete),
             result: [
@@ -8697,6 +8764,22 @@ final class $$CommandCallersTableReferences
         manager.$state.copyWith(prefetchedData: cache));
   }
 
+  static MultiTypedResultKey<$RoomsTable, List<Room>>
+      _onTeleportCommandCallersTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.rooms,
+              aliasName: $_aliasNameGenerator(
+                  db.commandCallers.id, db.rooms.onTeleportCommandCallerId));
+
+  $$RoomsTableProcessedTableManager get onTeleportCommandCallers {
+    final manager = $$RoomsTableTableManager($_db, $_db.rooms).filter((f) =>
+        f.onTeleportCommandCallerId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_onTeleportCommandCallersTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
   static MultiTypedResultKey<$RoomObjectsTable, List<RoomObject>>
       _onApproachCommandCallersTable(_$AppDatabase db) =>
           MultiTypedResultKey.fromTable(db.roomObjects,
@@ -8835,6 +8918,27 @@ class $$CommandCallersTableFilterComposer
         getCurrentColumn: (t) => t.id,
         referencedTable: $db.rooms,
         getReferencedColumn: (t) => t.onExitCommandCallerId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomsTableFilterComposer(
+              $db: $db,
+              $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> onTeleportCommandCallers(
+      Expression<bool> Function($$RoomsTableFilterComposer f) f) {
+    final $$RoomsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.rooms,
+        getReferencedColumn: (t) => t.onTeleportCommandCallerId,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
@@ -9068,6 +9172,27 @@ class $$CommandCallersTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> onTeleportCommandCallers<T extends Object>(
+      Expression<T> Function($$RoomsTableAnnotationComposer a) f) {
+    final $$RoomsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.rooms,
+        getReferencedColumn: (t) => t.onTeleportCommandCallerId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.rooms,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
   Expression<T> onApproachCommandCallers<T extends Object>(
       Expression<T> Function($$RoomObjectsTableAnnotationComposer a) f) {
     final $$RoomObjectsTableAnnotationComposer composer = $composerBuilder(
@@ -9151,6 +9276,7 @@ class $$CommandCallersTableTableManager extends RootTableManager<
         bool childCommandId,
         bool onEnterCommandCallers,
         bool onExitCommandCallers,
+        bool onTeleportCommandCallers,
         bool onApproachCommandCallers,
         bool onLeaveCommandCallers,
         bool roomObjectCommandCallersRefs})> {
@@ -9200,6 +9326,7 @@ class $$CommandCallersTableTableManager extends RootTableManager<
               childCommandId = false,
               onEnterCommandCallers = false,
               onExitCommandCallers = false,
+              onTeleportCommandCallers = false,
               onApproachCommandCallers = false,
               onLeaveCommandCallers = false,
               roomObjectCommandCallersRefs = false}) {
@@ -9208,6 +9335,7 @@ class $$CommandCallersTableTableManager extends RootTableManager<
               explicitlyWatchedTables: [
                 if (onEnterCommandCallers) db.rooms,
                 if (onExitCommandCallers) db.rooms,
+                if (onTeleportCommandCallers) db.rooms,
                 if (onApproachCommandCallers) db.roomObjects,
                 if (onLeaveCommandCallers) db.roomObjects,
                 if (roomObjectCommandCallersRefs) db.roomObjectCommandCallers
@@ -9276,6 +9404,18 @@ class $$CommandCallersTableTableManager extends RootTableManager<
                             (item, referencedItems) => referencedItems.where(
                                 (e) => e.onExitCommandCallerId == item.id),
                         typedResults: items),
+                  if (onTeleportCommandCallers)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$CommandCallersTableReferences
+                            ._onTeleportCommandCallersTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CommandCallersTableReferences(db, table, p0)
+                                .onTeleportCommandCallers,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems.where(
+                                (e) => e.onTeleportCommandCallerId == item.id),
+                        typedResults: items),
                   if (onApproachCommandCallers)
                     await $_getPrefetchedData(
                         currentTable: table,
@@ -9335,6 +9475,7 @@ typedef $$CommandCallersTableProcessedTableManager = ProcessedTableManager<
         bool childCommandId,
         bool onEnterCommandCallers,
         bool onExitCommandCallers,
+        bool onTeleportCommandCallers,
         bool onApproachCommandCallers,
         bool onLeaveCommandCallers,
         bool roomObjectCommandCallersRefs})>;
@@ -9350,6 +9491,7 @@ typedef $$RoomsTableCreateCompanionBuilder = RoomsCompanion Function({
   required int surfaceId,
   Value<int?> onEnterCommandCallerId,
   Value<int?> onExitCommandCallerId,
+  Value<int?> onTeleportCommandCallerId,
 });
 typedef $$RoomsTableUpdateCompanionBuilder = RoomsCompanion Function({
   Value<int> id,
@@ -9363,6 +9505,7 @@ typedef $$RoomsTableUpdateCompanionBuilder = RoomsCompanion Function({
   Value<int> surfaceId,
   Value<int?> onEnterCommandCallerId,
   Value<int?> onExitCommandCallerId,
+  Value<int?> onTeleportCommandCallerId,
 });
 
 final class $$RoomsTableReferences
@@ -9441,6 +9584,23 @@ final class $$RoomsTableReferences
         .filter((f) => f.id.sqlEquals($_column));
     final item =
         $_typedResult.readTableOrNull(_onExitCommandCallerIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $CommandCallersTable _onTeleportCommandCallerIdTable(
+          _$AppDatabase db) =>
+      db.commandCallers.createAlias($_aliasNameGenerator(
+          db.rooms.onTeleportCommandCallerId, db.commandCallers.id));
+
+  $$CommandCallersTableProcessedTableManager? get onTeleportCommandCallerId {
+    final $_column = $_itemColumn<int>('on_teleport_command_caller_id');
+    if ($_column == null) return null;
+    final manager = $$CommandCallersTableTableManager($_db, $_db.commandCallers)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item =
+        $_typedResult.readTableOrNull(_onTeleportCommandCallerIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
@@ -9600,6 +9760,26 @@ class $$RoomsTableFilterComposer extends Composer<_$AppDatabase, $RoomsTable> {
     final $$CommandCallersTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.onExitCommandCallerId,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableFilterComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$CommandCallersTableFilterComposer get onTeleportCommandCallerId {
+    final $$CommandCallersTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.onTeleportCommandCallerId,
         referencedTable: $db.commandCallers,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
@@ -9806,6 +9986,26 @@ class $$RoomsTableOrderingComposer
             ));
     return composer;
   }
+
+  $$CommandCallersTableOrderingComposer get onTeleportCommandCallerId {
+    final $$CommandCallersTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.onTeleportCommandCallerId,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableOrderingComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$RoomsTableAnnotationComposer
@@ -9935,6 +10135,26 @@ class $$RoomsTableAnnotationComposer
     return composer;
   }
 
+  $$CommandCallersTableAnnotationComposer get onTeleportCommandCallerId {
+    final $$CommandCallersTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.onTeleportCommandCallerId,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableAnnotationComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
   Expression<T> roomExitsRefs<T extends Object>(
       Expression<T> Function($$RoomExitsTableAnnotationComposer a) f) {
     final $$RoomExitsTableAnnotationComposer composer = $composerBuilder(
@@ -10016,6 +10236,7 @@ class $$RoomsTableTableManager extends RootTableManager<
         bool surfaceId,
         bool onEnterCommandCallerId,
         bool onExitCommandCallerId,
+        bool onTeleportCommandCallerId,
         bool roomExitsRefs,
         bool roomObjectsRefs,
         bool playerClassesRefs})> {
@@ -10041,6 +10262,7 @@ class $$RoomsTableTableManager extends RootTableManager<
             Value<int> surfaceId = const Value.absent(),
             Value<int?> onEnterCommandCallerId = const Value.absent(),
             Value<int?> onExitCommandCallerId = const Value.absent(),
+            Value<int?> onTeleportCommandCallerId = const Value.absent(),
           }) =>
               RoomsCompanion(
             id: id,
@@ -10054,6 +10276,7 @@ class $$RoomsTableTableManager extends RootTableManager<
             surfaceId: surfaceId,
             onEnterCommandCallerId: onEnterCommandCallerId,
             onExitCommandCallerId: onExitCommandCallerId,
+            onTeleportCommandCallerId: onTeleportCommandCallerId,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -10067,6 +10290,7 @@ class $$RoomsTableTableManager extends RootTableManager<
             required int surfaceId,
             Value<int?> onEnterCommandCallerId = const Value.absent(),
             Value<int?> onExitCommandCallerId = const Value.absent(),
+            Value<int?> onTeleportCommandCallerId = const Value.absent(),
           }) =>
               RoomsCompanion.insert(
             id: id,
@@ -10080,6 +10304,7 @@ class $$RoomsTableTableManager extends RootTableManager<
             surfaceId: surfaceId,
             onEnterCommandCallerId: onEnterCommandCallerId,
             onExitCommandCallerId: onExitCommandCallerId,
+            onTeleportCommandCallerId: onTeleportCommandCallerId,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) =>
@@ -10091,6 +10316,7 @@ class $$RoomsTableTableManager extends RootTableManager<
               surfaceId = false,
               onEnterCommandCallerId = false,
               onExitCommandCallerId = false,
+              onTeleportCommandCallerId = false,
               roomExitsRefs = false,
               roomObjectsRefs = false,
               playerClassesRefs = false}) {
@@ -10164,6 +10390,17 @@ class $$RoomsTableTableManager extends RootTableManager<
                         .id,
                   ) as T;
                 }
+                if (onTeleportCommandCallerId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.onTeleportCommandCallerId,
+                    referencedTable: $$RoomsTableReferences
+                        ._onTeleportCommandCallerIdTable(db),
+                    referencedColumn: $$RoomsTableReferences
+                        ._onTeleportCommandCallerIdTable(db)
+                        .id,
+                  ) as T;
+                }
 
                 return state;
               },
@@ -10228,6 +10465,7 @@ typedef $$RoomsTableProcessedTableManager = ProcessedTableManager<
         bool surfaceId,
         bool onEnterCommandCallerId,
         bool onExitCommandCallerId,
+        bool onTeleportCommandCallerId,
         bool roomExitsRefs,
         bool roomObjectsRefs,
         bool playerClassesRefs})>;

@@ -35,7 +35,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// The schema version.
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   /// Migrate the database.
   @override
@@ -69,6 +69,9 @@ class AppDatabase extends _$AppDatabase {
             ]) {
               await m.addColumn(this.rooms, column);
             }
+          }
+          if (from < 6) {
+            await m.addColumn(this.rooms, this.rooms.onTeleportCommandCallerId);
           }
         },
       );

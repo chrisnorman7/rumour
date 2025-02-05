@@ -24,23 +24,26 @@ class HelpScreen extends StatelessWidget {
         done:
             (final innerContext, final source) => SimpleScaffold(
               title: 'Help',
-              body: Focus(
-                autofocus: true,
-                debugLabel: assetKey,
-                child: Markdown(
-                  data: source,
-                  onTapLink: (final text, final href, final title) {
-                    if (href == null) {
-                      return;
-                    }
-                    final uri = Uri.tryParse(href);
-                    if (uri == null) {
-                      context.showMessage(message: 'Invalid URL: $href.');
-                    } else {
-                      launchUrl(uri);
-                    }
-                  },
-                  selectable: true,
+              body: Semantics(
+                label: source,
+                child: Focus(
+                  autofocus: true,
+                  debugLabel: assetKey,
+                  child: Markdown(
+                    data: source,
+                    onTapLink: (final text, final href, final title) {
+                      if (href == null) {
+                        return;
+                      }
+                      final uri = Uri.tryParse(href);
+                      if (uri == null) {
+                        context.showMessage(message: 'Invalid URL: $href.');
+                      } else {
+                        launchUrl(uri);
+                      }
+                    },
+                    selectable: true,
+                  ),
                 ),
               ),
             ),

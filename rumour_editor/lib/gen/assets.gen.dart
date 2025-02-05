@@ -16,8 +16,11 @@ class $HelpGen {
   /// File path: help/room_on_exit.md
   String get roomOnExit => 'help/room_on_exit.md';
 
+  /// File path: help/room_on_teleport.md
+  String get roomOnTeleport => 'help/room_on_teleport.md';
+
   /// List of all assets
-  List<String> get values => [roomOnEnter, roomOnExit];
+  List<String> get values => [roomOnEnter, roomOnExit, roomOnTeleport];
 }
 
 class Assets {
