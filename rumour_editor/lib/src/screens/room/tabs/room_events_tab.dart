@@ -36,7 +36,7 @@ class RoomEventsTab extends ConsumerWidget {
             },
             autofocus: true,
             commandCallerId: room.onEnterCommandCallerId,
-            helpAssetKey: Assets.help.roomOnEnter,
+            helpAssetKey: Assets.help.rooms.onEnter,
           ),
           PossibleCommandCallerListTile(
             title: 'Player exits',
@@ -47,7 +47,7 @@ class RoomEventsTab extends ConsumerWidget {
               ref.invalidate(provider);
             },
             commandCallerId: room.onExitCommandCallerId,
-            helpAssetKey: Assets.help.roomOnExit,
+            helpAssetKey: Assets.help.rooms.onExit,
           ),
           PossibleCommandCallerListTile(
             title: 'Player Teleports',
@@ -58,7 +58,7 @@ class RoomEventsTab extends ConsumerWidget {
               ref.invalidate(provider);
             },
             commandCallerId: room.onTeleportCommandCallerId,
-            helpAssetKey: Assets.help.roomOnTeleport,
+            helpAssetKey: Assets.help.rooms.onTeleport,
           ),
         ],
       ),

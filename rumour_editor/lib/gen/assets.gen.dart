@@ -10,17 +10,24 @@
 class $HelpGen {
   const $HelpGen();
 
-  /// File path: help/room_on_enter.md
-  String get roomOnEnter => 'help/room_on_enter.md';
+  /// Directory path: help/rooms
+  $HelpRoomsGen get rooms => const $HelpRoomsGen();
+}
 
-  /// File path: help/room_on_exit.md
-  String get roomOnExit => 'help/room_on_exit.md';
+class $HelpRoomsGen {
+  const $HelpRoomsGen();
 
-  /// File path: help/room_on_teleport.md
-  String get roomOnTeleport => 'help/room_on_teleport.md';
+  /// File path: help/rooms/on_enter.md
+  String get onEnter => 'help/rooms/on_enter.md';
+
+  /// File path: help/rooms/on_exit.md
+  String get onExit => 'help/rooms/on_exit.md';
+
+  /// File path: help/rooms/on_teleport.md
+  String get onTeleport => 'help/rooms/on_teleport.md';
 
   /// List of all assets
-  List<String> get values => [roomOnEnter, roomOnExit, roomOnTeleport];
+  List<String> get values => [onEnter, onExit, onTeleport];
 }
 
 class Assets {
