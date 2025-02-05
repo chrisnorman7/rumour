@@ -2,8 +2,10 @@ import 'package:backstreets_widgets/typedefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_player/rumour_player.dart';
+import 'package:rumour_player/src/widgets/room_objects_loader.dart';
 
 /// A stack of widgets for a player context.
 class PlayerContextSounds extends ConsumerWidget {
@@ -30,43 +32,55 @@ class PlayerContextSounds extends ConsumerWidget {
   final Widget Function() loading;
 
   /// The function to call to build this widget.
-  final WidgetBuilder builder;
+  final Widget Function(
+    BuildContext context,
+    SoundHandle? roomAmbianceHandle,
+    List<RoomObjectState> roomObjectStates,
+  ) builder;
 
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
+    final projectContext = ref.watch(projectContextProvider);
     final value = ref.watch(gamePlayerContextProvider(playerId));
     return value.when(
       data: (final playerContext) {
-        final player = playerContext.gamePlayer;
-        final roomId = player.roomId;
-        final value = ref.watch(roomSoundsProvider(roomId));
-        return value.when(
-          data: (final sounds) {
-            final value = ref.watch(roomProvider(roomId));
+        final room = playerContext.room;
+        final roomAmbiance = playerContext.roomAmbiance;
+        return RoomObjectsLoader(
+          roomId: room.id,
+          error: error,
+          loading: loading,
+          extraAmbiances: [
+            if (roomAmbiance != null)
+              projectContext.getSound(
+                soundReference: roomAmbiance,
+                destroy: false,
+                looping: true,
+              ),
+          ],
+          builder: (final context, final states, final extraHandles) {
+            final roomAmbianceHandle =
+                extraHandles.isEmpty ? null : extraHandles.single;
+            final value = ref.watch(roomSoundsProvider(room.id));
             return value.when(
-              data: (final room) => LoadSounds(
+              data: (final sounds) => ProtectSounds(
                 sounds: sounds,
-                loading: loading,
-                error: error,
-                child: ProtectSounds(
+                child: LoadSounds(
                   sounds: sounds,
-                  child: RoomRandomSounds(
-                    roomId: roomId,
+                  loading: loading,
+                  error: error,
+                  child: RoomSurfaceBoostTimers(
+                    playerId: playerId,
+                    roomSurfaceId: room.surfaceId,
                     getPaused: getPaused,
                     error: error,
                     loading: loading,
-                    child: RoomSurfaceBoostTimers(
-                      playerId: playerId,
-                      roomSurfaceId: room.surfaceId,
-                      getPaused: getPaused,
-                      error: error,
-                      loading: loading,
-                      child: RoomAmbiances(
-                        roomId: roomId,
-                        error: error,
-                        loading: loading,
-                        child: Builder(builder: builder),
+                    child: Builder(
+                      builder: (final builderContext) => builder(
+                        builderContext,
+                        roomAmbianceHandle,
+                        states,
                       ),
                     ),
                   ),
@@ -76,8 +90,6 @@ class PlayerContextSounds extends ConsumerWidget {
               loading: loading,
             );
           },
-          error: error,
-          loading: loading,
         );
       },
       error: error,

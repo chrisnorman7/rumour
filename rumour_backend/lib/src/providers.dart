@@ -245,6 +245,34 @@ Future<List<RoomObject>> objectsInRoom(final Ref ref, final int id) {
       .get();
 }
 
+/// Return ambiances for the objects in a given room.
+@riverpod
+Future<List<PositionedSoundReference>> roomObjectAmbiances(
+  final Ref ref,
+  final int roomId,
+) async {
+  final objects = await ref.watch(
+    objectsInRoomProvider(roomId).future,
+  );
+  final sounds = <PositionedSoundReference>[];
+  for (final object in objects) {
+    final ambianceId = object.ambianceId;
+    if (ambianceId != null) {
+      final soundReference = await ref.watch(
+        soundReferenceProvider(ambianceId).future,
+      );
+      sounds.add(
+        PositionedSoundReference(
+          soundReference: soundReference,
+          position:
+              SoundPosition3d(object.x.toDouble(), object.y.toDouble(), 0.0),
+        ),
+      );
+    }
+  }
+  return sounds;
+}
+
 /// Provide a room object context.
 @riverpod
 Future<RoomObjectContext> roomObjectContext(final Ref ref, final int id) async {
@@ -343,17 +371,13 @@ Future<GamePlayerContext> gamePlayerContext(
   final gamePlayerFile = players.firstWhere((final e) => e.id == id);
   final gamePlayer = gamePlayerFile.gamePlayer;
   final room = await ref.watch(roomProvider(gamePlayer.roomId).future);
-  final zone = await ref.watch(zoneProvider(room.zoneId).future);
-  final zoneMusicId = zone.musicId;
-  final zoneMusic = zoneMusicId == null
-      ? null
-      : await ref.watch(soundReferenceProvider(zoneMusicId).future);
   final roomAmbianceId = room.ambianceId;
   final roomAmbiance = roomAmbianceId == null
       ? null
       : await ref.watch(soundReferenceProvider(roomAmbianceId).future);
-  final roomSurface =
-      await ref.watch(roomSurfaceProvider(room.surfaceId).future);
+  final roomSurface = await ref.watch(
+    roomSurfaceProvider(room.surfaceId).future,
+  );
   final footstepsId = roomSurface.footstepSoundId;
   final footsteps = footstepsId == null
       ? null
@@ -365,47 +389,11 @@ Future<GamePlayerContext> gamePlayerContext(
   return GamePlayerContext(
     gamePlayerFile: gamePlayerFile,
     room: room,
-    zone: zone,
-    zoneMusic: zoneMusic,
     roomAmbiance: roomAmbiance,
     roomSurface: roomSurface,
     footsteps: footsteps,
     wallSound: wallSound,
   );
-}
-
-/// Provide ambiances for a room with the given [id].
-@riverpod
-Future<List<PositionedSoundReference>> roomAmbiances(
-  final Ref ref,
-  final int id,
-) async {
-  final room = await ref.watch(roomProvider(id).future);
-  final ambiances = <PositionedSoundReference>[];
-  final objects = await ref.watch(objectsInRoomProvider(id).future);
-  final roomAmbianceId = room.ambianceId;
-  if (roomAmbianceId != null) {
-    ambiances.add(
-      PositionedSoundReference(
-        soundReference:
-            await ref.watch(soundReferenceProvider(roomAmbianceId).future),
-      ),
-    );
-  }
-  for (final object in objects) {
-    final ambianceId = object.ambianceId;
-    if (ambianceId != null) {
-      ambiances.add(
-        PositionedSoundReference(
-          soundReference:
-              await ref.watch(soundReferenceProvider(ambianceId).future),
-          position:
-              SoundPosition3d(object.x.toDouble(), object.y.toDouble(), 0.0),
-        ),
-      );
-    }
-  }
-  return ambiances;
 }
 
 /// Build the project context.
@@ -901,37 +889,6 @@ Future<RoomObjectRandomSound> roomObjectRandomSound(
         (final f) => f.id.equals(id),
       )
       .getSingle();
-}
-
-/// Provide all random sounds for a room with the given [roomId].
-@riverpod
-Future<List<RoomObjectRandomSoundContext>> roomObjectRandomSoundsForRoom(
-  final Ref ref,
-  final int roomId,
-) async {
-  final database = ref.watch(databaseProvider);
-  final randomSounds = await database.managers.roomObjectRandomSounds
-      .filter(
-        (final f) => f.roomObjectId.roomExitId.id.equals(roomId),
-      )
-      .get();
-  final contexts = <RoomObjectRandomSoundContext>[];
-  for (final randomSound in randomSounds) {
-    final roomObject = await ref.watch(
-      roomObjectProvider(randomSound.roomObjectId).future,
-    );
-    final sound = await ref.watch(
-      soundReferenceProvider(randomSound.soundId).future,
-    );
-    contexts.add(
-      RoomObjectRandomSoundContext(
-        randomSound: randomSound,
-        roomObject: roomObject,
-        sound: sound,
-      ),
-    );
-  }
-  return contexts;
 }
 
 /// Get visible room objects in a room with the given [roomId].

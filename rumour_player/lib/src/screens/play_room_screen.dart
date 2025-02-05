@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 import 'dart:math';
 
@@ -69,6 +71,12 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
   /// The room where the player is.
   Room get _room => _gamePlayerContext.room;
 
+  /// The ambiance handle for [_room].
+  SoundHandle? _roomAmbianceHandle;
+
+  /// The states for objects in [_room].
+  late final List<RoomObjectState> _roomObjectStates;
+
   /// The maximum x coordinate supported by the move system.
   Point<int> get maxCoordinates => Point(_room.maxX - 1, _room.maxY - 1);
 
@@ -129,6 +137,7 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
     super.initState();
     _firstLoad = true;
     _paused = false;
+    _roomObjectStates = [];
     _approachedObjectIds = [];
   }
 
@@ -153,16 +162,20 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
         if (_firstLoad) {
           setPlayerCoordinates(gamePlayerContext.gamePlayer.coordinates);
         }
-        return ZoneMusic(
-          zoneId: gamePlayerContext.zone.id,
+        return PlayerContextSounds(
+          playerId: widget.playerId,
+          getPaused: () => _paused,
           error: ErrorScreen.withPositional,
           loading: LoadingScreen.new,
-          builder: (final _) => PlayerContextSounds(
-            playerId: widget.playerId,
-            getPaused: () => _paused,
-            error: ErrorScreen.withPositional,
-            loading: LoadingScreen.new,
-            builder: (final context) => TimedCommands(
+          builder: (
+            final builderContext,
+            final roomAmbianceHandle,
+            final roomObjectStates,
+          ) {
+            _roomAmbianceHandle = roomAmbianceHandle;
+            _roomObjectStates.clear();
+            roomObjectStates.forEach(_roomObjectStates.add);
+            return TimedCommands(
               builder: (final context, final state) {
                 timedCommandsState = state;
                 state.registerCommand(
@@ -305,12 +318,34 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
                           );
                         },
                       ),
+                      GameShortcut(
+                        title: 'Fuck things',
+                        shortcut: GameShortcutsShortcut.pageDown,
+                        onStart: (final innerContext) {
+                          for (final state in _roomObjectStates) {
+                            print('Down with ${state.object.name}');
+                            final handle = state.ambianceHandle;
+                            if (handle != null) {
+                              handle.volume.value = 0.0;
+                            }
+                          }
+                        },
+                        onStop: (final innerContext) {
+                          for (final state in _roomObjectStates) {
+                            print('Up with ${state.object.name}');
+                            final handle = state.ambianceHandle;
+                            if (handle != null) {
+                              print(handle.isValid);
+                            }
+                          }
+                        },
+                      ),
                     ],
                   ),
                 );
               },
-            ),
-          ),
+            );
+          },
         );
       },
       error: ErrorScreen.withPositional,
@@ -497,14 +532,39 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
     final BuildContext innerContext,
     final WidgetBuilder builder,
   ) async {
-    final state = innerContext.findAncestorStateOfType<RoomAmbiancesState>();
+    final fadeOut = project.mainMenuMusicFadeOut;
+    print('Fade out: $fadeOut');
+    final roomAmbianceHandle = _roomAmbianceHandle;
+    print('Room ambiance: $roomAmbianceHandle');
+    if (roomAmbianceHandle != null) {
+      roomAmbianceHandle.maybeFade(fadeTime: fadeOut, to: 0.0);
+    }
+    for (final roomObjectState in _roomObjectStates) {
+      final handle = roomObjectState.ambianceHandle;
+      print('${roomObjectState.object.name}: $handle');
+      if (handle != null) {
+        handle.maybeFade(fadeTime: fadeOut, to: 0.0);
+      }
+    }
     _paused = true;
-    state?.fadeOut();
     await innerContext.fadeMusicAndPushWidget(
       builder,
       restartMusic: false,
     );
-    state?.fadeIn();
+    final fadeIn = project.mainMenuMusicFadeIn;
+    final roomAmbiance = _gamePlayerContext.roomAmbiance;
+    if (roomAmbianceHandle != null) {
+      roomAmbianceHandle.maybeFade(
+        fadeTime: fadeIn,
+        to: roomAmbiance!.volume,
+      );
+    }
+    for (final roomObjectState in _roomObjectStates) {
+      final volume = roomObjectState.ambiance?.volume;
+      if (volume != null) {
+        roomObjectState.ambianceHandle!.maybeFade(fadeTime: fadeIn, to: volume);
+      }
+    }
     _paused = false;
   }
 

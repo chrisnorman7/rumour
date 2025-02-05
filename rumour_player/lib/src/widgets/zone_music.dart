@@ -11,7 +11,7 @@ class ZoneMusic extends ConsumerWidget {
     required this.zoneId,
     required this.error,
     required this.loading,
-    required this.builder,
+    required this.child,
     super.key,
   });
 
@@ -24,8 +24,8 @@ class ZoneMusic extends ConsumerWidget {
   /// The function to call to show a loading screen.
   final Widget Function() loading;
 
-  /// The function to call to build the widget.
-  final WidgetBuilder builder;
+  /// The widget below this widget in the tree.
+  final Widget child;
 
   /// Build the widget.
   @override
@@ -36,7 +36,7 @@ class ZoneMusic extends ConsumerWidget {
       data: (final zone) {
         final musicId = zone.musicId;
         if (musicId == null) {
-          return Builder(builder: builder);
+          return child;
         }
         final project = projectContext.project;
         final value = ref.watch(soundReferenceProvider(musicId));
@@ -51,7 +51,7 @@ class ZoneMusic extends ConsumerWidget {
             fadeOutTime: project.mainMenuMusicFadeOut,
             error: error,
             loading: loading,
-            child: Builder(builder: builder),
+            child: child,
             key: ValueKey('Music-$musicId'),
           ),
           error: error,

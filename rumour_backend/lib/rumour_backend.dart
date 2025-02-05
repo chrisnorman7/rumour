@@ -8,7 +8,6 @@ export 'src/contexts/game_stat_context.dart';
 export 'src/contexts/game_stat_value_context.dart';
 export 'src/contexts/project_context.dart';
 export 'src/contexts/room_object_context.dart';
-export 'src/contexts/room_object_random_sound_context.dart';
 export 'src/database/database.dart';
 export 'src/database/tables/mixins.dart';
 export 'src/extensions/async_value_x.dart';

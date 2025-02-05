@@ -7,8 +7,6 @@ class GamePlayerContext {
   const GamePlayerContext({
     required this.gamePlayerFile,
     required this.room,
-    required this.zone,
-    required this.zoneMusic,
     required this.roomAmbiance,
     required this.roomSurface,
     required this.footsteps,
@@ -23,12 +21,6 @@ class GamePlayerContext {
 
   /// The room where [gamePlayer] is situated.
   final Room room;
-
-  /// The zone which [room] is part of.
-  final Zone zone;
-
-  /// The music for [zone].
-  final SoundReference? zoneMusic;
 
   /// The ambiance for [room].
   final SoundReference? roomAmbiance;
