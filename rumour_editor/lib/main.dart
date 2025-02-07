@@ -4,15 +4,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:rumour_editor/rumour_editor.dart';
 
-void main() {
-  runApp(const ProviderScope(child: MyApp()));
+void main(final List<String> arguments) {
+  runApp(ProviderScope(child: MyApp(enableLogging: arguments.contains('-l'))));
 }
 
 /// The top-level app class.
 class MyApp extends StatelessWidget {
   /// Create an instance.
-  const MyApp({super.key});
+  const MyApp({this.enableLogging = false, super.key});
 
+  /// Whether to enable logging.
+  final bool enableLogging;
   // This widget is the root of your application.
   @override
   Widget build(final BuildContext context) {
