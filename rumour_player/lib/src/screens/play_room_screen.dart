@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'dart:async';
 import 'dart:math';
 
@@ -318,28 +316,6 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
                           );
                         },
                       ),
-                      GameShortcut(
-                        title: 'Fuck things',
-                        shortcut: GameShortcutsShortcut.pageDown,
-                        onStart: (final innerContext) {
-                          for (final state in _roomObjectStates) {
-                            print('Down with ${state.object.name}');
-                            final handle = state.ambianceHandle;
-                            if (handle != null) {
-                              handle.volume.value = 0.0;
-                            }
-                          }
-                        },
-                        onStop: (final innerContext) {
-                          for (final state in _roomObjectStates) {
-                            print('Up with ${state.object.name}');
-                            final handle = state.ambianceHandle;
-                            if (handle != null) {
-                              print(handle.isValid);
-                            }
-                          }
-                        },
-                      ),
                     ],
                   ),
                 );
@@ -533,15 +509,12 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
     final WidgetBuilder builder,
   ) async {
     final fadeOut = project.mainMenuMusicFadeOut;
-    print('Fade out: $fadeOut');
     final roomAmbianceHandle = _roomAmbianceHandle;
-    print('Room ambiance: $roomAmbianceHandle');
     if (roomAmbianceHandle != null) {
       roomAmbianceHandle.maybeFade(fadeTime: fadeOut, to: 0.0);
     }
     for (final roomObjectState in _roomObjectStates) {
       final handle = roomObjectState.ambianceHandle;
-      print('${roomObjectState.object.name}: $handle');
       if (handle != null) {
         handle.maybeFade(fadeTime: fadeOut, to: 0.0);
       }
