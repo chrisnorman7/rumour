@@ -6,12 +6,12 @@ class PositionedSoundReference {
   /// Create an instance.
   const PositionedSoundReference({
     required this.soundReference,
-    this.position = unpanned,
+    required this.position,
   });
 
   /// The sound reference to use.
   final SoundReference soundReference;
 
   /// The position of [soundReference].
-  final SoundPosition position;
+  final SoundPosition3d position;
 }
