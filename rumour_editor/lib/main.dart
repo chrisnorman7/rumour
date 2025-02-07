@@ -15,17 +15,20 @@ class MyApp extends StatelessWidget {
 
   /// Whether to enable logging.
   final bool enableLogging;
-  // This widget is the root of your application.
+
+  /// This widget is the root of your application.
   @override
   Widget build(final BuildContext context) {
-    Logger.root
-      ..level = Level.ALL
-      ..onRecord.listen((final record) {
-        final name = record.loggerName;
-        final message = record.message;
-        // ignore: avoid_print
-        print('$name: $message');
-      });
+    if (enableLogging) {
+      Logger.root
+        ..level = Level.ALL
+        ..onRecord.listen((final record) {
+          final name = record.loggerName;
+          final message = record.message;
+          // ignore: avoid_print
+          print('$name: $message');
+        });
+    }
     return SoLoudScope(
       child: MaterialApp(
         title: 'Rumour',
