@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_player/rumour_player.dart';
-import 'package:rumour_player/src/widgets/room_objects_loader.dart';
 
 /// A stack of widgets for a player context.
 class PlayerContextSounds extends ConsumerWidget {

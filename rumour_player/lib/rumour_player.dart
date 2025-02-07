@@ -19,5 +19,6 @@ export 'src/widgets/pause_menu_tabs/pause_menu_tab.dart';
 export 'src/widgets/pause_menu_tabs/player_stats_tab.dart';
 export 'src/widgets/player_context_sounds.dart';
 export 'src/widgets/project_context_app.dart';
+export 'src/widgets/room_objects_loader.dart';
 export 'src/widgets/room_surface_boost_timers.dart';
 export 'src/widgets/zone_music.dart';
