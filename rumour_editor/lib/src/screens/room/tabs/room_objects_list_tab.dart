@@ -28,7 +28,7 @@ class RoomObjectsListTab extends ConsumerWidget {
             builder:
                 (final context, final object, final controller) => ListTile(
                   autofocus: index == 0,
-                  title: Text(object.name),
+                  title: Text('${object.name} (${object.x}, ${object.y})'),
                   subtitle: Text(object.description),
                   onTap:
                       () => context.pushWidgetBuilder(
