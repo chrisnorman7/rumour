@@ -1014,3 +1014,29 @@ Future<List<Sound>> roomSounds(final Ref ref, final int roomId) async {
         ...projectContext.getSounds(soundReference: sound, destroy: true),
   ];
 }
+
+/// Provide room object movements.
+@riverpod
+Future<List<RoomObjectMovement>> roomObjectMovements(
+  final Ref ref,
+  final int roomObjectId,
+) async {
+  final database = ref.watch(databaseProvider);
+  return database.managers.roomObjectMovements
+      .filter(
+        (final f) => f.roomObjectId.id.equals(roomObjectId),
+      )
+      .get();
+}
+
+/// Provide a single room object movement.
+@riverpod
+Future<RoomObjectMovement> roomObjectMovement(
+  final Ref ref,
+  final int id,
+) async {
+  final database = ref.watch(databaseProvider);
+  return database.managers.roomObjectMovements
+      .filter((final f) => f.id.equals(id))
+      .getSingle();
+}

@@ -5658,6 +5658,302 @@ class _RoomSoundsProviderElement
   int get roomId => (origin as RoomSoundsProvider).roomId;
 }
 
+String _$roomObjectMovementsHash() =>
+    r'cad9c5e53aeb73649adb5b915337c25222dc21a5';
+
+/// Provide room object movements.
+///
+/// Copied from [roomObjectMovements].
+@ProviderFor(roomObjectMovements)
+const roomObjectMovementsProvider = RoomObjectMovementsFamily();
+
+/// Provide room object movements.
+///
+/// Copied from [roomObjectMovements].
+class RoomObjectMovementsFamily
+    extends Family<AsyncValue<List<RoomObjectMovement>>> {
+  /// Provide room object movements.
+  ///
+  /// Copied from [roomObjectMovements].
+  const RoomObjectMovementsFamily();
+
+  /// Provide room object movements.
+  ///
+  /// Copied from [roomObjectMovements].
+  RoomObjectMovementsProvider call(
+    int roomObjectId,
+  ) {
+    return RoomObjectMovementsProvider(
+      roomObjectId,
+    );
+  }
+
+  @override
+  RoomObjectMovementsProvider getProviderOverride(
+    covariant RoomObjectMovementsProvider provider,
+  ) {
+    return call(
+      provider.roomObjectId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'roomObjectMovementsProvider';
+}
+
+/// Provide room object movements.
+///
+/// Copied from [roomObjectMovements].
+class RoomObjectMovementsProvider
+    extends AutoDisposeFutureProvider<List<RoomObjectMovement>> {
+  /// Provide room object movements.
+  ///
+  /// Copied from [roomObjectMovements].
+  RoomObjectMovementsProvider(
+    int roomObjectId,
+  ) : this._internal(
+          (ref) => roomObjectMovements(
+            ref as RoomObjectMovementsRef,
+            roomObjectId,
+          ),
+          from: roomObjectMovementsProvider,
+          name: r'roomObjectMovementsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$roomObjectMovementsHash,
+          dependencies: RoomObjectMovementsFamily._dependencies,
+          allTransitiveDependencies:
+              RoomObjectMovementsFamily._allTransitiveDependencies,
+          roomObjectId: roomObjectId,
+        );
+
+  RoomObjectMovementsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.roomObjectId,
+  }) : super.internal();
+
+  final int roomObjectId;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<RoomObjectMovement>> Function(RoomObjectMovementsRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: RoomObjectMovementsProvider._internal(
+        (ref) => create(ref as RoomObjectMovementsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        roomObjectId: roomObjectId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<RoomObjectMovement>> createElement() {
+    return _RoomObjectMovementsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RoomObjectMovementsProvider &&
+        other.roomObjectId == roomObjectId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, roomObjectId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin RoomObjectMovementsRef
+    on AutoDisposeFutureProviderRef<List<RoomObjectMovement>> {
+  /// The parameter `roomObjectId` of this provider.
+  int get roomObjectId;
+}
+
+class _RoomObjectMovementsProviderElement
+    extends AutoDisposeFutureProviderElement<List<RoomObjectMovement>>
+    with RoomObjectMovementsRef {
+  _RoomObjectMovementsProviderElement(super.provider);
+
+  @override
+  int get roomObjectId => (origin as RoomObjectMovementsProvider).roomObjectId;
+}
+
+String _$roomObjectMovementHash() =>
+    r'1fff2f174a61b32bb5ae9b92783fe452ad0592a1';
+
+/// Provide a single room object movement.
+///
+/// Copied from [roomObjectMovement].
+@ProviderFor(roomObjectMovement)
+const roomObjectMovementProvider = RoomObjectMovementFamily();
+
+/// Provide a single room object movement.
+///
+/// Copied from [roomObjectMovement].
+class RoomObjectMovementFamily extends Family<AsyncValue<RoomObjectMovement>> {
+  /// Provide a single room object movement.
+  ///
+  /// Copied from [roomObjectMovement].
+  const RoomObjectMovementFamily();
+
+  /// Provide a single room object movement.
+  ///
+  /// Copied from [roomObjectMovement].
+  RoomObjectMovementProvider call(
+    int id,
+  ) {
+    return RoomObjectMovementProvider(
+      id,
+    );
+  }
+
+  @override
+  RoomObjectMovementProvider getProviderOverride(
+    covariant RoomObjectMovementProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'roomObjectMovementProvider';
+}
+
+/// Provide a single room object movement.
+///
+/// Copied from [roomObjectMovement].
+class RoomObjectMovementProvider
+    extends AutoDisposeFutureProvider<RoomObjectMovement> {
+  /// Provide a single room object movement.
+  ///
+  /// Copied from [roomObjectMovement].
+  RoomObjectMovementProvider(
+    int id,
+  ) : this._internal(
+          (ref) => roomObjectMovement(
+            ref as RoomObjectMovementRef,
+            id,
+          ),
+          from: roomObjectMovementProvider,
+          name: r'roomObjectMovementProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$roomObjectMovementHash,
+          dependencies: RoomObjectMovementFamily._dependencies,
+          allTransitiveDependencies:
+              RoomObjectMovementFamily._allTransitiveDependencies,
+          id: id,
+        );
+
+  RoomObjectMovementProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
+  final int id;
+
+  @override
+  Override overrideWith(
+    FutureOr<RoomObjectMovement> Function(RoomObjectMovementRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: RoomObjectMovementProvider._internal(
+        (ref) => create(ref as RoomObjectMovementRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<RoomObjectMovement> createElement() {
+    return _RoomObjectMovementProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RoomObjectMovementProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin RoomObjectMovementRef
+    on AutoDisposeFutureProviderRef<RoomObjectMovement> {
+  /// The parameter `id` of this provider.
+  int get id;
+}
+
+class _RoomObjectMovementProviderElement
+    extends AutoDisposeFutureProviderElement<RoomObjectMovement>
+    with RoomObjectMovementRef {
+  _RoomObjectMovementProviderElement(super.provider);
+
+  @override
+  int get id => (origin as RoomObjectMovementProvider).id;
+}
+
 String _$currentProjectContextHash() =>
     r'4c8cc047a1a79eb695b9f390a99148ce921e1e5b';
 

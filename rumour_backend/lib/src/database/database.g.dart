@@ -5851,6 +5851,369 @@ class RoomObjectCommandCallersCompanion
   }
 }
 
+class $RoomObjectMovementsTable extends RoomObjectMovements
+    with TableInfo<$RoomObjectMovementsTable, RoomObjectMovement> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RoomObjectMovementsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _roomObjectIdMeta =
+      const VerificationMeta('roomObjectId');
+  @override
+  late final GeneratedColumn<int> roomObjectId = GeneratedColumn<int>(
+      'room_object_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES room_objects (id) ON DELETE CASCADE'));
+  static const VerificationMeta _minDelayMeta =
+      const VerificationMeta('minDelay');
+  @override
+  late final GeneratedColumn<int> minDelay = GeneratedColumn<int>(
+      'min_delay', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(500));
+  static const VerificationMeta _maxDelayMeta =
+      const VerificationMeta('maxDelay');
+  @override
+  late final GeneratedColumn<int> maxDelay = GeneratedColumn<int>(
+      'max_delay', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1000));
+  static const VerificationMeta _directionMeta =
+      const VerificationMeta('direction');
+  @override
+  late final GeneratedColumnWithTypeConverter<MovingDirection, int> direction =
+      GeneratedColumn<int>('direction', aliasedName, false,
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: Constant(MovingDirection.forwards.index))
+          .withConverter<MovingDirection>(
+              $RoomObjectMovementsTable.$converterdirection);
+  static const VerificationMeta _distanceMeta =
+      const VerificationMeta('distance');
+  @override
+  late final GeneratedColumn<int> distance = GeneratedColumn<int>(
+      'distance', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, roomObjectId, minDelay, maxDelay, direction, distance];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'room_object_movements';
+  @override
+  VerificationContext validateIntegrity(Insertable<RoomObjectMovement> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('room_object_id')) {
+      context.handle(
+          _roomObjectIdMeta,
+          roomObjectId.isAcceptableOrUnknown(
+              data['room_object_id']!, _roomObjectIdMeta));
+    } else if (isInserting) {
+      context.missing(_roomObjectIdMeta);
+    }
+    if (data.containsKey('min_delay')) {
+      context.handle(_minDelayMeta,
+          minDelay.isAcceptableOrUnknown(data['min_delay']!, _minDelayMeta));
+    }
+    if (data.containsKey('max_delay')) {
+      context.handle(_maxDelayMeta,
+          maxDelay.isAcceptableOrUnknown(data['max_delay']!, _maxDelayMeta));
+    }
+    context.handle(_directionMeta, const VerificationResult.success());
+    if (data.containsKey('distance')) {
+      context.handle(_distanceMeta,
+          distance.isAcceptableOrUnknown(data['distance']!, _distanceMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RoomObjectMovement map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RoomObjectMovement(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      roomObjectId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}room_object_id'])!,
+      minDelay: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}min_delay'])!,
+      maxDelay: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}max_delay'])!,
+      direction: $RoomObjectMovementsTable.$converterdirection.fromSql(
+          attachedDatabase.typeMapping
+              .read(DriftSqlType.int, data['${effectivePrefix}direction'])!),
+      distance: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}distance'])!,
+    );
+  }
+
+  @override
+  $RoomObjectMovementsTable createAlias(String alias) {
+    return $RoomObjectMovementsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<MovingDirection, int, int> $converterdirection =
+      const EnumIndexConverter<MovingDirection>(MovingDirection.values);
+}
+
+class RoomObjectMovement extends DataClass
+    implements Insertable<RoomObjectMovement> {
+  /// The primary key field.
+  final int id;
+
+  /// The ID of a room object for this row.
+  final int roomObjectId;
+
+  /// The minimum number of milliseconds to wait before performing this
+  /// movement.
+  final int minDelay;
+
+  /// The maximum number of milliseconds to wait before performing this
+  /// movement.
+  final int maxDelay;
+
+  /// The direction to travel.
+  final MovingDirection direction;
+
+  /// The distance to travel in [direction].
+  final int distance;
+  const RoomObjectMovement(
+      {required this.id,
+      required this.roomObjectId,
+      required this.minDelay,
+      required this.maxDelay,
+      required this.direction,
+      required this.distance});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['room_object_id'] = Variable<int>(roomObjectId);
+    map['min_delay'] = Variable<int>(minDelay);
+    map['max_delay'] = Variable<int>(maxDelay);
+    {
+      map['direction'] = Variable<int>(
+          $RoomObjectMovementsTable.$converterdirection.toSql(direction));
+    }
+    map['distance'] = Variable<int>(distance);
+    return map;
+  }
+
+  RoomObjectMovementsCompanion toCompanion(bool nullToAbsent) {
+    return RoomObjectMovementsCompanion(
+      id: Value(id),
+      roomObjectId: Value(roomObjectId),
+      minDelay: Value(minDelay),
+      maxDelay: Value(maxDelay),
+      direction: Value(direction),
+      distance: Value(distance),
+    );
+  }
+
+  factory RoomObjectMovement.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RoomObjectMovement(
+      id: serializer.fromJson<int>(json['id']),
+      roomObjectId: serializer.fromJson<int>(json['roomObjectId']),
+      minDelay: serializer.fromJson<int>(json['minDelay']),
+      maxDelay: serializer.fromJson<int>(json['maxDelay']),
+      direction: $RoomObjectMovementsTable.$converterdirection
+          .fromJson(serializer.fromJson<int>(json['direction'])),
+      distance: serializer.fromJson<int>(json['distance']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'roomObjectId': serializer.toJson<int>(roomObjectId),
+      'minDelay': serializer.toJson<int>(minDelay),
+      'maxDelay': serializer.toJson<int>(maxDelay),
+      'direction': serializer.toJson<int>(
+          $RoomObjectMovementsTable.$converterdirection.toJson(direction)),
+      'distance': serializer.toJson<int>(distance),
+    };
+  }
+
+  RoomObjectMovement copyWith(
+          {int? id,
+          int? roomObjectId,
+          int? minDelay,
+          int? maxDelay,
+          MovingDirection? direction,
+          int? distance}) =>
+      RoomObjectMovement(
+        id: id ?? this.id,
+        roomObjectId: roomObjectId ?? this.roomObjectId,
+        minDelay: minDelay ?? this.minDelay,
+        maxDelay: maxDelay ?? this.maxDelay,
+        direction: direction ?? this.direction,
+        distance: distance ?? this.distance,
+      );
+  RoomObjectMovement copyWithCompanion(RoomObjectMovementsCompanion data) {
+    return RoomObjectMovement(
+      id: data.id.present ? data.id.value : this.id,
+      roomObjectId: data.roomObjectId.present
+          ? data.roomObjectId.value
+          : this.roomObjectId,
+      minDelay: data.minDelay.present ? data.minDelay.value : this.minDelay,
+      maxDelay: data.maxDelay.present ? data.maxDelay.value : this.maxDelay,
+      direction: data.direction.present ? data.direction.value : this.direction,
+      distance: data.distance.present ? data.distance.value : this.distance,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoomObjectMovement(')
+          ..write('id: $id, ')
+          ..write('roomObjectId: $roomObjectId, ')
+          ..write('minDelay: $minDelay, ')
+          ..write('maxDelay: $maxDelay, ')
+          ..write('direction: $direction, ')
+          ..write('distance: $distance')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, roomObjectId, minDelay, maxDelay, direction, distance);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RoomObjectMovement &&
+          other.id == this.id &&
+          other.roomObjectId == this.roomObjectId &&
+          other.minDelay == this.minDelay &&
+          other.maxDelay == this.maxDelay &&
+          other.direction == this.direction &&
+          other.distance == this.distance);
+}
+
+class RoomObjectMovementsCompanion extends UpdateCompanion<RoomObjectMovement> {
+  final Value<int> id;
+  final Value<int> roomObjectId;
+  final Value<int> minDelay;
+  final Value<int> maxDelay;
+  final Value<MovingDirection> direction;
+  final Value<int> distance;
+  const RoomObjectMovementsCompanion({
+    this.id = const Value.absent(),
+    this.roomObjectId = const Value.absent(),
+    this.minDelay = const Value.absent(),
+    this.maxDelay = const Value.absent(),
+    this.direction = const Value.absent(),
+    this.distance = const Value.absent(),
+  });
+  RoomObjectMovementsCompanion.insert({
+    this.id = const Value.absent(),
+    required int roomObjectId,
+    this.minDelay = const Value.absent(),
+    this.maxDelay = const Value.absent(),
+    this.direction = const Value.absent(),
+    this.distance = const Value.absent(),
+  }) : roomObjectId = Value(roomObjectId);
+  static Insertable<RoomObjectMovement> custom({
+    Expression<int>? id,
+    Expression<int>? roomObjectId,
+    Expression<int>? minDelay,
+    Expression<int>? maxDelay,
+    Expression<int>? direction,
+    Expression<int>? distance,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (roomObjectId != null) 'room_object_id': roomObjectId,
+      if (minDelay != null) 'min_delay': minDelay,
+      if (maxDelay != null) 'max_delay': maxDelay,
+      if (direction != null) 'direction': direction,
+      if (distance != null) 'distance': distance,
+    });
+  }
+
+  RoomObjectMovementsCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? roomObjectId,
+      Value<int>? minDelay,
+      Value<int>? maxDelay,
+      Value<MovingDirection>? direction,
+      Value<int>? distance}) {
+    return RoomObjectMovementsCompanion(
+      id: id ?? this.id,
+      roomObjectId: roomObjectId ?? this.roomObjectId,
+      minDelay: minDelay ?? this.minDelay,
+      maxDelay: maxDelay ?? this.maxDelay,
+      direction: direction ?? this.direction,
+      distance: distance ?? this.distance,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (roomObjectId.present) {
+      map['room_object_id'] = Variable<int>(roomObjectId.value);
+    }
+    if (minDelay.present) {
+      map['min_delay'] = Variable<int>(minDelay.value);
+    }
+    if (maxDelay.present) {
+      map['max_delay'] = Variable<int>(maxDelay.value);
+    }
+    if (direction.present) {
+      map['direction'] = Variable<int>(
+          $RoomObjectMovementsTable.$converterdirection.toSql(direction.value));
+    }
+    if (distance.present) {
+      map['distance'] = Variable<int>(distance.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoomObjectMovementsCompanion(')
+          ..write('id: $id, ')
+          ..write('roomObjectId: $roomObjectId, ')
+          ..write('minDelay: $minDelay, ')
+          ..write('maxDelay: $maxDelay, ')
+          ..write('direction: $direction, ')
+          ..write('distance: $distance')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5875,6 +6238,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $RoomObjectRandomSoundsTable(this);
   late final $RoomObjectCommandCallersTable roomObjectCommandCallers =
       $RoomObjectCommandCallersTable(this);
+  late final $RoomObjectMovementsTable roomObjectMovements =
+      $RoomObjectMovementsTable(this);
   late final Index roomObjectCoordinatesIndex = Index(
       'room_object_coordinates_index',
       'CREATE INDEX room_object_coordinates_index ON room_objects (x, y)');
@@ -5901,6 +6266,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         playerClassGameStats,
         roomObjectRandomSounds,
         roomObjectCommandCallers,
+        roomObjectMovements,
         roomObjectCoordinatesIndex,
         commandCallersCallingCommandIdIndex
       ];
@@ -6111,6 +6477,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
             result: [
               TableUpdate('room_object_command_callers',
                   kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('room_objects',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_object_movements', kind: UpdateKind.delete),
             ],
           ),
         ],
@@ -7139,7 +7512,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (zonesRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<SoundReference,
+                            $SoundReferencesTable, Zone>(
                         currentTable: table,
                         referencedTable: $$SoundReferencesTableReferences
                             ._zonesRefsTable(db),
@@ -7151,7 +7525,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                             referencedItems.where((e) => e.musicId == item.id),
                         typedResults: items),
                   if (footstepsSurfaces)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<SoundReference,
+                            $SoundReferencesTable, RoomSurface>(
                         currentTable: table,
                         referencedTable: $$SoundReferencesTableReferences
                             ._footstepsSurfacesTable(db),
@@ -7163,7 +7538,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                                 .where((e) => e.footstepSoundId == item.id),
                         typedResults: items),
                   if (wallSoundsSurfaces)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<SoundReference,
+                            $SoundReferencesTable, RoomSurface>(
                         currentTable: table,
                         referencedTable: $$SoundReferencesTableReferences
                             ._wallSoundsSurfacesTable(db),
@@ -7175,7 +7551,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                                 .where((e) => e.wallSoundI == item.id),
                         typedResults: items),
                   if (commandsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<SoundReference,
+                            $SoundReferencesTable, Command>(
                         currentTable: table,
                         referencedTable: $$SoundReferencesTableReferences
                             ._commandsRefsTable(db),
@@ -7187,7 +7564,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                             referencedItems.where((e) => e.soundId == item.id),
                         typedResults: items),
                   if (roomsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<SoundReference,
+                            $SoundReferencesTable, Room>(
                         currentTable: table,
                         referencedTable: $$SoundReferencesTableReferences
                             ._roomsRefsTable(db),
@@ -7199,7 +7577,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                                 .where((e) => e.ambianceId == item.id),
                         typedResults: items),
                   if (room_exit_use_sounds)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<SoundReference,
+                            $SoundReferencesTable, RoomExit>(
                         currentTable: table,
                         referencedTable: $$SoundReferencesTableReferences
                             ._room_exit_use_soundsTable(db),
@@ -7211,7 +7590,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                                 .where((e) => e.useSoundId == item.id),
                         typedResults: items),
                   if (room_exits_earcons)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<SoundReference,
+                            $SoundReferencesTable, RoomExit>(
                         currentTable: table,
                         referencedTable: $$SoundReferencesTableReferences
                             ._room_exits_earconsTable(db),
@@ -7223,7 +7603,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                             referencedItems.where((e) => e.earconId == item.id),
                         typedResults: items),
                   if (roomObjectsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<SoundReference, $SoundReferencesTable,
+                            RoomObject>(
                         currentTable: table,
                         referencedTable: $$SoundReferencesTableReferences
                             ._roomObjectsRefsTable(db),
@@ -7235,7 +7616,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                                 .where((e) => e.ambianceId == item.id),
                         typedResults: items),
                   if (room_object_earcons)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<SoundReference, $SoundReferencesTable,
+                            RoomObject>(
                         currentTable: table,
                         referencedTable: $$SoundReferencesTableReferences
                             ._room_object_earconsTable(db),
@@ -7247,7 +7629,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                             referencedItems.where((e) => e.earconId == item.id),
                         typedResults: items),
                   if (roomSurfaceBoostBoostSounds)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<SoundReference,
+                            $SoundReferencesTable, RoomSurfaceBoost>(
                         currentTable: table,
                         referencedTable: $$SoundReferencesTableReferences
                             ._roomSurfaceBoostBoostSoundsTable(db),
@@ -7259,7 +7642,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                                 .where((e) => e.boostSoundId == item.id),
                         typedResults: items),
                   if (roomSurfaceBoostMaxedOutSounds)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<SoundReference,
+                            $SoundReferencesTable, RoomSurfaceBoost>(
                         currentTable: table,
                         referencedTable: $$SoundReferencesTableReferences
                             ._roomSurfaceBoostMaxedOutSoundsTable(db),
@@ -7271,7 +7655,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                                 .where((e) => e.maxedOutSoundId == item.id),
                         typedResults: items),
                   if (roomSurfaceCostsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<SoundReference,
+                            $SoundReferencesTable, RoomSurfaceCost>(
                         currentTable: table,
                         referencedTable: $$SoundReferencesTableReferences
                             ._roomSurfaceCostsRefsTable(db),
@@ -7283,7 +7668,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                                 .where((e) => e.exhaustedSoundId == item.id),
                         typedResults: items),
                   if (roomObjectRandomSoundsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<SoundReference,
+                            $SoundReferencesTable, RoomObjectRandomSound>(
                         currentTable: table,
                         referencedTable: $$SoundReferencesTableReferences
                             ._roomObjectRandomSoundsRefsTable(db),
@@ -7295,7 +7681,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                             referencedItems.where((e) => e.soundId == item.id),
                         typedResults: items),
                   if (roomObjectCommandCallersRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<SoundReference,
+                            $SoundReferencesTable, RoomObjectCommandCaller>(
                         currentTable: table,
                         referencedTable: $$SoundReferencesTableReferences
                             ._roomObjectCommandCallersRefsTable(db),
@@ -7642,7 +8029,7 @@ class $$ZonesTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (roomsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<Zone, $ZonesTable, Room>(
                         currentTable: table,
                         referencedTable:
                             $$ZonesTableReferences._roomsRefsTable(db),
@@ -8208,7 +8595,8 @@ class $$RoomSurfacesTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (roomsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<RoomSurface, $RoomSurfacesTable,
+                            Room>(
                         currentTable: table,
                         referencedTable:
                             $$RoomSurfacesTableReferences._roomsRefsTable(db),
@@ -8220,7 +8608,7 @@ class $$RoomSurfacesTableTableManager extends RootTableManager<
                                 .where((e) => e.surfaceId == item.id),
                         typedResults: items),
                   if (roomSurfaceBoostsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<RoomSurface, $RoomSurfacesTable, RoomSurfaceBoost>(
                         currentTable: table,
                         referencedTable: $$RoomSurfacesTableReferences
                             ._roomSurfaceBoostsRefsTable(db),
@@ -8232,7 +8620,8 @@ class $$RoomSurfacesTableTableManager extends RootTableManager<
                                 .where((e) => e.roomSurfaceId == item.id),
                         typedResults: items),
                   if (roomSurfaceCostsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<RoomSurface, $RoomSurfacesTable,
+                            RoomSurfaceCost>(
                         currentTable: table,
                         referencedTable: $$RoomSurfacesTableReferences
                             ._roomSurfaceCostsRefsTable(db),
@@ -8639,7 +9028,8 @@ class $$CommandsTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (commandsToCall)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<Command, $CommandsTable,
+                            CommandCaller>(
                         currentTable: table,
                         referencedTable:
                             $$CommandsTableReferences._commandsToCallTable(db),
@@ -8651,7 +9041,8 @@ class $$CommandsTableTableManager extends RootTableManager<
                                 .where((e) => e.parentCommandId == item.id),
                         typedResults: items),
                   if (commandCallers)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<Command, $CommandsTable,
+                            CommandCaller>(
                         currentTable: table,
                         referencedTable:
                             $$CommandsTableReferences._commandCallersTable(db),
@@ -9381,7 +9772,8 @@ class $$CommandCallersTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (onEnterCommandCallers)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<CommandCaller,
+                            $CommandCallersTable, Room>(
                         currentTable: table,
                         referencedTable: $$CommandCallersTableReferences
                             ._onEnterCommandCallersTable(db),
@@ -9393,7 +9785,8 @@ class $$CommandCallersTableTableManager extends RootTableManager<
                                 (e) => e.onEnterCommandCallerId == item.id),
                         typedResults: items),
                   if (onExitCommandCallers)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<CommandCaller,
+                            $CommandCallersTable, Room>(
                         currentTable: table,
                         referencedTable: $$CommandCallersTableReferences
                             ._onExitCommandCallersTable(db),
@@ -9405,7 +9798,8 @@ class $$CommandCallersTableTableManager extends RootTableManager<
                                 (e) => e.onExitCommandCallerId == item.id),
                         typedResults: items),
                   if (onTeleportCommandCallers)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<CommandCaller,
+                            $CommandCallersTable, Room>(
                         currentTable: table,
                         referencedTable: $$CommandCallersTableReferences
                             ._onTeleportCommandCallersTable(db),
@@ -9417,7 +9811,8 @@ class $$CommandCallersTableTableManager extends RootTableManager<
                                 (e) => e.onTeleportCommandCallerId == item.id),
                         typedResults: items),
                   if (onApproachCommandCallers)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<CommandCaller,
+                            $CommandCallersTable, RoomObject>(
                         currentTable: table,
                         referencedTable: $$CommandCallersTableReferences
                             ._onApproachCommandCallersTable(db),
@@ -9429,7 +9824,8 @@ class $$CommandCallersTableTableManager extends RootTableManager<
                                 (e) => e.onApproachCommandCallerId == item.id),
                         typedResults: items),
                   if (onLeaveCommandCallers)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<CommandCaller,
+                            $CommandCallersTable, RoomObject>(
                         currentTable: table,
                         referencedTable: $$CommandCallersTableReferences
                             ._onLeaveCommandCallersTable(db),
@@ -9441,7 +9837,8 @@ class $$CommandCallersTableTableManager extends RootTableManager<
                                 (e) => e.onLeaveCommandCallerId == item.id),
                         typedResults: items),
                   if (roomObjectCommandCallersRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<CommandCaller,
+                            $CommandCallersTable, RoomObjectCommandCaller>(
                         currentTable: table,
                         referencedTable: $$CommandCallersTableReferences
                             ._roomObjectCommandCallersRefsTable(db),
@@ -10407,7 +10804,7 @@ class $$RoomsTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (roomExitsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<Room, $RoomsTable, RoomExit>(
                         currentTable: table,
                         referencedTable:
                             $$RoomsTableReferences._roomExitsRefsTable(db),
@@ -10418,7 +10815,7 @@ class $$RoomsTableTableManager extends RootTableManager<
                             referencedItems.where((e) => e.roomId == item.id),
                         typedResults: items),
                   if (roomObjectsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<Room, $RoomsTable, RoomObject>(
                         currentTable: table,
                         referencedTable:
                             $$RoomsTableReferences._roomObjectsRefsTable(db),
@@ -10430,7 +10827,7 @@ class $$RoomsTableTableManager extends RootTableManager<
                             referencedItems.where((e) => e.roomId == item.id),
                         typedResults: items),
                   if (playerClassesRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<Room, $RoomsTable, PlayerClass>(
                         currentTable: table,
                         referencedTable:
                             $$RoomsTableReferences._playerClassesRefsTable(db),
@@ -10964,7 +11361,8 @@ class $$RoomExitsTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (roomObjectsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<RoomExit, $RoomExitsTable,
+                            RoomObject>(
                         currentTable: table,
                         referencedTable: $$RoomExitsTableReferences
                             ._roomObjectsRefsTable(db),
@@ -11160,6 +11558,24 @@ final class $$RoomObjectsTableReferences
 
     final cache =
         $_typedResult.readTableOrNull(_roomObjectCommandCallersRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$RoomObjectMovementsTable,
+      List<RoomObjectMovement>> _roomObjectMovementsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.roomObjectMovements,
+          aliasName: $_aliasNameGenerator(
+              db.roomObjects.id, db.roomObjectMovements.roomObjectId));
+
+  $$RoomObjectMovementsTableProcessedTableManager get roomObjectMovementsRefs {
+    final manager = $$RoomObjectMovementsTableTableManager(
+            $_db, $_db.roomObjectMovements)
+        .filter((f) => f.roomObjectId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_roomObjectMovementsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -11359,6 +11775,27 @@ class $$RoomObjectsTableFilterComposer
                   $removeJoinBuilderFromRootComposer:
                       $removeJoinBuilderFromRootComposer,
                 ));
+    return f(composer);
+  }
+
+  Expression<bool> roomObjectMovementsRefs(
+      Expression<bool> Function($$RoomObjectMovementsTableFilterComposer f) f) {
+    final $$RoomObjectMovementsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomObjectMovements,
+        getReferencedColumn: (t) => t.roomObjectId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectMovementsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomObjectMovements,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
     return f(composer);
   }
 }
@@ -11711,6 +12148,29 @@ class $$RoomObjectsTableAnnotationComposer
                 ));
     return f(composer);
   }
+
+  Expression<T> roomObjectMovementsRefs<T extends Object>(
+      Expression<T> Function($$RoomObjectMovementsTableAnnotationComposer a)
+          f) {
+    final $$RoomObjectMovementsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomObjectMovements,
+            getReferencedColumn: (t) => t.roomObjectId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomObjectMovementsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.roomObjectMovements,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 }
 
 class $$RoomObjectsTableTableManager extends RootTableManager<
@@ -11732,7 +12192,8 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
         bool onApproachCommandCallerId,
         bool onLeaveCommandCallerId,
         bool roomObjectRandomSoundsRefs,
-        bool roomObjectCommandCallersRefs})> {
+        bool roomObjectCommandCallersRefs,
+        bool roomObjectMovementsRefs})> {
   $$RoomObjectsTableTableManager(_$AppDatabase db, $RoomObjectsTable table)
       : super(TableManagerState(
           db: db,
@@ -11817,12 +12278,14 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
               onApproachCommandCallerId = false,
               onLeaveCommandCallerId = false,
               roomObjectRandomSoundsRefs = false,
-              roomObjectCommandCallersRefs = false}) {
+              roomObjectCommandCallersRefs = false,
+              roomObjectMovementsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (roomObjectRandomSoundsRefs) db.roomObjectRandomSounds,
-                if (roomObjectCommandCallersRefs) db.roomObjectCommandCallers
+                if (roomObjectCommandCallersRefs) db.roomObjectCommandCallers,
+                if (roomObjectMovementsRefs) db.roomObjectMovements
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -11905,7 +12368,8 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (roomObjectRandomSoundsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<RoomObject, $RoomObjectsTable,
+                            RoomObjectRandomSound>(
                         currentTable: table,
                         referencedTable: $$RoomObjectsTableReferences
                             ._roomObjectRandomSoundsRefsTable(db),
@@ -11917,13 +12381,26 @@ class $$RoomObjectsTableTableManager extends RootTableManager<
                                 .where((e) => e.roomObjectId == item.id),
                         typedResults: items),
                   if (roomObjectCommandCallersRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<RoomObject, $RoomObjectsTable,
+                            RoomObjectCommandCaller>(
                         currentTable: table,
                         referencedTable: $$RoomObjectsTableReferences
                             ._roomObjectCommandCallersRefsTable(db),
                         managerFromTypedResult: (p0) =>
                             $$RoomObjectsTableReferences(db, table, p0)
                                 .roomObjectCommandCallersRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.roomObjectId == item.id),
+                        typedResults: items),
+                  if (roomObjectMovementsRefs)
+                    await $_getPrefetchedData<RoomObject, $RoomObjectsTable, RoomObjectMovement>(
+                        currentTable: table,
+                        referencedTable: $$RoomObjectsTableReferences
+                            ._roomObjectMovementsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$RoomObjectsTableReferences(db, table, p0)
+                                .roomObjectMovementsRefs,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.roomObjectId == item.id),
@@ -11954,7 +12431,8 @@ typedef $$RoomObjectsTableProcessedTableManager = ProcessedTableManager<
         bool onApproachCommandCallerId,
         bool onLeaveCommandCallerId,
         bool roomObjectRandomSoundsRefs,
-        bool roomObjectCommandCallersRefs})>;
+        bool roomObjectCommandCallersRefs,
+        bool roomObjectMovementsRefs})>;
 typedef $$PlayerClassesTableCreateCompanionBuilder = PlayerClassesCompanion
     Function({
   Value<int> id,
@@ -12289,7 +12767,8 @@ class $$PlayerClassesTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (playerClassGameStatsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<PlayerClass, $PlayerClassesTable,
+                            PlayerClassGameStat>(
                         currentTable: table,
                         referencedTable: $$PlayerClassesTableReferences
                             ._playerClassGameStatsRefsTable(db),
@@ -12819,7 +13298,8 @@ class $$GameStatsTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (roomSurfaceBoostsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<GameStat, $GameStatsTable,
+                            RoomSurfaceBoost>(
                         currentTable: table,
                         referencedTable: $$GameStatsTableReferences
                             ._roomSurfaceBoostsRefsTable(db),
@@ -12831,7 +13311,8 @@ class $$GameStatsTableTableManager extends RootTableManager<
                                 .where((e) => e.gameStatId == item.id),
                         typedResults: items),
                   if (roomSurfaceCostsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<GameStat, $GameStatsTable,
+                            RoomSurfaceCost>(
                         currentTable: table,
                         referencedTable: $$GameStatsTableReferences
                             ._roomSurfaceCostsRefsTable(db),
@@ -12843,7 +13324,8 @@ class $$GameStatsTableTableManager extends RootTableManager<
                                 .where((e) => e.gameStatId == item.id),
                         typedResults: items),
                   if (playerClassGameStatsRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<GameStat, $GameStatsTable,
+                            PlayerClassGameStat>(
                         currentTable: table,
                         referencedTable: $$GameStatsTableReferences
                             ._playerClassGameStatsRefsTable(db),
@@ -14985,6 +15467,297 @@ typedef $$RoomObjectCommandCallersTableProcessedTableManager
         RoomObjectCommandCaller,
         PrefetchHooks Function(
             {bool roomObjectId, bool commandCallerId, bool earconId})>;
+typedef $$RoomObjectMovementsTableCreateCompanionBuilder
+    = RoomObjectMovementsCompanion Function({
+  Value<int> id,
+  required int roomObjectId,
+  Value<int> minDelay,
+  Value<int> maxDelay,
+  Value<MovingDirection> direction,
+  Value<int> distance,
+});
+typedef $$RoomObjectMovementsTableUpdateCompanionBuilder
+    = RoomObjectMovementsCompanion Function({
+  Value<int> id,
+  Value<int> roomObjectId,
+  Value<int> minDelay,
+  Value<int> maxDelay,
+  Value<MovingDirection> direction,
+  Value<int> distance,
+});
+
+final class $$RoomObjectMovementsTableReferences extends BaseReferences<
+    _$AppDatabase, $RoomObjectMovementsTable, RoomObjectMovement> {
+  $$RoomObjectMovementsTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $RoomObjectsTable _roomObjectIdTable(_$AppDatabase db) =>
+      db.roomObjects.createAlias($_aliasNameGenerator(
+          db.roomObjectMovements.roomObjectId, db.roomObjects.id));
+
+  $$RoomObjectsTableProcessedTableManager get roomObjectId {
+    final $_column = $_itemColumn<int>('room_object_id')!;
+
+    final manager = $$RoomObjectsTableTableManager($_db, $_db.roomObjects)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_roomObjectIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$RoomObjectMovementsTableFilterComposer
+    extends Composer<_$AppDatabase, $RoomObjectMovementsTable> {
+  $$RoomObjectMovementsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get minDelay => $composableBuilder(
+      column: $table.minDelay, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get maxDelay => $composableBuilder(
+      column: $table.maxDelay, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<MovingDirection, MovingDirection, int>
+      get direction => $composableBuilder(
+          column: $table.direction,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<int> get distance => $composableBuilder(
+      column: $table.distance, builder: (column) => ColumnFilters(column));
+
+  $$RoomObjectsTableFilterComposer get roomObjectId {
+    final $$RoomObjectsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomObjectId,
+        referencedTable: $db.roomObjects,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RoomObjectMovementsTableOrderingComposer
+    extends Composer<_$AppDatabase, $RoomObjectMovementsTable> {
+  $$RoomObjectMovementsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get minDelay => $composableBuilder(
+      column: $table.minDelay, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get maxDelay => $composableBuilder(
+      column: $table.maxDelay, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get direction => $composableBuilder(
+      column: $table.direction, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get distance => $composableBuilder(
+      column: $table.distance, builder: (column) => ColumnOrderings(column));
+
+  $$RoomObjectsTableOrderingComposer get roomObjectId {
+    final $$RoomObjectsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomObjectId,
+        referencedTable: $db.roomObjects,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectsTableOrderingComposer(
+              $db: $db,
+              $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RoomObjectMovementsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RoomObjectMovementsTable> {
+  $$RoomObjectMovementsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get minDelay =>
+      $composableBuilder(column: $table.minDelay, builder: (column) => column);
+
+  GeneratedColumn<int> get maxDelay =>
+      $composableBuilder(column: $table.maxDelay, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<MovingDirection, int> get direction =>
+      $composableBuilder(column: $table.direction, builder: (column) => column);
+
+  GeneratedColumn<int> get distance =>
+      $composableBuilder(column: $table.distance, builder: (column) => column);
+
+  $$RoomObjectsTableAnnotationComposer get roomObjectId {
+    final $$RoomObjectsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roomObjectId,
+        referencedTable: $db.roomObjects,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$RoomObjectMovementsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $RoomObjectMovementsTable,
+    RoomObjectMovement,
+    $$RoomObjectMovementsTableFilterComposer,
+    $$RoomObjectMovementsTableOrderingComposer,
+    $$RoomObjectMovementsTableAnnotationComposer,
+    $$RoomObjectMovementsTableCreateCompanionBuilder,
+    $$RoomObjectMovementsTableUpdateCompanionBuilder,
+    (RoomObjectMovement, $$RoomObjectMovementsTableReferences),
+    RoomObjectMovement,
+    PrefetchHooks Function({bool roomObjectId})> {
+  $$RoomObjectMovementsTableTableManager(
+      _$AppDatabase db, $RoomObjectMovementsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RoomObjectMovementsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RoomObjectMovementsTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RoomObjectMovementsTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> roomObjectId = const Value.absent(),
+            Value<int> minDelay = const Value.absent(),
+            Value<int> maxDelay = const Value.absent(),
+            Value<MovingDirection> direction = const Value.absent(),
+            Value<int> distance = const Value.absent(),
+          }) =>
+              RoomObjectMovementsCompanion(
+            id: id,
+            roomObjectId: roomObjectId,
+            minDelay: minDelay,
+            maxDelay: maxDelay,
+            direction: direction,
+            distance: distance,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int roomObjectId,
+            Value<int> minDelay = const Value.absent(),
+            Value<int> maxDelay = const Value.absent(),
+            Value<MovingDirection> direction = const Value.absent(),
+            Value<int> distance = const Value.absent(),
+          }) =>
+              RoomObjectMovementsCompanion.insert(
+            id: id,
+            roomObjectId: roomObjectId,
+            minDelay: minDelay,
+            maxDelay: maxDelay,
+            direction: direction,
+            distance: distance,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$RoomObjectMovementsTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({roomObjectId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (roomObjectId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.roomObjectId,
+                    referencedTable: $$RoomObjectMovementsTableReferences
+                        ._roomObjectIdTable(db),
+                    referencedColumn: $$RoomObjectMovementsTableReferences
+                        ._roomObjectIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$RoomObjectMovementsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $RoomObjectMovementsTable,
+    RoomObjectMovement,
+    $$RoomObjectMovementsTableFilterComposer,
+    $$RoomObjectMovementsTableOrderingComposer,
+    $$RoomObjectMovementsTableAnnotationComposer,
+    $$RoomObjectMovementsTableCreateCompanionBuilder,
+    $$RoomObjectMovementsTableUpdateCompanionBuilder,
+    (RoomObjectMovement, $$RoomObjectMovementsTableReferences),
+    RoomObjectMovement,
+    PrefetchHooks Function({bool roomObjectId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -15021,4 +15794,6 @@ class $AppDatabaseManager {
   $$RoomObjectCommandCallersTableTableManager get roomObjectCommandCallers =>
       $$RoomObjectCommandCallersTableTableManager(
           _db, _db.roomObjectCommandCallers);
+  $$RoomObjectMovementsTableTableManager get roomObjectMovements =>
+      $$RoomObjectMovementsTableTableManager(_db, _db.roomObjectMovements);
 }

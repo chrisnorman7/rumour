@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:rumour_backend/_tables.dart';
 import 'package:rumour_backend/rumour_backend.dart';
@@ -26,6 +27,7 @@ part 'database.g.dart';
     Commands,
     CommandCallers,
     RoomObjectCommandCallers,
+    RoomObjectMovements,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -35,7 +37,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// The schema version.
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   /// Migrate the database.
   @override
@@ -72,6 +74,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 6) {
             await m.addColumn(this.rooms, this.rooms.onTeleportCommandCallerId);
+          }
+          if (from < 7) {
+            await m.createTable(this.roomObjectMovements);
           }
         },
       );

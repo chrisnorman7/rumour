@@ -68,3 +68,10 @@ mixin PlayerClassIdMixin on Table {
   IntColumn get playerClassId =>
       integer().references(PlayerClasses, #id, onDelete: KeyAction.cascade)();
 }
+
+/// Add a [roomObjectId] column.
+mixin RoomObjectIdMixin on Table {
+  /// The ID of a room object for this row.
+  IntColumn get roomObjectId =>
+      integer().references(RoomObjects, #id, onDelete: KeyAction.cascade)();
+}

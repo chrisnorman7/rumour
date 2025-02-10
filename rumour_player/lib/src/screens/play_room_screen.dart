@@ -490,13 +490,11 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
     } else {
       unawaited(ref.maybeRunCommandCaller(_room.onTeleportCommandCallerId));
     }
-    _player
-      ..roomId = destinationRoom.id
-      ..x = exit.x
-      ..y = exit.y;
+    _player.roomId = destinationRoom.id;
     _gamePlayerContext.save();
     stopPlayerMoving();
-    movingDirection = null;
+    _roomAmbianceHandle = null;
+    _roomObjectStates.clear();
     _approachedObjectIds.clear();
     setPlayerCoordinates(exit.coordinates);
     ref.invalidate(gamePlayerContextProvider(widget.playerId));
