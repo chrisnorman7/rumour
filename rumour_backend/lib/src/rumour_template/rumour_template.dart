@@ -46,22 +46,22 @@ class RumourTemplate<T> {
       RumourTemplateValue(
         name: 'name',
         description: 'The name of this object.',
-        getValue: (final value) => value.roomObject.name,
+        getValue: (final value) => value.roomObjectState.object.name,
       ),
       RumourTemplateValue(
         name: 'description',
         description: 'The description of this object.',
-        getValue: (final value) => value.roomObject.description,
+        getValue: (final value) => value.roomObjectState.object.description,
       ),
       RumourTemplateValue(
         name: 'x',
         description: 'The x coordinate of the object.',
-        getValue: (final value) => value.roomObject.x,
+        getValue: (final value) => value.roomObjectState.coordinates.x,
       ),
       RumourTemplateValue(
         name: 'y',
         description: 'The y coordinate of the object.',
-        getValue: (final value) => value.roomObject.y,
+        getValue: (final value) => value.roomObjectState.coordinates.y,
       ),
       RumourTemplateValue(
         name: 'north',
