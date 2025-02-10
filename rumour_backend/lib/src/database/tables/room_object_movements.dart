@@ -22,4 +22,10 @@ class RoomObjectMovements extends Table with IdMixin, RoomObjectIdMixin {
 
   /// The distance to travel in [direction].
   IntColumn get distance => integer().withDefault(const Constant(1))();
+
+  /// The ID of a command to run when this movement is made.
+  @ReferenceName('onMoveCommandCallers')
+  IntColumn get onMoveCommandCallerId => integer()
+      .references(CommandCallers, #id, onDelete: KeyAction.setNull)
+      .nullable()();
 }

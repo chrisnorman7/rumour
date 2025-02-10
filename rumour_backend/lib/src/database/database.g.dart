@@ -5909,9 +5909,25 @@ class $RoomObjectMovementsTable extends RoomObjectMovements
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(1));
+  static const VerificationMeta _onMoveCommandCallerIdMeta =
+      const VerificationMeta('onMoveCommandCallerId');
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, roomObjectId, minDelay, maxDelay, direction, distance];
+  late final GeneratedColumn<int> onMoveCommandCallerId = GeneratedColumn<int>(
+      'on_move_command_caller_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES command_callers (id) ON DELETE SET NULL'));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        roomObjectId,
+        minDelay,
+        maxDelay,
+        direction,
+        distance,
+        onMoveCommandCallerId
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -5946,6 +5962,12 @@ class $RoomObjectMovementsTable extends RoomObjectMovements
       context.handle(_distanceMeta,
           distance.isAcceptableOrUnknown(data['distance']!, _distanceMeta));
     }
+    if (data.containsKey('on_move_command_caller_id')) {
+      context.handle(
+          _onMoveCommandCallerIdMeta,
+          onMoveCommandCallerId.isAcceptableOrUnknown(
+              data['on_move_command_caller_id']!, _onMoveCommandCallerIdMeta));
+    }
     return context;
   }
 
@@ -5968,6 +5990,8 @@ class $RoomObjectMovementsTable extends RoomObjectMovements
               .read(DriftSqlType.int, data['${effectivePrefix}direction'])!),
       distance: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}distance'])!,
+      onMoveCommandCallerId: attachedDatabase.typeMapping.read(DriftSqlType.int,
+          data['${effectivePrefix}on_move_command_caller_id']),
     );
   }
 
@@ -6001,13 +6025,17 @@ class RoomObjectMovement extends DataClass
 
   /// The distance to travel in [direction].
   final int distance;
+
+  /// The ID of a command to run when this movement is made.
+  final int? onMoveCommandCallerId;
   const RoomObjectMovement(
       {required this.id,
       required this.roomObjectId,
       required this.minDelay,
       required this.maxDelay,
       required this.direction,
-      required this.distance});
+      required this.distance,
+      this.onMoveCommandCallerId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -6020,6 +6048,9 @@ class RoomObjectMovement extends DataClass
           $RoomObjectMovementsTable.$converterdirection.toSql(direction));
     }
     map['distance'] = Variable<int>(distance);
+    if (!nullToAbsent || onMoveCommandCallerId != null) {
+      map['on_move_command_caller_id'] = Variable<int>(onMoveCommandCallerId);
+    }
     return map;
   }
 
@@ -6031,6 +6062,9 @@ class RoomObjectMovement extends DataClass
       maxDelay: Value(maxDelay),
       direction: Value(direction),
       distance: Value(distance),
+      onMoveCommandCallerId: onMoveCommandCallerId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(onMoveCommandCallerId),
     );
   }
 
@@ -6045,6 +6079,8 @@ class RoomObjectMovement extends DataClass
       direction: $RoomObjectMovementsTable.$converterdirection
           .fromJson(serializer.fromJson<int>(json['direction'])),
       distance: serializer.fromJson<int>(json['distance']),
+      onMoveCommandCallerId:
+          serializer.fromJson<int?>(json['onMoveCommandCallerId']),
     );
   }
   @override
@@ -6058,6 +6094,7 @@ class RoomObjectMovement extends DataClass
       'direction': serializer.toJson<int>(
           $RoomObjectMovementsTable.$converterdirection.toJson(direction)),
       'distance': serializer.toJson<int>(distance),
+      'onMoveCommandCallerId': serializer.toJson<int?>(onMoveCommandCallerId),
     };
   }
 
@@ -6067,7 +6104,8 @@ class RoomObjectMovement extends DataClass
           int? minDelay,
           int? maxDelay,
           MovingDirection? direction,
-          int? distance}) =>
+          int? distance,
+          Value<int?> onMoveCommandCallerId = const Value.absent()}) =>
       RoomObjectMovement(
         id: id ?? this.id,
         roomObjectId: roomObjectId ?? this.roomObjectId,
@@ -6075,6 +6113,9 @@ class RoomObjectMovement extends DataClass
         maxDelay: maxDelay ?? this.maxDelay,
         direction: direction ?? this.direction,
         distance: distance ?? this.distance,
+        onMoveCommandCallerId: onMoveCommandCallerId.present
+            ? onMoveCommandCallerId.value
+            : this.onMoveCommandCallerId,
       );
   RoomObjectMovement copyWithCompanion(RoomObjectMovementsCompanion data) {
     return RoomObjectMovement(
@@ -6086,6 +6127,9 @@ class RoomObjectMovement extends DataClass
       maxDelay: data.maxDelay.present ? data.maxDelay.value : this.maxDelay,
       direction: data.direction.present ? data.direction.value : this.direction,
       distance: data.distance.present ? data.distance.value : this.distance,
+      onMoveCommandCallerId: data.onMoveCommandCallerId.present
+          ? data.onMoveCommandCallerId.value
+          : this.onMoveCommandCallerId,
     );
   }
 
@@ -6097,14 +6141,15 @@ class RoomObjectMovement extends DataClass
           ..write('minDelay: $minDelay, ')
           ..write('maxDelay: $maxDelay, ')
           ..write('direction: $direction, ')
-          ..write('distance: $distance')
+          ..write('distance: $distance, ')
+          ..write('onMoveCommandCallerId: $onMoveCommandCallerId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, roomObjectId, minDelay, maxDelay, direction, distance);
+  int get hashCode => Object.hash(id, roomObjectId, minDelay, maxDelay,
+      direction, distance, onMoveCommandCallerId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -6114,7 +6159,8 @@ class RoomObjectMovement extends DataClass
           other.minDelay == this.minDelay &&
           other.maxDelay == this.maxDelay &&
           other.direction == this.direction &&
-          other.distance == this.distance);
+          other.distance == this.distance &&
+          other.onMoveCommandCallerId == this.onMoveCommandCallerId);
 }
 
 class RoomObjectMovementsCompanion extends UpdateCompanion<RoomObjectMovement> {
@@ -6124,6 +6170,7 @@ class RoomObjectMovementsCompanion extends UpdateCompanion<RoomObjectMovement> {
   final Value<int> maxDelay;
   final Value<MovingDirection> direction;
   final Value<int> distance;
+  final Value<int?> onMoveCommandCallerId;
   const RoomObjectMovementsCompanion({
     this.id = const Value.absent(),
     this.roomObjectId = const Value.absent(),
@@ -6131,6 +6178,7 @@ class RoomObjectMovementsCompanion extends UpdateCompanion<RoomObjectMovement> {
     this.maxDelay = const Value.absent(),
     this.direction = const Value.absent(),
     this.distance = const Value.absent(),
+    this.onMoveCommandCallerId = const Value.absent(),
   });
   RoomObjectMovementsCompanion.insert({
     this.id = const Value.absent(),
@@ -6139,6 +6187,7 @@ class RoomObjectMovementsCompanion extends UpdateCompanion<RoomObjectMovement> {
     this.maxDelay = const Value.absent(),
     this.direction = const Value.absent(),
     this.distance = const Value.absent(),
+    this.onMoveCommandCallerId = const Value.absent(),
   }) : roomObjectId = Value(roomObjectId);
   static Insertable<RoomObjectMovement> custom({
     Expression<int>? id,
@@ -6147,6 +6196,7 @@ class RoomObjectMovementsCompanion extends UpdateCompanion<RoomObjectMovement> {
     Expression<int>? maxDelay,
     Expression<int>? direction,
     Expression<int>? distance,
+    Expression<int>? onMoveCommandCallerId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -6155,6 +6205,8 @@ class RoomObjectMovementsCompanion extends UpdateCompanion<RoomObjectMovement> {
       if (maxDelay != null) 'max_delay': maxDelay,
       if (direction != null) 'direction': direction,
       if (distance != null) 'distance': distance,
+      if (onMoveCommandCallerId != null)
+        'on_move_command_caller_id': onMoveCommandCallerId,
     });
   }
 
@@ -6164,7 +6216,8 @@ class RoomObjectMovementsCompanion extends UpdateCompanion<RoomObjectMovement> {
       Value<int>? minDelay,
       Value<int>? maxDelay,
       Value<MovingDirection>? direction,
-      Value<int>? distance}) {
+      Value<int>? distance,
+      Value<int?>? onMoveCommandCallerId}) {
     return RoomObjectMovementsCompanion(
       id: id ?? this.id,
       roomObjectId: roomObjectId ?? this.roomObjectId,
@@ -6172,6 +6225,8 @@ class RoomObjectMovementsCompanion extends UpdateCompanion<RoomObjectMovement> {
       maxDelay: maxDelay ?? this.maxDelay,
       direction: direction ?? this.direction,
       distance: distance ?? this.distance,
+      onMoveCommandCallerId:
+          onMoveCommandCallerId ?? this.onMoveCommandCallerId,
     );
   }
 
@@ -6197,6 +6252,10 @@ class RoomObjectMovementsCompanion extends UpdateCompanion<RoomObjectMovement> {
     if (distance.present) {
       map['distance'] = Variable<int>(distance.value);
     }
+    if (onMoveCommandCallerId.present) {
+      map['on_move_command_caller_id'] =
+          Variable<int>(onMoveCommandCallerId.value);
+    }
     return map;
   }
 
@@ -6208,7 +6267,8 @@ class RoomObjectMovementsCompanion extends UpdateCompanion<RoomObjectMovement> {
           ..write('minDelay: $minDelay, ')
           ..write('maxDelay: $maxDelay, ')
           ..write('direction: $direction, ')
-          ..write('distance: $distance')
+          ..write('distance: $distance, ')
+          ..write('onMoveCommandCallerId: $onMoveCommandCallerId')
           ..write(')'))
         .toString();
   }
@@ -6484,6 +6544,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.delete),
             result: [
               TableUpdate('room_object_movements', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('command_callers',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('room_object_movements', kind: UpdateKind.update),
             ],
           ),
         ],
@@ -9224,6 +9291,25 @@ final class $$CommandCallersTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$RoomObjectMovementsTable,
+      List<RoomObjectMovement>> _onMoveCommandCallersTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.roomObjectMovements,
+          aliasName: $_aliasNameGenerator(db.commandCallers.id,
+              db.roomObjectMovements.onMoveCommandCallerId));
+
+  $$RoomObjectMovementsTableProcessedTableManager get onMoveCommandCallers {
+    final manager =
+        $$RoomObjectMovementsTableTableManager($_db, $_db.roomObjectMovements)
+            .filter((f) =>
+                f.onMoveCommandCallerId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_onMoveCommandCallersTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$CommandCallersTableFilterComposer
@@ -9406,6 +9492,27 @@ class $$CommandCallersTableFilterComposer
                   $removeJoinBuilderFromRootComposer:
                       $removeJoinBuilderFromRootComposer,
                 ));
+    return f(composer);
+  }
+
+  Expression<bool> onMoveCommandCallers(
+      Expression<bool> Function($$RoomObjectMovementsTableFilterComposer f) f) {
+    final $$RoomObjectMovementsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.roomObjectMovements,
+        getReferencedColumn: (t) => t.onMoveCommandCallerId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoomObjectMovementsTableFilterComposer(
+              $db: $db,
+              $table: $db.roomObjectMovements,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
     return f(composer);
   }
 }
@@ -9649,6 +9756,29 @@ class $$CommandCallersTableAnnotationComposer
                 ));
     return f(composer);
   }
+
+  Expression<T> onMoveCommandCallers<T extends Object>(
+      Expression<T> Function($$RoomObjectMovementsTableAnnotationComposer a)
+          f) {
+    final $$RoomObjectMovementsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.roomObjectMovements,
+            getReferencedColumn: (t) => t.onMoveCommandCallerId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$RoomObjectMovementsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.roomObjectMovements,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 }
 
 class $$CommandCallersTableTableManager extends RootTableManager<
@@ -9670,7 +9800,8 @@ class $$CommandCallersTableTableManager extends RootTableManager<
         bool onTeleportCommandCallers,
         bool onApproachCommandCallers,
         bool onLeaveCommandCallers,
-        bool roomObjectCommandCallersRefs})> {
+        bool roomObjectCommandCallersRefs,
+        bool onMoveCommandCallers})> {
   $$CommandCallersTableTableManager(
       _$AppDatabase db, $CommandCallersTable table)
       : super(TableManagerState(
@@ -9720,7 +9851,8 @@ class $$CommandCallersTableTableManager extends RootTableManager<
               onTeleportCommandCallers = false,
               onApproachCommandCallers = false,
               onLeaveCommandCallers = false,
-              roomObjectCommandCallersRefs = false}) {
+              roomObjectCommandCallersRefs = false,
+              onMoveCommandCallers = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
@@ -9729,7 +9861,8 @@ class $$CommandCallersTableTableManager extends RootTableManager<
                 if (onTeleportCommandCallers) db.rooms,
                 if (onApproachCommandCallers) db.roomObjects,
                 if (onLeaveCommandCallers) db.roomObjects,
-                if (roomObjectCommandCallersRefs) db.roomObjectCommandCallers
+                if (roomObjectCommandCallersRefs) db.roomObjectCommandCallers,
+                if (onMoveCommandCallers) db.roomObjectMovements
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -9848,6 +9981,19 @@ class $$CommandCallersTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.commandCallerId == item.id),
+                        typedResults: items),
+                  if (onMoveCommandCallers)
+                    await $_getPrefetchedData<CommandCaller,
+                            $CommandCallersTable, RoomObjectMovement>(
+                        currentTable: table,
+                        referencedTable: $$CommandCallersTableReferences
+                            ._onMoveCommandCallersTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CommandCallersTableReferences(db, table, p0)
+                                .onMoveCommandCallers,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems.where(
+                                (e) => e.onMoveCommandCallerId == item.id),
                         typedResults: items)
                 ];
               },
@@ -9875,7 +10021,8 @@ typedef $$CommandCallersTableProcessedTableManager = ProcessedTableManager<
         bool onTeleportCommandCallers,
         bool onApproachCommandCallers,
         bool onLeaveCommandCallers,
-        bool roomObjectCommandCallersRefs})>;
+        bool roomObjectCommandCallersRefs,
+        bool onMoveCommandCallers})>;
 typedef $$RoomsTableCreateCompanionBuilder = RoomsCompanion Function({
   Value<int> id,
   required String name,
@@ -15475,6 +15622,7 @@ typedef $$RoomObjectMovementsTableCreateCompanionBuilder
   Value<int> maxDelay,
   Value<MovingDirection> direction,
   Value<int> distance,
+  Value<int?> onMoveCommandCallerId,
 });
 typedef $$RoomObjectMovementsTableUpdateCompanionBuilder
     = RoomObjectMovementsCompanion Function({
@@ -15484,6 +15632,7 @@ typedef $$RoomObjectMovementsTableUpdateCompanionBuilder
   Value<int> maxDelay,
   Value<MovingDirection> direction,
   Value<int> distance,
+  Value<int?> onMoveCommandCallerId,
 });
 
 final class $$RoomObjectMovementsTableReferences extends BaseReferences<
@@ -15501,6 +15650,22 @@ final class $$RoomObjectMovementsTableReferences extends BaseReferences<
     final manager = $$RoomObjectsTableTableManager($_db, $_db.roomObjects)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_roomObjectIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $CommandCallersTable _onMoveCommandCallerIdTable(_$AppDatabase db) =>
+      db.commandCallers.createAlias($_aliasNameGenerator(
+          db.roomObjectMovements.onMoveCommandCallerId, db.commandCallers.id));
+
+  $$CommandCallersTableProcessedTableManager? get onMoveCommandCallerId {
+    final $_column = $_itemColumn<int>('on_move_command_caller_id');
+    if ($_column == null) return null;
+    final manager = $$CommandCallersTableTableManager($_db, $_db.commandCallers)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item =
+        $_typedResult.readTableOrNull(_onMoveCommandCallerIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
@@ -15545,6 +15710,26 @@ class $$RoomObjectMovementsTableFilterComposer
             $$RoomObjectsTableFilterComposer(
               $db: $db,
               $table: $db.roomObjects,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$CommandCallersTableFilterComposer get onMoveCommandCallerId {
+    final $$CommandCallersTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.onMoveCommandCallerId,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableFilterComposer(
+              $db: $db,
+              $table: $db.commandCallers,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -15597,6 +15782,26 @@ class $$RoomObjectMovementsTableOrderingComposer
             ));
     return composer;
   }
+
+  $$CommandCallersTableOrderingComposer get onMoveCommandCallerId {
+    final $$CommandCallersTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.onMoveCommandCallerId,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableOrderingComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$RoomObjectMovementsTableAnnotationComposer
@@ -15642,6 +15847,26 @@ class $$RoomObjectMovementsTableAnnotationComposer
             ));
     return composer;
   }
+
+  $$CommandCallersTableAnnotationComposer get onMoveCommandCallerId {
+    final $$CommandCallersTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.onMoveCommandCallerId,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableAnnotationComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$RoomObjectMovementsTableTableManager extends RootTableManager<
@@ -15655,7 +15880,7 @@ class $$RoomObjectMovementsTableTableManager extends RootTableManager<
     $$RoomObjectMovementsTableUpdateCompanionBuilder,
     (RoomObjectMovement, $$RoomObjectMovementsTableReferences),
     RoomObjectMovement,
-    PrefetchHooks Function({bool roomObjectId})> {
+    PrefetchHooks Function({bool roomObjectId, bool onMoveCommandCallerId})> {
   $$RoomObjectMovementsTableTableManager(
       _$AppDatabase db, $RoomObjectMovementsTable table)
       : super(TableManagerState(
@@ -15676,6 +15901,7 @@ class $$RoomObjectMovementsTableTableManager extends RootTableManager<
             Value<int> maxDelay = const Value.absent(),
             Value<MovingDirection> direction = const Value.absent(),
             Value<int> distance = const Value.absent(),
+            Value<int?> onMoveCommandCallerId = const Value.absent(),
           }) =>
               RoomObjectMovementsCompanion(
             id: id,
@@ -15684,6 +15910,7 @@ class $$RoomObjectMovementsTableTableManager extends RootTableManager<
             maxDelay: maxDelay,
             direction: direction,
             distance: distance,
+            onMoveCommandCallerId: onMoveCommandCallerId,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -15692,6 +15919,7 @@ class $$RoomObjectMovementsTableTableManager extends RootTableManager<
             Value<int> maxDelay = const Value.absent(),
             Value<MovingDirection> direction = const Value.absent(),
             Value<int> distance = const Value.absent(),
+            Value<int?> onMoveCommandCallerId = const Value.absent(),
           }) =>
               RoomObjectMovementsCompanion.insert(
             id: id,
@@ -15700,6 +15928,7 @@ class $$RoomObjectMovementsTableTableManager extends RootTableManager<
             maxDelay: maxDelay,
             direction: direction,
             distance: distance,
+            onMoveCommandCallerId: onMoveCommandCallerId,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (
@@ -15707,7 +15936,8 @@ class $$RoomObjectMovementsTableTableManager extends RootTableManager<
                     $$RoomObjectMovementsTableReferences(db, table, e)
                   ))
               .toList(),
-          prefetchHooksCallback: ({roomObjectId = false}) {
+          prefetchHooksCallback: (
+              {roomObjectId = false, onMoveCommandCallerId = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -15735,6 +15965,17 @@ class $$RoomObjectMovementsTableTableManager extends RootTableManager<
                         .id,
                   ) as T;
                 }
+                if (onMoveCommandCallerId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.onMoveCommandCallerId,
+                    referencedTable: $$RoomObjectMovementsTableReferences
+                        ._onMoveCommandCallerIdTable(db),
+                    referencedColumn: $$RoomObjectMovementsTableReferences
+                        ._onMoveCommandCallerIdTable(db)
+                        .id,
+                  ) as T;
+                }
 
                 return state;
               },
@@ -15757,7 +15998,7 @@ typedef $$RoomObjectMovementsTableProcessedTableManager = ProcessedTableManager<
     $$RoomObjectMovementsTableUpdateCompanionBuilder,
     (RoomObjectMovement, $$RoomObjectMovementsTableReferences),
     RoomObjectMovement,
-    PrefetchHooks Function({bool roomObjectId})>;
+    PrefetchHooks Function({bool roomObjectId, bool onMoveCommandCallerId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
