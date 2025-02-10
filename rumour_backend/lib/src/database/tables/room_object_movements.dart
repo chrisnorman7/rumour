@@ -9,11 +9,11 @@ import 'package:rumour_backend/rumour_backend.dart';
 class RoomObjectMovements extends Table with IdMixin, RoomObjectIdMixin {
   /// The minimum number of milliseconds to wait before performing this
   /// movement.
-  IntColumn get minDelay => integer().withDefault(const Constant(500))();
+  IntColumn get minDelay => integer().withDefault(const Constant(2000))();
 
   /// The maximum number of milliseconds to wait before performing this
   /// movement.
-  IntColumn get maxDelay => integer().withDefault(const Constant(1000))();
+  IntColumn get maxDelay => integer().withDefault(const Constant(5000))();
 
   /// The direction to travel.
   IntColumn get direction => intEnum<MovingDirection>().withDefault(

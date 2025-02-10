@@ -37,7 +37,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// The schema version.
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   /// Migrate the database.
   @override
@@ -77,6 +77,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 7) {
             await m.createTable(this.roomObjectMovements);
+          }
+          if (from < 8) {
+            await m.alterTable(TableMigration(this.roomObjectMovements));
           }
         },
       );

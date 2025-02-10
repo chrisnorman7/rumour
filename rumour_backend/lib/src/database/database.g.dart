@@ -5882,7 +5882,7 @@ class $RoomObjectMovementsTable extends RoomObjectMovements
       'min_delay', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultValue: const Constant(500));
+      defaultValue: const Constant(2000));
   static const VerificationMeta _maxDelayMeta =
       const VerificationMeta('maxDelay');
   @override
@@ -5890,7 +5890,7 @@ class $RoomObjectMovementsTable extends RoomObjectMovements
       'max_delay', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultValue: const Constant(1000));
+      defaultValue: const Constant(5000));
   static const VerificationMeta _directionMeta =
       const VerificationMeta('direction');
   @override
