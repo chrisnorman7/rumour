@@ -475,10 +475,8 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
 
   /// Move the player through [exit].
   FutureOr<void> handleRoomExit(final RoomExit exit) async {
-    await ref.maybePlaySoundReference(
-      soundReference: await projectContext.maybeGetSoundReference(
-        exit.useSoundId,
-      ),
+    await ref.maybePlaySoundReferenceId(
+      id: exit.useSoundId,
       destroy: true,
     );
     final destinationRoom = await ref.read(
