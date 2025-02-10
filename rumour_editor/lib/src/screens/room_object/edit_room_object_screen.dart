@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_editor/rumour_editor.dart';
 import 'package:rumour_editor/src/screens/room_object/tabs/room_object_random_sounds_tab.dart';
+import 'package:rumour_editor/src/screens/room_object_movement/edit_room_object_movement.dart';
 
 /// A screen for editing a room object.
 class EditRoomObjectScreen extends ConsumerWidget {
@@ -45,6 +46,17 @@ class EditRoomObjectScreen extends ConsumerWidget {
           ),
           floatingActionButton: NewButton(
             onPressed: () => _createRandomSound(ref),
+          ),
+        ),
+        TabbedScaffoldTab(
+          title: 'Movements',
+          icon: const Text('Any movements performed by this object'),
+          child: CommonShortcuts(
+            newCallback: () => _createRoomObjectMovement(ref),
+            child: RoomObjectMovementsTab(roomObjectId: roomObjectId),
+          ),
+          floatingActionButton: NewButton(
+            onPressed: () => _createRoomObjectMovement(ref),
           ),
         ),
         TabbedScaffoldTab(
@@ -109,6 +121,20 @@ class EditRoomObjectScreen extends ConsumerWidget {
         (_) => EditRoomObjectCommandCallerScreen(
           roomObjectCommandCallerId: roomObjectCommand.id,
         ),
+      );
+    }
+  }
+
+  /// Create a new room object movement.
+  Future<void> _createRoomObjectMovement(final WidgetRef ref) async {
+    final database = ref.read(databaseProvider);
+    final movement = await database.managers.roomObjectMovements
+        .createReturning((final o) => o(roomObjectId: roomObjectId));
+    ref.invalidate(roomObjectMovementsProvider(roomObjectId));
+    final context = ref.context;
+    if (context.mounted) {
+      await context.pushWidgetBuilder(
+        (_) => EditRoomObjectMovement(roomObjectMovementId: movement.id),
       );
     }
   }
