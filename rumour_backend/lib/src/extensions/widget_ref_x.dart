@@ -9,19 +9,25 @@ import 'package:url_launcher/url_launcher.dart';
 /// Useful extensions for [WidgetRef]s.
 extension WidgetRefX on WidgetRef {
   /// Run a [CommandCaller] by its [id].
-  Future<void> runCommandCaller(final int id) async {
+  Future<void> runCommandCaller(
+    final int id, {
+    final SoundPosition position = unpanned,
+  }) async {
     final caller = await read(commandCallerProvider(id).future);
     final callAfter = caller.callAfter;
     if (callAfter != null) {
       await Future<void>.delayed(callAfter.seconds);
     }
     if (context.mounted) {
-      return runCommand(caller.childCommandId);
+      return runCommand(caller.childCommandId, position: position);
     }
   }
 
   /// Call a command by its [id].
-  Future<void> runCommand(final int id) async {
+  Future<void> runCommand(
+    final int id, {
+    final SoundPosition position = unpanned,
+  }) async {
     final command = await read(commandProvider(id).future);
     if (context.mounted) {
       final spokenMessage = command.spokenMessage;
@@ -32,20 +38,11 @@ extension WidgetRefX on WidgetRef {
       if (url != null) {
         await launchUrl(Uri.parse(url));
       }
-      final soundId = command.soundId;
-      if (soundId != null) {
-        final projectContext = read(projectContextProvider);
-        final soundReference =
-            await read(soundReferenceProvider(soundId).future);
-        if (context.mounted) {
-          await context.playSound(
-            projectContext.getSound(
-              soundReference: soundReference,
-              destroy: true,
-            ),
-          );
-        }
-      }
+      await maybePlaySoundReferenceId(
+        id: command.soundId,
+        destroy: true,
+        position: position,
+      );
       final possibleCommandCaller = await read(
         commandCallerFromParentCommandIdProvider(id).future,
       );
@@ -108,10 +105,13 @@ extension WidgetRefX on WidgetRef {
   /// Possibly run the command caller with the given [id].
   ///
   /// If [id] is `null`, nothing will happen.
-  Future<void> maybeRunCommandCaller(final int? id) async {
+  Future<void> maybeRunCommandCaller(
+    final int? id, {
+    final SoundPosition position = unpanned,
+  }) async {
     if (id == null) {
       return;
     }
-    return runCommandCaller(id);
+    return runCommandCaller(id, position: position);
   }
 }
