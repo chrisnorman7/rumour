@@ -65,7 +65,7 @@ extension WidgetRefX on WidgetRef {
     final Duration loopingStart = Duration.zero,
     final bool paused = false,
     final SoundPosition position = unpanned,
-  }) {
+  }) async {
     if (context.mounted) {
       final projectContext = read(projectContextProvider);
       return context.maybePlaySound(
@@ -79,7 +79,30 @@ extension WidgetRefX on WidgetRef {
         ),
       );
     }
-    return Future.value();
+    return null;
+  }
+
+  /// Maybe play a [SoundReference] with the given [id].
+  Future<SoundHandle?> maybePlaySoundReferenceId({
+    required final int? id,
+    required final bool destroy,
+    final bool looping = false,
+    final Duration loopingStart = Duration.zero,
+    final bool paused = false,
+    final SoundPosition position = unpanned,
+  }) async {
+    if (id != null) {
+      final soundReference = await read(soundReferenceProvider(id).future);
+      return maybePlaySoundReference(
+        soundReference: soundReference,
+        destroy: destroy,
+        looping: looping,
+        loopingStart: loopingStart,
+        paused: paused,
+        position: position,
+      );
+    }
+    return null;
   }
 
   /// Possibly run the command caller with the given [id].
