@@ -96,6 +96,20 @@ class RoomObjectMovementsTab extends ConsumerWidget {
                     },
                     checked: movement.direction == direction,
                   ),
+                PerformableAction(
+                  name: 'Delete',
+                  invoke:
+                      () => context.showConfirmMessage(
+                        title: confirmDeleteTitle,
+                        yesCallback: () async {
+                          await query.delete();
+                          ref.invalidate(
+                            roomObjectMovementsProvider(roomObjectId),
+                          );
+                        },
+                      ),
+                  activator: deleteShortcut,
+                ),
               ],
               title: Text(movement.direction.name),
               subtitle: Text('$units to $pointString'),
