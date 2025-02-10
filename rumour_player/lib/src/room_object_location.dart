@@ -1,53 +1,55 @@
 import 'dart:math';
 
-import 'package:rumour_backend/rumour_backend.dart';
+import 'package:rumour_player/rumour_player.dart';
 
-/// A class which gives the relative location of a [roomObject] to the player.
+/// A class which gives the relative location of [roomObjectState] to the
+/// player.
 class RoomObjectLocation {
   /// Create an instance.
   const RoomObjectLocation({
-    required this.roomObject,
+    required this.roomObjectState,
     required this.playerCoordinates,
   });
 
   /// The room object to use.
-  final RoomObject roomObject;
+  final RoomObjectState roomObjectState;
 
   /// The coordinates of the player.
   final Point<int> playerCoordinates;
 
-  /// How many units north [roomObject] is from [playerCoordinates].
+  /// How many units north [roomObjectState] is from [playerCoordinates].
   int get north {
-    if (playerCoordinates.y < roomObject.y) {
-      return roomObject.y - playerCoordinates.y;
+    if (playerCoordinates.y < roomObjectState.coordinates.y) {
+      return roomObjectState.coordinates.y - playerCoordinates.y;
     }
     return 0;
   }
 
-  /// How many units south [roomObject] is from [playerCoordinates].
+  /// How many units south [roomObjectState] is from [playerCoordinates].
   int get south {
-    if (playerCoordinates.y > roomObject.y) {
-      return playerCoordinates.y - roomObject.y;
+    if (playerCoordinates.y > roomObjectState.coordinates.y) {
+      return playerCoordinates.y - roomObjectState.coordinates.y;
     }
     return 0;
   }
 
-  /// How many units east [roomObject] is from [playerCoordinates].
+  /// How many units east [roomObjectState] is from [playerCoordinates].
   int get east {
-    if (playerCoordinates.x < roomObject.x) {
-      return roomObject.x - playerCoordinates.x;
+    if (playerCoordinates.x < roomObjectState.coordinates.x) {
+      return roomObjectState.coordinates.x - playerCoordinates.x;
     }
     return 0;
   }
 
-  /// How many units west [roomObject] is from [playerCoordinates].
+  /// How many units west [roomObjectState] is from [playerCoordinates].
   int get west {
-    if (playerCoordinates.x > roomObject.x) {
-      return playerCoordinates.x - roomObject.x;
+    if (playerCoordinates.x > roomObjectState.coordinates.x) {
+      return playerCoordinates.x - roomObjectState.coordinates.x;
     }
     return 0;
   }
 
-  /// The distance between [roomObject] and [playerCoordinates].
-  double get distance => playerCoordinates.distanceTo(roomObject.coordinates);
+  /// The distance between [roomObjectState] and [playerCoordinates].
+  double get distance =>
+      playerCoordinates.distanceTo(roomObjectState.coordinates);
 }

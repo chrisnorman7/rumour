@@ -565,7 +565,9 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
       rumourTemplate: RumourTemplate.roomObjectTemplate,
       string: project.examineRoomObjectFormat,
       value: RoomObjectLocation(
-        roomObject: object,
+        roomObjectState: _roomObjectStates.firstWhere(
+          (final s) => s.object.id == object.id,
+        ),
         playerCoordinates: coordinates,
       ),
     );
