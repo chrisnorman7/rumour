@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_player/rumour_player.dart';
+import 'package:rumour_player/src/widgets/move_room_objects.dart';
 
 /// The type for a room objects loader widget builder.
 typedef RoomObjectsLoaderBuilder = Widget Function(
@@ -134,19 +135,25 @@ class _RoomObjectsLoader extends ConsumerWidget {
             final extraHandles = handles.length >= roomObjectAmbiances.length
                 ? handles.sublist(roomObjectAmbiances.length)
                 : <SoundHandle>[];
-            return Builder(
-              builder: (final context) {
-                try {
-                  return builder(
-                    context,
-                    states,
-                    extraHandles,
-                  );
-                  // ignore: avoid_catches_without_on_clauses
-                } catch (e, s) {
-                  return error(e, s);
-                }
-              },
+            return MoveRoomObjects(
+              roomId: roomId,
+              roomObjectStates: states,
+              loading: loading,
+              error: error,
+              child: Builder(
+                builder: (final context) {
+                  try {
+                    return builder(
+                      context,
+                      states,
+                      extraHandles,
+                    );
+                    // ignore: avoid_catches_without_on_clauses
+                  } catch (e, s) {
+                    return error(e, s);
+                  }
+                },
+              ),
             );
           },
           error: error,

@@ -1040,3 +1040,21 @@ Future<RoomObjectMovement> roomObjectMovement(
       .filter((final f) => f.id.equals(id))
       .getSingle();
 }
+
+/// Provide all the room object movements in a given room.
+@riverpod
+Future<List<List<RoomObjectMovement>>> objectMovementsInRoom(
+  final Ref ref,
+  final int roomId,
+) async {
+  final objects = await ref.watch(
+    objectsInRoomProvider(roomId).future,
+  );
+  final movements = <List<RoomObjectMovement>>[];
+  for (final object in objects) {
+    movements.add(
+      await ref.watch(roomObjectMovementsProvider(object.id).future),
+    );
+  }
+  return movements;
+}
