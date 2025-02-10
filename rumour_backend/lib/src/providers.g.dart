@@ -1617,6 +1617,156 @@ class _RoomObjectAmbiancesProviderElement
   int get roomId => (origin as RoomObjectAmbiancesProvider).roomId;
 }
 
+String _$roomAmbiancesHash() => r'e82492c812484204a04bf3c377fdfde97e4deae1';
+
+/// Provide all sounds for a room.
+///
+///
+/// Copied from [roomAmbiances].
+@ProviderFor(roomAmbiances)
+const roomAmbiancesProvider = RoomAmbiancesFamily();
+
+/// Provide all sounds for a room.
+///
+///
+/// Copied from [roomAmbiances].
+class RoomAmbiancesFamily extends Family<AsyncValue<RoomAmbiancesContext>> {
+  /// Provide all sounds for a room.
+  ///
+  ///
+  /// Copied from [roomAmbiances].
+  const RoomAmbiancesFamily();
+
+  /// Provide all sounds for a room.
+  ///
+  ///
+  /// Copied from [roomAmbiances].
+  RoomAmbiancesProvider call(
+    int roomId,
+  ) {
+    return RoomAmbiancesProvider(
+      roomId,
+    );
+  }
+
+  @override
+  RoomAmbiancesProvider getProviderOverride(
+    covariant RoomAmbiancesProvider provider,
+  ) {
+    return call(
+      provider.roomId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'roomAmbiancesProvider';
+}
+
+/// Provide all sounds for a room.
+///
+///
+/// Copied from [roomAmbiances].
+class RoomAmbiancesProvider
+    extends AutoDisposeFutureProvider<RoomAmbiancesContext> {
+  /// Provide all sounds for a room.
+  ///
+  ///
+  /// Copied from [roomAmbiances].
+  RoomAmbiancesProvider(
+    int roomId,
+  ) : this._internal(
+          (ref) => roomAmbiances(
+            ref as RoomAmbiancesRef,
+            roomId,
+          ),
+          from: roomAmbiancesProvider,
+          name: r'roomAmbiancesProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$roomAmbiancesHash,
+          dependencies: RoomAmbiancesFamily._dependencies,
+          allTransitiveDependencies:
+              RoomAmbiancesFamily._allTransitiveDependencies,
+          roomId: roomId,
+        );
+
+  RoomAmbiancesProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.roomId,
+  }) : super.internal();
+
+  final int roomId;
+
+  @override
+  Override overrideWith(
+    FutureOr<RoomAmbiancesContext> Function(RoomAmbiancesRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: RoomAmbiancesProvider._internal(
+        (ref) => create(ref as RoomAmbiancesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        roomId: roomId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<RoomAmbiancesContext> createElement() {
+    return _RoomAmbiancesProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RoomAmbiancesProvider && other.roomId == roomId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, roomId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin RoomAmbiancesRef on AutoDisposeFutureProviderRef<RoomAmbiancesContext> {
+  /// The parameter `roomId` of this provider.
+  int get roomId;
+}
+
+class _RoomAmbiancesProviderElement
+    extends AutoDisposeFutureProviderElement<RoomAmbiancesContext>
+    with RoomAmbiancesRef {
+  _RoomAmbiancesProviderElement(super.provider);
+
+  @override
+  int get roomId => (origin as RoomAmbiancesProvider).roomId;
+}
+
 String _$roomObjectContextHash() => r'a5495d7d1b3b8b196e272f99e6d0e9f8b678ea57';
 
 /// Provide a room object context.

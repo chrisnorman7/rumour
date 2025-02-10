@@ -19,17 +19,14 @@ class RoomObjectsLoader extends ConsumerWidget {
   /// Create an instance.
   const RoomObjectsLoader({
     required this.roomId,
-    required this.extraAmbiances,
     required this.error,
     required this.loading,
     required this.builder,
+    super.key,
   });
 
   /// The ID of the room to use.
   final int roomId;
-
-  /// Any extra ambiances to add.
-  final List<Sound> extraAmbiances;
 
   /// The function to call to show an error.
   final ErrorWidgetCallback error;
@@ -43,13 +40,56 @@ class RoomObjectsLoader extends ConsumerWidget {
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
+    final roomObjectsValue = ref.watch(objectsInRoomProvider(roomId));
+    return roomObjectsValue.when(
+      data: (final objects) => _RoomObjectsLoader(
+        roomId: roomId,
+        objects: objects,
+        builder: builder,
+        error: error,
+        loading: loading,
+      ),
+      error: error,
+      loading: loading,
+    );
+  }
+}
+
+class _RoomObjectsLoader extends ConsumerWidget {
+  const _RoomObjectsLoader({
+    required this.roomId,
+    required this.objects,
+    required this.error,
+    required this.loading,
+    required this.builder,
+  });
+
+  /// The ID of the room to use.
+  final int roomId;
+
+  /// The objects to use.
+  final List<RoomObject> objects;
+
+  /// The function to show an error widget.
+  final ErrorWidgetCallback error;
+
+  /// The function to use to show a loading widget.
+  final Widget Function() loading;
+
+  /// The builder to use.
+  final RoomObjectsLoaderBuilder builder;
+
+  @override
+  Widget build(final BuildContext context, final WidgetRef ref) {
     final projectContext = ref.watch(projectContextProvider);
     final project = projectContext.project;
-    final value = ref.watch(roomObjectAmbiancesProvider(roomId));
-    return value.when(
-      data: (final soundReferences) {
-        final sounds = [
-          ...soundReferences.map(
+    final roomAmbiancesValue = ref.watch(roomAmbiancesProvider(roomId));
+    return roomAmbiancesValue.when(
+      data: (final roomAmbiancesContext) {
+        final roomAmbiance = roomAmbiancesContext.roomAmbiance;
+        final roomObjectAmbiances = roomAmbiancesContext.roomObjectAmbiances;
+        final sounds = <Sound>[
+          ...roomObjectAmbiances.map(
             (final soundReference) => projectContext.getSound(
               soundReference: soundReference.soundReference,
               destroy: false,
@@ -57,61 +97,56 @@ class RoomObjectsLoader extends ConsumerWidget {
               position: soundReference.position,
             ),
           ),
-          ...extraAmbiances,
+          if (roomAmbiance != null)
+            projectContext.getSound(
+              soundReference: roomAmbiance,
+              destroy: false,
+              looping: true,
+            ),
         ];
-        print('RoomObjectsLoader.');
         return AmbiancesBuilder(
           ambiances: sounds,
           fadeInTime: project.mainMenuMusicFadeIn,
           fadeOutTime: project.mainMenuMusicFadeOut,
           builder: (final context, final handles) {
-            print('AmbiancesBuilder.');
-            final value = ref.watch(objectsInRoomProvider(roomId));
-            return value.when(
-              data: (final objects) {
-                print(
-                  'RoomObjectsLoader ${objects.map((final object) => '${object.name} (#${object.id})').join(', ')}.',
-                );
-                final states = <RoomObjectState>[];
-                var i = 0;
-                for (final object in objects) {
-                  final ambiance =
-                      object.ambianceId == null ? null : soundReferences[i];
-                  final ambianceHandle =
-                      object.ambianceId == null ? null : handles[i];
-                  if (ambianceHandle != null) {
-                    i++;
-                  }
-                  states.add(
-                    RoomObjectState(
-                      object: object,
-                      ambiance: ambiance?.soundReference,
-                      ambianceHandle: ambianceHandle,
-                    ),
+            final states = <RoomObjectState>[];
+            var i = 0;
+            for (final object in objects) {
+              final ambianceId = object.ambianceId;
+              final SoundReference? ambiance;
+              final SoundHandle? ambianceHandle;
+              if (ambianceId != null) {
+                ambiance = roomObjectAmbiances[i].soundReference;
+                ambianceHandle = handles[i];
+                i++;
+              } else {
+                ambiance = null;
+                ambianceHandle = null;
+              }
+              states.add(
+                RoomObjectState(
+                  object: object,
+                  ambiance: ambiance,
+                  ambianceHandle: ambianceHandle,
+                ),
+              );
+            }
+            final extraHandles = handles.length >= roomObjectAmbiances.length
+                ? handles.sublist(roomObjectAmbiances.length)
+                : <SoundHandle>[];
+            return Builder(
+              builder: (final context) {
+                try {
+                  return builder(
+                    context,
+                    states,
+                    extraHandles,
                   );
+                  // ignore: avoid_catches_without_on_clauses
+                } catch (e, s) {
+                  return error(e, s);
                 }
-                final extraHandles = handles.length >= soundReferences.length
-                    ? handles.sublist(soundReferences.length)
-                    : <SoundHandle>[];
-                return Builder(
-                  builder: (final context) {
-                    print('Returning builder.');
-                    try {
-                      return builder(
-                        context,
-                        states,
-                        extraHandles,
-                      );
-                    } catch (e, s) {
-                      print(e);
-                      print(s);
-                      return const Placeholder();
-                    }
-                  },
-                );
               },
-              error: error,
-              loading: loading,
             );
           },
           error: error,

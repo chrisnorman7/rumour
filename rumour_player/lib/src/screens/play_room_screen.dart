@@ -161,7 +161,7 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
           setPlayerCoordinates(gamePlayerContext.gamePlayer.coordinates);
         }
         return PlayerContextSounds(
-          playerId: widget.playerId,
+          gamePlayerContext: _gamePlayerContext,
           getPaused: () => _paused,
           error: ErrorScreen.withPositional,
           loading: LoadingScreen.new,
@@ -322,6 +322,7 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
               },
             );
           },
+          key: ValueKey(widget.playerId),
         );
       },
       error: ErrorScreen.withPositional,

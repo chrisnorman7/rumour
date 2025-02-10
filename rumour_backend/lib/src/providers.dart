@@ -276,6 +276,31 @@ Future<List<PositionedSoundReference>> roomObjectAmbiances(
   return sounds;
 }
 
+/// Provide all sounds for a room.
+///
+@riverpod
+Future<RoomAmbiancesContext> roomAmbiances(
+  final Ref ref,
+  final int roomId,
+) async {
+  final room = await ref.watch(
+    roomProvider(roomId).future,
+  );
+  final ambianceId = room.ambianceId;
+  final roomAmbiance = ambianceId == null
+      ? null
+      : await ref.watch(
+          soundReferenceProvider(ambianceId).future,
+        );
+  final roomObjectAmbiances = await ref.watch(
+    roomObjectAmbiancesProvider(roomId).future,
+  );
+  return RoomAmbiancesContext(
+    roomAmbiance: roomAmbiance,
+    roomObjectAmbiances: roomObjectAmbiances,
+  );
+}
+
 /// Provide a room object context.
 @riverpod
 Future<RoomObjectContext> roomObjectContext(final Ref ref, final int id) async {
