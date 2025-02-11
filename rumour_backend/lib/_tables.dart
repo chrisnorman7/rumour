@@ -1,5 +1,6 @@
 export 'src/database//tables/commands.dart';
 export 'src/database/tables/command_callers.dart';
+export 'src/database/tables/command_game_stats.dart';
 export 'src/database/tables/game_stats.dart';
 export 'src/database/tables/player_class_game_stats.dart';
 export 'src/database/tables/player_classes.dart';

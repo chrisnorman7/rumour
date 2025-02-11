@@ -28,6 +28,7 @@ part 'database.g.dart';
     CommandCallers,
     RoomObjectCommandCallers,
     RoomObjectMovements,
+    CommandGameStats,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -37,7 +38,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// The schema version.
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   /// Migrate the database.
   @override
@@ -80,6 +81,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 8) {
             await m.alterTable(TableMigration(this.roomObjectMovements));
+          }
+          if (from < 9) {
+            await m.createTable(this.commandGameStats);
           }
         },
       );

@@ -1058,3 +1058,17 @@ Future<List<List<RoomObjectMovement>>> objectMovementsInRoom(
   }
   return movements;
 }
+
+/// Provide all game stats for the command with the given [commandId].
+@riverpod
+Future<List<CommandGameStat>> commandGameStats(
+  final Ref ref,
+  final int commandId,
+) {
+  final database = ref.watch(databaseProvider);
+  return database.managers.commandGameStats
+      .filter(
+        (final f) => f.commandId.id.equals(commandId),
+      )
+      .get();
+}

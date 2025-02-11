@@ -6104,6 +6104,152 @@ class _ObjectMovementsInRoomProviderElement
   int get roomId => (origin as ObjectMovementsInRoomProvider).roomId;
 }
 
+String _$commandGameStatsHash() => r'72dde2a97a012b59c53698c2e354729d42100516';
+
+/// Provide all game stats for the command with the given [commandId].
+///
+/// Copied from [commandGameStats].
+@ProviderFor(commandGameStats)
+const commandGameStatsProvider = CommandGameStatsFamily();
+
+/// Provide all game stats for the command with the given [commandId].
+///
+/// Copied from [commandGameStats].
+class CommandGameStatsFamily extends Family<AsyncValue<List<CommandGameStat>>> {
+  /// Provide all game stats for the command with the given [commandId].
+  ///
+  /// Copied from [commandGameStats].
+  const CommandGameStatsFamily();
+
+  /// Provide all game stats for the command with the given [commandId].
+  ///
+  /// Copied from [commandGameStats].
+  CommandGameStatsProvider call(
+    int commandId,
+  ) {
+    return CommandGameStatsProvider(
+      commandId,
+    );
+  }
+
+  @override
+  CommandGameStatsProvider getProviderOverride(
+    covariant CommandGameStatsProvider provider,
+  ) {
+    return call(
+      provider.commandId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'commandGameStatsProvider';
+}
+
+/// Provide all game stats for the command with the given [commandId].
+///
+/// Copied from [commandGameStats].
+class CommandGameStatsProvider
+    extends AutoDisposeFutureProvider<List<CommandGameStat>> {
+  /// Provide all game stats for the command with the given [commandId].
+  ///
+  /// Copied from [commandGameStats].
+  CommandGameStatsProvider(
+    int commandId,
+  ) : this._internal(
+          (ref) => commandGameStats(
+            ref as CommandGameStatsRef,
+            commandId,
+          ),
+          from: commandGameStatsProvider,
+          name: r'commandGameStatsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$commandGameStatsHash,
+          dependencies: CommandGameStatsFamily._dependencies,
+          allTransitiveDependencies:
+              CommandGameStatsFamily._allTransitiveDependencies,
+          commandId: commandId,
+        );
+
+  CommandGameStatsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.commandId,
+  }) : super.internal();
+
+  final int commandId;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<CommandGameStat>> Function(CommandGameStatsRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: CommandGameStatsProvider._internal(
+        (ref) => create(ref as CommandGameStatsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        commandId: commandId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<CommandGameStat>> createElement() {
+    return _CommandGameStatsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is CommandGameStatsProvider && other.commandId == commandId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, commandId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin CommandGameStatsRef
+    on AutoDisposeFutureProviderRef<List<CommandGameStat>> {
+  /// The parameter `commandId` of this provider.
+  int get commandId;
+}
+
+class _CommandGameStatsProviderElement
+    extends AutoDisposeFutureProviderElement<List<CommandGameStat>>
+    with CommandGameStatsRef {
+  _CommandGameStatsProviderElement(super.provider);
+
+  @override
+  int get commandId => (origin as CommandGameStatsProvider).commandId;
+}
+
 String _$currentProjectContextHash() =>
     r'4c8cc047a1a79eb695b9f390a99148ce921e1e5b';
 

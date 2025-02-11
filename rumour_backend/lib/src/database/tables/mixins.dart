@@ -75,3 +75,10 @@ mixin RoomObjectIdMixin on Table {
   IntColumn get roomObjectId =>
       integer().references(RoomObjects, #id, onDelete: KeyAction.cascade)();
 }
+
+/// Add a [commandId] column.
+mixin CommandIdMixin on Table {
+  /// The ID of a command to attach this row to.
+  IntColumn get commandId =>
+      integer().references(Commands, #id, onDelete: KeyAction.cascade)();
+}

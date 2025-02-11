@@ -6274,6 +6274,342 @@ class RoomObjectMovementsCompanion extends UpdateCompanion<RoomObjectMovement> {
   }
 }
 
+class $CommandGameStatsTable extends CommandGameStats
+    with TableInfo<$CommandGameStatsTable, CommandGameStat> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CommandGameStatsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _gameStatIdMeta =
+      const VerificationMeta('gameStatId');
+  @override
+  late final GeneratedColumn<int> gameStatId = GeneratedColumn<int>(
+      'game_stat_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES game_stats (id) ON DELETE CASCADE'));
+  static const VerificationMeta _commandIdMeta =
+      const VerificationMeta('commandId');
+  @override
+  late final GeneratedColumn<int> commandId = GeneratedColumn<int>(
+      'command_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES commands (id) ON DELETE CASCADE'));
+  static const VerificationMeta _mathematicalOperatorMeta =
+      const VerificationMeta('mathematicalOperator');
+  @override
+  late final GeneratedColumnWithTypeConverter<MathematicalOperator, int>
+      mathematicalOperator = GeneratedColumn<int>(
+              'mathematical_operator', aliasedName, false,
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: Constant(MathematicalOperator.plus.index))
+          .withConverter<MathematicalOperator>(
+              $CommandGameStatsTable.$convertermathematicalOperator);
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  @override
+  late final GeneratedColumn<int> amount = GeneratedColumn<int>(
+      'amount', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(1));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, gameStatId, commandId, mathematicalOperator, amount];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'command_game_stats';
+  @override
+  VerificationContext validateIntegrity(Insertable<CommandGameStat> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('game_stat_id')) {
+      context.handle(
+          _gameStatIdMeta,
+          gameStatId.isAcceptableOrUnknown(
+              data['game_stat_id']!, _gameStatIdMeta));
+    } else if (isInserting) {
+      context.missing(_gameStatIdMeta);
+    }
+    if (data.containsKey('command_id')) {
+      context.handle(_commandIdMeta,
+          commandId.isAcceptableOrUnknown(data['command_id']!, _commandIdMeta));
+    } else if (isInserting) {
+      context.missing(_commandIdMeta);
+    }
+    context.handle(
+        _mathematicalOperatorMeta, const VerificationResult.success());
+    if (data.containsKey('amount')) {
+      context.handle(_amountMeta,
+          amount.isAcceptableOrUnknown(data['amount']!, _amountMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CommandGameStat map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CommandGameStat(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      gameStatId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}game_stat_id'])!,
+      commandId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}command_id'])!,
+      mathematicalOperator: $CommandGameStatsTable
+          .$convertermathematicalOperator
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
+              data['${effectivePrefix}mathematical_operator'])!),
+      amount: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}amount'])!,
+    );
+  }
+
+  @override
+  $CommandGameStatsTable createAlias(String alias) {
+    return $CommandGameStatsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<MathematicalOperator, int, int>
+      $convertermathematicalOperator =
+      const EnumIndexConverter<MathematicalOperator>(
+          MathematicalOperator.values);
+}
+
+class CommandGameStat extends DataClass implements Insertable<CommandGameStat> {
+  /// The primary key field.
+  final int id;
+
+  /// The ID of the game stat to use.
+  final int gameStatId;
+
+  /// The ID of a command to attach this row to.
+  final int commandId;
+
+  /// The mathematical operator to use.
+  final MathematicalOperator mathematicalOperator;
+
+  /// The amount to add according to [mathematicalOperator].
+  final int amount;
+  const CommandGameStat(
+      {required this.id,
+      required this.gameStatId,
+      required this.commandId,
+      required this.mathematicalOperator,
+      required this.amount});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['game_stat_id'] = Variable<int>(gameStatId);
+    map['command_id'] = Variable<int>(commandId);
+    {
+      map['mathematical_operator'] = Variable<int>($CommandGameStatsTable
+          .$convertermathematicalOperator
+          .toSql(mathematicalOperator));
+    }
+    map['amount'] = Variable<int>(amount);
+    return map;
+  }
+
+  CommandGameStatsCompanion toCompanion(bool nullToAbsent) {
+    return CommandGameStatsCompanion(
+      id: Value(id),
+      gameStatId: Value(gameStatId),
+      commandId: Value(commandId),
+      mathematicalOperator: Value(mathematicalOperator),
+      amount: Value(amount),
+    );
+  }
+
+  factory CommandGameStat.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CommandGameStat(
+      id: serializer.fromJson<int>(json['id']),
+      gameStatId: serializer.fromJson<int>(json['gameStatId']),
+      commandId: serializer.fromJson<int>(json['commandId']),
+      mathematicalOperator: $CommandGameStatsTable
+          .$convertermathematicalOperator
+          .fromJson(serializer.fromJson<int>(json['mathematicalOperator'])),
+      amount: serializer.fromJson<int>(json['amount']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'gameStatId': serializer.toJson<int>(gameStatId),
+      'commandId': serializer.toJson<int>(commandId),
+      'mathematicalOperator': serializer.toJson<int>($CommandGameStatsTable
+          .$convertermathematicalOperator
+          .toJson(mathematicalOperator)),
+      'amount': serializer.toJson<int>(amount),
+    };
+  }
+
+  CommandGameStat copyWith(
+          {int? id,
+          int? gameStatId,
+          int? commandId,
+          MathematicalOperator? mathematicalOperator,
+          int? amount}) =>
+      CommandGameStat(
+        id: id ?? this.id,
+        gameStatId: gameStatId ?? this.gameStatId,
+        commandId: commandId ?? this.commandId,
+        mathematicalOperator: mathematicalOperator ?? this.mathematicalOperator,
+        amount: amount ?? this.amount,
+      );
+  CommandGameStat copyWithCompanion(CommandGameStatsCompanion data) {
+    return CommandGameStat(
+      id: data.id.present ? data.id.value : this.id,
+      gameStatId:
+          data.gameStatId.present ? data.gameStatId.value : this.gameStatId,
+      commandId: data.commandId.present ? data.commandId.value : this.commandId,
+      mathematicalOperator: data.mathematicalOperator.present
+          ? data.mathematicalOperator.value
+          : this.mathematicalOperator,
+      amount: data.amount.present ? data.amount.value : this.amount,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CommandGameStat(')
+          ..write('id: $id, ')
+          ..write('gameStatId: $gameStatId, ')
+          ..write('commandId: $commandId, ')
+          ..write('mathematicalOperator: $mathematicalOperator, ')
+          ..write('amount: $amount')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, gameStatId, commandId, mathematicalOperator, amount);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CommandGameStat &&
+          other.id == this.id &&
+          other.gameStatId == this.gameStatId &&
+          other.commandId == this.commandId &&
+          other.mathematicalOperator == this.mathematicalOperator &&
+          other.amount == this.amount);
+}
+
+class CommandGameStatsCompanion extends UpdateCompanion<CommandGameStat> {
+  final Value<int> id;
+  final Value<int> gameStatId;
+  final Value<int> commandId;
+  final Value<MathematicalOperator> mathematicalOperator;
+  final Value<int> amount;
+  const CommandGameStatsCompanion({
+    this.id = const Value.absent(),
+    this.gameStatId = const Value.absent(),
+    this.commandId = const Value.absent(),
+    this.mathematicalOperator = const Value.absent(),
+    this.amount = const Value.absent(),
+  });
+  CommandGameStatsCompanion.insert({
+    this.id = const Value.absent(),
+    required int gameStatId,
+    required int commandId,
+    this.mathematicalOperator = const Value.absent(),
+    this.amount = const Value.absent(),
+  })  : gameStatId = Value(gameStatId),
+        commandId = Value(commandId);
+  static Insertable<CommandGameStat> custom({
+    Expression<int>? id,
+    Expression<int>? gameStatId,
+    Expression<int>? commandId,
+    Expression<int>? mathematicalOperator,
+    Expression<int>? amount,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (gameStatId != null) 'game_stat_id': gameStatId,
+      if (commandId != null) 'command_id': commandId,
+      if (mathematicalOperator != null)
+        'mathematical_operator': mathematicalOperator,
+      if (amount != null) 'amount': amount,
+    });
+  }
+
+  CommandGameStatsCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? gameStatId,
+      Value<int>? commandId,
+      Value<MathematicalOperator>? mathematicalOperator,
+      Value<int>? amount}) {
+    return CommandGameStatsCompanion(
+      id: id ?? this.id,
+      gameStatId: gameStatId ?? this.gameStatId,
+      commandId: commandId ?? this.commandId,
+      mathematicalOperator: mathematicalOperator ?? this.mathematicalOperator,
+      amount: amount ?? this.amount,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (gameStatId.present) {
+      map['game_stat_id'] = Variable<int>(gameStatId.value);
+    }
+    if (commandId.present) {
+      map['command_id'] = Variable<int>(commandId.value);
+    }
+    if (mathematicalOperator.present) {
+      map['mathematical_operator'] = Variable<int>($CommandGameStatsTable
+          .$convertermathematicalOperator
+          .toSql(mathematicalOperator.value));
+    }
+    if (amount.present) {
+      map['amount'] = Variable<int>(amount.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CommandGameStatsCompanion(')
+          ..write('id: $id, ')
+          ..write('gameStatId: $gameStatId, ')
+          ..write('commandId: $commandId, ')
+          ..write('mathematicalOperator: $mathematicalOperator, ')
+          ..write('amount: $amount')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -6300,6 +6636,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $RoomObjectCommandCallersTable(this);
   late final $RoomObjectMovementsTable roomObjectMovements =
       $RoomObjectMovementsTable(this);
+  late final $CommandGameStatsTable commandGameStats =
+      $CommandGameStatsTable(this);
   late final Index roomObjectCoordinatesIndex = Index(
       'room_object_coordinates_index',
       'CREATE INDEX room_object_coordinates_index ON room_objects (x, y)');
@@ -6327,6 +6665,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         roomObjectRandomSounds,
         roomObjectCommandCallers,
         roomObjectMovements,
+        commandGameStats,
         roomObjectCoordinatesIndex,
         commandCallersCallingCommandIdIndex
       ];
@@ -6551,6 +6890,20 @@ abstract class _$AppDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.delete),
             result: [
               TableUpdate('room_object_movements', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('game_stats',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('command_game_stats', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('commands',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('command_game_stats', kind: UpdateKind.delete),
             ],
           ),
         ],
@@ -8788,6 +9141,23 @@ final class $$CommandsTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$CommandGameStatsTable, List<CommandGameStat>>
+      _commandGameStatsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.commandGameStats,
+              aliasName: $_aliasNameGenerator(
+                  db.commands.id, db.commandGameStats.commandId));
+
+  $$CommandGameStatsTableProcessedTableManager get commandGameStatsRefs {
+    final manager =
+        $$CommandGameStatsTableTableManager($_db, $_db.commandGameStats)
+            .filter((f) => f.commandId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_commandGameStatsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$CommandsTableFilterComposer
@@ -8865,6 +9235,27 @@ class $$CommandsTableFilterComposer
             $$CommandCallersTableFilterComposer(
               $db: $db,
               $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> commandGameStatsRefs(
+      Expression<bool> Function($$CommandGameStatsTableFilterComposer f) f) {
+    final $$CommandGameStatsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.commandGameStats,
+        getReferencedColumn: (t) => t.commandId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandGameStatsTableFilterComposer(
+              $db: $db,
+              $table: $db.commandGameStats,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -8999,6 +9390,27 @@ class $$CommandsTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> commandGameStatsRefs<T extends Object>(
+      Expression<T> Function($$CommandGameStatsTableAnnotationComposer a) f) {
+    final $$CommandGameStatsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.commandGameStats,
+        getReferencedColumn: (t) => t.commandId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandGameStatsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.commandGameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$CommandsTableTableManager extends RootTableManager<
@@ -9013,7 +9425,10 @@ class $$CommandsTableTableManager extends RootTableManager<
     (Command, $$CommandsTableReferences),
     Command,
     PrefetchHooks Function(
-        {bool soundId, bool commandsToCall, bool commandCallers})> {
+        {bool soundId,
+        bool commandsToCall,
+        bool commandCallers,
+        bool commandGameStatsRefs})> {
   $$CommandsTableTableManager(_$AppDatabase db, $CommandsTable table)
       : super(TableManagerState(
           db: db,
@@ -9059,12 +9474,14 @@ class $$CommandsTableTableManager extends RootTableManager<
           prefetchHooksCallback: (
               {soundId = false,
               commandsToCall = false,
-              commandCallers = false}) {
+              commandCallers = false,
+              commandGameStatsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (commandsToCall) db.commandCallers,
-                if (commandCallers) db.commandCallers
+                if (commandCallers) db.commandCallers,
+                if (commandGameStatsRefs) db.commandGameStats
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -9119,6 +9536,19 @@ class $$CommandsTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.childCommandId == item.id),
+                        typedResults: items),
+                  if (commandGameStatsRefs)
+                    await $_getPrefetchedData<Command, $CommandsTable,
+                            CommandGameStat>(
+                        currentTable: table,
+                        referencedTable: $$CommandsTableReferences
+                            ._commandGameStatsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CommandsTableReferences(db, table, p0)
+                                .commandGameStatsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.commandId == item.id),
                         typedResults: items)
                 ];
               },
@@ -9139,7 +9569,10 @@ typedef $$CommandsTableProcessedTableManager = ProcessedTableManager<
     (Command, $$CommandsTableReferences),
     Command,
     PrefetchHooks Function(
-        {bool soundId, bool commandsToCall, bool commandCallers})>;
+        {bool soundId,
+        bool commandsToCall,
+        bool commandCallers,
+        bool commandGameStatsRefs})>;
 typedef $$CommandCallersTableCreateCompanionBuilder = CommandCallersCompanion
     Function({
   Value<int> id,
@@ -13037,6 +13470,23 @@ final class $$GameStatsTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$CommandGameStatsTable, List<CommandGameStat>>
+      _commandGameStatsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.commandGameStats,
+              aliasName: $_aliasNameGenerator(
+                  db.gameStats.id, db.commandGameStats.gameStatId));
+
+  $$CommandGameStatsTableProcessedTableManager get commandGameStatsRefs {
+    final manager =
+        $$CommandGameStatsTableTableManager($_db, $_db.commandGameStats)
+            .filter((f) => f.gameStatId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_commandGameStatsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$GameStatsTableFilterComposer
@@ -13149,6 +13599,27 @@ class $$GameStatsTableFilterComposer
             $$PlayerClassGameStatsTableFilterComposer(
               $db: $db,
               $table: $db.playerClassGameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> commandGameStatsRefs(
+      Expression<bool> Function($$CommandGameStatsTableFilterComposer f) f) {
+    final $$CommandGameStatsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.commandGameStats,
+        getReferencedColumn: (t) => t.gameStatId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandGameStatsTableFilterComposer(
+              $db: $db,
+              $table: $db.commandGameStats,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -13328,6 +13799,27 @@ class $$GameStatsTableAnnotationComposer
                 ));
     return f(composer);
   }
+
+  Expression<T> commandGameStatsRefs<T extends Object>(
+      Expression<T> Function($$CommandGameStatsTableAnnotationComposer a) f) {
+    final $$CommandGameStatsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.commandGameStats,
+        getReferencedColumn: (t) => t.gameStatId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandGameStatsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.commandGameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$GameStatsTableTableManager extends RootTableManager<
@@ -13345,7 +13837,8 @@ class $$GameStatsTableTableManager extends RootTableManager<
         {bool maxGameStatId,
         bool roomSurfaceBoostsRefs,
         bool roomSurfaceCostsRefs,
-        bool playerClassGameStatsRefs})> {
+        bool playerClassGameStatsRefs,
+        bool commandGameStatsRefs})> {
   $$GameStatsTableTableManager(_$AppDatabase db, $GameStatsTable table)
       : super(TableManagerState(
           db: db,
@@ -13408,13 +13901,15 @@ class $$GameStatsTableTableManager extends RootTableManager<
               {maxGameStatId = false,
               roomSurfaceBoostsRefs = false,
               roomSurfaceCostsRefs = false,
-              playerClassGameStatsRefs = false}) {
+              playerClassGameStatsRefs = false,
+              commandGameStatsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (roomSurfaceBoostsRefs) db.roomSurfaceBoosts,
                 if (roomSurfaceCostsRefs) db.roomSurfaceCosts,
-                if (playerClassGameStatsRefs) db.playerClassGameStats
+                if (playerClassGameStatsRefs) db.playerClassGameStats,
+                if (commandGameStatsRefs) db.commandGameStats
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -13482,6 +13977,19 @@ class $$GameStatsTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.gameStatId == item.id),
+                        typedResults: items),
+                  if (commandGameStatsRefs)
+                    await $_getPrefetchedData<GameStat, $GameStatsTable,
+                            CommandGameStat>(
+                        currentTable: table,
+                        referencedTable: $$GameStatsTableReferences
+                            ._commandGameStatsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$GameStatsTableReferences(db, table, p0)
+                                .commandGameStatsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.gameStatId == item.id),
                         typedResults: items)
                 ];
               },
@@ -13505,7 +14013,8 @@ typedef $$GameStatsTableProcessedTableManager = ProcessedTableManager<
         {bool maxGameStatId,
         bool roomSurfaceBoostsRefs,
         bool roomSurfaceCostsRefs,
-        bool playerClassGameStatsRefs})>;
+        bool playerClassGameStatsRefs,
+        bool commandGameStatsRefs})>;
 typedef $$RoomSurfaceBoostsTableCreateCompanionBuilder
     = RoomSurfaceBoostsCompanion Function({
   Value<int> id,
@@ -15999,6 +16508,362 @@ typedef $$RoomObjectMovementsTableProcessedTableManager = ProcessedTableManager<
     (RoomObjectMovement, $$RoomObjectMovementsTableReferences),
     RoomObjectMovement,
     PrefetchHooks Function({bool roomObjectId, bool onMoveCommandCallerId})>;
+typedef $$CommandGameStatsTableCreateCompanionBuilder
+    = CommandGameStatsCompanion Function({
+  Value<int> id,
+  required int gameStatId,
+  required int commandId,
+  Value<MathematicalOperator> mathematicalOperator,
+  Value<int> amount,
+});
+typedef $$CommandGameStatsTableUpdateCompanionBuilder
+    = CommandGameStatsCompanion Function({
+  Value<int> id,
+  Value<int> gameStatId,
+  Value<int> commandId,
+  Value<MathematicalOperator> mathematicalOperator,
+  Value<int> amount,
+});
+
+final class $$CommandGameStatsTableReferences extends BaseReferences<
+    _$AppDatabase, $CommandGameStatsTable, CommandGameStat> {
+  $$CommandGameStatsTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $GameStatsTable _gameStatIdTable(_$AppDatabase db) =>
+      db.gameStats.createAlias($_aliasNameGenerator(
+          db.commandGameStats.gameStatId, db.gameStats.id));
+
+  $$GameStatsTableProcessedTableManager get gameStatId {
+    final $_column = $_itemColumn<int>('game_stat_id')!;
+
+    final manager = $$GameStatsTableTableManager($_db, $_db.gameStats)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_gameStatIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $CommandsTable _commandIdTable(_$AppDatabase db) =>
+      db.commands.createAlias(
+          $_aliasNameGenerator(db.commandGameStats.commandId, db.commands.id));
+
+  $$CommandsTableProcessedTableManager get commandId {
+    final $_column = $_itemColumn<int>('command_id')!;
+
+    final manager = $$CommandsTableTableManager($_db, $_db.commands)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_commandIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$CommandGameStatsTableFilterComposer
+    extends Composer<_$AppDatabase, $CommandGameStatsTable> {
+  $$CommandGameStatsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<MathematicalOperator, MathematicalOperator,
+          int>
+      get mathematicalOperator => $composableBuilder(
+          column: $table.mathematicalOperator,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<int> get amount => $composableBuilder(
+      column: $table.amount, builder: (column) => ColumnFilters(column));
+
+  $$GameStatsTableFilterComposer get gameStatId {
+    final $$GameStatsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.gameStatId,
+        referencedTable: $db.gameStats,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$GameStatsTableFilterComposer(
+              $db: $db,
+              $table: $db.gameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$CommandsTableFilterComposer get commandId {
+    final $$CommandsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.commandId,
+        referencedTable: $db.commands,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandsTableFilterComposer(
+              $db: $db,
+              $table: $db.commands,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$CommandGameStatsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CommandGameStatsTable> {
+  $$CommandGameStatsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get mathematicalOperator => $composableBuilder(
+      column: $table.mathematicalOperator,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get amount => $composableBuilder(
+      column: $table.amount, builder: (column) => ColumnOrderings(column));
+
+  $$GameStatsTableOrderingComposer get gameStatId {
+    final $$GameStatsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.gameStatId,
+        referencedTable: $db.gameStats,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$GameStatsTableOrderingComposer(
+              $db: $db,
+              $table: $db.gameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$CommandsTableOrderingComposer get commandId {
+    final $$CommandsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.commandId,
+        referencedTable: $db.commands,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandsTableOrderingComposer(
+              $db: $db,
+              $table: $db.commands,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$CommandGameStatsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CommandGameStatsTable> {
+  $$CommandGameStatsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<MathematicalOperator, int>
+      get mathematicalOperator => $composableBuilder(
+          column: $table.mathematicalOperator, builder: (column) => column);
+
+  GeneratedColumn<int> get amount =>
+      $composableBuilder(column: $table.amount, builder: (column) => column);
+
+  $$GameStatsTableAnnotationComposer get gameStatId {
+    final $$GameStatsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.gameStatId,
+        referencedTable: $db.gameStats,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$GameStatsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.gameStats,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$CommandsTableAnnotationComposer get commandId {
+    final $$CommandsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.commandId,
+        referencedTable: $db.commands,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.commands,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$CommandGameStatsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $CommandGameStatsTable,
+    CommandGameStat,
+    $$CommandGameStatsTableFilterComposer,
+    $$CommandGameStatsTableOrderingComposer,
+    $$CommandGameStatsTableAnnotationComposer,
+    $$CommandGameStatsTableCreateCompanionBuilder,
+    $$CommandGameStatsTableUpdateCompanionBuilder,
+    (CommandGameStat, $$CommandGameStatsTableReferences),
+    CommandGameStat,
+    PrefetchHooks Function({bool gameStatId, bool commandId})> {
+  $$CommandGameStatsTableTableManager(
+      _$AppDatabase db, $CommandGameStatsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CommandGameStatsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CommandGameStatsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CommandGameStatsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> gameStatId = const Value.absent(),
+            Value<int> commandId = const Value.absent(),
+            Value<MathematicalOperator> mathematicalOperator =
+                const Value.absent(),
+            Value<int> amount = const Value.absent(),
+          }) =>
+              CommandGameStatsCompanion(
+            id: id,
+            gameStatId: gameStatId,
+            commandId: commandId,
+            mathematicalOperator: mathematicalOperator,
+            amount: amount,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int gameStatId,
+            required int commandId,
+            Value<MathematicalOperator> mathematicalOperator =
+                const Value.absent(),
+            Value<int> amount = const Value.absent(),
+          }) =>
+              CommandGameStatsCompanion.insert(
+            id: id,
+            gameStatId: gameStatId,
+            commandId: commandId,
+            mathematicalOperator: mathematicalOperator,
+            amount: amount,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$CommandGameStatsTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({gameStatId = false, commandId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (gameStatId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.gameStatId,
+                    referencedTable:
+                        $$CommandGameStatsTableReferences._gameStatIdTable(db),
+                    referencedColumn: $$CommandGameStatsTableReferences
+                        ._gameStatIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (commandId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.commandId,
+                    referencedTable:
+                        $$CommandGameStatsTableReferences._commandIdTable(db),
+                    referencedColumn: $$CommandGameStatsTableReferences
+                        ._commandIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$CommandGameStatsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $CommandGameStatsTable,
+    CommandGameStat,
+    $$CommandGameStatsTableFilterComposer,
+    $$CommandGameStatsTableOrderingComposer,
+    $$CommandGameStatsTableAnnotationComposer,
+    $$CommandGameStatsTableCreateCompanionBuilder,
+    $$CommandGameStatsTableUpdateCompanionBuilder,
+    (CommandGameStat, $$CommandGameStatsTableReferences),
+    CommandGameStat,
+    PrefetchHooks Function({bool gameStatId, bool commandId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -16037,4 +16902,6 @@ class $AppDatabaseManager {
           _db, _db.roomObjectCommandCallers);
   $$RoomObjectMovementsTableTableManager get roomObjectMovements =>
       $$RoomObjectMovementsTableTableManager(_db, _db.roomObjectMovements);
+  $$CommandGameStatsTableTableManager get commandGameStats =>
+      $$CommandGameStatsTableTableManager(_db, _db.commandGameStats);
 }
