@@ -8,27 +8,33 @@ import 'package:url_launcher/url_launcher.dart';
 
 /// Useful extensions for [WidgetRef]s.
 extension WidgetRefX on WidgetRef {
-  /// Run a [CommandCaller] by its [id].
-  Future<void> runCommandCaller(
-    final int id, {
+  /// Run a [CommandCaller] by its [commandCallerId].
+  Future<void> runCommandCaller({
+    required final int commandCallerId,
+    required final String playerId,
     final SoundPosition position = unpanned,
   }) async {
-    final caller = await read(commandCallerProvider(id).future);
+    final caller = await read(commandCallerProvider(commandCallerId).future);
     final callAfter = caller.callAfter;
     if (callAfter != null) {
       await Future<void>.delayed(callAfter.seconds);
     }
     if (context.mounted) {
-      return runCommand(caller.childCommandId, position: position);
+      return runCommand(
+        commandId: caller.childCommandId,
+        playerId: playerId,
+        position: position,
+      );
     }
   }
 
-  /// Call a command by its [id].
-  Future<void> runCommand(
-    final int id, {
+  /// Call a command by its [commandId].
+  Future<void> runCommand({
+    required final int commandId,
+    required final String playerId,
     final SoundPosition position = unpanned,
   }) async {
-    final command = await read(commandProvider(id).future);
+    final command = await read(commandProvider(commandId).future);
     if (context.mounted) {
       final spokenMessage = command.spokenMessage;
       if (spokenMessage != null) {
@@ -43,11 +49,29 @@ extension WidgetRefX on WidgetRef {
         destroy: true,
         position: position,
       );
+      final commandGameStats = await read(
+        commandGameStatsProvider(commandId).future,
+      );
+      final stats = await read(
+        gamePlayerStatsProvider(playerId).future,
+      );
+      for (final commandGameStat in commandGameStats) {
+        final value = stats[commandGameStat.gameStatId]!;
+        stats[commandGameStat.gameStatId] =
+            commandGameStat.mathematicalOperator.calculate(
+          value,
+          commandGameStat.amount,
+        );
+      }
       final possibleCommandCaller = await read(
-        commandCallerFromParentCommandIdProvider(id).future,
+        commandCallerFromParentCommandIdProvider(commandId).future,
       );
       if (possibleCommandCaller != null) {
-        return runCommandCaller(possibleCommandCaller.id);
+        return runCommandCaller(
+          commandCallerId: possibleCommandCaller.id,
+          playerId: playerId,
+          position: position,
+        );
       }
     }
   }
@@ -102,16 +126,20 @@ extension WidgetRefX on WidgetRef {
     return null;
   }
 
-  /// Possibly run the command caller with the given [id].
+  /// Possibly run the command caller with the given [commandCallerId].
   ///
-  /// If [id] is `null`, nothing will happen.
-  Future<void> maybeRunCommandCaller(
-    final int? id, {
+  /// If [commandCallerId] is `null`, nothing will happen.
+  Future<void> maybeRunCommandCaller({
+    required final int? commandCallerId,
+    required final String playerId,
     final SoundPosition position = unpanned,
   }) async {
-    if (id == null) {
+    if (commandCallerId == null) {
       return;
     }
-    return runCommandCaller(id, position: position);
+    return runCommandCaller(
+      commandCallerId: commandCallerId,
+      playerId: playerId,
+    );
   }
 }
