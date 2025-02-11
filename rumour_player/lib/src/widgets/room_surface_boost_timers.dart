@@ -63,16 +63,21 @@ class RoomSurfaceBoostTimers extends ConsumerWidget {
                       final maxStat = stat.maxValueGameStat;
                       final maxValue = (maxStat == null)
                           ? null
-                          : stats[maxStat.id] ??
-                              (await ref.read(
-                                gamePlayerStatProvider(
-                                  playerId,
-                                  maxStat.id,
-                                ).future,
-                              ));
+                          : stat.gameStat.mathematicalOperator.calculate(
+                              stats[maxStat.id] ??
+                                  (await ref.read(
+                                    gamePlayerStatProvider(
+                                      playerId,
+                                      maxStat.id,
+                                    ).future,
+                                  )),
+                              stat.gameStat.maxValueMultiplier,
+                            );
                       final possibleValue = oldValue + boost.boost;
-                      final newValue =
-                          min(maxValue ?? possibleValue, possibleValue);
+                      final newValue = min(
+                        maxValue ?? possibleValue,
+                        possibleValue,
+                      );
                       if (maxValue != null && oldValue >= maxValue) {
                         // Do nothing.
                         return;
