@@ -23,8 +23,7 @@ class RoomObjectState {
   Point<int> coordinates;
 
   /// The sound position for all sounds emitted by [object].
-  SoundPosition3d get soundPosition =>
-      SoundPosition3d(coordinates.x.toDouble(), coordinates.y.toDouble(), 0.0);
+  SoundPosition3d get soundPosition => coordinates.soundPosition;
 
   /// The handle for an ambiance attached to [object].
   final SoundHandle? ambianceHandle;

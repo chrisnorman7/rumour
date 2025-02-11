@@ -1468,7 +1468,7 @@ class _ObjectsInRoomProviderElement
 }
 
 String _$roomObjectAmbiancesHash() =>
-    r'd25872e292f71bb50157bb5500b078cbbed407dc';
+    r'7aa4ea44842b4ed155e19651d410d37bc3541867';
 
 /// Return ambiances for the objects in a given room.
 ///

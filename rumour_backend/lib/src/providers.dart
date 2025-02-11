@@ -264,11 +264,7 @@ Future<List<PositionedSoundReference>> roomObjectAmbiances(
       sounds.add(
         PositionedSoundReference(
           soundReference: soundReference,
-          position: SoundPosition3d(
-            object.x.toDouble(),
-            object.y.toDouble(),
-            0.0,
-          ),
+          position: object.coordinates.soundPosition,
         ),
       );
     }
