@@ -12,6 +12,7 @@ import 'package:time/time.dart';
 class MoveRoomObjects extends ConsumerWidget {
   /// Create an instance.
   const MoveRoomObjects({
+    required this.playerId,
     required this.roomId,
     required this.roomObjectStates,
     required this.loading,
@@ -19,6 +20,10 @@ class MoveRoomObjects extends ConsumerWidget {
     required this.child,
     super.key,
   });
+
+  /// The ID of the player whose stats will be altered by object movement
+  /// commands.
+  final String playerId;
 
   /// The room whose objects will be moved.
   final int roomId;
@@ -81,11 +86,7 @@ class MoveRoomObjects extends ConsumerWidget {
                           }
                           final coordinates = state.coordinates;
                           final ambianceHandle = state.ambianceHandle;
-                          final position = SoundPosition3d(
-                            coordinates.x.toDouble(),
-                            coordinates.y.toDouble(),
-                            0.0,
-                          );
+                          final position = coordinates.soundPosition;
                           if (ambianceHandle != null) {
                             soLoud.set3dSourcePosition(
                               ambianceHandle,
@@ -101,7 +102,8 @@ class MoveRoomObjects extends ConsumerWidget {
                               position: position,
                             )
                             ..maybeRunCommandCaller(
-                              movement.onMoveCommandCallerId,
+                              commandCallerId: movement.onMoveCommandCallerId,
+                              playerId: playerId,
                               position: position,
                             );
                           indexes[i]++;

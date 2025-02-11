@@ -119,6 +119,7 @@ class PlayerContextSounds extends ConsumerWidget {
       error: error,
       loading: loading,
       child: RoomObjectsLoader(
+        playerId: playerId,
         roomId: room.id,
         error: error,
         loading: loading,

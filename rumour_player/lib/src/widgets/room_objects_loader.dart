@@ -19,12 +19,17 @@ typedef RoomObjectsLoaderBuilder = Widget Function(
 class RoomObjectsLoader extends ConsumerWidget {
   /// Create an instance.
   const RoomObjectsLoader({
+    required this.playerId,
     required this.roomId,
     required this.error,
     required this.loading,
     required this.builder,
     super.key,
   });
+
+  /// The ID of the player whose stats will be altered by object movement
+  /// commands.
+  final String playerId;
 
   /// The ID of the room to use.
   final int roomId;
@@ -44,6 +49,7 @@ class RoomObjectsLoader extends ConsumerWidget {
     final roomObjectsValue = ref.watch(objectsInRoomProvider(roomId));
     return roomObjectsValue.when(
       data: (final objects) => _RoomObjectsLoader(
+        playerId: playerId,
         roomId: roomId,
         objects: objects,
         builder: builder,
@@ -58,12 +64,17 @@ class RoomObjectsLoader extends ConsumerWidget {
 
 class _RoomObjectsLoader extends ConsumerWidget {
   const _RoomObjectsLoader({
+    required this.playerId,
     required this.roomId,
     required this.objects,
     required this.error,
     required this.loading,
     required this.builder,
   });
+
+  /// The ID of the player whose stats will be altered by object movement
+  /// commands.
+  final String playerId;
 
   /// The ID of the room to use.
   final int roomId;
@@ -136,6 +147,7 @@ class _RoomObjectsLoader extends ConsumerWidget {
                 ? handles.sublist(roomObjectAmbiances.length)
                 : <SoundHandle>[];
             return MoveRoomObjects(
+              playerId: playerId,
               roomId: roomId,
               roomObjectStates: states,
               loading: loading,

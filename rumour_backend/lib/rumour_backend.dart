@@ -14,6 +14,7 @@ export 'src/database/tables/mixins.dart';
 export 'src/extensions/async_value_x.dart';
 export 'src/extensions/mathematical_operator_x.dart';
 export 'src/extensions/player_class_x.dart';
+export 'src/extensions/point_int_x.dart';
 export 'src/extensions/room_exit_x.dart';
 export 'src/extensions/room_object_x.dart';
 export 'src/extensions/room_x.dart';

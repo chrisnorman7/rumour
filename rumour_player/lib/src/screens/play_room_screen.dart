@@ -426,14 +426,26 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
         if (_approachedObjectIds.contains(object.id)) {
           _approachedObjectIds.remove(object.id);
         }
-        unawaited(ref.maybeRunCommandCaller(object.onLeaveCommandCallerId));
+        unawaited(
+          ref.maybeRunCommandCaller(
+            commandCallerId: object.onLeaveCommandCallerId,
+            playerId: widget.playerId,
+            position: object.coordinates.soundPosition,
+          ),
+        );
       }
     }
     for (final object in distant) {
       if (object.isNearby(newCoordinates)) {
         // `object` is no longer distant.
         _approachedObjectIds.add(object.id);
-        unawaited(ref.maybeRunCommandCaller(object.onApproachCommandCallerId));
+        unawaited(
+          ref.maybeRunCommandCaller(
+            commandCallerId: object.onApproachCommandCallerId,
+            playerId: widget.playerId,
+            position: object.coordinates.soundPosition,
+          ),
+        );
       }
     }
   }
@@ -463,7 +475,9 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
         PlayerAction(
           name: command.name,
           performAction: () => ref.runCommandCaller(
-            command.commandCallerId,
+            commandCallerId: command.commandCallerId,
+            playerId: widget.playerId,
+            position: roomObject.coordinates.soundPosition,
           ),
           earcon: await projectContext.maybeGetSoundFromSoundReferenceId(
             id: command.earconId,
@@ -483,12 +497,25 @@ class PlayRoomScreenState extends ConsumerState<PlayRoomScreen> {
       roomProvider(exit.roomId).future,
     );
     if (exit.roomId != _room.id) {
-      unawaited(ref.maybeRunCommandCaller(_room.onExitCommandCallerId));
       unawaited(
-        ref.maybeRunCommandCaller(destinationRoom.onEnterCommandCallerId),
+        ref.maybeRunCommandCaller(
+          commandCallerId: _room.onExitCommandCallerId,
+          playerId: widget.playerId,
+        ),
+      );
+      unawaited(
+        ref.maybeRunCommandCaller(
+          commandCallerId: destinationRoom.onEnterCommandCallerId,
+          playerId: widget.playerId,
+        ),
       );
     } else {
-      unawaited(ref.maybeRunCommandCaller(_room.onTeleportCommandCallerId));
+      unawaited(
+        ref.maybeRunCommandCaller(
+          commandCallerId: _room.onTeleportCommandCallerId,
+          playerId: widget.playerId,
+        ),
+      );
     }
     _player.roomId = destinationRoom.id;
     _gamePlayerContext.save();
