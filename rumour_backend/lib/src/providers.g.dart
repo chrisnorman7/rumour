@@ -6250,6 +6250,167 @@ class _CommandGameStatsProviderElement
   int get commandId => (origin as CommandGameStatsProvider).commandId;
 }
 
+String _$questsHash() => r'7cb3009c86f3d70cddbfcff402f0cce83a41a106';
+
+/// Provides all quests.
+///
+/// Copied from [quests].
+@ProviderFor(quests)
+final questsProvider = AutoDisposeFutureProvider<List<Quest>>.internal(
+  quests,
+  name: r'questsProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$questsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef QuestsRef = AutoDisposeFutureProviderRef<List<Quest>>;
+String _$questStagesHash() => r'8beea6df870cca5b3aab6d81040505e4488111e9';
+
+/// Provide quest stages.
+///
+/// Copied from [questStages].
+@ProviderFor(questStages)
+const questStagesProvider = QuestStagesFamily();
+
+/// Provide quest stages.
+///
+/// Copied from [questStages].
+class QuestStagesFamily extends Family<AsyncValue<List<QuestStage>>> {
+  /// Provide quest stages.
+  ///
+  /// Copied from [questStages].
+  const QuestStagesFamily();
+
+  /// Provide quest stages.
+  ///
+  /// Copied from [questStages].
+  QuestStagesProvider call(
+    int questId,
+  ) {
+    return QuestStagesProvider(
+      questId,
+    );
+  }
+
+  @override
+  QuestStagesProvider getProviderOverride(
+    covariant QuestStagesProvider provider,
+  ) {
+    return call(
+      provider.questId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'questStagesProvider';
+}
+
+/// Provide quest stages.
+///
+/// Copied from [questStages].
+class QuestStagesProvider extends AutoDisposeFutureProvider<List<QuestStage>> {
+  /// Provide quest stages.
+  ///
+  /// Copied from [questStages].
+  QuestStagesProvider(
+    int questId,
+  ) : this._internal(
+          (ref) => questStages(
+            ref as QuestStagesRef,
+            questId,
+          ),
+          from: questStagesProvider,
+          name: r'questStagesProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$questStagesHash,
+          dependencies: QuestStagesFamily._dependencies,
+          allTransitiveDependencies:
+              QuestStagesFamily._allTransitiveDependencies,
+          questId: questId,
+        );
+
+  QuestStagesProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.questId,
+  }) : super.internal();
+
+  final int questId;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<QuestStage>> Function(QuestStagesRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: QuestStagesProvider._internal(
+        (ref) => create(ref as QuestStagesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        questId: questId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<QuestStage>> createElement() {
+    return _QuestStagesProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is QuestStagesProvider && other.questId == questId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, questId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin QuestStagesRef on AutoDisposeFutureProviderRef<List<QuestStage>> {
+  /// The parameter `questId` of this provider.
+  int get questId;
+}
+
+class _QuestStagesProviderElement
+    extends AutoDisposeFutureProviderElement<List<QuestStage>>
+    with QuestStagesRef {
+  _QuestStagesProviderElement(super.provider);
+
+  @override
+  int get questId => (origin as QuestStagesProvider).questId;
+}
+
 String _$currentProjectContextHash() =>
     r'4c8cc047a1a79eb695b9f390a99148ce921e1e5b';
 

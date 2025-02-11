@@ -6610,6 +6610,507 @@ class CommandGameStatsCompanion extends UpdateCompanion<CommandGameStat> {
   }
 }
 
+class $QuestsTable extends Quests with TableInfo<$QuestsTable, Quest> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $QuestsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, name, description];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'quests';
+  @override
+  VerificationContext validateIntegrity(Insertable<Quest> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Quest map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Quest(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+    );
+  }
+
+  @override
+  $QuestsTable createAlias(String alias) {
+    return $QuestsTable(attachedDatabase, alias);
+  }
+}
+
+class Quest extends DataClass implements Insertable<Quest> {
+  /// The primary key field.
+  final int id;
+
+  /// The name column.
+  final String name;
+
+  /// The description column.
+  final String description;
+  const Quest(
+      {required this.id, required this.name, required this.description});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    return map;
+  }
+
+  QuestsCompanion toCompanion(bool nullToAbsent) {
+    return QuestsCompanion(
+      id: Value(id),
+      name: Value(name),
+      description: Value(description),
+    );
+  }
+
+  factory Quest.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Quest(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+    };
+  }
+
+  Quest copyWith({int? id, String? name, String? description}) => Quest(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description ?? this.description,
+      );
+  Quest copyWithCompanion(QuestsCompanion data) {
+    return Quest(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      description:
+          data.description.present ? data.description.value : this.description,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Quest(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, description);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Quest &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description);
+}
+
+class QuestsCompanion extends UpdateCompanion<Quest> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> description;
+  const QuestsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+  });
+  QuestsCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required String description,
+  })  : name = Value(name),
+        description = Value(description);
+  static Insertable<Quest> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? description,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+    });
+  }
+
+  QuestsCompanion copyWith(
+      {Value<int>? id, Value<String>? name, Value<String>? description}) {
+    return QuestsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QuestsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $QuestStagesTable extends QuestStages
+    with TableInfo<$QuestStagesTable, QuestStage> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $QuestStagesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _questIdMeta =
+      const VerificationMeta('questId');
+  @override
+  late final GeneratedColumn<int> questId = GeneratedColumn<int>(
+      'quest_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES quests (id) ON DELETE CASCADE'));
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+      'label', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _labelSoundIdMeta =
+      const VerificationMeta('labelSoundId');
+  @override
+  late final GeneratedColumn<int> labelSoundId = GeneratedColumn<int>(
+      'label_sound_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES sound_references (id) ON DELETE SET NULL'));
+  @override
+  List<GeneratedColumn> get $columns => [id, questId, label, labelSoundId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'quest_stages';
+  @override
+  VerificationContext validateIntegrity(Insertable<QuestStage> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('quest_id')) {
+      context.handle(_questIdMeta,
+          questId.isAcceptableOrUnknown(data['quest_id']!, _questIdMeta));
+    } else if (isInserting) {
+      context.missing(_questIdMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+          _labelMeta, label.isAcceptableOrUnknown(data['label']!, _labelMeta));
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    if (data.containsKey('label_sound_id')) {
+      context.handle(
+          _labelSoundIdMeta,
+          labelSoundId.isAcceptableOrUnknown(
+              data['label_sound_id']!, _labelSoundIdMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  QuestStage map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return QuestStage(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      questId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}quest_id'])!,
+      label: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}label'])!,
+      labelSoundId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}label_sound_id']),
+    );
+  }
+
+  @override
+  $QuestStagesTable createAlias(String alias) {
+    return $QuestStagesTable(attachedDatabase, alias);
+  }
+}
+
+class QuestStage extends DataClass implements Insertable<QuestStage> {
+  /// The primary key field.
+  final int id;
+
+  /// The ID of the quest this stage is part of.
+  final int questId;
+
+  /// The label of this quest stage.
+  final String label;
+
+  /// The ID of the label sound.
+  final int? labelSoundId;
+  const QuestStage(
+      {required this.id,
+      required this.questId,
+      required this.label,
+      this.labelSoundId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['quest_id'] = Variable<int>(questId);
+    map['label'] = Variable<String>(label);
+    if (!nullToAbsent || labelSoundId != null) {
+      map['label_sound_id'] = Variable<int>(labelSoundId);
+    }
+    return map;
+  }
+
+  QuestStagesCompanion toCompanion(bool nullToAbsent) {
+    return QuestStagesCompanion(
+      id: Value(id),
+      questId: Value(questId),
+      label: Value(label),
+      labelSoundId: labelSoundId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(labelSoundId),
+    );
+  }
+
+  factory QuestStage.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return QuestStage(
+      id: serializer.fromJson<int>(json['id']),
+      questId: serializer.fromJson<int>(json['questId']),
+      label: serializer.fromJson<String>(json['label']),
+      labelSoundId: serializer.fromJson<int?>(json['labelSoundId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'questId': serializer.toJson<int>(questId),
+      'label': serializer.toJson<String>(label),
+      'labelSoundId': serializer.toJson<int?>(labelSoundId),
+    };
+  }
+
+  QuestStage copyWith(
+          {int? id,
+          int? questId,
+          String? label,
+          Value<int?> labelSoundId = const Value.absent()}) =>
+      QuestStage(
+        id: id ?? this.id,
+        questId: questId ?? this.questId,
+        label: label ?? this.label,
+        labelSoundId:
+            labelSoundId.present ? labelSoundId.value : this.labelSoundId,
+      );
+  QuestStage copyWithCompanion(QuestStagesCompanion data) {
+    return QuestStage(
+      id: data.id.present ? data.id.value : this.id,
+      questId: data.questId.present ? data.questId.value : this.questId,
+      label: data.label.present ? data.label.value : this.label,
+      labelSoundId: data.labelSoundId.present
+          ? data.labelSoundId.value
+          : this.labelSoundId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QuestStage(')
+          ..write('id: $id, ')
+          ..write('questId: $questId, ')
+          ..write('label: $label, ')
+          ..write('labelSoundId: $labelSoundId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, questId, label, labelSoundId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is QuestStage &&
+          other.id == this.id &&
+          other.questId == this.questId &&
+          other.label == this.label &&
+          other.labelSoundId == this.labelSoundId);
+}
+
+class QuestStagesCompanion extends UpdateCompanion<QuestStage> {
+  final Value<int> id;
+  final Value<int> questId;
+  final Value<String> label;
+  final Value<int?> labelSoundId;
+  const QuestStagesCompanion({
+    this.id = const Value.absent(),
+    this.questId = const Value.absent(),
+    this.label = const Value.absent(),
+    this.labelSoundId = const Value.absent(),
+  });
+  QuestStagesCompanion.insert({
+    this.id = const Value.absent(),
+    required int questId,
+    required String label,
+    this.labelSoundId = const Value.absent(),
+  })  : questId = Value(questId),
+        label = Value(label);
+  static Insertable<QuestStage> custom({
+    Expression<int>? id,
+    Expression<int>? questId,
+    Expression<String>? label,
+    Expression<int>? labelSoundId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (questId != null) 'quest_id': questId,
+      if (label != null) 'label': label,
+      if (labelSoundId != null) 'label_sound_id': labelSoundId,
+    });
+  }
+
+  QuestStagesCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? questId,
+      Value<String>? label,
+      Value<int?>? labelSoundId}) {
+    return QuestStagesCompanion(
+      id: id ?? this.id,
+      questId: questId ?? this.questId,
+      label: label ?? this.label,
+      labelSoundId: labelSoundId ?? this.labelSoundId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (questId.present) {
+      map['quest_id'] = Variable<int>(questId.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (labelSoundId.present) {
+      map['label_sound_id'] = Variable<int>(labelSoundId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QuestStagesCompanion(')
+          ..write('id: $id, ')
+          ..write('questId: $questId, ')
+          ..write('label: $label, ')
+          ..write('labelSoundId: $labelSoundId')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -6638,6 +7139,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $RoomObjectMovementsTable(this);
   late final $CommandGameStatsTable commandGameStats =
       $CommandGameStatsTable(this);
+  late final $QuestsTable quests = $QuestsTable(this);
+  late final $QuestStagesTable questStages = $QuestStagesTable(this);
   late final Index roomObjectCoordinatesIndex = Index(
       'room_object_coordinates_index',
       'CREATE INDEX room_object_coordinates_index ON room_objects (x, y)');
@@ -6666,6 +7169,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         roomObjectCommandCallers,
         roomObjectMovements,
         commandGameStats,
+        quests,
+        questStages,
         roomObjectCoordinatesIndex,
         commandCallersCallingCommandIdIndex
       ];
@@ -6904,6 +7409,20 @@ abstract class _$AppDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.delete),
             result: [
               TableUpdate('command_game_stats', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('quests',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('quest_stages', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('sound_references',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('quest_stages', kind: UpdateKind.update),
             ],
           ),
         ],
@@ -7156,6 +7675,21 @@ final class $$SoundReferencesTableReferences extends BaseReferences<
 
     final cache =
         $_typedResult.readTableOrNull(_roomObjectCommandCallersRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$QuestStagesTable, List<QuestStage>>
+      _questStagesRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.questStages,
+              aliasName: $_aliasNameGenerator(
+                  db.soundReferences.id, db.questStages.labelSoundId));
+
+  $$QuestStagesTableProcessedTableManager get questStagesRefs {
+    final manager = $$QuestStagesTableTableManager($_db, $_db.questStages)
+        .filter((f) => f.labelSoundId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_questStagesRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -7479,6 +8013,27 @@ class $$SoundReferencesTableFilterComposer
                   $removeJoinBuilderFromRootComposer:
                       $removeJoinBuilderFromRootComposer,
                 ));
+    return f(composer);
+  }
+
+  Expression<bool> questStagesRefs(
+      Expression<bool> Function($$QuestStagesTableFilterComposer f) f) {
+    final $$QuestStagesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.questStages,
+        getReferencedColumn: (t) => t.labelSoundId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$QuestStagesTableFilterComposer(
+              $db: $db,
+              $table: $db.questStages,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
     return f(composer);
   }
 }
@@ -7826,6 +8381,27 @@ class $$SoundReferencesTableAnnotationComposer
                 ));
     return f(composer);
   }
+
+  Expression<T> questStagesRefs<T extends Object>(
+      Expression<T> Function($$QuestStagesTableAnnotationComposer a) f) {
+    final $$QuestStagesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.questStages,
+        getReferencedColumn: (t) => t.labelSoundId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$QuestStagesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.questStages,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$SoundReferencesTableTableManager extends RootTableManager<
@@ -7853,7 +8429,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
         bool roomSurfaceBoostMaxedOutSounds,
         bool roomSurfaceCostsRefs,
         bool roomObjectRandomSoundsRefs,
-        bool roomObjectCommandCallersRefs})> {
+        bool roomObjectCommandCallersRefs,
+        bool questStagesRefs})> {
   $$SoundReferencesTableTableManager(
       _$AppDatabase db, $SoundReferencesTable table)
       : super(TableManagerState(
@@ -7909,7 +8486,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
               roomSurfaceBoostMaxedOutSounds = false,
               roomSurfaceCostsRefs = false,
               roomObjectRandomSoundsRefs = false,
-              roomObjectCommandCallersRefs = false}) {
+              roomObjectCommandCallersRefs = false,
+              questStagesRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
@@ -7926,7 +8504,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                 if (roomSurfaceBoostMaxedOutSounds) db.roomSurfaceBoosts,
                 if (roomSurfaceCostsRefs) db.roomSurfaceCosts,
                 if (roomObjectRandomSoundsRefs) db.roomObjectRandomSounds,
-                if (roomObjectCommandCallersRefs) db.roomObjectCommandCallers
+                if (roomObjectCommandCallersRefs) db.roomObjectCommandCallers,
+                if (questStagesRefs) db.questStages
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
@@ -8112,6 +8691,19 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.earconId == item.id),
+                        typedResults: items),
+                  if (questStagesRefs)
+                    await $_getPrefetchedData<SoundReference, $SoundReferencesTable,
+                            QuestStage>(
+                        currentTable: table,
+                        referencedTable: $$SoundReferencesTableReferences
+                            ._questStagesRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$SoundReferencesTableReferences(db, table, p0)
+                                .questStagesRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.labelSoundId == item.id),
                         typedResults: items)
                 ];
               },
@@ -8145,7 +8737,8 @@ typedef $$SoundReferencesTableProcessedTableManager = ProcessedTableManager<
         bool roomSurfaceBoostMaxedOutSounds,
         bool roomSurfaceCostsRefs,
         bool roomObjectRandomSoundsRefs,
-        bool roomObjectCommandCallersRefs})>;
+        bool roomObjectCommandCallersRefs,
+        bool questStagesRefs})>;
 typedef $$ZonesTableCreateCompanionBuilder = ZonesCompanion Function({
   Value<int> id,
   required String name,
@@ -16864,6 +17457,550 @@ typedef $$CommandGameStatsTableProcessedTableManager = ProcessedTableManager<
     (CommandGameStat, $$CommandGameStatsTableReferences),
     CommandGameStat,
     PrefetchHooks Function({bool gameStatId, bool commandId})>;
+typedef $$QuestsTableCreateCompanionBuilder = QuestsCompanion Function({
+  Value<int> id,
+  required String name,
+  required String description,
+});
+typedef $$QuestsTableUpdateCompanionBuilder = QuestsCompanion Function({
+  Value<int> id,
+  Value<String> name,
+  Value<String> description,
+});
+
+final class $$QuestsTableReferences
+    extends BaseReferences<_$AppDatabase, $QuestsTable, Quest> {
+  $$QuestsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$QuestStagesTable, List<QuestStage>>
+      _questStagesRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.questStages,
+              aliasName:
+                  $_aliasNameGenerator(db.quests.id, db.questStages.questId));
+
+  $$QuestStagesTableProcessedTableManager get questStagesRefs {
+    final manager = $$QuestStagesTableTableManager($_db, $_db.questStages)
+        .filter((f) => f.questId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_questStagesRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$QuestsTableFilterComposer
+    extends Composer<_$AppDatabase, $QuestsTable> {
+  $$QuestsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
+
+  Expression<bool> questStagesRefs(
+      Expression<bool> Function($$QuestStagesTableFilterComposer f) f) {
+    final $$QuestStagesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.questStages,
+        getReferencedColumn: (t) => t.questId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$QuestStagesTableFilterComposer(
+              $db: $db,
+              $table: $db.questStages,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$QuestsTableOrderingComposer
+    extends Composer<_$AppDatabase, $QuestsTable> {
+  $$QuestsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
+}
+
+class $$QuestsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $QuestsTable> {
+  $$QuestsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
+
+  Expression<T> questStagesRefs<T extends Object>(
+      Expression<T> Function($$QuestStagesTableAnnotationComposer a) f) {
+    final $$QuestStagesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.questStages,
+        getReferencedColumn: (t) => t.questId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$QuestStagesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.questStages,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$QuestsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $QuestsTable,
+    Quest,
+    $$QuestsTableFilterComposer,
+    $$QuestsTableOrderingComposer,
+    $$QuestsTableAnnotationComposer,
+    $$QuestsTableCreateCompanionBuilder,
+    $$QuestsTableUpdateCompanionBuilder,
+    (Quest, $$QuestsTableReferences),
+    Quest,
+    PrefetchHooks Function({bool questStagesRefs})> {
+  $$QuestsTableTableManager(_$AppDatabase db, $QuestsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$QuestsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$QuestsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$QuestsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> description = const Value.absent(),
+          }) =>
+              QuestsCompanion(
+            id: id,
+            name: name,
+            description: description,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            required String description,
+          }) =>
+              QuestsCompanion.insert(
+            id: id,
+            name: name,
+            description: description,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) =>
+                  (e.readTable(table), $$QuestsTableReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: ({questStagesRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (questStagesRefs) db.questStages],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (questStagesRefs)
+                    await $_getPrefetchedData<Quest, $QuestsTable, QuestStage>(
+                        currentTable: table,
+                        referencedTable:
+                            $$QuestsTableReferences._questStagesRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$QuestsTableReferences(db, table, p0)
+                                .questStagesRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.questId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$QuestsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $QuestsTable,
+    Quest,
+    $$QuestsTableFilterComposer,
+    $$QuestsTableOrderingComposer,
+    $$QuestsTableAnnotationComposer,
+    $$QuestsTableCreateCompanionBuilder,
+    $$QuestsTableUpdateCompanionBuilder,
+    (Quest, $$QuestsTableReferences),
+    Quest,
+    PrefetchHooks Function({bool questStagesRefs})>;
+typedef $$QuestStagesTableCreateCompanionBuilder = QuestStagesCompanion
+    Function({
+  Value<int> id,
+  required int questId,
+  required String label,
+  Value<int?> labelSoundId,
+});
+typedef $$QuestStagesTableUpdateCompanionBuilder = QuestStagesCompanion
+    Function({
+  Value<int> id,
+  Value<int> questId,
+  Value<String> label,
+  Value<int?> labelSoundId,
+});
+
+final class $$QuestStagesTableReferences
+    extends BaseReferences<_$AppDatabase, $QuestStagesTable, QuestStage> {
+  $$QuestStagesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $QuestsTable _questIdTable(_$AppDatabase db) => db.quests
+      .createAlias($_aliasNameGenerator(db.questStages.questId, db.quests.id));
+
+  $$QuestsTableProcessedTableManager get questId {
+    final $_column = $_itemColumn<int>('quest_id')!;
+
+    final manager = $$QuestsTableTableManager($_db, $_db.quests)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_questIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $SoundReferencesTable _labelSoundIdTable(_$AppDatabase db) =>
+      db.soundReferences.createAlias($_aliasNameGenerator(
+          db.questStages.labelSoundId, db.soundReferences.id));
+
+  $$SoundReferencesTableProcessedTableManager? get labelSoundId {
+    final $_column = $_itemColumn<int>('label_sound_id');
+    if ($_column == null) return null;
+    final manager =
+        $$SoundReferencesTableTableManager($_db, $_db.soundReferences)
+            .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_labelSoundIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$QuestStagesTableFilterComposer
+    extends Composer<_$AppDatabase, $QuestStagesTable> {
+  $$QuestStagesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get label => $composableBuilder(
+      column: $table.label, builder: (column) => ColumnFilters(column));
+
+  $$QuestsTableFilterComposer get questId {
+    final $$QuestsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.questId,
+        referencedTable: $db.quests,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$QuestsTableFilterComposer(
+              $db: $db,
+              $table: $db.quests,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableFilterComposer get labelSoundId {
+    final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.labelSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableFilterComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$QuestStagesTableOrderingComposer
+    extends Composer<_$AppDatabase, $QuestStagesTable> {
+  $$QuestStagesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get label => $composableBuilder(
+      column: $table.label, builder: (column) => ColumnOrderings(column));
+
+  $$QuestsTableOrderingComposer get questId {
+    final $$QuestsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.questId,
+        referencedTable: $db.quests,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$QuestsTableOrderingComposer(
+              $db: $db,
+              $table: $db.quests,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableOrderingComposer get labelSoundId {
+    final $$SoundReferencesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.labelSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableOrderingComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$QuestStagesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $QuestStagesTable> {
+  $$QuestStagesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  $$QuestsTableAnnotationComposer get questId {
+    final $$QuestsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.questId,
+        referencedTable: $db.quests,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$QuestsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.quests,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$SoundReferencesTableAnnotationComposer get labelSoundId {
+    final $$SoundReferencesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.labelSoundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$QuestStagesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $QuestStagesTable,
+    QuestStage,
+    $$QuestStagesTableFilterComposer,
+    $$QuestStagesTableOrderingComposer,
+    $$QuestStagesTableAnnotationComposer,
+    $$QuestStagesTableCreateCompanionBuilder,
+    $$QuestStagesTableUpdateCompanionBuilder,
+    (QuestStage, $$QuestStagesTableReferences),
+    QuestStage,
+    PrefetchHooks Function({bool questId, bool labelSoundId})> {
+  $$QuestStagesTableTableManager(_$AppDatabase db, $QuestStagesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$QuestStagesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$QuestStagesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$QuestStagesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> questId = const Value.absent(),
+            Value<String> label = const Value.absent(),
+            Value<int?> labelSoundId = const Value.absent(),
+          }) =>
+              QuestStagesCompanion(
+            id: id,
+            questId: questId,
+            label: label,
+            labelSoundId: labelSoundId,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int questId,
+            required String label,
+            Value<int?> labelSoundId = const Value.absent(),
+          }) =>
+              QuestStagesCompanion.insert(
+            id: id,
+            questId: questId,
+            label: label,
+            labelSoundId: labelSoundId,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$QuestStagesTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({questId = false, labelSoundId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (questId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.questId,
+                    referencedTable:
+                        $$QuestStagesTableReferences._questIdTable(db),
+                    referencedColumn:
+                        $$QuestStagesTableReferences._questIdTable(db).id,
+                  ) as T;
+                }
+                if (labelSoundId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.labelSoundId,
+                    referencedTable:
+                        $$QuestStagesTableReferences._labelSoundIdTable(db),
+                    referencedColumn:
+                        $$QuestStagesTableReferences._labelSoundIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$QuestStagesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $QuestStagesTable,
+    QuestStage,
+    $$QuestStagesTableFilterComposer,
+    $$QuestStagesTableOrderingComposer,
+    $$QuestStagesTableAnnotationComposer,
+    $$QuestStagesTableCreateCompanionBuilder,
+    $$QuestStagesTableUpdateCompanionBuilder,
+    (QuestStage, $$QuestStagesTableReferences),
+    QuestStage,
+    PrefetchHooks Function({bool questId, bool labelSoundId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -16904,4 +18041,8 @@ class $AppDatabaseManager {
       $$RoomObjectMovementsTableTableManager(_db, _db.roomObjectMovements);
   $$CommandGameStatsTableTableManager get commandGameStats =>
       $$CommandGameStatsTableTableManager(_db, _db.commandGameStats);
+  $$QuestsTableTableManager get quests =>
+      $$QuestsTableTableManager(_db, _db.quests);
+  $$QuestStagesTableTableManager get questStages =>
+      $$QuestStagesTableTableManager(_db, _db.questStages);
 }

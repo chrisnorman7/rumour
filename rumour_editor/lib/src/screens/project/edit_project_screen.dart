@@ -88,6 +88,14 @@ class EditProjectScreen extends ConsumerWidget {
               onPressed: () => _createGameStat(ref),
             ),
           ),
+          PerformableActionsTabbedScaffoldTab(
+            performableActions: actions,
+            title: 'Quests',
+            icon: const Text('The quests which players can complete'),
+            builder:
+                (final context) =>
+                    const CommonShortcuts(child: ProjectQuestsTab()),
+          ),
         ],
       ),
     );

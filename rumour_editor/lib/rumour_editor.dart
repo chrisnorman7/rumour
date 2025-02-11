@@ -15,6 +15,7 @@ export 'src/screens/project/edit_project_screen.dart';
 export 'src/screens/project/select_room_object_screen.dart';
 export 'src/screens/project/tabs/project_game_stats_tab.dart';
 export 'src/screens/project/tabs/project_player_classes_tab.dart';
+export 'src/screens/project/tabs/project_quests_tab.dart';
 export 'src/screens/project/tabs/project_room_surfaces_tab.dart';
 export 'src/screens/project/tabs/project_zones_tab.dart';
 export 'src/screens/project_settings/project_settings_screen.dart';
