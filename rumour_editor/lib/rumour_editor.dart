@@ -22,6 +22,7 @@ export 'src/screens/project_settings/project_settings_screen.dart';
 export 'src/screens/project_settings/tabs/project_menu_settings_tab.dart';
 export 'src/screens/project_settings/tabs/project_settings_tab.dart';
 export 'src/screens/projects_screen.dart';
+export 'src/screens/quest/edit_quest.dart';
 export 'src/screens/room/edit_room_screen.dart';
 export 'src/screens/room/tabs/room_object_tile.dart';
 export 'src/screens/room/tabs/room_objects_list_tab.dart';

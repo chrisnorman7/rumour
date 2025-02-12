@@ -6268,7 +6268,7 @@ final questsProvider = AutoDisposeFutureProvider<List<Quest>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef QuestsRef = AutoDisposeFutureProviderRef<List<Quest>>;
-String _$questStagesHash() => r'8beea6df870cca5b3aab6d81040505e4488111e9';
+String _$questStagesHash() => r'58480716144600ba5cea83e843be397166b80c8a';
 
 /// Provide quest stages.
 ///

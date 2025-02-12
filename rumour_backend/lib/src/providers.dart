@@ -1106,7 +1106,7 @@ Future<List<QuestStage>> questStages(final Ref ref, final int questId) async {
   if (stages.isEmpty) {
     stages.add(
       await manager.createReturning(
-        (final o) => o(questId: questId, label: 'Find something'),
+        (final o) => o(questId: questId, label: 'Do something'),
       ),
     );
   }

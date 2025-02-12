@@ -68,7 +68,10 @@ class ProjectQuestsTab extends ConsumerWidget {
             ],
             title: Text(quest.name),
             subtitle: Text(quest.description),
-            onTap: () {},
+            onTap:
+                () => context.pushWidgetBuilder(
+                  (_) => EditQuest(questId: quest.id),
+                ),
           );
         },
         itemCount: quests.length,

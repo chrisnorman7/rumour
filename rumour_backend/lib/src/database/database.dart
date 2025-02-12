@@ -40,7 +40,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// The schema version.
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   /// Migrate the database.
   @override
@@ -87,8 +87,9 @@ class AppDatabase extends _$AppDatabase {
           if (from < 9) {
             await m.createTable(this.commandGameStats);
           }
-          if (from < 10) {
+          if (from < 11) {
             await m.createTable(this.quests);
+            await m.createTable(this.questStages);
           }
         },
       );

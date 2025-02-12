@@ -93,8 +93,11 @@ class EditProjectScreen extends ConsumerWidget {
             title: 'Quests',
             icon: const Text('The quests which players can complete'),
             builder:
-                (final context) =>
-                    const CommonShortcuts(child: ProjectQuestsTab()),
+                (final context) => CommonShortcuts(
+                  newCallback: () => _createQuest(ref),
+                  child: const ProjectQuestsTab(),
+                ),
+            floatingActionButton: NewButton(onPressed: () => _createQuest(ref)),
           ),
         ],
       ),
@@ -169,5 +172,14 @@ class EditProjectScreen extends ConsumerWidget {
         (_) => EditGameStatScreen(gameStatId: stat.id),
       );
     }
+  }
+
+  /// Create a new quest.
+  Future<void> _createQuest(final WidgetRef ref) async {
+    final database = ref.watch(databaseProvider);
+    await database.managers.quests.createReturning(
+      (final o) => o(name: 'Untitled Quest', description: 'A new quest.'),
+    );
+    ref.invalidate(questsProvider);
   }
 }
