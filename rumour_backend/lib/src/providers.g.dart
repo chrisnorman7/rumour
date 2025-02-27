@@ -6411,6 +6411,148 @@ class _QuestStagesProviderElement
   int get questId => (origin as QuestStagesProvider).questId;
 }
 
+String _$questStageHash() => r'43439a51c9ef5ec980df2436e38e131548cb4b7e';
+
+/// Provide a single quest stage.
+///
+/// Copied from [questStage].
+@ProviderFor(questStage)
+const questStageProvider = QuestStageFamily();
+
+/// Provide a single quest stage.
+///
+/// Copied from [questStage].
+class QuestStageFamily extends Family<AsyncValue<QuestStage>> {
+  /// Provide a single quest stage.
+  ///
+  /// Copied from [questStage].
+  const QuestStageFamily();
+
+  /// Provide a single quest stage.
+  ///
+  /// Copied from [questStage].
+  QuestStageProvider call(
+    int id,
+  ) {
+    return QuestStageProvider(
+      id,
+    );
+  }
+
+  @override
+  QuestStageProvider getProviderOverride(
+    covariant QuestStageProvider provider,
+  ) {
+    return call(
+      provider.id,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'questStageProvider';
+}
+
+/// Provide a single quest stage.
+///
+/// Copied from [questStage].
+class QuestStageProvider extends AutoDisposeFutureProvider<QuestStage> {
+  /// Provide a single quest stage.
+  ///
+  /// Copied from [questStage].
+  QuestStageProvider(
+    int id,
+  ) : this._internal(
+          (ref) => questStage(
+            ref as QuestStageRef,
+            id,
+          ),
+          from: questStageProvider,
+          name: r'questStageProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$questStageHash,
+          dependencies: QuestStageFamily._dependencies,
+          allTransitiveDependencies:
+              QuestStageFamily._allTransitiveDependencies,
+          id: id,
+        );
+
+  QuestStageProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.id,
+  }) : super.internal();
+
+  final int id;
+
+  @override
+  Override overrideWith(
+    FutureOr<QuestStage> Function(QuestStageRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: QuestStageProvider._internal(
+        (ref) => create(ref as QuestStageRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        id: id,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<QuestStage> createElement() {
+    return _QuestStageProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is QuestStageProvider && other.id == id;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, id.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin QuestStageRef on AutoDisposeFutureProviderRef<QuestStage> {
+  /// The parameter `id` of this provider.
+  int get id;
+}
+
+class _QuestStageProviderElement
+    extends AutoDisposeFutureProviderElement<QuestStage> with QuestStageRef {
+  _QuestStageProviderElement(super.provider);
+
+  @override
+  int get id => (origin as QuestStageProvider).id;
+}
+
 String _$currentProjectContextHash() =>
     r'4c8cc047a1a79eb695b9f390a99148ce921e1e5b';
 

@@ -1112,3 +1112,17 @@ Future<List<QuestStage>> questStages(final Ref ref, final int questId) async {
   }
   return stages;
 }
+
+/// Provide a single quest stage.
+@riverpod
+Future<QuestStage> questStage(final Ref ref, final int id) async {
+  final database = ref.watch(databaseProvider);
+  final stage = await database.managers.questStages
+      .filter(
+        (final f) => f.id.equals(id),
+      )
+      .getSingle();
+  // Hopefully setup a dependency.
+  ref.watch(questStagesProvider(stage.questId));
+  return stage;
+}
