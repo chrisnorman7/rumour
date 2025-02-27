@@ -58,6 +58,8 @@ Project _$ProjectFromJson(Map<String, dynamic> json) => Project(
               json['textStyleSettings'] as Map<String, dynamic>),
       examineRoomObjectFormat: json['examineRoomObjectFormat'] as String? ??
           '{{ name }}: {{ description }} ({% if north == 0 and east == 0 and south == 0 and west == 0 %}here{% else %}{%if north > 0 %}{{ north }}n {% endif %}{% if east > 0 %}{{ east }}e {% endif %}{% if south > 0 %}{{ south }}s {% endif %}{% if west > 0 %}{{ west }}w {% endif %}{% endif %})',
+      noQuestsLabel: json['noQuestsLabel'] as String? ??
+          'No quests have been started yet.',
     );
 
 Map<String, dynamic> _$ProjectToJson(Project instance) => <String, dynamic>{
@@ -81,4 +83,5 @@ Map<String, dynamic> _$ProjectToJson(Project instance) => <String, dynamic>{
       'statMenuItemFormat': instance.statMenuItemFormat,
       'textStyleSettings': instance.textStyleSettings,
       'examineRoomObjectFormat': instance.examineRoomObjectFormat,
+      'noQuestsLabel': instance.noQuestsLabel,
     };

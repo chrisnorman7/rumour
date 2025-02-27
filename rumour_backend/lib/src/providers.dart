@@ -1126,3 +1126,38 @@ Future<QuestStage> questStage(final Ref ref, final int id) async {
   ref.watch(questStagesProvider(stage.questId));
   return stage;
 }
+
+/// Provide all the quest achievements for a given player.
+@riverpod
+Future<List<QuestAchievementContext>> questAchievements(
+  final Ref ref,
+  final String playerId,
+) async {
+  final quests = await ref.watch(questsProvider.future);
+  final player = await ref.watch(
+    GamePlayerContextProvider(playerId).future,
+  );
+  final achievements = player.gamePlayer.questAchievements..sort();
+  final contexts = <QuestAchievementContext>[];
+  for (final achievement in achievements) {
+    final projectContext = ref.watch(projectContextProvider);
+    final quest = quests.firstWhere(
+      (final quest) => quest.id == achievement.questId,
+    );
+    final stage = await ref.watch(
+      questStageProvider(achievement.stageId).future,
+    );
+    contexts.add(
+      QuestAchievementContext(
+        questAchievement: achievement,
+        quest: quest,
+        stage: stage,
+        earcon: await projectContext.maybeGetSoundFromSoundReferenceId(
+          id: stage.labelSoundId,
+          destroy: false,
+        ),
+      ),
+    );
+  }
+  return contexts;
+}

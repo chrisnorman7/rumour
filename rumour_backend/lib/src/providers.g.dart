@@ -6553,6 +6553,155 @@ class _QuestStageProviderElement
   int get id => (origin as QuestStageProvider).id;
 }
 
+String _$questAchievementsHash() => r'6b82809726d41e457eecd8a9ec8107a408510c9e';
+
+/// Provide all the quest achievements for a given player.
+///
+/// Copied from [questAchievements].
+@ProviderFor(questAchievements)
+const questAchievementsProvider = QuestAchievementsFamily();
+
+/// Provide all the quest achievements for a given player.
+///
+/// Copied from [questAchievements].
+class QuestAchievementsFamily
+    extends Family<AsyncValue<List<QuestAchievementContext>>> {
+  /// Provide all the quest achievements for a given player.
+  ///
+  /// Copied from [questAchievements].
+  const QuestAchievementsFamily();
+
+  /// Provide all the quest achievements for a given player.
+  ///
+  /// Copied from [questAchievements].
+  QuestAchievementsProvider call(
+    String playerId,
+  ) {
+    return QuestAchievementsProvider(
+      playerId,
+    );
+  }
+
+  @override
+  QuestAchievementsProvider getProviderOverride(
+    covariant QuestAchievementsProvider provider,
+  ) {
+    return call(
+      provider.playerId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'questAchievementsProvider';
+}
+
+/// Provide all the quest achievements for a given player.
+///
+/// Copied from [questAchievements].
+class QuestAchievementsProvider
+    extends AutoDisposeFutureProvider<List<QuestAchievementContext>> {
+  /// Provide all the quest achievements for a given player.
+  ///
+  /// Copied from [questAchievements].
+  QuestAchievementsProvider(
+    String playerId,
+  ) : this._internal(
+          (ref) => questAchievements(
+            ref as QuestAchievementsRef,
+            playerId,
+          ),
+          from: questAchievementsProvider,
+          name: r'questAchievementsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$questAchievementsHash,
+          dependencies: QuestAchievementsFamily._dependencies,
+          allTransitiveDependencies:
+              QuestAchievementsFamily._allTransitiveDependencies,
+          playerId: playerId,
+        );
+
+  QuestAchievementsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.playerId,
+  }) : super.internal();
+
+  final String playerId;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<QuestAchievementContext>> Function(
+            QuestAchievementsRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: QuestAchievementsProvider._internal(
+        (ref) => create(ref as QuestAchievementsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        playerId: playerId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<QuestAchievementContext>>
+      createElement() {
+    return _QuestAchievementsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is QuestAchievementsProvider && other.playerId == playerId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, playerId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin QuestAchievementsRef
+    on AutoDisposeFutureProviderRef<List<QuestAchievementContext>> {
+  /// The parameter `playerId` of this provider.
+  String get playerId;
+}
+
+class _QuestAchievementsProviderElement
+    extends AutoDisposeFutureProviderElement<List<QuestAchievementContext>>
+    with QuestAchievementsRef {
+  _QuestAchievementsProviderElement(super.provider);
+
+  @override
+  String get playerId => (origin as QuestAchievementsProvider).playerId;
+}
+
 String _$currentProjectContextHash() =>
     r'4c8cc047a1a79eb695b9f390a99148ce921e1e5b';
 

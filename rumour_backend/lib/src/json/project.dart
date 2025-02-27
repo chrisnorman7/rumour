@@ -36,6 +36,7 @@ class Project {
     this.examineRoomObjectFormat =
         // ignore: lines_longer_than_80_chars
         '{{ name }}: {{ description }} ({% if north == 0 and east == 0 and south == 0 and west == 0 %}here{% else %}{%if north > 0 %}{{ north }}n {% endif %}{% if east > 0 %}{{ east }}e {% endif %}{% if south > 0 %}{{ south }}s {% endif %}{% if west > 0 %}{{ west }}w {% endif %}{% endif %})',
+    this.noQuestsLabel = 'No quests have been started yet.',
   }) : textStyleSettings = textStyleSettings ??
             TextStyleSettings(
               fontSize: 24,
@@ -120,6 +121,9 @@ class Project {
 
   /// The format of the message spoken when examining room objects.
   String examineRoomObjectFormat;
+
+  /// The message to show when no quests have been started yet.
+  String noQuestsLabel;
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$ProjectToJson(this);

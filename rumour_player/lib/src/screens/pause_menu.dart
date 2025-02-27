@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_player/rumour_player.dart';
+import 'package:rumour_player/src/widgets/pause_menu_tabs/quests_tab.dart';
 
 /// The pause menu.
 class PauseMenu extends ConsumerWidget {
@@ -54,6 +55,11 @@ class PauseMenu extends ConsumerWidget {
               title: 'Stats',
               icon: const Icon(Icons.insert_chart_outlined),
               child: PlayerStatsTab(playerId: playerId),
+            ),
+            TabbedScaffoldTab(
+              title: 'Quests',
+              icon: const Icon(Icons.task),
+              child: QuestsTab(playerId: playerId),
             ),
           ],
         ),
