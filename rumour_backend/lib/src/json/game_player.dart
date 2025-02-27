@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:rumour_backend/rumour_backend.dart';
 
 part 'game_player.g.dart';
 
@@ -15,7 +16,9 @@ class GamePlayer {
     required this.x,
     required this.y,
     final Map<int, int>? stats,
-  }) : stats = stats ?? {};
+    final List<QuestAchievement>? questAchievements,
+  })  : stats = stats ?? {},
+        questAchievements = questAchievements ?? [];
 
   /// Create an instance from a JSON object.
   factory GamePlayer.fromJson(final Map<String, dynamic> json) =>
@@ -48,6 +51,9 @@ class GamePlayer {
 
   /// The stats for this player.
   final Map<int, int> stats;
+
+  /// The quest achievements for this player.
+  final List<QuestAchievement> questAchievements;
 
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$GamePlayerToJson(this);
