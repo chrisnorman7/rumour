@@ -156,7 +156,6 @@ class ProjectContext {
         .replaceAll(r'\', '/')
         .asSound(
           destroy: destroy,
-          soundType: SoundType.asset,
           loadMode: soundReference.loadMode,
           looping: looping,
           loopingStart: loopingStart,
@@ -217,7 +216,6 @@ class ProjectContext {
               .replaceAll(r'\', '/')
               .asSound(
                 destroy: destroy,
-                soundType: SoundType.asset,
                 loadMode: soundReference.loadMode,
                 looping: looping,
                 loopingStart: loopingStart,
