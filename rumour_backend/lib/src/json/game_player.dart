@@ -55,6 +55,20 @@ class GamePlayer {
   /// The quest achievements for this player.
   final List<QuestAchievement> questAchievements;
 
+  /// Remove an achievement with the given [stage].
+  void removeQuestAchievement(final QuestStage stage) =>
+      questAchievements.removeWhere(
+        (final achievement) =>
+            achievement.stageId == stage.id ||
+            achievement.questId == stage.questId,
+      );
+
+  /// Set a quest achievement.
+  void setQuestAchievement(final QuestStage stage) {
+    removeQuestAchievement(stage);
+    questAchievements.add(QuestAchievement.now(stage));
+  }
+
   /// Convert an instance to JSON.
   Map<String, dynamic> toJson() => _$GamePlayerToJson(this);
 }

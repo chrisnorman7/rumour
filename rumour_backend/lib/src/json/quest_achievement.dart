@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:rumour_backend/rumour_backend.dart';
 
 part 'quest_achievement.g.dart';
 
@@ -13,8 +14,10 @@ class QuestAchievement implements Comparable<DateTime> {
   });
 
   /// Create an instance using the current date and time.
-  QuestAchievement.now({required this.questId, required this.stageId})
-      : time = DateTime.now();
+  QuestAchievement.now(final QuestStage stage)
+      : time = DateTime.now(),
+        questId = stage.questId,
+        stageId = stage.id;
 
   /// Create an instance from a JSON object.
   factory QuestAchievement.fromJson(final Map<String, dynamic> json) =>

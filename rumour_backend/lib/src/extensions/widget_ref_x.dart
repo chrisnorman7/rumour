@@ -52,9 +52,11 @@ extension WidgetRefX on WidgetRef {
       final commandGameStats = await read(
         commandGameStatsProvider(commandId).future,
       );
-      final stats = await read(
-        gamePlayerStatsProvider(playerId).future,
+      final playerContext = await read(
+        gamePlayerContextProvider(playerId).future,
       );
+      final gamePlayer = playerContext.gamePlayer;
+      final stats = gamePlayer.stats;
       for (final commandGameStat in commandGameStats) {
         final value = stats[commandGameStat.gameStatId]!;
         stats[commandGameStat.gameStatId] =
@@ -63,6 +65,14 @@ extension WidgetRefX on WidgetRef {
           commandGameStat.amount,
         );
       }
+      final stageId = command.questStageId;
+      if (stageId != null) {
+        final stage = await read(
+          questStageProvider(stageId).future,
+        );
+        gamePlayer.setQuestAchievement(stage);
+      }
+      invalidate(GamePlayerContextProvider(playerId));
       final possibleCommandCaller = await read(
         commandCallerFromParentCommandIdProvider(commandId).future,
       );
