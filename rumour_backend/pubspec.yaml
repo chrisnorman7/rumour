@@ -9,22 +9,22 @@ environment:
   flutter: ">=1.17.0"
 dependencies:
   backstreets_widgets: ^0.34.0
-  drift: ^2.25.0
+  drift: ^2.25.1
   drift_flutter: ^0.2.4
   flutter:
     sdk: flutter
-  flutter_audio_games: ^0.43.2
+  flutter_audio_games: ^0.46.0
   flutter_riverpod: ^2.6.1
-  flutter_soloud: ^2.1.7
+  flutter_soloud: ^3.0.2
   flutter_text_style_settings: ^0.2.0
-  jinja: ^0.6.0
+  jinja: ^0.6.1
   json_annotation: ^4.9.0
   path: ^1.9.1
   path_provider: ^2.1.5
   riverpod_annotation: ^2.6.1
   rumour_player:
     path: ../rumour_player
-  shared_preferences: ^2.5.1
+  shared_preferences: ^2.5.2
   time: ^2.1.5
   url_launcher: ^6.3.1
   uuid: ^4.5.1
