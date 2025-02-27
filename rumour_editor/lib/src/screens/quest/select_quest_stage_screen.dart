@@ -29,30 +29,36 @@ class _QuestListTile extends ConsumerWidget {
   Widget build(final BuildContext context, final WidgetRef ref) {
     final value = ref.watch(questStagesProvider(quest.id));
     return value.when(
-      data:
-          (final stages) => ExpansionTile(
-            title: Text(quest.name),
-            initiallyExpanded:
-                stages
-                    .where((final stage) => stage.id == questStageId)
-                    .isNotEmpty,
-            children:
-                stages
-                    .map(
-                      (final stage) => PlaySoundReferenceSemantics(
-                        soundReferenceId: stage.labelSoundId,
-                        child: ListTile(
-                          autofocus: stage.id == questStageId,
-                          title: Text(stage.label),
-                          onTap: () {
-                            context.pop();
-                            onChanged(stage);
-                          },
-                        ),
-                      ),
-                    )
-                    .toList(),
-          ),
+      data: (final stages) {
+        final children = <Widget>[];
+        for (var i = 0; i < stages.length; i++) {
+          final stage = stages[i];
+          children.add(
+            PlaySoundReferenceSemantics(
+              soundReferenceId: stage.labelSoundId,
+              child: ListTile(
+                autofocus:
+                    (questStageId == null && i == 0) ||
+                    stage.id == questStageId,
+                title: Text(stage.label),
+                onTap: () {
+                  context.pop();
+                  onChanged(stage);
+                },
+              ),
+            ),
+          );
+        }
+        return ExpansionTile(
+          title: Text(quest.name),
+          initiallyExpanded:
+              questStageId == null ||
+              stages
+                  .where((final stage) => stage.id == questStageId)
+                  .isNotEmpty,
+          children: children.toList(),
+        );
+      },
       error: ErrorListTile.withPositional,
       loading:
           () => ListTile(

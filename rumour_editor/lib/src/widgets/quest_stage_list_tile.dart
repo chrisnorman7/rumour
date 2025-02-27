@@ -9,15 +9,15 @@ import 'package:rumour_editor/rumour_editor.dart';
 class QuestStageListTile extends ConsumerWidget {
   /// Create an instance.
   const QuestStageListTile({
-    required this.questStageId,
     required this.onChanged,
+    this.questStageId,
     this.title = 'Quest stage',
     this.autofocus = false,
     super.key,
   });
 
   /// The ID of the quest stage to show.
-  final int questStageId;
+  final int? questStageId;
 
   /// The function to call when the quest stage changes.
   final ValueChanged<QuestStage?> onChanged;
@@ -31,32 +31,47 @@ class QuestStageListTile extends ConsumerWidget {
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
-    final value = ref.watch(questStageProvider(questStageId));
-    return value.when(
-      data:
-          (final stage) => ListTile(
-            autofocus: autofocus,
-            title: Text(title),
-            subtitle: Text(stage.label),
-            onTap:
-                () => context.pushWidgetBuilder(
-                  (_) => SelectQuestStageScreen(
-                    onChanged: onChanged,
-                    questStageId: questStageId,
+    final id = questStageId;
+    if (id == null) {
+      return ListTile(
+        autofocus: autofocus,
+        title: Text(title),
+        subtitle: const Text(unsetMessage),
+        onTap:
+            () => context.pushWidgetBuilder(
+              (_) => SelectQuestStageScreen(onChanged: onChanged),
+            ),
+      );
+    }
+    final value = ref.watch(questStageProvider(id));
+    return CommonShortcuts(
+      deleteCallback: () => onChanged(null),
+      child: value.when(
+        data:
+            (final stage) => ListTile(
+              autofocus: autofocus,
+              title: Text(title),
+              subtitle: Text(stage.label),
+              onTap:
+                  () => context.pushWidgetBuilder(
+                    (_) => SelectQuestStageScreen(
+                      onChanged: onChanged,
+                      questStageId: questStageId,
+                    ),
                   ),
-                ),
-          ),
-      error: ErrorListTile.withPositional,
-      loading:
-          () => ListTile(
-            autofocus: autofocus,
-            title: Text(title),
-            subtitle: const LoadingWidget(),
-            onTap:
-                () => context.pushWidgetBuilder(
-                  (_) => SelectQuestStageScreen(onChanged: onChanged),
-                ),
-          ),
+            ),
+        error: ErrorListTile.withPositional,
+        loading:
+            () => ListTile(
+              autofocus: autofocus,
+              title: Text(title),
+              subtitle: const LoadingWidget(),
+              onTap:
+                  () => context.pushWidgetBuilder(
+                    (_) => SelectQuestStageScreen(onChanged: onChanged),
+                  ),
+            ),
+      ),
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
 import 'package:rumour_editor/rumour_editor.dart';
+import 'package:rumour_editor/src/widgets/quest_stage_list_tile.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// The command settings tab.
@@ -125,6 +126,15 @@ class CommandSettingsTab extends ConsumerWidget {
                 ),
             error: ErrorListTile.withPositional,
             loading: () => const LoadingListTile(title: 'Sub command'),
+          ),
+          QuestStageListTile(
+            onChanged: (final stage) async {
+              await query.update(
+                (final o) => o(questStageId: Value(stage?.id)),
+              );
+              invalidateProviders(ref);
+            },
+            questStageId: command.questStageId,
           ),
         ],
       );
