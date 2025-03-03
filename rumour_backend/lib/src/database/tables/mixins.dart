@@ -95,3 +95,13 @@ mixin MessageMixin on Table {
       .references(SoundReferences, #id, onDelete: KeyAction.setNull)
       .nullable()();
 }
+
+/// Add a [commandCallerConditionalId] column.
+mixin CommandCallerConditionalIdMixin on Table {
+  /// The ID of the command caller conditional to link with.
+  IntColumn get commandCallerConditionalId => integer().references(
+        CommandCallerConditionals,
+        #id,
+        onDelete: KeyAction.cascade,
+      )();
+}

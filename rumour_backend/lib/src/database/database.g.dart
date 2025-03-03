@@ -7160,6 +7160,553 @@ class CommandGameStatsCompanion extends UpdateCompanion<CommandGameStat> {
   }
 }
 
+class $CommandCallerConditionalsTable extends CommandCallerConditionals
+    with TableInfo<$CommandCallerConditionalsTable, CommandCallerConditional> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CommandCallerConditionalsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _commandCallerIdMeta =
+      const VerificationMeta('commandCallerId');
+  @override
+  late final GeneratedColumn<int> commandCallerId = GeneratedColumn<int>(
+      'command_caller_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES command_callers (id) ON DELETE CASCADE'));
+  @override
+  List<GeneratedColumn> get $columns => [id, commandCallerId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'command_caller_conditionals';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<CommandCallerConditional> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('command_caller_id')) {
+      context.handle(
+          _commandCallerIdMeta,
+          commandCallerId.isAcceptableOrUnknown(
+              data['command_caller_id']!, _commandCallerIdMeta));
+    } else if (isInserting) {
+      context.missing(_commandCallerIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CommandCallerConditional map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CommandCallerConditional(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      commandCallerId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}command_caller_id'])!,
+    );
+  }
+
+  @override
+  $CommandCallerConditionalsTable createAlias(String alias) {
+    return $CommandCallerConditionalsTable(attachedDatabase, alias);
+  }
+}
+
+class CommandCallerConditional extends DataClass
+    implements Insertable<CommandCallerConditional> {
+  /// The primary key field.
+  final int id;
+
+  /// The ID of the command caller to link with.
+  final int commandCallerId;
+  const CommandCallerConditional(
+      {required this.id, required this.commandCallerId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['command_caller_id'] = Variable<int>(commandCallerId);
+    return map;
+  }
+
+  CommandCallerConditionalsCompanion toCompanion(bool nullToAbsent) {
+    return CommandCallerConditionalsCompanion(
+      id: Value(id),
+      commandCallerId: Value(commandCallerId),
+    );
+  }
+
+  factory CommandCallerConditional.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CommandCallerConditional(
+      id: serializer.fromJson<int>(json['id']),
+      commandCallerId: serializer.fromJson<int>(json['commandCallerId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'commandCallerId': serializer.toJson<int>(commandCallerId),
+    };
+  }
+
+  CommandCallerConditional copyWith({int? id, int? commandCallerId}) =>
+      CommandCallerConditional(
+        id: id ?? this.id,
+        commandCallerId: commandCallerId ?? this.commandCallerId,
+      );
+  CommandCallerConditional copyWithCompanion(
+      CommandCallerConditionalsCompanion data) {
+    return CommandCallerConditional(
+      id: data.id.present ? data.id.value : this.id,
+      commandCallerId: data.commandCallerId.present
+          ? data.commandCallerId.value
+          : this.commandCallerId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CommandCallerConditional(')
+          ..write('id: $id, ')
+          ..write('commandCallerId: $commandCallerId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, commandCallerId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CommandCallerConditional &&
+          other.id == this.id &&
+          other.commandCallerId == this.commandCallerId);
+}
+
+class CommandCallerConditionalsCompanion
+    extends UpdateCompanion<CommandCallerConditional> {
+  final Value<int> id;
+  final Value<int> commandCallerId;
+  const CommandCallerConditionalsCompanion({
+    this.id = const Value.absent(),
+    this.commandCallerId = const Value.absent(),
+  });
+  CommandCallerConditionalsCompanion.insert({
+    this.id = const Value.absent(),
+    required int commandCallerId,
+  }) : commandCallerId = Value(commandCallerId);
+  static Insertable<CommandCallerConditional> custom({
+    Expression<int>? id,
+    Expression<int>? commandCallerId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (commandCallerId != null) 'command_caller_id': commandCallerId,
+    });
+  }
+
+  CommandCallerConditionalsCompanion copyWith(
+      {Value<int>? id, Value<int>? commandCallerId}) {
+    return CommandCallerConditionalsCompanion(
+      id: id ?? this.id,
+      commandCallerId: commandCallerId ?? this.commandCallerId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (commandCallerId.present) {
+      map['command_caller_id'] = Variable<int>(commandCallerId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CommandCallerConditionalsCompanion(')
+          ..write('id: $id, ')
+          ..write('commandCallerId: $commandCallerId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $QuestStageConditionalsTable extends QuestStageConditionals
+    with TableInfo<$QuestStageConditionalsTable, QuestStageConditional> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $QuestStageConditionalsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _spokenMessageMeta =
+      const VerificationMeta('spokenMessage');
+  @override
+  late final GeneratedColumn<String> spokenMessage = GeneratedColumn<String>(
+      'spoken_message', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('This command needs configuring.'));
+  static const VerificationMeta _soundIdMeta =
+      const VerificationMeta('soundId');
+  @override
+  late final GeneratedColumn<int> soundId = GeneratedColumn<int>(
+      'sound_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES sound_references (id) ON DELETE SET NULL'));
+  static const VerificationMeta _commandCallerConditionalIdMeta =
+      const VerificationMeta('commandCallerConditionalId');
+  @override
+  late final GeneratedColumn<int> commandCallerConditionalId =
+      GeneratedColumn<int>(
+          'command_caller_conditional_id', aliasedName, false,
+          type: DriftSqlType.int,
+          requiredDuringInsert: true,
+          defaultConstraints: GeneratedColumn.constraintIsAlways(
+              'REFERENCES command_caller_conditionals (id) ON DELETE CASCADE'));
+  static const VerificationMeta _questStageIdMeta =
+      const VerificationMeta('questStageId');
+  @override
+  late final GeneratedColumn<int> questStageId = GeneratedColumn<int>(
+      'quest_stage_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES quest_stages (id) ON DELETE CASCADE'));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, spokenMessage, soundId, commandCallerConditionalId, questStageId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'quest_stage_conditionals';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<QuestStageConditional> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('spoken_message')) {
+      context.handle(
+          _spokenMessageMeta,
+          spokenMessage.isAcceptableOrUnknown(
+              data['spoken_message']!, _spokenMessageMeta));
+    }
+    if (data.containsKey('sound_id')) {
+      context.handle(_soundIdMeta,
+          soundId.isAcceptableOrUnknown(data['sound_id']!, _soundIdMeta));
+    }
+    if (data.containsKey('command_caller_conditional_id')) {
+      context.handle(
+          _commandCallerConditionalIdMeta,
+          commandCallerConditionalId.isAcceptableOrUnknown(
+              data['command_caller_conditional_id']!,
+              _commandCallerConditionalIdMeta));
+    } else if (isInserting) {
+      context.missing(_commandCallerConditionalIdMeta);
+    }
+    if (data.containsKey('quest_stage_id')) {
+      context.handle(
+          _questStageIdMeta,
+          questStageId.isAcceptableOrUnknown(
+              data['quest_stage_id']!, _questStageIdMeta));
+    } else if (isInserting) {
+      context.missing(_questStageIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  QuestStageConditional map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return QuestStageConditional(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      spokenMessage: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}spoken_message']),
+      soundId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sound_id']),
+      commandCallerConditionalId: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}command_caller_conditional_id'])!,
+      questStageId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}quest_stage_id'])!,
+    );
+  }
+
+  @override
+  $QuestStageConditionalsTable createAlias(String alias) {
+    return $QuestStageConditionalsTable(attachedDatabase, alias);
+  }
+}
+
+class QuestStageConditional extends DataClass
+    implements Insertable<QuestStageConditional> {
+  /// The primary key field.
+  final int id;
+
+  /// The text to announce.
+  final String? spokenMessage;
+
+  /// The ID of a sound to play.
+  final int? soundId;
+
+  /// The ID of the command caller conditional to link with.
+  final int commandCallerConditionalId;
+
+  /// The ID of the quest stage which must have been achieved.
+  final int questStageId;
+  const QuestStageConditional(
+      {required this.id,
+      this.spokenMessage,
+      this.soundId,
+      required this.commandCallerConditionalId,
+      required this.questStageId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || spokenMessage != null) {
+      map['spoken_message'] = Variable<String>(spokenMessage);
+    }
+    if (!nullToAbsent || soundId != null) {
+      map['sound_id'] = Variable<int>(soundId);
+    }
+    map['command_caller_conditional_id'] =
+        Variable<int>(commandCallerConditionalId);
+    map['quest_stage_id'] = Variable<int>(questStageId);
+    return map;
+  }
+
+  QuestStageConditionalsCompanion toCompanion(bool nullToAbsent) {
+    return QuestStageConditionalsCompanion(
+      id: Value(id),
+      spokenMessage: spokenMessage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(spokenMessage),
+      soundId: soundId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(soundId),
+      commandCallerConditionalId: Value(commandCallerConditionalId),
+      questStageId: Value(questStageId),
+    );
+  }
+
+  factory QuestStageConditional.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return QuestStageConditional(
+      id: serializer.fromJson<int>(json['id']),
+      spokenMessage: serializer.fromJson<String?>(json['spokenMessage']),
+      soundId: serializer.fromJson<int?>(json['soundId']),
+      commandCallerConditionalId:
+          serializer.fromJson<int>(json['commandCallerConditionalId']),
+      questStageId: serializer.fromJson<int>(json['questStageId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'spokenMessage': serializer.toJson<String?>(spokenMessage),
+      'soundId': serializer.toJson<int?>(soundId),
+      'commandCallerConditionalId':
+          serializer.toJson<int>(commandCallerConditionalId),
+      'questStageId': serializer.toJson<int>(questStageId),
+    };
+  }
+
+  QuestStageConditional copyWith(
+          {int? id,
+          Value<String?> spokenMessage = const Value.absent(),
+          Value<int?> soundId = const Value.absent(),
+          int? commandCallerConditionalId,
+          int? questStageId}) =>
+      QuestStageConditional(
+        id: id ?? this.id,
+        spokenMessage:
+            spokenMessage.present ? spokenMessage.value : this.spokenMessage,
+        soundId: soundId.present ? soundId.value : this.soundId,
+        commandCallerConditionalId:
+            commandCallerConditionalId ?? this.commandCallerConditionalId,
+        questStageId: questStageId ?? this.questStageId,
+      );
+  QuestStageConditional copyWithCompanion(
+      QuestStageConditionalsCompanion data) {
+    return QuestStageConditional(
+      id: data.id.present ? data.id.value : this.id,
+      spokenMessage: data.spokenMessage.present
+          ? data.spokenMessage.value
+          : this.spokenMessage,
+      soundId: data.soundId.present ? data.soundId.value : this.soundId,
+      commandCallerConditionalId: data.commandCallerConditionalId.present
+          ? data.commandCallerConditionalId.value
+          : this.commandCallerConditionalId,
+      questStageId: data.questStageId.present
+          ? data.questStageId.value
+          : this.questStageId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QuestStageConditional(')
+          ..write('id: $id, ')
+          ..write('spokenMessage: $spokenMessage, ')
+          ..write('soundId: $soundId, ')
+          ..write('commandCallerConditionalId: $commandCallerConditionalId, ')
+          ..write('questStageId: $questStageId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, spokenMessage, soundId, commandCallerConditionalId, questStageId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is QuestStageConditional &&
+          other.id == this.id &&
+          other.spokenMessage == this.spokenMessage &&
+          other.soundId == this.soundId &&
+          other.commandCallerConditionalId == this.commandCallerConditionalId &&
+          other.questStageId == this.questStageId);
+}
+
+class QuestStageConditionalsCompanion
+    extends UpdateCompanion<QuestStageConditional> {
+  final Value<int> id;
+  final Value<String?> spokenMessage;
+  final Value<int?> soundId;
+  final Value<int> commandCallerConditionalId;
+  final Value<int> questStageId;
+  const QuestStageConditionalsCompanion({
+    this.id = const Value.absent(),
+    this.spokenMessage = const Value.absent(),
+    this.soundId = const Value.absent(),
+    this.commandCallerConditionalId = const Value.absent(),
+    this.questStageId = const Value.absent(),
+  });
+  QuestStageConditionalsCompanion.insert({
+    this.id = const Value.absent(),
+    this.spokenMessage = const Value.absent(),
+    this.soundId = const Value.absent(),
+    required int commandCallerConditionalId,
+    required int questStageId,
+  })  : commandCallerConditionalId = Value(commandCallerConditionalId),
+        questStageId = Value(questStageId);
+  static Insertable<QuestStageConditional> custom({
+    Expression<int>? id,
+    Expression<String>? spokenMessage,
+    Expression<int>? soundId,
+    Expression<int>? commandCallerConditionalId,
+    Expression<int>? questStageId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (spokenMessage != null) 'spoken_message': spokenMessage,
+      if (soundId != null) 'sound_id': soundId,
+      if (commandCallerConditionalId != null)
+        'command_caller_conditional_id': commandCallerConditionalId,
+      if (questStageId != null) 'quest_stage_id': questStageId,
+    });
+  }
+
+  QuestStageConditionalsCompanion copyWith(
+      {Value<int>? id,
+      Value<String?>? spokenMessage,
+      Value<int?>? soundId,
+      Value<int>? commandCallerConditionalId,
+      Value<int>? questStageId}) {
+    return QuestStageConditionalsCompanion(
+      id: id ?? this.id,
+      spokenMessage: spokenMessage ?? this.spokenMessage,
+      soundId: soundId ?? this.soundId,
+      commandCallerConditionalId:
+          commandCallerConditionalId ?? this.commandCallerConditionalId,
+      questStageId: questStageId ?? this.questStageId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (spokenMessage.present) {
+      map['spoken_message'] = Variable<String>(spokenMessage.value);
+    }
+    if (soundId.present) {
+      map['sound_id'] = Variable<int>(soundId.value);
+    }
+    if (commandCallerConditionalId.present) {
+      map['command_caller_conditional_id'] =
+          Variable<int>(commandCallerConditionalId.value);
+    }
+    if (questStageId.present) {
+      map['quest_stage_id'] = Variable<int>(questStageId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QuestStageConditionalsCompanion(')
+          ..write('id: $id, ')
+          ..write('spokenMessage: $spokenMessage, ')
+          ..write('soundId: $soundId, ')
+          ..write('commandCallerConditionalId: $commandCallerConditionalId, ')
+          ..write('questStageId: $questStageId')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -7190,6 +7737,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $RoomObjectMovementsTable(this);
   late final $CommandGameStatsTable commandGameStats =
       $CommandGameStatsTable(this);
+  late final $CommandCallerConditionalsTable commandCallerConditionals =
+      $CommandCallerConditionalsTable(this);
+  late final $QuestStageConditionalsTable questStageConditionals =
+      $QuestStageConditionalsTable(this);
   late final Index roomObjectCoordinatesIndex = Index(
       'room_object_coordinates_index',
       'CREATE INDEX room_object_coordinates_index ON room_objects (x, y)');
@@ -7220,6 +7771,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         roomObjectCommandCallers,
         roomObjectMovements,
         commandGameStats,
+        commandCallerConditionals,
+        questStageConditionals,
         roomObjectCoordinatesIndex,
         commandCallersCallingCommandIdIndex
       ];
@@ -7479,6 +8032,35 @@ abstract class _$AppDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.delete),
             result: [
               TableUpdate('command_game_stats', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('command_callers',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('command_caller_conditionals',
+                  kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('sound_references',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('quest_stage_conditionals', kind: UpdateKind.update),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('command_caller_conditionals',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('quest_stage_conditionals', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('quest_stages',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('quest_stage_conditionals', kind: UpdateKind.delete),
             ],
           ),
         ],
@@ -7746,6 +8328,25 @@ final class $$SoundReferencesTableReferences extends BaseReferences<
 
     final cache =
         $_typedResult.readTableOrNull(_roomObjectCommandCallersRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+
+  static MultiTypedResultKey<$QuestStageConditionalsTable,
+      List<QuestStageConditional>> _questStageConditionalsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.questStageConditionals,
+          aliasName: $_aliasNameGenerator(
+              db.soundReferences.id, db.questStageConditionals.soundId));
+
+  $$QuestStageConditionalsTableProcessedTableManager
+      get questStageConditionalsRefs {
+    final manager = $$QuestStageConditionalsTableTableManager(
+            $_db, $_db.questStageConditionals)
+        .filter((f) => f.soundId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_questStageConditionalsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -8085,6 +8686,29 @@ class $$SoundReferencesTableFilterComposer
                 $$RoomObjectCommandCallersTableFilterComposer(
                   $db: $db,
                   $table: $db.roomObjectCommandCallers,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+
+  Expression<bool> questStageConditionalsRefs(
+      Expression<bool> Function($$QuestStageConditionalsTableFilterComposer f)
+          f) {
+    final $$QuestStageConditionalsTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.questStageConditionals,
+            getReferencedColumn: (t) => t.soundId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$QuestStageConditionalsTableFilterComposer(
+                  $db: $db,
+                  $table: $db.questStageConditionals,
                   $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
                   joinBuilder: joinBuilder,
                   $removeJoinBuilderFromRootComposer:
@@ -8458,6 +9082,29 @@ class $$SoundReferencesTableAnnotationComposer
                 ));
     return f(composer);
   }
+
+  Expression<T> questStageConditionalsRefs<T extends Object>(
+      Expression<T> Function($$QuestStageConditionalsTableAnnotationComposer a)
+          f) {
+    final $$QuestStageConditionalsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.questStageConditionals,
+            getReferencedColumn: (t) => t.soundId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$QuestStageConditionalsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.questStageConditionals,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 }
 
 class $$SoundReferencesTableTableManager extends RootTableManager<
@@ -8486,7 +9133,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
         bool roomSurfaceBoostMaxedOutSounds,
         bool roomSurfaceCostsRefs,
         bool roomObjectRandomSoundsRefs,
-        bool roomObjectCommandCallersRefs})> {
+        bool roomObjectCommandCallersRefs,
+        bool questStageConditionalsRefs})> {
   $$SoundReferencesTableTableManager(
       _$AppDatabase db, $SoundReferencesTable table)
       : super(TableManagerState(
@@ -8543,7 +9191,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
               roomSurfaceBoostMaxedOutSounds = false,
               roomSurfaceCostsRefs = false,
               roomObjectRandomSoundsRefs = false,
-              roomObjectCommandCallersRefs = false}) {
+              roomObjectCommandCallersRefs = false,
+              questStageConditionalsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
@@ -8561,7 +9210,8 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                 if (roomSurfaceBoostMaxedOutSounds) db.roomSurfaceBoosts,
                 if (roomSurfaceCostsRefs) db.roomSurfaceCosts,
                 if (roomObjectRandomSoundsRefs) db.roomObjectRandomSounds,
-                if (roomObjectCommandCallersRefs) db.roomObjectCommandCallers
+                if (roomObjectCommandCallersRefs) db.roomObjectCommandCallers,
+                if (questStageConditionalsRefs) db.questStageConditionals
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
@@ -8760,6 +9410,19 @@ class $$SoundReferencesTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.earconId == item.id),
+                        typedResults: items),
+                  if (questStageConditionalsRefs)
+                    await $_getPrefetchedData<SoundReference,
+                            $SoundReferencesTable, QuestStageConditional>(
+                        currentTable: table,
+                        referencedTable: $$SoundReferencesTableReferences
+                            ._questStageConditionalsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$SoundReferencesTableReferences(db, table, p0)
+                                .questStageConditionalsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.soundId == item.id),
                         typedResults: items)
                 ];
               },
@@ -8794,7 +9457,8 @@ typedef $$SoundReferencesTableProcessedTableManager = ProcessedTableManager<
         bool roomSurfaceBoostMaxedOutSounds,
         bool roomSurfaceCostsRefs,
         bool roomObjectRandomSoundsRefs,
-        bool roomObjectCommandCallersRefs})>;
+        bool roomObjectCommandCallersRefs,
+        bool questStageConditionalsRefs})>;
 typedef $$ZonesTableCreateCompanionBuilder = ZonesCompanion Function({
   Value<int> id,
   required String name,
@@ -10002,6 +10666,25 @@ final class $$QuestStagesTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$QuestStageConditionalsTable,
+      List<QuestStageConditional>> _questStageConditionalsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.questStageConditionals,
+          aliasName: $_aliasNameGenerator(
+              db.questStages.id, db.questStageConditionals.questStageId));
+
+  $$QuestStageConditionalsTableProcessedTableManager
+      get questStageConditionalsRefs {
+    final manager = $$QuestStageConditionalsTableTableManager(
+            $_db, $_db.questStageConditionals)
+        .filter((f) => f.questStageId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_questStageConditionalsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$QuestStagesTableFilterComposer
@@ -10077,6 +10760,29 @@ class $$QuestStagesTableFilterComposer
               $removeJoinBuilderFromRootComposer:
                   $removeJoinBuilderFromRootComposer,
             ));
+    return f(composer);
+  }
+
+  Expression<bool> questStageConditionalsRefs(
+      Expression<bool> Function($$QuestStageConditionalsTableFilterComposer f)
+          f) {
+    final $$QuestStageConditionalsTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.questStageConditionals,
+            getReferencedColumn: (t) => t.questStageId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$QuestStageConditionalsTableFilterComposer(
+                  $db: $db,
+                  $table: $db.questStageConditionals,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
     return f(composer);
   }
 }
@@ -10212,6 +10918,29 @@ class $$QuestStagesTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> questStageConditionalsRefs<T extends Object>(
+      Expression<T> Function($$QuestStageConditionalsTableAnnotationComposer a)
+          f) {
+    final $$QuestStageConditionalsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.questStageConditionals,
+            getReferencedColumn: (t) => t.questStageId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$QuestStageConditionalsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.questStageConditionals,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 }
 
 class $$QuestStagesTableTableManager extends RootTableManager<
@@ -10226,7 +10955,10 @@ class $$QuestStagesTableTableManager extends RootTableManager<
     (QuestStage, $$QuestStagesTableReferences),
     QuestStage,
     PrefetchHooks Function(
-        {bool questId, bool labelSoundId, bool commandsRefs})> {
+        {bool questId,
+        bool labelSoundId,
+        bool commandsRefs,
+        bool questStageConditionalsRefs})> {
   $$QuestStagesTableTableManager(_$AppDatabase db, $QuestStagesTable table)
       : super(TableManagerState(
           db: db,
@@ -10268,10 +11000,16 @@ class $$QuestStagesTableTableManager extends RootTableManager<
                   ))
               .toList(),
           prefetchHooksCallback: (
-              {questId = false, labelSoundId = false, commandsRefs = false}) {
+              {questId = false,
+              labelSoundId = false,
+              commandsRefs = false,
+              questStageConditionalsRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (commandsRefs) db.commands],
+              explicitlyWatchedTables: [
+                if (commandsRefs) db.commands,
+                if (questStageConditionalsRefs) db.questStageConditionals
+              ],
               addJoins: <
                   T extends TableManagerState<
                       dynamic,
@@ -10322,6 +11060,19 @@ class $$QuestStagesTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.questStageId == item.id),
+                        typedResults: items),
+                  if (questStageConditionalsRefs)
+                    await $_getPrefetchedData<QuestStage, $QuestStagesTable,
+                            QuestStageConditional>(
+                        currentTable: table,
+                        referencedTable: $$QuestStagesTableReferences
+                            ._questStageConditionalsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$QuestStagesTableReferences(db, table, p0)
+                                .questStageConditionalsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.questStageId == item.id),
                         typedResults: items)
                 ];
               },
@@ -10342,7 +11093,10 @@ typedef $$QuestStagesTableProcessedTableManager = ProcessedTableManager<
     (QuestStage, $$QuestStagesTableReferences),
     QuestStage,
     PrefetchHooks Function(
-        {bool questId, bool labelSoundId, bool commandsRefs})>;
+        {bool questId,
+        bool labelSoundId,
+        bool commandsRefs,
+        bool questStageConditionalsRefs})>;
 typedef $$CommandsTableCreateCompanionBuilder = CommandsCompanion Function({
   Value<int> id,
   required String description,
@@ -11104,6 +11858,26 @@ final class $$CommandCallersTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$CommandCallerConditionalsTable,
+      List<CommandCallerConditional>> _commandCallerConditionalsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.commandCallerConditionals,
+          aliasName: $_aliasNameGenerator(db.commandCallers.id,
+              db.commandCallerConditionals.commandCallerId));
+
+  $$CommandCallerConditionalsTableProcessedTableManager
+      get commandCallerConditionalsRefs {
+    final manager = $$CommandCallerConditionalsTableTableManager(
+            $_db, $_db.commandCallerConditionals)
+        .filter(
+            (f) => f.commandCallerId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult
+        .readTableOrNull(_commandCallerConditionalsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$CommandCallersTableFilterComposer
@@ -11307,6 +12081,30 @@ class $$CommandCallersTableFilterComposer
               $removeJoinBuilderFromRootComposer:
                   $removeJoinBuilderFromRootComposer,
             ));
+    return f(composer);
+  }
+
+  Expression<bool> commandCallerConditionalsRefs(
+      Expression<bool> Function(
+              $$CommandCallerConditionalsTableFilterComposer f)
+          f) {
+    final $$CommandCallerConditionalsTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.commandCallerConditionals,
+            getReferencedColumn: (t) => t.commandCallerId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$CommandCallerConditionalsTableFilterComposer(
+                  $db: $db,
+                  $table: $db.commandCallerConditionals,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
     return f(composer);
   }
 }
@@ -11573,6 +12371,30 @@ class $$CommandCallersTableAnnotationComposer
                 ));
     return f(composer);
   }
+
+  Expression<T> commandCallerConditionalsRefs<T extends Object>(
+      Expression<T> Function(
+              $$CommandCallerConditionalsTableAnnotationComposer a)
+          f) {
+    final $$CommandCallerConditionalsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.commandCallerConditionals,
+            getReferencedColumn: (t) => t.commandCallerId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$CommandCallerConditionalsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.commandCallerConditionals,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
 }
 
 class $$CommandCallersTableTableManager extends RootTableManager<
@@ -11595,7 +12417,8 @@ class $$CommandCallersTableTableManager extends RootTableManager<
         bool onApproachCommandCallers,
         bool onLeaveCommandCallers,
         bool roomObjectCommandCallersRefs,
-        bool onMoveCommandCallers})> {
+        bool onMoveCommandCallers,
+        bool commandCallerConditionalsRefs})> {
   $$CommandCallersTableTableManager(
       _$AppDatabase db, $CommandCallersTable table)
       : super(TableManagerState(
@@ -11646,7 +12469,8 @@ class $$CommandCallersTableTableManager extends RootTableManager<
               onApproachCommandCallers = false,
               onLeaveCommandCallers = false,
               roomObjectCommandCallersRefs = false,
-              onMoveCommandCallers = false}) {
+              onMoveCommandCallers = false,
+              commandCallerConditionalsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
@@ -11656,7 +12480,8 @@ class $$CommandCallersTableTableManager extends RootTableManager<
                 if (onApproachCommandCallers) db.roomObjects,
                 if (onLeaveCommandCallers) db.roomObjects,
                 if (roomObjectCommandCallersRefs) db.roomObjectCommandCallers,
-                if (onMoveCommandCallers) db.roomObjectMovements
+                if (onMoveCommandCallers) db.roomObjectMovements,
+                if (commandCallerConditionalsRefs) db.commandCallerConditionals
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -11788,6 +12613,19 @@ class $$CommandCallersTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems.where(
                                 (e) => e.onMoveCommandCallerId == item.id),
+                        typedResults: items),
+                  if (commandCallerConditionalsRefs)
+                    await $_getPrefetchedData<CommandCaller,
+                            $CommandCallersTable, CommandCallerConditional>(
+                        currentTable: table,
+                        referencedTable: $$CommandCallersTableReferences
+                            ._commandCallerConditionalsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CommandCallersTableReferences(db, table, p0)
+                                .commandCallerConditionalsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.commandCallerId == item.id),
                         typedResults: items)
                 ];
               },
@@ -11816,7 +12654,8 @@ typedef $$CommandCallersTableProcessedTableManager = ProcessedTableManager<
         bool onApproachCommandCallers,
         bool onLeaveCommandCallers,
         bool roomObjectCommandCallersRefs,
-        bool onMoveCommandCallers})>;
+        bool onMoveCommandCallers,
+        bool commandCallerConditionalsRefs})>;
 typedef $$RoomsTableCreateCompanionBuilder = RoomsCompanion Function({
   Value<int> id,
   required String name,
@@ -18225,6 +19064,776 @@ typedef $$CommandGameStatsTableProcessedTableManager = ProcessedTableManager<
     (CommandGameStat, $$CommandGameStatsTableReferences),
     CommandGameStat,
     PrefetchHooks Function({bool gameStatId, bool commandId})>;
+typedef $$CommandCallerConditionalsTableCreateCompanionBuilder
+    = CommandCallerConditionalsCompanion Function({
+  Value<int> id,
+  required int commandCallerId,
+});
+typedef $$CommandCallerConditionalsTableUpdateCompanionBuilder
+    = CommandCallerConditionalsCompanion Function({
+  Value<int> id,
+  Value<int> commandCallerId,
+});
+
+final class $$CommandCallerConditionalsTableReferences extends BaseReferences<
+    _$AppDatabase, $CommandCallerConditionalsTable, CommandCallerConditional> {
+  $$CommandCallerConditionalsTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $CommandCallersTable _commandCallerIdTable(_$AppDatabase db) =>
+      db.commandCallers.createAlias($_aliasNameGenerator(
+          db.commandCallerConditionals.commandCallerId, db.commandCallers.id));
+
+  $$CommandCallersTableProcessedTableManager get commandCallerId {
+    final $_column = $_itemColumn<int>('command_caller_id')!;
+
+    final manager = $$CommandCallersTableTableManager($_db, $_db.commandCallers)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_commandCallerIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static MultiTypedResultKey<$QuestStageConditionalsTable,
+      List<QuestStageConditional>> _questStageConditionalsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.questStageConditionals,
+          aliasName: $_aliasNameGenerator(db.commandCallerConditionals.id,
+              db.questStageConditionals.commandCallerConditionalId));
+
+  $$QuestStageConditionalsTableProcessedTableManager
+      get questStageConditionalsRefs {
+    final manager = $$QuestStageConditionalsTableTableManager(
+            $_db, $_db.questStageConditionals)
+        .filter((f) => f.commandCallerConditionalId.id
+            .sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_questStageConditionalsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$CommandCallerConditionalsTableFilterComposer
+    extends Composer<_$AppDatabase, $CommandCallerConditionalsTable> {
+  $$CommandCallerConditionalsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  $$CommandCallersTableFilterComposer get commandCallerId {
+    final $$CommandCallersTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.commandCallerId,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableFilterComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  Expression<bool> questStageConditionalsRefs(
+      Expression<bool> Function($$QuestStageConditionalsTableFilterComposer f)
+          f) {
+    final $$QuestStageConditionalsTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.questStageConditionals,
+            getReferencedColumn: (t) => t.commandCallerConditionalId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$QuestStageConditionalsTableFilterComposer(
+                  $db: $db,
+                  $table: $db.questStageConditionals,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+}
+
+class $$CommandCallerConditionalsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CommandCallerConditionalsTable> {
+  $$CommandCallerConditionalsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  $$CommandCallersTableOrderingComposer get commandCallerId {
+    final $$CommandCallersTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.commandCallerId,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableOrderingComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$CommandCallerConditionalsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CommandCallerConditionalsTable> {
+  $$CommandCallerConditionalsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  $$CommandCallersTableAnnotationComposer get commandCallerId {
+    final $$CommandCallersTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.commandCallerId,
+        referencedTable: $db.commandCallers,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CommandCallersTableAnnotationComposer(
+              $db: $db,
+              $table: $db.commandCallers,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  Expression<T> questStageConditionalsRefs<T extends Object>(
+      Expression<T> Function($$QuestStageConditionalsTableAnnotationComposer a)
+          f) {
+    final $$QuestStageConditionalsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.questStageConditionals,
+            getReferencedColumn: (t) => t.commandCallerConditionalId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$QuestStageConditionalsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.questStageConditionals,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+}
+
+class $$CommandCallerConditionalsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $CommandCallerConditionalsTable,
+    CommandCallerConditional,
+    $$CommandCallerConditionalsTableFilterComposer,
+    $$CommandCallerConditionalsTableOrderingComposer,
+    $$CommandCallerConditionalsTableAnnotationComposer,
+    $$CommandCallerConditionalsTableCreateCompanionBuilder,
+    $$CommandCallerConditionalsTableUpdateCompanionBuilder,
+    (CommandCallerConditional, $$CommandCallerConditionalsTableReferences),
+    CommandCallerConditional,
+    PrefetchHooks Function(
+        {bool commandCallerId, bool questStageConditionalsRefs})> {
+  $$CommandCallerConditionalsTableTableManager(
+      _$AppDatabase db, $CommandCallerConditionalsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CommandCallerConditionalsTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CommandCallerConditionalsTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CommandCallerConditionalsTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> commandCallerId = const Value.absent(),
+          }) =>
+              CommandCallerConditionalsCompanion(
+            id: id,
+            commandCallerId: commandCallerId,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int commandCallerId,
+          }) =>
+              CommandCallerConditionalsCompanion.insert(
+            id: id,
+            commandCallerId: commandCallerId,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$CommandCallerConditionalsTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: (
+              {commandCallerId = false, questStageConditionalsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (questStageConditionalsRefs) db.questStageConditionals
+              ],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (commandCallerId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.commandCallerId,
+                    referencedTable: $$CommandCallerConditionalsTableReferences
+                        ._commandCallerIdTable(db),
+                    referencedColumn: $$CommandCallerConditionalsTableReferences
+                        ._commandCallerIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (questStageConditionalsRefs)
+                    await $_getPrefetchedData<
+                            CommandCallerConditional,
+                            $CommandCallerConditionalsTable,
+                            QuestStageConditional>(
+                        currentTable: table,
+                        referencedTable:
+                            $$CommandCallerConditionalsTableReferences
+                                ._questStageConditionalsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CommandCallerConditionalsTableReferences(
+                                    db, table, p0)
+                                .questStageConditionalsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems.where(
+                                (e) => e.commandCallerConditionalId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$CommandCallerConditionalsTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $CommandCallerConditionalsTable,
+        CommandCallerConditional,
+        $$CommandCallerConditionalsTableFilterComposer,
+        $$CommandCallerConditionalsTableOrderingComposer,
+        $$CommandCallerConditionalsTableAnnotationComposer,
+        $$CommandCallerConditionalsTableCreateCompanionBuilder,
+        $$CommandCallerConditionalsTableUpdateCompanionBuilder,
+        (CommandCallerConditional, $$CommandCallerConditionalsTableReferences),
+        CommandCallerConditional,
+        PrefetchHooks Function(
+            {bool commandCallerId, bool questStageConditionalsRefs})>;
+typedef $$QuestStageConditionalsTableCreateCompanionBuilder
+    = QuestStageConditionalsCompanion Function({
+  Value<int> id,
+  Value<String?> spokenMessage,
+  Value<int?> soundId,
+  required int commandCallerConditionalId,
+  required int questStageId,
+});
+typedef $$QuestStageConditionalsTableUpdateCompanionBuilder
+    = QuestStageConditionalsCompanion Function({
+  Value<int> id,
+  Value<String?> spokenMessage,
+  Value<int?> soundId,
+  Value<int> commandCallerConditionalId,
+  Value<int> questStageId,
+});
+
+final class $$QuestStageConditionalsTableReferences extends BaseReferences<
+    _$AppDatabase, $QuestStageConditionalsTable, QuestStageConditional> {
+  $$QuestStageConditionalsTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $SoundReferencesTable _soundIdTable(_$AppDatabase db) =>
+      db.soundReferences.createAlias($_aliasNameGenerator(
+          db.questStageConditionals.soundId, db.soundReferences.id));
+
+  $$SoundReferencesTableProcessedTableManager? get soundId {
+    final $_column = $_itemColumn<int>('sound_id');
+    if ($_column == null) return null;
+    final manager =
+        $$SoundReferencesTableTableManager($_db, $_db.soundReferences)
+            .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_soundIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $CommandCallerConditionalsTable _commandCallerConditionalIdTable(
+          _$AppDatabase db) =>
+      db.commandCallerConditionals.createAlias($_aliasNameGenerator(
+          db.questStageConditionals.commandCallerConditionalId,
+          db.commandCallerConditionals.id));
+
+  $$CommandCallerConditionalsTableProcessedTableManager
+      get commandCallerConditionalId {
+    final $_column = $_itemColumn<int>('command_caller_conditional_id')!;
+
+    final manager = $$CommandCallerConditionalsTableTableManager(
+            $_db, $_db.commandCallerConditionals)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item =
+        $_typedResult.readTableOrNull(_commandCallerConditionalIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $QuestStagesTable _questStageIdTable(_$AppDatabase db) =>
+      db.questStages.createAlias($_aliasNameGenerator(
+          db.questStageConditionals.questStageId, db.questStages.id));
+
+  $$QuestStagesTableProcessedTableManager get questStageId {
+    final $_column = $_itemColumn<int>('quest_stage_id')!;
+
+    final manager = $$QuestStagesTableTableManager($_db, $_db.questStages)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_questStageIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$QuestStageConditionalsTableFilterComposer
+    extends Composer<_$AppDatabase, $QuestStageConditionalsTable> {
+  $$QuestStageConditionalsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get spokenMessage => $composableBuilder(
+      column: $table.spokenMessage, builder: (column) => ColumnFilters(column));
+
+  $$SoundReferencesTableFilterComposer get soundId {
+    final $$SoundReferencesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.soundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableFilterComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$CommandCallerConditionalsTableFilterComposer
+      get commandCallerConditionalId {
+    final $$CommandCallerConditionalsTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.commandCallerConditionalId,
+            referencedTable: $db.commandCallerConditionals,
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$CommandCallerConditionalsTableFilterComposer(
+                  $db: $db,
+                  $table: $db.commandCallerConditionals,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return composer;
+  }
+
+  $$QuestStagesTableFilterComposer get questStageId {
+    final $$QuestStagesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.questStageId,
+        referencedTable: $db.questStages,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$QuestStagesTableFilterComposer(
+              $db: $db,
+              $table: $db.questStages,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$QuestStageConditionalsTableOrderingComposer
+    extends Composer<_$AppDatabase, $QuestStageConditionalsTable> {
+  $$QuestStageConditionalsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get spokenMessage => $composableBuilder(
+      column: $table.spokenMessage,
+      builder: (column) => ColumnOrderings(column));
+
+  $$SoundReferencesTableOrderingComposer get soundId {
+    final $$SoundReferencesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.soundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableOrderingComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$CommandCallerConditionalsTableOrderingComposer
+      get commandCallerConditionalId {
+    final $$CommandCallerConditionalsTableOrderingComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.commandCallerConditionalId,
+            referencedTable: $db.commandCallerConditionals,
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$CommandCallerConditionalsTableOrderingComposer(
+                  $db: $db,
+                  $table: $db.commandCallerConditionals,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return composer;
+  }
+
+  $$QuestStagesTableOrderingComposer get questStageId {
+    final $$QuestStagesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.questStageId,
+        referencedTable: $db.questStages,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$QuestStagesTableOrderingComposer(
+              $db: $db,
+              $table: $db.questStages,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$QuestStageConditionalsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $QuestStageConditionalsTable> {
+  $$QuestStageConditionalsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get spokenMessage => $composableBuilder(
+      column: $table.spokenMessage, builder: (column) => column);
+
+  $$SoundReferencesTableAnnotationComposer get soundId {
+    final $$SoundReferencesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.soundId,
+        referencedTable: $db.soundReferences,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SoundReferencesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.soundReferences,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$CommandCallerConditionalsTableAnnotationComposer
+      get commandCallerConditionalId {
+    final $$CommandCallerConditionalsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.commandCallerConditionalId,
+            referencedTable: $db.commandCallerConditionals,
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$CommandCallerConditionalsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.commandCallerConditionals,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return composer;
+  }
+
+  $$QuestStagesTableAnnotationComposer get questStageId {
+    final $$QuestStagesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.questStageId,
+        referencedTable: $db.questStages,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$QuestStagesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.questStages,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$QuestStageConditionalsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $QuestStageConditionalsTable,
+    QuestStageConditional,
+    $$QuestStageConditionalsTableFilterComposer,
+    $$QuestStageConditionalsTableOrderingComposer,
+    $$QuestStageConditionalsTableAnnotationComposer,
+    $$QuestStageConditionalsTableCreateCompanionBuilder,
+    $$QuestStageConditionalsTableUpdateCompanionBuilder,
+    (QuestStageConditional, $$QuestStageConditionalsTableReferences),
+    QuestStageConditional,
+    PrefetchHooks Function(
+        {bool soundId, bool commandCallerConditionalId, bool questStageId})> {
+  $$QuestStageConditionalsTableTableManager(
+      _$AppDatabase db, $QuestStageConditionalsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$QuestStageConditionalsTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$QuestStageConditionalsTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$QuestStageConditionalsTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String?> spokenMessage = const Value.absent(),
+            Value<int?> soundId = const Value.absent(),
+            Value<int> commandCallerConditionalId = const Value.absent(),
+            Value<int> questStageId = const Value.absent(),
+          }) =>
+              QuestStageConditionalsCompanion(
+            id: id,
+            spokenMessage: spokenMessage,
+            soundId: soundId,
+            commandCallerConditionalId: commandCallerConditionalId,
+            questStageId: questStageId,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String?> spokenMessage = const Value.absent(),
+            Value<int?> soundId = const Value.absent(),
+            required int commandCallerConditionalId,
+            required int questStageId,
+          }) =>
+              QuestStageConditionalsCompanion.insert(
+            id: id,
+            spokenMessage: spokenMessage,
+            soundId: soundId,
+            commandCallerConditionalId: commandCallerConditionalId,
+            questStageId: questStageId,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$QuestStageConditionalsTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: (
+              {soundId = false,
+              commandCallerConditionalId = false,
+              questStageId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (soundId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.soundId,
+                    referencedTable: $$QuestStageConditionalsTableReferences
+                        ._soundIdTable(db),
+                    referencedColumn: $$QuestStageConditionalsTableReferences
+                        ._soundIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (commandCallerConditionalId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.commandCallerConditionalId,
+                    referencedTable: $$QuestStageConditionalsTableReferences
+                        ._commandCallerConditionalIdTable(db),
+                    referencedColumn: $$QuestStageConditionalsTableReferences
+                        ._commandCallerConditionalIdTable(db)
+                        .id,
+                  ) as T;
+                }
+                if (questStageId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.questStageId,
+                    referencedTable: $$QuestStageConditionalsTableReferences
+                        ._questStageIdTable(db),
+                    referencedColumn: $$QuestStageConditionalsTableReferences
+                        ._questStageIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$QuestStageConditionalsTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $QuestStageConditionalsTable,
+        QuestStageConditional,
+        $$QuestStageConditionalsTableFilterComposer,
+        $$QuestStageConditionalsTableOrderingComposer,
+        $$QuestStageConditionalsTableAnnotationComposer,
+        $$QuestStageConditionalsTableCreateCompanionBuilder,
+        $$QuestStageConditionalsTableUpdateCompanionBuilder,
+        (QuestStageConditional, $$QuestStageConditionalsTableReferences),
+        QuestStageConditional,
+        PrefetchHooks Function(
+            {bool soundId,
+            bool commandCallerConditionalId,
+            bool questStageId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -18269,4 +19878,10 @@ class $AppDatabaseManager {
       $$RoomObjectMovementsTableTableManager(_db, _db.roomObjectMovements);
   $$CommandGameStatsTableTableManager get commandGameStats =>
       $$CommandGameStatsTableTableManager(_db, _db.commandGameStats);
+  $$CommandCallerConditionalsTableTableManager get commandCallerConditionals =>
+      $$CommandCallerConditionalsTableTableManager(
+          _db, _db.commandCallerConditionals);
+  $$QuestStageConditionalsTableTableManager get questStageConditionals =>
+      $$QuestStageConditionalsTableTableManager(
+          _db, _db.questStageConditionals);
 }

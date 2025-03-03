@@ -1161,3 +1161,33 @@ Future<List<QuestAchievementContext>> questAchievements(
   }
   return contexts;
 }
+
+/// Provide all the conditionals for a command.
+@riverpod
+Future<List<CommandCallerConditional>> commandCallerConditionals(
+  final Ref ref,
+  final int commandId,
+) {
+  final database = ref.watch(databaseProvider);
+  return database.managers.commandCallerConditionals
+      .filter(
+        (final f) => f.commandCallerId.id.equals(commandId),
+      )
+      .get();
+}
+
+/// Provide the quest stage conditionals for a command conditional with the
+/// given ID.
+@riverpod
+Future<List<QuestStageConditional>> questStageConditionals(
+  final Ref ref,
+  final int commandCallerConditionalId,
+) {
+  final database = ref.watch(databaseProvider);
+  return database.managers.questStageConditionals
+      .filter(
+        (final f) =>
+            f.commandCallerConditionalId.id.equals(commandCallerConditionalId),
+      )
+      .get();
+}

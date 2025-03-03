@@ -6702,6 +6702,315 @@ class _QuestAchievementsProviderElement
   String get playerId => (origin as QuestAchievementsProvider).playerId;
 }
 
+String _$commandCallerConditionalsHash() =>
+    r'1d8bcaf0aed66a7c711c6bca86b062a88e6af68f';
+
+/// Provide all the conditionals for a command.
+///
+/// Copied from [commandCallerConditionals].
+@ProviderFor(commandCallerConditionals)
+const commandCallerConditionalsProvider = CommandCallerConditionalsFamily();
+
+/// Provide all the conditionals for a command.
+///
+/// Copied from [commandCallerConditionals].
+class CommandCallerConditionalsFamily
+    extends Family<AsyncValue<List<CommandCallerConditional>>> {
+  /// Provide all the conditionals for a command.
+  ///
+  /// Copied from [commandCallerConditionals].
+  const CommandCallerConditionalsFamily();
+
+  /// Provide all the conditionals for a command.
+  ///
+  /// Copied from [commandCallerConditionals].
+  CommandCallerConditionalsProvider call(
+    int commandId,
+  ) {
+    return CommandCallerConditionalsProvider(
+      commandId,
+    );
+  }
+
+  @override
+  CommandCallerConditionalsProvider getProviderOverride(
+    covariant CommandCallerConditionalsProvider provider,
+  ) {
+    return call(
+      provider.commandId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'commandCallerConditionalsProvider';
+}
+
+/// Provide all the conditionals for a command.
+///
+/// Copied from [commandCallerConditionals].
+class CommandCallerConditionalsProvider
+    extends AutoDisposeFutureProvider<List<CommandCallerConditional>> {
+  /// Provide all the conditionals for a command.
+  ///
+  /// Copied from [commandCallerConditionals].
+  CommandCallerConditionalsProvider(
+    int commandId,
+  ) : this._internal(
+          (ref) => commandCallerConditionals(
+            ref as CommandCallerConditionalsRef,
+            commandId,
+          ),
+          from: commandCallerConditionalsProvider,
+          name: r'commandCallerConditionalsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$commandCallerConditionalsHash,
+          dependencies: CommandCallerConditionalsFamily._dependencies,
+          allTransitiveDependencies:
+              CommandCallerConditionalsFamily._allTransitiveDependencies,
+          commandId: commandId,
+        );
+
+  CommandCallerConditionalsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.commandId,
+  }) : super.internal();
+
+  final int commandId;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<CommandCallerConditional>> Function(
+            CommandCallerConditionalsRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: CommandCallerConditionalsProvider._internal(
+        (ref) => create(ref as CommandCallerConditionalsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        commandId: commandId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<CommandCallerConditional>>
+      createElement() {
+    return _CommandCallerConditionalsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is CommandCallerConditionalsProvider &&
+        other.commandId == commandId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, commandId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin CommandCallerConditionalsRef
+    on AutoDisposeFutureProviderRef<List<CommandCallerConditional>> {
+  /// The parameter `commandId` of this provider.
+  int get commandId;
+}
+
+class _CommandCallerConditionalsProviderElement
+    extends AutoDisposeFutureProviderElement<List<CommandCallerConditional>>
+    with CommandCallerConditionalsRef {
+  _CommandCallerConditionalsProviderElement(super.provider);
+
+  @override
+  int get commandId => (origin as CommandCallerConditionalsProvider).commandId;
+}
+
+String _$questStageConditionalsHash() =>
+    r'256b84d431ee4cabef5861329196578809a0e3f4';
+
+/// Provide the quest stage conditionals for a command conditional with the
+/// given ID.
+///
+/// Copied from [questStageConditionals].
+@ProviderFor(questStageConditionals)
+const questStageConditionalsProvider = QuestStageConditionalsFamily();
+
+/// Provide the quest stage conditionals for a command conditional with the
+/// given ID.
+///
+/// Copied from [questStageConditionals].
+class QuestStageConditionalsFamily
+    extends Family<AsyncValue<List<QuestStageConditional>>> {
+  /// Provide the quest stage conditionals for a command conditional with the
+  /// given ID.
+  ///
+  /// Copied from [questStageConditionals].
+  const QuestStageConditionalsFamily();
+
+  /// Provide the quest stage conditionals for a command conditional with the
+  /// given ID.
+  ///
+  /// Copied from [questStageConditionals].
+  QuestStageConditionalsProvider call(
+    int commandCallerConditionalId,
+  ) {
+    return QuestStageConditionalsProvider(
+      commandCallerConditionalId,
+    );
+  }
+
+  @override
+  QuestStageConditionalsProvider getProviderOverride(
+    covariant QuestStageConditionalsProvider provider,
+  ) {
+    return call(
+      provider.commandCallerConditionalId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'questStageConditionalsProvider';
+}
+
+/// Provide the quest stage conditionals for a command conditional with the
+/// given ID.
+///
+/// Copied from [questStageConditionals].
+class QuestStageConditionalsProvider
+    extends AutoDisposeFutureProvider<List<QuestStageConditional>> {
+  /// Provide the quest stage conditionals for a command conditional with the
+  /// given ID.
+  ///
+  /// Copied from [questStageConditionals].
+  QuestStageConditionalsProvider(
+    int commandCallerConditionalId,
+  ) : this._internal(
+          (ref) => questStageConditionals(
+            ref as QuestStageConditionalsRef,
+            commandCallerConditionalId,
+          ),
+          from: questStageConditionalsProvider,
+          name: r'questStageConditionalsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$questStageConditionalsHash,
+          dependencies: QuestStageConditionalsFamily._dependencies,
+          allTransitiveDependencies:
+              QuestStageConditionalsFamily._allTransitiveDependencies,
+          commandCallerConditionalId: commandCallerConditionalId,
+        );
+
+  QuestStageConditionalsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.commandCallerConditionalId,
+  }) : super.internal();
+
+  final int commandCallerConditionalId;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<QuestStageConditional>> Function(
+            QuestStageConditionalsRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: QuestStageConditionalsProvider._internal(
+        (ref) => create(ref as QuestStageConditionalsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        commandCallerConditionalId: commandCallerConditionalId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<QuestStageConditional>>
+      createElement() {
+    return _QuestStageConditionalsProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is QuestStageConditionalsProvider &&
+        other.commandCallerConditionalId == commandCallerConditionalId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, commandCallerConditionalId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin QuestStageConditionalsRef
+    on AutoDisposeFutureProviderRef<List<QuestStageConditional>> {
+  /// The parameter `commandCallerConditionalId` of this provider.
+  int get commandCallerConditionalId;
+}
+
+class _QuestStageConditionalsProviderElement
+    extends AutoDisposeFutureProviderElement<List<QuestStageConditional>>
+    with QuestStageConditionalsRef {
+  _QuestStageConditionalsProviderElement(super.provider);
+
+  @override
+  int get commandCallerConditionalId =>
+      (origin as QuestStageConditionalsProvider).commandCallerConditionalId;
+}
+
 String _$currentProjectContextHash() =>
     r'4c8cc047a1a79eb695b9f390a99148ce921e1e5b';
 

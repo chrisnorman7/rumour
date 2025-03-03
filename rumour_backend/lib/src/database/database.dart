@@ -31,6 +31,8 @@ part 'database.g.dart';
     CommandGameStats,
     Quests,
     QuestStages,
+    CommandCallerConditionals,
+    QuestStageConditionals,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -40,7 +42,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// The schema version.
   @override
-  int get schemaVersion => 12;
+  int get schemaVersion => 13;
 
   /// Migrate the database.
   @override
@@ -93,6 +95,10 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 12) {
             await m.addColumn(commands, commands.questStageId);
+          }
+          if (from < 13) {
+            await m.createTable(this.commandCallerConditionals);
+            await m.createTable(this.questStageConditionals);
           }
         },
       );
