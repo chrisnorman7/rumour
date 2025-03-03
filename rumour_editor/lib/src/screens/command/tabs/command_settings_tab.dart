@@ -5,6 +5,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
+import 'package:rumour_editor/gen/assets.gen.dart';
 import 'package:rumour_editor/rumour_editor.dart';
 import 'package:rumour_editor/src/widgets/quest_stage_list_tile.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -121,6 +122,7 @@ class CommandSettingsTab extends ConsumerWidget {
                                 command.id,
                               ),
                             ),
+                  helpAssetKey: Assets.help.commands.subCommand,
                   parentCommandId: commandId,
                   commandCallerId: caller?.id,
                 ),

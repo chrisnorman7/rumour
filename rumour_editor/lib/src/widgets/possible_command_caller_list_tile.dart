@@ -12,10 +12,10 @@ class PossibleCommandCallerListTile extends ConsumerWidget {
   const PossibleCommandCallerListTile({
     required this.title,
     required this.onChanged,
+    required this.helpAssetKey,
     this.commandCallerId,
     this.parentCommandId,
     this.autofocus = false,
-    this.helpAssetKey,
     super.key,
   });
 
@@ -25,6 +25,9 @@ class PossibleCommandCallerListTile extends ConsumerWidget {
   /// The function to call when a new command caller is created or an existing
   /// one is updated.
   final ValueChanged<int?> onChanged;
+
+  /// The asset key to use to show a help screen.
+  final String helpAssetKey;
 
   /// The ID of the command caller.
   final int? commandCallerId;
@@ -38,9 +41,6 @@ class PossibleCommandCallerListTile extends ConsumerWidget {
   /// Whether the [ListTile] should be autofocused.
   final bool autofocus;
 
-  /// The asset key to use to show a help screen.
-  final String? helpAssetKey;
-
   /// Build the widget.
   @override
   Widget build(final BuildContext context, final WidgetRef ref) {
@@ -52,10 +52,7 @@ class PossibleCommandCallerListTile extends ConsumerWidget {
     final assetKey = helpAssetKey;
     if (id == null) {
       return PerformableActionsListTile(
-        actions: [
-          if (assetKey != null)
-            HelpPerformableAction(context: context, assetKey: assetKey),
-        ],
+        actions: [HelpPerformableAction(context: context, assetKey: assetKey)],
         autofocus: autofocus,
         title: Text(title),
         subtitle: const Text(unsetMessage),

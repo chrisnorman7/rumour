@@ -10,8 +10,40 @@
 class $HelpGen {
   const $HelpGen();
 
+  /// Directory path: help/commands
+  $HelpCommandsGen get commands => const $HelpCommandsGen();
+
+  /// Directory path: help/room_objects
+  $HelpRoomObjectsGen get roomObjects => const $HelpRoomObjectsGen();
+
   /// Directory path: help/rooms
   $HelpRoomsGen get rooms => const $HelpRoomsGen();
+}
+
+class $HelpCommandsGen {
+  const $HelpCommandsGen();
+
+  /// File path: help/commands/sub_command.md
+  String get subCommand => 'help/commands/sub_command.md';
+
+  /// List of all assets
+  List<String> get values => [subCommand];
+}
+
+class $HelpRoomObjectsGen {
+  const $HelpRoomObjectsGen();
+
+  /// File path: help/room_objects/on_approach.md
+  String get onApproach => 'help/room_objects/on_approach.md';
+
+  /// File path: help/room_objects/on_leave.md
+  String get onLeave => 'help/room_objects/on_leave.md';
+
+  /// File path: help/room_objects/on_move.md
+  String get onMove => 'help/room_objects/on_move.md';
+
+  /// List of all assets
+  List<String> get values => [onApproach, onLeave, onMove];
 }
 
 class $HelpRoomsGen {
@@ -31,7 +63,7 @@ class $HelpRoomsGen {
 }
 
 class Assets {
-  Assets._();
+  const Assets._();
 
   static const $HelpGen help = $HelpGen();
 }

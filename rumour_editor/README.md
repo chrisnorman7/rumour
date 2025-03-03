@@ -20,6 +20,7 @@ Make audio-first RPG's with no code.
 - ☑ Objects can move around and execute commands as they go.
 - ☑ Add multiple quests.
 - ☑ Each quest has multiple stages. Events in the game set these on the player.
+- ☑ Add help pages for in-editor documentation.
 - ⭕ Commands can have conditional execution.
 - ⭕ Skills framework, allowing players to train in configurable skills.
 - ⭕ Game objects can be teachers of skills.
@@ -28,4 +29,3 @@ Make audio-first RPG's with no code.
 - ⭕ Clothing which can be equipped by players.
 - ⭕ Allow adding in-game entities to be added to the player's group.
 - ⭕ Create turn-by-turn combat between players and monsters.
-- ⭕ Add help pages for in-editor documentation.

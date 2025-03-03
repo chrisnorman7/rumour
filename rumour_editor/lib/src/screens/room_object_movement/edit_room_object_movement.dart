@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_audio_games/flutter_audio_games.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
+import 'package:rumour_editor/gen/assets.gen.dart';
 import 'package:rumour_editor/rumour_editor.dart';
 
 /// A screen to edit a room object movement.
@@ -84,6 +85,7 @@ class EditRoomObjectMovement extends ConsumerWidget {
                   );
                   invalidateProviders(ref, roomObjectId);
                 },
+                helpAssetKey: Assets.help.roomObjects.onMove,
                 commandCallerId: movement.onMoveCommandCallerId,
               ),
             ],

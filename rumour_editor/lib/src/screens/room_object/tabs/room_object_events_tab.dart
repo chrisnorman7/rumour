@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rumour_backend/rumour_backend.dart';
+import 'package:rumour_editor/gen/assets.gen.dart';
 import 'package:rumour_editor/rumour_editor.dart';
 
 /// The room object events tab.
@@ -33,6 +34,7 @@ class RoomObjectEventsTab extends ConsumerWidget {
               );
               ref.invalidate(provider);
             },
+            helpAssetKey: Assets.help.roomObjects.onApproach,
             autofocus: true,
             commandCallerId: object.onApproachCommandCallerId,
           ),
@@ -44,6 +46,7 @@ class RoomObjectEventsTab extends ConsumerWidget {
               );
               ref.invalidate(provider);
             },
+            helpAssetKey: Assets.help.roomObjects.onLeave,
             commandCallerId: object.onLeaveCommandCallerId,
           ),
         ],
