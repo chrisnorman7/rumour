@@ -82,3 +82,16 @@ mixin CommandIdMixin on Table {
   IntColumn get commandId =>
       integer().references(Commands, #id, onDelete: KeyAction.cascade)();
 }
+
+/// Add columns to play a sound and speak a message.
+mixin MessageMixin on Table {
+  /// The text to announce.
+  TextColumn get spokenMessage => text()
+      .withDefault(const Constant('This command needs configuring.'))
+      .nullable()();
+
+  /// The ID of a sound to play.
+  IntColumn get soundId => integer()
+      .references(SoundReferences, #id, onDelete: KeyAction.setNull)
+      .nullable()();
+}
