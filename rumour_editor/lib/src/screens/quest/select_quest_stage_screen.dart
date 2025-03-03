@@ -13,6 +13,7 @@ class _QuestListTile extends ConsumerWidget {
     required this.quest,
     required this.onChanged,
     required this.questStageId,
+    required this.index,
   });
 
   /// THe quest to use.
@@ -23,6 +24,9 @@ class _QuestListTile extends ConsumerWidget {
 
   /// The ID of the current quest stage.
   final int? questStageId;
+
+  /// The index of this quest in the [ListView].
+  final int index;
 
   /// Build the widget.
   @override
@@ -38,7 +42,7 @@ class _QuestListTile extends ConsumerWidget {
               soundReferenceId: stage.labelSoundId,
               child: ListTile(
                 autofocus:
-                    (questStageId == null && i == 0) ||
+                    (index == 0 && questStageId == null && i == 0) ||
                     stage.id == questStageId,
                 title: Text(stage.label),
                 onTap: () {
@@ -62,6 +66,7 @@ class _QuestListTile extends ConsumerWidget {
       error: ErrorListTile.withPositional,
       loading:
           () => ListTile(
+            autofocus: index == 0,
             title: Text(quest.name),
             subtitle: Text(quest.description),
             onTap: () {},
@@ -107,6 +112,7 @@ class SelectQuestStageScreen extends ConsumerWidget {
                 quest: quest,
                 onChanged: onChanged,
                 questStageId: questStageId,
+                index: index,
               );
             },
             itemCount: quests.length,
